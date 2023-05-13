@@ -22,6 +22,7 @@ local function scandir(directory, recursive)
 	for filename in pfile:lines() do
 		i = i + 1
 		t[i] = filename
+		-- print(filename)
 	end
 	pfile:close()
 	return t
@@ -41,18 +42,28 @@ end
 
 local function _require(relative_dir, recursive, require_prefix)
 	local current_dir = _get_current_dir()
+	if require_prefix == nil then
+		current_dir = current_dir .. 'lua/'
+	end
 	local ret_vals = {}
 	local full_dir = current_dir .. relative_dir .. '/'
 
 	for _, filename in ipairs(get_config_files(full_dir, recursive)) do
-		local config_module = string.match(filename, '(.+).lua$')
-		-- print('require', require_prefix .. '.' .. relative_dir .. '.' .. config_module)
-		table.insert(ret_vals, require(require_prefix .. '.' .. relative_dir .. '.' .. config_module))
+		local relative_module = string.match(filename, '(.+).lua$')
+		local require_module = ''
+		if require_prefix then
+			require_module = require_prefix .. '.'
+		end
+		require_module = require_module .. relative_dir .. '.' .. relative_module
+		-- print('require', require_module)
+		table.insert(ret_vals, require(require_module))
 	end
 
 	return ret_vals
 end
 
+-- TODO: doc.
+-- pass require_prefix as nil to require from user config dir
 function M.require(relative_dir, require_prefix)
 	return _require(relative_dir, false, require_prefix)
 end
