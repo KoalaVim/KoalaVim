@@ -1,6 +1,7 @@
-<img src="https://github.com/KoalaVim/KoalaVim/assets/4954051/9d498b88-3adf-49d7-9518-b7ea8d18f204" align="right" width="350" />
+<img src="https://github.com/KoalaVim/KoalaVim/assets/4954051/ef681f97-ed2d-4f41-adc4-3361cee1ea33" align="right" width="350" />
 
-# KoalaVim 
+# KoalaVim
+
 
 Extendable preconfigured configuration for Neovim powered by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
