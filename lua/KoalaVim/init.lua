@@ -1,8 +1,10 @@
 local M = {}
 
 -- TODO: config system
-
 function M.setup(opts)
+end
+
+function M.init()
 	local rdir = require('KoalaVim.utils.require_dir')
 
 	rdir.require('config', 'KoalaVim')
