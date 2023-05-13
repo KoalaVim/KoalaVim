@@ -147,11 +147,15 @@ table.insert(M, {
 			local tree_api = require('nvim-tree.api')
 			tree_api.config.mappings.default_on_attach(bufnr)
 
-			require('KoalaVim.utils.map').map_buffer(bufnr, 'n', '<Escape>', tree_api.node.navigate.parent_close,
-				'Nvimtree: close node')
-			require('KoalaVim.utils.map').map_buffer(bufnr, 'n', 'fw', search_in_path, 'Nvimtree: find word in current path')
-			require('KoalaVim.utils.map').map_buffer(bufnr, 'n', 'ff', find_in_path, 'Nvimtree: find files in current path')
-			require('KoalaVim.utils.map').map_buffer(bufnr, 'n', 'gh', git_hist_path, 'Nvimtree: view git history in current path')
+			local map_buffer = require('KoalaVim.utils.map').map_buffer
+
+			map_buffer(bufnr, 'n', '<Escape>', tree_api.node.navigate.parent_close, 'Nvimtree: close node')
+			map_buffer(bufnr, 'n', 'h', tree_api.node.navigate.parent_close, 'Nvimtree: close node')
+			map_buffer(bufnr, 'n', 'l', tree_api.node.open.edit, 'Nvimtree: open node')
+			map_buffer(bufnr, 'n', 'fw', search_in_path, 'Nvimtree: find word in current path')
+			map_buffer(bufnr, 'n', 'ff', find_in_path, 'Nvimtree: find files in current path')
+			map_buffer(bufnr, 'n', 'gh', git_hist_path, 'Nvimtree: view git history in current path')
+			map_buffer(bufnr, 'n', 'gh', git_hist_path, 'Nvimtree: view git history in current path')
 		end
 
 		require('nvim-tree').setup {
