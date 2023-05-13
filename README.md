@@ -17,3 +17,4 @@ TODO:
 - nvlog ()
 - whichkey
 - checkhealth
+- Navigate to KoalaVim's plugins directory
