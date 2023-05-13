@@ -1,10 +1,14 @@
-# KoalaVim
-![KoalaVim](https://github.com/KoalaVim/KoalaVim/assets/4954051/55d9d0f9-eda9-4e03-867c-cfee4630ab09)
+<img src="https://github.com/KoalaVim/KoalaVim/assets/4954051/9d498b88-3adf-49d7-9518-b7ea8d18f204" align="right" width="350" />
+
+# KoalaVim 
 
 Extendable preconfigured configuration for Neovim powered by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
-## 🚧 **This configuration is in an alpha stage** 🚧
+<br>
 
+## 🚧 **This configuration is in an early alpha stage** 🚧
+
+<br><br>
 ---
 
 # Installation
