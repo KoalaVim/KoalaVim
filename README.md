@@ -1,5 +1,32 @@
 # KoalaVim
 
+Extendable preconfigured configuration for Neovim powered by [lazy.nvim](https://github.com/folke/lazy.nvim).
+
+## 🚧 **This configuration is in an alpha stage** 🚧
+
+---
+
+# Installation
+* Make a backup for your current nvim configuration 
+    ```bash
+    mv ~/.config/nvim ~/.config/nvim.bak
+    mv ~/.local/share/nvim ~/.local/share/nvim.bak
+    ```
+* Optional: copy [KoalaConfig.template](https://github.com/KoalaVim/KoalaConfig.template) (Use this template)
+* Clone your config or the template
+    ```bash
+    git clone https://github.com/<your_github_username>/KoalaConfig ~/.config/nvim
+
+    ### Clone the template if you didn't make a copy
+    git clone https://github.com/KoalaVim/KoalaConfig.template ~/.config/nvim
+    # Remove .git if you want to push it as yours later
+    rm -rf ~/.config/nvim/.git
+    ```
+
+Note: currently KoalaVim install all treesitter's parsers so the first launch might be laggy. It's highly recommended to restart nvim after treesitter's finish installs all the parsers.
+
+---
+
 Requirements:
 - [Nerd Font](https://www.nerdfonts.com/)
 - [ripgrep](https://github.com/BurntSushi/ripgrep)
