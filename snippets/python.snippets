@@ -1,0 +1,47 @@
+snippet ipython
+	import IPython
+	IPython.embed()
+snippet main
+	def main():
+		$0
+
+	if __name__ == '__main__':
+		main()
+snippet maintyper
+	import typer
+
+	def main(${1:name}: ${2:str}):
+		typer.echo(f'${3:Hello} {$1}')
+
+	if __name__ == '__main__':
+		typer.run(main)
+snippet maintypersubcommands
+	import typer
+
+	app = typer.Typer()
+
+
+	@app.command()
+	def hello(name: str):
+		print(f"Hello {name}")
+
+
+	@app.command()
+	def goodbye(name: str, formal: bool = False):
+		if formal:
+			print(f"Goodbye Ms. {name}. Have a good day.")
+		else:
+			print(f"Bye {name}!")
+
+
+	if __name__ == '__main__':
+		app()
+snippet ctxmanager
+	@contextmanager
+	def ${1:func}(${2:${VISUAL}}) -> Iterator[${3:Any}]:
+		${4:${VISUAL}}
+
+		try:
+			yield ${5:${VISUAL}}
+		finally:
+			${6:${VISUAL}}

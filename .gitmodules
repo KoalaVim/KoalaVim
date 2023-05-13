@@ -1,0 +1,6 @@
+[submodule ".KoalaConfig"]
+	path = .KoalaConfig
+	url = git@github.com:ofirgall/KoalaConfig.git
+[submodule "KoalaConfig"]
+	path = KoalaConfig
+	url = git@github.com:ofirgall/KoalaConfig.git
