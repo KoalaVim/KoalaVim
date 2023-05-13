@@ -1,5 +1,5 @@
 return {
-	{ 'ofirgall/KoalaVim', import = 'KoalaVim.plugins' },
+	{ 'KoalaVim/KoalaVim', import = 'KoalaVim.plugins' },
 
 	{ import = 'KoalaVim.plugins.hydra/hydras' },
 	{ import = 'KoalaVim.plugins.hydra' },
