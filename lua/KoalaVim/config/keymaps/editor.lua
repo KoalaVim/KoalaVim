@@ -3,6 +3,7 @@ local map = require('KoalaVim.utils.map').map
 map('n', '<F8>', function() require('KoalaVim.utils.misc').restart_nvim() end, 'Restart nvim')
 
 -- Scroll with arrows
+-- TODO: move to personal
 map('', '<Down>', '<C-e>', 'Down to scroll')
 map('', '<Up>', '<C-y>', 'Up to scroll')
 

@@ -18,3 +18,7 @@ TODO:
 - whichkey
 - checkhealth
 - Navigate to KoalaVim's plugins directory
+- Move to personal:
+    - keymaps
+    - autocmds
+    - usercmds

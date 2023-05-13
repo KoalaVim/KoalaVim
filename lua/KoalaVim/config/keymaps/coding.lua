@@ -22,6 +22,7 @@ map({ 'n', 'x' }, 'k',
 map('n', '<C-o>', '<C-o>zz', 'Recenter after C-o')
 map('n', '<C-i>', '<C-i>zz', 'Recenter after C-i')
 
+-- TODO: fallback to rename without lsp if lsp not found/support renames
 -- Rename without LSP
 map('n', '<leader><F2>', '*:%s///g<left><left>', 'Rename current word with <leader>F2')
 map('x', '<F2>', '"hy:%s/<C-r>h//g<left><left>', 'Rename visual')

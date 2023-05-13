@@ -1,4 +1,5 @@
 if vim.fn.has('wsl') == 1 then
+	-- TODO: check if win32yank-wsl + add to testhealth
 	vim.g.clipboard = {
 		name = 'win32yank-wsl',
 		copy = {

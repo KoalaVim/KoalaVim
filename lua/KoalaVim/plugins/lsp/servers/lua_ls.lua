@@ -13,6 +13,7 @@ LSP_SERVERS['lua_ls'] = {
 	},
 }
 
+-- FIXME: `vim.` doesn't work
 table.insert(M, {
 	'folke/neodev.nvim',
 	config = function()
