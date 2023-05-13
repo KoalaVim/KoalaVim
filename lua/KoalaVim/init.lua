@@ -7,15 +7,13 @@ end
 function M.init()
 	local rdir = require('KoalaVim.utils.require_dir')
 
-	rdir.require('config', 'KoalaVim')
-	rdir.require('config/keymaps', 'KoalaVim')
-
+	rdir.recursive_require('config', 'KoalaVim')
 
 	-- Lazy load config files
 	vim.api.nvim_create_autocmd('User', {
 		pattern = 'LazyVimStarted',
 		callback = function()
-			rdir.recursive_require('config/lazy', 'KoalaVim')
+			rdir.recursive_require('config_lazy', 'KoalaVim')
 
 			-- Let user config to lazy load his config
 			vim.api.nvim_exec_autocmds('User', {
