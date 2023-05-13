@@ -17,6 +17,12 @@ function M.init()
 		callback = function()
 			rdir.recursive_require('config/lazy', 'KoalaVim')
 
+			-- Let user config to lazy load his config
+			vim.api.nvim_exec_autocmds('User', {
+				pattern = 'KoalaVimStarted',
+				modeline = false,
+			})
+
 			-- TODO: remove vim script from my KoalaVim
 			-- 			vim.cmd([[
 			-- source $HOME/.config/nvim/vim/file_util.vim
