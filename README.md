@@ -4,12 +4,11 @@
 
 Extendable preconfigured configuration for Neovim powered by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
-<br>
+<br><br><br><br><br><br>
+
+---
 
 ## 🚧 **This configuration is in an early alpha stage** 🚧
-
-<br><br>
----
 
 # Installation
 * Make a backup for your current nvim configuration 
