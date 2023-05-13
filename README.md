@@ -1,4 +1,5 @@
 # KoalaVim
+![KoalaVim](https://github.com/KoalaVim/KoalaVim/assets/4954051/55d9d0f9-eda9-4e03-867c-cfee4630ab09)
 
 Extendable preconfigured configuration for Neovim powered by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
