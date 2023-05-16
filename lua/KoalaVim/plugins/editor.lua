@@ -97,6 +97,14 @@ table.insert(M, {
 		api.nvim_set_hl(floating_code_ns, 'NormalFloat', { link = 'Normal' })
 
 		require('neo-zoom').setup {
+			winopts = {
+				offset = {
+					top = 0.1,
+					left = 0.1,
+					width = 0.8,
+					height = 0.8,
+				},
+			},
 			callbacks = {
 				function()
 					api.nvim_set_hl_ns(floating_code_ns)
