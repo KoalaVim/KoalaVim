@@ -64,6 +64,7 @@ table.insert(M, {
 			desc = 'show Git History with visual mode'
 		},
 	},
+	cmd = { 'Git', 'G' },
 	config = function()
 		-- callback for `gh`
 		vim.cmd("function! GitHistoryOperator(...) \n lua require('KoalaVim.utils.git').show_history('n') \n endfunction")
