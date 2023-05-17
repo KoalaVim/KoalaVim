@@ -10,4 +10,3 @@ table.insert(M, {
 })
 
 return M
-
