@@ -10,6 +10,13 @@ local function is_valid_win(winid)
 	return ft ~= 'NvimTree' and not floating
 end
 
+local function is_temp_win(winid)
+	local ft = api.nvim_buf_get_option(api.nvim_win_get_buf(winid), 'filetype')
+
+	-- TODO: delete more temp windows such as fugitive
+	return ft == 'NvimTree'
+end
+
 -- Change split layout from 2 vertical to 2 horizontals, or otherwise
 local function change_split_layout(vertical_to_horizontal)
 	local anchor_index = 0
@@ -56,6 +63,15 @@ local function change_split_layout(vertical_to_horizontal)
 	-- Didn't found windows
 	if farthest_distance == -1 then
 		return
+	end
+
+	if vertical_to_horizontal then
+		-- Delete "temp" windows before slicing to half screen
+		for _, winid in ipairs(win_ids) do
+			if is_temp_win(winid) then
+				api.nvim_win_close(winid, true)
+			end
+		end
 	end
 
 	local current_win = api.nvim_get_current_win()
