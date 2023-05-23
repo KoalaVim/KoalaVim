@@ -217,16 +217,6 @@ table.insert(M, {
 	end,
 })
 
--- TODO: make it dev
-table.insert(M, {
-	'ofirgall/title.nvim',
-	cmd = 'Title',
-	config = function()
-		require('title-nvim').setup {
-		}
-	end,
-})
-
 table.insert(M, {
 	'AckslD/nvim-FeMaco.lua',
 	cmd = 'FeMaco',
