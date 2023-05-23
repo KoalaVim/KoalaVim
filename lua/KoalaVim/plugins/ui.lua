@@ -9,11 +9,13 @@ end
 local function search_in_path()
 	opts = {}
 	opts.default_text = '-g"' .. node_relative_path() .. '/**" "'
+	require('nvim-tree.api').tree.close() -- Close tree before jumping to file
 	require('telescope').extensions.live_grep_args.live_grep_args(opts)
 end
 
 local function find_in_path()
-	vim.api.nvim_exec2('Telescope find_files cwd=' .. node_relative_path(), {})
+	require('nvim-tree.api').tree.close() -- Close tree before jumping to file
+	vim.api.nvim_exec2('Telescope find_files cwd=' .. node_relative_path(), {}) -- TODO: to lua
 end
 
 local function git_hist_path()
@@ -134,7 +136,7 @@ table.insert(M, {
 		{
 			'<M-M>',
 			function()
-				require('nvim-tree.api').tree.toggle({ find_file = true })
+				require('nvim-tree.api').tree.open({ find_file = true })
 			end,
 			desc = 'Locate file',
 		},
