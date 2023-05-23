@@ -51,7 +51,7 @@ local function find_files(mode, cwd)
 	})
 end
 
-local function live_grep(opts, mode)
+function live_grep(opts, mode)
 	opts = opts or {}
 	opts.prompt_title = 'Live Grep Raw (-t[ty] include, -T exclude -g"[!] [glob]")'
 	if not opts.default_text then
@@ -68,6 +68,7 @@ local function live_grep_current_dir(default_text)
 end
 
 
+-- TODO: convert to lua + make live_grep local
 vim.cmd("function! LiveGrepRawOperator(...) \n lua live_grep({}, 'n') \n endfunction") -- used by `<leader>fm`
 
 --------------------------------------------------------------------
