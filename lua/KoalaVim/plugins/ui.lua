@@ -125,6 +125,14 @@ table.insert(M, {
 table.insert(M, {
 	'kyazdani42/nvim-tree.lua',
 	cmd = 'NvimTreeOpen',
+	init = function()
+		-- Load nvim-tree.lua if neovim opened with args
+		-- relevant in case the user opened nvim with direcotry argument
+		local opened_with_args = next(vim.fn.argv()) ~= nil
+		if opened_with_args then
+			require('nvim-tree')
+		end
+	end,
 	keys = {
 		{
 			'<M-m>',
