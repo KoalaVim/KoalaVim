@@ -391,7 +391,7 @@ table.insert(M, {
 		},
 		{ '<leader>fcw', function() live_grep({}, 'cword') end, desc = 'Find current word' },
 		{ '<leader>fcW', function() live_grep({}, 'cWORD') end, desc = 'Find current word' },
-		{ '<leader>fm', ':set opfunc=LiveGrepRawOperator<CR>g@', desc = 'Find with movement' }, -- FIXME: doesn't work
+		{ '<leader>fm', ':set opfunc=LiveGrepRawOperator<CR>g@', desc = 'Find with movement' },
 		-- Find in current dir
 		{ '<leader>fcd', live_grep_current_dir, desc = 'Find in current dir' },
 		{
