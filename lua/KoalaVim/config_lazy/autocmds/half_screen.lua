@@ -1,3 +1,9 @@
+-- Verify half_screen options
+local opts = require('KoalaVim').opts.autocmds.half_screen
+if not require('KoalaVim.opts').verify(opts) then
+	return
+end
+
 local api = vim.api
 
 -- Switch layout when half screen
@@ -95,9 +101,8 @@ local function set_full_layout()
 	change_split_layout(false)
 end
 
-local FULL_SCREEN_WIDTH = 239 -- echo $COLUMNS, TODO: figure out how to check is half without it
 local function is_half()
-	return api.nvim_get_option_value('columns', {}) <= FULL_SCREEN_WIDTH / 2
+	return api.nvim_get_option_value('columns', {}) <= opts.full_screen_width / 2
 end
 
 local function set_layout()

@@ -1,7 +1,7 @@
 local M = {}
 
--- TODO: config system
 function M.setup(opts)
+	require('KoalaVim.opts').load_opts(opts)
 end
 
 function M.init()
@@ -28,5 +28,7 @@ function M.init()
 		end,
 	})
 end
+
+M.opts = require('KoalaVim.opts').default_opts
 
 return M
