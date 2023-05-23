@@ -237,8 +237,8 @@ table.insert(M, {
 		}
 	end,
 	keys = {
-		{ 'sJ', '<cmd>TSJSplit<cr>', desc = 'Splitjoin Split line' },
-		{ 'sj', '<cmd>TSJJoin<cr>', desc = 'Splitjoin Join line' },
+		{ 'sj', '<cmd>TSJSplit<cr>', desc = 'Splitjoin Split line' },
+		{ 'sJ', '<cmd>TSJJoin<cr>', desc = 'Splitjoin Join line' },
 	},
 })
 
