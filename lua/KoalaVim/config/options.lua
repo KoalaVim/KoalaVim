@@ -26,6 +26,7 @@ opt.signcolumn = 'yes:1' -- Enable 1 signs in the column
 opt.cmdheight = 0
 opt.report = 2147483647 -- Don't report yanked/deleted lines
 opt.diffopt:append('linematch:60')
+opt.timeoutlen = 300
 
 -- TODO: move to personal
 vim.g.c_syntax_for_h = 1 -- `.h` files are `c` instead of `cpp`

@@ -383,4 +383,33 @@ table.insert(M, {
 	lazy = true,
 })
 
+
+table.insert(M, {
+	'folke/which-key.nvim',
+	event = 'VeryLazy',
+	config = function(_, opts)
+		local wk = require('which-key')
+		wk.setup(opts)
+
+		-- TODO: <leader>fm as operator
+		local keymaps = {
+			mode = { 'n' },
+			['<leader>f'] = { name = '+search' },
+			['<leader>g'] = { name = '+git' },
+			['<leader>h'] = { name = '+git hunks' },
+			['<leader>q'] = { name = '+quit' },
+			['g'] = { name = '+goto' },
+			[']'] = { name = '+next' },
+			['['] = { name = '+prev' },
+			['s'] = { name = '+surround/split args' },
+		}
+
+		-- Hack to show surround and split args
+		vim.keymap.set('', 's', function() wk.show_command('s') end, { })
+
+		wk.register(keymaps)
+	end,
+})
+
+
 return M

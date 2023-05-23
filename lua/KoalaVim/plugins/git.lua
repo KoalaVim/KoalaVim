@@ -12,35 +12,31 @@ table.insert(M, {
 		gs.setup {
 			sign_priority = 9,
 			on_attach = function(bufnr)
-				local function map(mode, l, r, opts)
-					opts = opts or { silent = true }
-					opts.buffer = bufnr
-					vim.keymap.set(mode, l, r, opts)
-				end
+				local map_buffer = require('KoalaVim.utils.map').map_buffer
 
 				-- Navigation
-				map('n', ']c', function()
+				map_buffer(bufnr, 'n', ']c', function()
 					if vim.wo.diff then return ']c' end
 					vim.schedule(function() gs.next_hunk({ navigation_message = false }) end)
 					return '<Ignore>'
 				end, { expr = true })
 
-				map('n', '[c', function()
+				map_buffer(bufnr, 'n', '[c', function()
 					if vim.wo.diff then return '[c' end
 					vim.schedule(function() gs.prev_hunk({ navigation_message = false }) end)
 					return '<Ignore>'
 				end, { expr = true })
 				-- Actions
-				map({ 'n', 'v' }, '<leader>hs', ':Gitsigns stage_hunk<CR>')
-				map({ 'n', 'v' }, '<leader>hr', ':Gitsigns reset_hunk<CR>')
-				map('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>')
-				map('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>')
-				map('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>')
-				map('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>')
-				map('n', '<leader>hb', '<cmd>lua require"gitsigns".blame_line{full=true}<CR>')
-				map('n', '<leader>hd', '<cmd>Gitsigns toggle_deleted<CR>')
+				map_buffer(bufnr, { 'n', 'v' }, '<leader>hs', ':Gitsigns stage_hunk<CR>', 'Stage Hunk')
+				map_buffer(bufnr, { 'n', 'v' }, '<leader>hr', ':Gitsigns reset_hunk<CR>', 'Reset Hunk')
+				map_buffer(bufnr, 'n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>', 'Stage Buffer')
+				map_buffer(bufnr, 'n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>', 'Undo Stage')
+				map_buffer(bufnr, 'n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>', 'Reset Buffer')
+				map_buffer(bufnr, 'n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>', 'Preview Hunk')
+				map_buffer(bufnr, 'n', '<leader>hb', '<cmd>lua require"gitsigns".blame_line{full=true}<CR>', 'Blame Line')
+				map_buffer(bufnr, 'n', '<leader>hd', '<cmd>Gitsigns toggle_deleted<CR>', 'Toggle Deleted Virtual Text')
 				-- Text object
-				map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+				map_buffer(bufnr, { 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', 'Select Hunk')
 			end,
 		}
 	end,

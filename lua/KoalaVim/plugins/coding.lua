@@ -172,7 +172,11 @@ table.insert(M, {
 table.insert(M, {
 	'kylechui/nvim-surround',
 	keys = {
-		'sa', 's', 'S', 'sd', 'sr', 'srq',
+		{ 'sa', desc = 'Add surround' },
+		{ 's', mode = 'v', desc = 'Add surround' },
+		{ 'S', mode = 'v', desc = 'Add surround for a line' },
+		{ 'sd', desc = 'Delete surround' },
+		{ 'sr', desc = 'Replace surround' },
 
 		{ 'sw', 'saiw', desc = 'Surround word', remap = true },
 		{ 'sW', 'saiW', desc = 'Surround WORD', remap = true },
