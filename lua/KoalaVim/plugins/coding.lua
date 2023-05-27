@@ -101,6 +101,7 @@ table.insert(M, {
 			['failed'] = 'succeeded',
 			['before'] = 'after',
 			['prev'] = 'next',
+			['above'] = 'below',
 		},
 		remove_default_keybinds = true,
 	},
@@ -292,25 +293,26 @@ table.insert(M, {
 
 table.insert(M, {
 	'echasnovski/mini.ai',
-	config = function (_, opts)
+	config = function(_, opts)
 		require('mini.ai').setup(opts)
-	end
+	end,
 })
 
 table.insert(M, {
 	'mg979/vim-visual-multi',
 	keys = {
-		'<M-d>',
-		'<C-M-j>',
-		'<C-M-k>'
+		{ '<M-d>', desc = 'Multi cursor: add selection for current word (equivalent to Ctrl-D in VSCode/Sublime)' },
+		{ '<M-J>', desc = 'Multi cusror: add below' },
+		{ '<M-K>', desc = 'Multi cusror: add above' },
 	},
 	init = function()
+		-- TODO: create an hydra for it
 		vim.cmd([[
 let g:VM_maps = {}
 let g:VM_maps['Find Under']         = '<M-d>'
 let g:VM_maps['Find Subword Under'] = '<M-d>'
-let g:VM_maps['Add Cursor Down'] = '<C-M-j>'
-let g:VM_maps['Add Cursor Up'] = '<C-M-k>'
+let g:VM_maps['Add Cursor Down'] = '<M-J>'
+let g:VM_maps['Add Cursor Up'] = '<M-K>'
 ]])
 
 		vim.g.VM_highlight_matches = 'hi! link Search LspReferenceWrite' -- Non selected matches
