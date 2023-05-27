@@ -6,11 +6,12 @@ local api = vim.api
 table.insert(M, {
 	'numToStr/Comment.nvim',
 	event = { 'BufReadPre', 'BufNewFile' },
-	config = function()
-		require('Comment').setup {
-
-			pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
-		}
+	config = function(_, opts)
+		if opts.pre_hook == nil then
+			-- TODO: check it would work after fixing #16
+			opts.pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
+		end
+		require('Comment').setup(opts)
 	end,
 	dependencies = {
 		'JoosepAlviste/nvim-ts-context-commentstring',
@@ -26,12 +27,13 @@ table.insert(M, {
 table.insert(M, {
 	'windwp/nvim-autopairs',
 	event = { 'InsertEnter' },
-	config = function()
-		require('nvim-autopairs').setup {
-			check_ts = true,
-			disable_filetype = { 'TelescopePrompt', 'guihua', 'guihua_rust', 'clap_input' },
-			-- enable_moveright = false,
-		}
+	opts = {
+		check_ts = true,
+		disable_filetype = { 'TelescopePrompt', 'guihua', 'guihua_rust', 'clap_input' },
+		-- enable_moveright = false,
+	},
+	config = function(_, opts)
+		require('nvim-autopairs').setup(opts)
 	end,
 	dependencies = {
 		'nvim-treesitter/nvim-treesitter',
@@ -41,20 +43,22 @@ table.insert(M, {
 table.insert(M, {
 	'nacro90/numb.nvim',
 	event = 'CmdLineEnter',
-	config = function()
-		require('numb').setup {
-			number_only = true,
-		}
+	opts = {
+		number_only = true,
+	},
+	config = function(_, opts)
+		require('numb').setup(opts)
 	end,
 })
 
 table.insert(M, {
 	'ggandor/leap.nvim',
-	config = function()
-		require('leap').setup {
-			max_aot_targets = nil,
-			highlight_unlabeled = false,
-		}
+	opts = {
+		max_aot_targets = nil,
+		highlight_unlabeled = false,
+	},
+	config = function(_, opts)
+		require('leap').setup(opts)
 	end,
 	keys = {
 		{ '<leader>s', '<Plug>(leap-forward)', mode = { 'n', 'x' }, desc = 'Leap forward' },
@@ -68,20 +72,22 @@ table.insert(M, {
 	dependencies = {
 		'ggandor/leap.nvim'
 	},
-	config = function()
-		require('flit').setup {
-			labeled_modes = 'nv',
-		}
+	opts = {
+		labeled_modes = 'nv',
+	},
+	config = function(_, opts)
+		require('flit').setup(opts)
 	end,
 	keys = { 'f', 'F', 't', 'T' },
 })
 
 table.insert(M, {
 	'andrewferrier/debugprint.nvim',
-	config = function()
-		require('debugprint').setup {
-			print_tag = '--- DEBUG PRINT ---'
-		}
+	opts = {
+		print_tag = '--- DEBUG PRINT ---'
+	},
+	config = function(_, opts)
+		require('debugprint').setup(opts)
 	end,
 	keys = { 'g?p', 'g?P', 'g?v', 'g?V' },
 	cmd = 'DeleteDebugPrints'
@@ -89,16 +95,17 @@ table.insert(M, {
 
 table.insert(M, {
 	'nguyenvukhang/nvim-toggler',
-	config = function()
-		require('nvim-toggler').setup {
-			inverses = {
-				['to'] = 'from',
-				['failed'] = 'succeeded',
-				['before'] = 'after',
-				['prev'] = 'next',
-			},
-			remove_default_keybinds = true,
-		}
+	opts = {
+		inverses = {
+			['to'] = 'from',
+			['failed'] = 'succeeded',
+			['before'] = 'after',
+			['prev'] = 'next',
+		},
+		remove_default_keybinds = true,
+	},
+	config = function(_, opts)
+		require('nvim-toggler').setup(opts)
 	end,
 	keys = {
 		{
@@ -148,16 +155,17 @@ table.insert(M, {
 
 table.insert(M, {
 	'gbprod/yanky.nvim',
-	config = function()
-		require('yanky').setup {
-			system_clipboard = {
-				sync_with_ring = false,
-			},
-			highlight = {
-				on_put = false,
-				on_yank = false,
-			},
-		}
+	opts = {
+		system_clipboard = {
+			sync_with_ring = false,
+		},
+		highlight = {
+			on_put = false,
+			on_yank = false,
+		},
+	},
+	config = function(_, opts)
+		require('yanky').setup(opts)
 	end,
 	keys = {
 		{ 'y', '<Plug>(YankyYank)', mode = { 'n', 'x' }, desc = 'Yank with yanky.nvim' },
@@ -235,10 +243,11 @@ table.insert(M, {
 	dependencies = {
 		'nvim-treesitter/nvim-treesitter',
 	},
-	config = function()
-		require('treesj').setup {
-			use_default_keymaps = false,
-		}
+	opts = {
+		use_default_keymaps = false,
+	},
+	config = function(_, opts)
+		require('treesj').setup(opts)
 	end,
 	keys = {
 		{ 'sj', '<cmd>TSJSplit<cr>', desc = 'Splitjoin Split line' },
@@ -251,10 +260,11 @@ table.insert(M, {
 	dependencies = {
 		'nvim-treesitter/nvim-treesitter',
 	},
-	config = function()
-		require('sibling-swap').setup {
-			use_default_keymaps = false,
-		}
+	opts = {
+		use_default_keymaps = false,
+	},
+	config = function(_, opts)
+		require('sibling-swap').setup(opts)
 	end,
 	keys = {
 		{ '<C-Right>', function() require('sibling-swap').swap_with_right() end },
@@ -295,10 +305,11 @@ table.insert(M, {
 		{ 'i|', function() require('various-textobjs').shellPipe(true) end, mode = { 'o', 'x' } },
 		{ 'a|', function() require('various-textobjs').shellPipe(false) end, mode = { 'o', 'x' } },
 	},
-	config = function()
-		require('various-textobjs').setup {
-			useDefaultKeymaps = true,
-		}
+	opts = {
+		useDefaultKeymaps = true,
+	},
+	config = function(_, opts)
+		require('various-textobjs').setup()
 	end,
 })
 

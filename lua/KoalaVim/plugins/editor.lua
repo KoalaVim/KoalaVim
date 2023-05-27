@@ -4,34 +4,35 @@ local api = vim.api
 
 table.insert(M, {
 	'rmagatti/auto-session',
-	config = function()
-		require('auto-session').setup {
-			log_level = 'error',
-			auto_session_suppress_dirs = { '~/', '~/workspace', '~/Downloads', '/', '~/logs' },
-			auto_session_use_git_branch = false, -- TODO: configure
+	opts = {
+		log_level = 'error',
+		auto_session_suppress_dirs = { '~/', '~/workspace', '~/Downloads', '/', '~/logs' },
+		auto_session_use_git_branch = false, -- TODO: configure
 
-			-- Close nvim-tree before saving session
-			pre_save_cmds = {
-				-- ghost files
-				function()
-					for _, bufnr in pairs(api.nvim_list_bufs()) do
-						local ft = api.nvim_get_option_value('filetype', { buf = bufnr })
-						if vim.tbl_contains(GHOST_FILETYPES, ft) then
-							api.nvim_buf_delete(bufnr, {})
-						end
+		-- Close nvim-tree before saving session
+		pre_save_cmds = {
+			-- ghost files
+			function()
+				for _, bufnr in pairs(api.nvim_list_bufs()) do
+					local ft = api.nvim_get_option_value('filetype', { buf = bufnr })
+					if vim.tbl_contains(GHOST_FILETYPES, ft) then
+						api.nvim_buf_delete(bufnr, {})
 					end
-				end,
-			},
-
-			-- Close Lazy window before restoring session
-			pre_restore_cmds = { function()
-				local buf = api.nvim_get_current_buf()
-				local ft = api.nvim_get_option_value('filetype', { buf = buf })
-				if ft == 'lazy' then
-					api.nvim_buf_delete(buf, {})
 				end
-			end, },
-		}
+			end,
+		},
+
+		-- Close Lazy window before restoring session
+		pre_restore_cmds = { function()
+			local buf = api.nvim_get_current_buf()
+			local ft = api.nvim_get_option_value('filetype', { buf = buf })
+			if ft == 'lazy' then
+				api.nvim_buf_delete(buf, {})
+			end
+		end, },
+	},
+	config = function(_, opts)
+		require('auto-session').setup(opts)
 	end,
 })
 
@@ -132,7 +133,7 @@ table.insert(M, {
 			highlight = {
 				before = '',
 				keyword = 'fg',
-				after = ''
+				after = '',
 			},
 			colors = {
 				error = { 'DiagnosticError', 'ErrorMsg', '#DC2626' },
@@ -193,7 +194,7 @@ table.insert(M, {
 	event = { 'BufReadPost', 'BufNewFile' },
 	config = function()
 		require('colorizer').setup {
-			'*'
+			'*',
 		}
 	end,
 })
@@ -269,7 +270,7 @@ table.insert(M, {
 			'ofirgall/open-jira.nvim',
 			config = function()
 				require('open-jira').setup {
-					url = 'https://volumez.atlassian.net/browse/'
+					url = 'https://volumez.atlassian.net/browse/',
 				}
 			end,
 		},
@@ -333,7 +334,7 @@ table.insert(M, {
 	'trmckay/based.nvim',
 	config = function()
 		require('based').setup {
-			highlight = 'Title'
+			highlight = 'Title',
 		}
 	end,
 	keys = {
@@ -347,7 +348,7 @@ table.insert(M, {
 	config = function()
 		require('swap-split').setup({
 			ignore_filetypes = {
-				'NvimTree'
+				'NvimTree',
 			},
 		})
 	end,
@@ -374,7 +375,7 @@ table.insert(M, {
 table.insert(M, {
 	'ThePrimeagen/harpoon',
 	dependencies = {
-		'nvim-lua/plenary.nvim'
+		'nvim-lua/plenary.nvim',
 	},
 	keys = {
 		{ '<leader>m', function() require('harpoon.mark').add_file() end, desc = 'Add file to harpoon' },
@@ -399,7 +400,7 @@ table.insert(M, {
 
 table.insert(M, {
 	'mizlan/iswap.nvim',
-	cmd = 'ISwap'
+	cmd = 'ISwap',
 })
 
 table.insert(M, {
@@ -423,7 +424,7 @@ table.insert(M, {
 
 table.insert(M, {
 	'ofirgall/vim-log-highlighting',
-	ft = 'log'
+	ft = 'log',
 })
 
 table.insert(M, {
