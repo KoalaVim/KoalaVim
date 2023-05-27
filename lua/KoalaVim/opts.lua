@@ -20,7 +20,7 @@ function M.verify(opts_tbl, warn)
 	local valid = true
 	for key, value in pairs(opts_tbl) do
 		if (type(value) == 'table') then
-			M.verify(value)
+			M.verify(value, warn)
 		else
 			if value == M.NO_DEFAULT then
 				if warn then
