@@ -51,7 +51,7 @@ table.insert(M, {
 			local server_opts_merged = vim.tbl_deep_extend('force', {
 				capabilities = LSP_CAPS,
 				on_attach = LSP_ON_ATTACH,
-			}, LSP_SERVERS[server])
+			}, LSP_SERVERS[server] or {})
 			require('lspconfig')[server].setup(server_opts_merged)
 		end
 
