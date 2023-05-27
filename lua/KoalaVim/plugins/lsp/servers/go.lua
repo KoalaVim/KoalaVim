@@ -3,7 +3,8 @@ local M = {}
 table.insert(M, {
 	'ray-x/go.nvim',
 	dependencies = {
-		'ray-x/guihua.lua'
+		'ray-x/guihua.lua',
+		'neovim/nvim-lspconfig'
 	},
 	ft = { 'go', 'gomod' },
 	build = ':lua require("go.install").update_all_sync()',
@@ -44,6 +45,9 @@ table.insert(M, {
 				},
 			},
 		}
+
+		-- setup lspconfig
+		require('lspconfig').gopls.setup(require('go.lsp').config())
 
 		local map_buffer = require('KoalaVim.utils.map').map_buffer
 		local add_new_line = 'i\\n<Esc>'
