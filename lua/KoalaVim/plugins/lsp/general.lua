@@ -1,10 +1,6 @@
 local M = {}
 
--- TODO: change lspconfig global to system like LazyVim's lspconfig
-
--- TODO: try mason:
--- 'mason.nvim',
--- 'williamboman/mason-lspconfig.nvim',
+local api = vim.api
 
 LSP_ON_ATTACH = function(client, buffer)
 	-- Disable semantic tokens (affects on highlights)
@@ -23,6 +19,8 @@ table.insert(M, {
 	dependencies = {
 		'hrsh7th/cmp-nvim-lsp',
 		'folke/neodev.nvim', -- Must be loaded before setting up lua_ls
+		'mason.nvim',
+		'williamboman/mason-lspconfig.nvim',
 		{
 			'mhanberg/output-panel.nvim',
 			config = function()
@@ -48,17 +46,34 @@ table.insert(M, {
 		LSP_CAPS = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 		LSP_CAPS.textDocument.completion.completionItem.labelDetailsSupport = nil -- Overriding with false doesn't work for some reason
 
-		local function setup_server(server, server_opts)
+
+		local function setup_server(server)
 			local server_opts_merged = vim.tbl_deep_extend('force', {
 				capabilities = LSP_CAPS,
 				on_attach = LSP_ON_ATTACH,
-			}, server_opts)
+			}, LSP_SERVERS[server])
 			require('lspconfig')[server].setup(server_opts_merged)
 		end
 
+		local mason_ensure_installed = {}
+		local mlsp = require('mason-lspconfig')
+		local mason_available_servers = mlsp.get_available_servers()
+
 		for server, server_opts in pairs(LSP_SERVERS) do
-			setup_server(server, server_opts)
+			if server_opts.mason == false or not vim.tbl_contains(mason_available_servers, server) then
+				setup_server(server)
+			else
+				table.insert(mason_ensure_installed, server)
+			end
 		end
+
+		require('mason-lspconfig').setup {
+			ensure_installed = mason_ensure_installed,
+		}
+		require('mason-lspconfig').setup_handlers {
+			setup_server,
+		}
+		api.nvim_create_user_command('LspServers', function() api.nvim_command('Mason') end, {})
 	end,
 	keys = {
 		{ 'gD', vim.lsp.buf.declaration, desc = 'Go to Declaration' },
@@ -66,6 +81,31 @@ table.insert(M, {
 		{ 'K', vim.lsp.buf.hover, desc = 'Trigger hover' },
 		{ '<RightMouse>', '<LeftMouse><cmd>sleep 100m<cr><cmd>lua vim.lsp.buf.hover()<cr>', desc = 'Trigger hover' },
 	},
+})
+
+table.insert(M, {
+	'williamboman/mason.nvim',
+	cmd = 'Mason',
+	keys = { { '<leader>cm', '<cmd>Mason<cr>', desc = 'Mason' } },
+	opts = {
+		-- Linters
+		-- TODO: configure
+		ensure_installed = {
+			'stylua',
+			'shfmt',
+		},
+	},
+	config = function(_, opts)
+		require('mason').setup(opts)
+
+		local mr = require('mason-registry')
+		for _, tool in ipairs(opts.ensure_installed) do
+			local p = mr.get_package(tool)
+			if not p:is_installed() then
+				p:install()
+			end
+		end
+	end,
 })
 
 -- TODO: if I want code action to be always active I need to add event = 'LspAttach'
@@ -223,7 +263,7 @@ table.insert(M, {
 	cmd = 'Navbuddy',
 	dependencies = {
 		'SmiteshP/nvim-navic',
-		'MunifTanjim/nui.nvim'
+		'MunifTanjim/nui.nvim',
 	},
 	config = function()
 		require('nvim-navbuddy').setup {
@@ -256,7 +296,7 @@ table.insert(M, {
 			function()
 				require('nvim-navbuddy').open()
 			end,
-			desc = 'Open Navbuddy'
+			desc = 'Open Navbuddy',
 		},
 	},
 })

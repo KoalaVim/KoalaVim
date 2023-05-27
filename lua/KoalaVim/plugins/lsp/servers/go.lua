@@ -1,5 +1,8 @@
 local M = {}
 
+LSP_SERVERS['gopls'] = {
+}
+
 table.insert(M, {
 	'ray-x/go.nvim',
 	dependencies = {
