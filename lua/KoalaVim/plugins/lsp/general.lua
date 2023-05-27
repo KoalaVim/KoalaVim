@@ -104,6 +104,7 @@ table.insert(M, {
 					normal_bg = scheme.ui_bg,
 					title_bg = scheme.mid_orange,
 				},
+				lines = { '└', '├', '│', '─' },
 			},
 		})
 	end,
