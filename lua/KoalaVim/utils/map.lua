@@ -4,6 +4,7 @@ local default_opts = { silent = true }
 function M.map(mode, l, r, desc, opts)
 	opts = opts or default_opts
 	opts.desc = desc
+	opts.buffer = nil
 	vim.keymap.set(mode, l, r, opts)
 end
 
