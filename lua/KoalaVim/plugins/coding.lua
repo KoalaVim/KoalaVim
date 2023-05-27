@@ -6,10 +6,12 @@ local api = vim.api
 table.insert(M, {
 	'numToStr/Comment.nvim',
 	event = { 'BufReadPre', 'BufNewFile' },
-	config = function()
-		require('Comment').setup{
-			pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
-		}
+	config = function(_, opts)
+		if opts.pre_hook == nil then
+			-- TODO: check it would work after fixing #16
+			opts.pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
+		end
+		require('Comment').setup(opts)
 	end,
 	dependencies = {
 		'JoosepAlviste/nvim-ts-context-commentstring',
