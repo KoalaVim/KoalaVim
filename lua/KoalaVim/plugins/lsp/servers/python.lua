@@ -1,17 +1,10 @@
 LSP_SERVERS['pyright'] = {
 }
 
--- pylsp alternative
--- LSP_SERVERS['pylsp'] = {
--- 	settings = {
--- 		pylsp = {
--- 			plugins = {
--- 				pycodestyle = {
--- 					enabled = false,
--- 				},
--- 			},
--- 		},
--- 	},
--- }
+-- TODO: upgrade tools
+-- New tools:
+-- https://github.com/charliermarsh/ruff
+-- https://github.com/mtshiba/pylyzer
+-- https://github.com/astral-sh/ruff-lsp (optional)
 
 return {}
