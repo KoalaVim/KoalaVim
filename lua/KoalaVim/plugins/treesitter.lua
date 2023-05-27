@@ -75,18 +75,19 @@ table.insert(M, {
 				keymaps = {
 					['af'] = '@function.outer',
 					['if'] = '@function.inner',
-					['ac'] = '@class.outer',
-					['ic'] = '@class.inner',
+					['aC'] = '@class.outer',
+					['iC'] = '@class.inner',
 					['ab'] = '@block.outer',
 					['ib'] = '@block.inner',
 					['aL'] = '@loop.outer', -- `al` is already in used by `a line`
 					['iL'] = '@loop.inner', -- same as `al`
 					['a/'] = '@comment.outer',
 					['i/'] = '@comment.outer', -- no inner for comment
-					['aa'] = '@parameter.outer', -- parameter -> argument
-					['ia'] = '@parameter.inner',
-					['ak'] = '@call.outer',
-					['ik'] = '@call.inner',
+					-- Handled by `mini.ai`
+					-- ['aa'] = '@parameter.outer', -- parameter -> argument
+					-- ['ia'] = '@parameter.inner',
+					['ac'] = '@call.outer',
+					['ic'] = '@call.inner',
 					['ai'] = '@conditional.outer', -- i as if
 					['ii'] = '@conditional.inner',
 					-- Custom captures
