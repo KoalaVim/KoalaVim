@@ -413,7 +413,9 @@ table.insert(M, {
 		}
 
 		-- Hack to show surround and split args
-		vim.keymap.set('', 's', function() wk.show_command('s') end, {})
+		local map = require('KoalaVim.utils.map').map
+		map('', 's', function() wk.show_command('s') end, {})
+		map('', '<leader><leader>', '<cmd>WhichKey<cr>', {})
 
 		wk.register(keymaps)
 	end,
