@@ -73,7 +73,6 @@ table.insert(M, {
 		require('mason-lspconfig').setup_handlers {
 			setup_server,
 		}
-		api.nvim_create_user_command('LspServers', function() api.nvim_command('Mason') end, {})
 	end,
 	keys = {
 		{ 'gD', vim.lsp.buf.declaration, desc = 'Go to Declaration' },
@@ -85,8 +84,12 @@ table.insert(M, {
 
 table.insert(M, {
 	'williamboman/mason.nvim',
-	cmd = 'Mason',
-	keys = { { '<leader>cm', '<cmd>Mason<cr>', desc = 'Mason' } },
+	cmd = {
+		'Mason',
+		'Linters',
+		'LspServers',
+		'Formatters'
+	},
 	opts = {
 		-- Linters
 		-- TODO: configure
@@ -97,6 +100,11 @@ table.insert(M, {
 	},
 	config = function(_, opts)
 		require('mason').setup(opts)
+
+		-- Aliases for mason
+		api.nvim_create_user_command('LspServers', function() api.nvim_command('Mason') end, {})
+		api.nvim_create_user_command('Linters', function() api.nvim_command('Mason') end, {})
+		api.nvim_create_user_command('Formatters', function() api.nvim_command('Mason') end, {})
 
 		local mr = require('mason-registry')
 		for _, tool in ipairs(opts.ensure_installed) do
