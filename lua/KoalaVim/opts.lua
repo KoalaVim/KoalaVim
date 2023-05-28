@@ -16,19 +16,22 @@ M.default_opts = {
 	},
 }
 
-function M.verify(opts_tbl, warn)
+local function _verify(opts_tbl, scope_string)
 	local valid = true
 	for key, value in pairs(opts_tbl) do
 		if (type(value) == 'table') then
-			M.verify(value, warn)
+			_verify(value, scope_string and scope_string .. key .. '.' or nil)
 		else
 			if value == M.NO_DEFAULT then
-				if warn then
+				if scope_string then
 					-- TODO: better warnings
-					print(key ..
-					" isn't configured (you can turn off this message by passing `warnings = false` in koala opts)")
+					print(scope_string .. key ..
+						" isn't configured (you can turn off this message by passing `warnings = false` in koala opts)")
+					valid = false
+				else
+					-- If warnings aren't on just return
+					return false
 				end
-				valid = false
 			end
 		end
 	end
@@ -36,12 +39,16 @@ function M.verify(opts_tbl, warn)
 	return valid
 end
 
+function M.verify(opts_tbl)
+	return _verify(opts_tbl, nil)
+end
+
 function M.load_opts(opts)
 	opts = opts or {}
 	opts = vim.tbl_deep_extend('keep', opts, M.default_opts)
 
 	if opts.warnings then
-		M.verify(opts, true)
+		_verify(opts, '')
 	end
 	require('KoalaVim').opts = opts
 end
