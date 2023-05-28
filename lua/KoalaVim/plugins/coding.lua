@@ -276,7 +276,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'ofirgall/nvim-various-textobjs', -- fork
+	'chrisgrieser/nvim-various-textobjs',
 	opts = {
 		useDefaultKeymaps = true,
 		disabledKeymaps = { '%' },
