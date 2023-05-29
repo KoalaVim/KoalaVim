@@ -115,7 +115,7 @@ table.insert(M, {
 	end,
 	keys = {
 		{
-			'<M-Z>',
+			'<leader>z',
 			function() vim.cmd('NeoZoomToggle') end,
 			mode = { 'n', 'v' },
 			desc = 'Zoom split',
