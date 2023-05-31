@@ -123,7 +123,7 @@ table.insert(M, {
 
 -- File explorer
 table.insert(M, {
-	'kyazdani42/nvim-tree.lua',
+	'nvim-tree/nvim-tree.lua',
 	cmd = 'NvimTreeOpen',
 	init = function()
 		-- Load nvim-tree.lua if neovim opened with args
@@ -381,7 +381,7 @@ table.insert(M, {
 
 -- icons
 table.insert(M, {
-	'kyazdani42/nvim-web-devicons',
+	'nvim-tree/nvim-web-devicons',
 	lazy = true,
 })
 

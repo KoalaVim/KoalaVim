@@ -120,7 +120,7 @@ table.insert(M, {
 table.insert(M, {
 	'glepnir/lspsaga.nvim',
 	dependencies = {
-		'kyazdani42/nvim-web-devicons',
+		'nvim-tree/nvim-web-devicons',
 		'nvim-treesitter/nvim-treesitter',
 	},
 	config = function()
