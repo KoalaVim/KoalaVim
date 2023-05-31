@@ -174,7 +174,7 @@ table.insert(M, {
 				adaptive_size = true,
 				relativenumber = true,
 				number = false,
-				signcolumn = 'no'
+				signcolumn = 'no',
 			},
 			renderer = {
 				symlink_destination = false,
@@ -234,7 +234,7 @@ table.insert(M, {
 	end,
 	opts = function()
 		return {
-			separator = '  '
+			separator = '  ',
 		}
 	end,
 })
