@@ -4,36 +4,77 @@ local api = vim.api
 
 
 table.insert(M, {
-	'rmagatti/auto-session',
+	'ofirgall/possession.nvim', -- fork
+	dependencies = {
+		'nvim-lua/plenary.nvim',
+	},
 	opts = {
-		log_level = 'error',
-		auto_session_suppress_dirs = { '~/', '~/workspace', '~/Downloads', '/', '~/logs' },
-		auto_session_use_git_branch = false, -- TODO: configure
-
-		-- Close nvim-tree before saving session
-		pre_save_cmds = {
-			-- ghost files
-			function()
-				for _, bufnr in pairs(api.nvim_list_bufs()) do
-					local ft = api.nvim_get_option_value('filetype', { buf = bufnr })
-					if vim.tbl_contains(GHOST_FILETYPES, ft) then
-						api.nvim_buf_delete(bufnr, {})
-					end
-				end
+		-- Auto-session with possession.nvim
+		autosave = {
+			current = true,
+			tmp = true,
+			tmp_name = function()
+				return require('KoalaVim.utils.path').escaped_session_name_from_cwd()
 			end,
 		},
-
-		-- Close Lazy window before restoring session
-		pre_restore_cmds = { function()
-			local buf = api.nvim_get_current_buf()
-			local ft = api.nvim_get_option_value('filetype', { buf = buf })
-			if ft == 'lazy' then
-				api.nvim_buf_delete(buf, {})
-			end
-		end, },
+		commands = {
+			save = 'SessionSave',
+			load = 'SessionLoad',
+			rename = 'SessionRename',
+			close = 'SessionClose',
+			delete = 'SessionDelete',
+			show = 'SessionShow',
+			list = nil,
+			migrate = nil,
+		},
 	},
 	config = function(_, opts)
-		require('auto-session').setup(opts)
+		require('possession').setup(opts)
+		require('telescope').load_extension('possession')
+
+		local fzy_sorter = require('telescope.sorters').get_fzy_sorter()
+		local path_utils = require('KoalaVim.utils.path')
+
+		local current_cwd_session_pattern = '^'..vim.fn.getcwd()
+		local session_sorter = require('telescope.sorters').Sorter:new {
+			scoring_function = function(a, prompt, line)
+				if line:match(current_cwd_session_pattern) then
+					return 0
+				end
+				return fzy_sorter.scoring_function(a, prompt, line)
+			end,
+		}
+
+		local home_dir_regex = '^' .. vim.loop.os_homedir()
+		local get_session_finder = function()
+			local sessions = require('possession.query').as_list()
+			return require('telescope.finders').new_table {
+				results = sessions,
+				entry_maker = function(entry)
+					local unescaped_name = path_utils.unescape_dir(entry.name)
+					return {
+						value = entry,
+						display = unescaped_name:gsub(home_dir_regex, '~'),
+						ordinal = unescaped_name,
+					}
+				end,
+			}
+		end
+
+		vim.api.nvim_create_user_command('SessionList', function()
+			require('telescope').extensions.possession.list({
+				prompt_title = 'Choose Session (sorted by cwd and frequency)',
+				previewer = false,
+				layout_config = {
+					height = 0.30,
+					width = 0.40,
+				},
+				sorter = session_sorter,
+				finder = get_session_finder(),
+				layout_strategy = 'center',
+				sorting_strategy = 'ascending', -- From top
+			})
+		end, {})
 	end,
 })
 

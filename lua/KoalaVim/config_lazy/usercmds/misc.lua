@@ -33,9 +33,6 @@ api.nvim_create_user_command('NoOsClipboard', function()
 end, {})
 
 
-api.nvim_create_user_command('ClearBreakpoints',
-	function() require('persistent-breakpoints.api').clear_all_breakpoints() end, {})
-
 api.nvim_create_user_command('ListKeys', function() require('telescope.builtin').keymaps() end, {})
 
 -- TODO: install SSR

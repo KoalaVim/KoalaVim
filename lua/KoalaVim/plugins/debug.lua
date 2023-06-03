@@ -55,7 +55,7 @@ table.insert(M, {
 				port = 2345,
 				apiVersion = 2,
 				cwd = '${workspaceFolder}',
-				trace = 'verbose'
+				trace = 'verbose',
 			},
 		}
 
@@ -64,9 +64,20 @@ table.insert(M, {
 			host = 'rhel8-5.local',
 			port = 2345,
 		}
+
+		vim.api.nvim_create_user_command('ClearBreakpoints',
+			function()
+				require('dap').clear_breakpoints()
+			end, {})
 	end,
 	lazy = true, -- Loading with dap-ui
 	keys = {
+		{
+			'<F9>',
+			function() require 'dap'.toggle_breakpoint() end,
+			desc = 'Debug: Toggle breakpoint',
+		},
+		-- TODO: conditional breakpoint
 		{ '<F5>', function() require 'dap'.continue() end, desc = 'Debug: continue' },
 		{ '<F6>', function() require 'dap'.terminate() end, desc = 'Debug: terminate' },
 		{
@@ -116,7 +127,7 @@ table.insert(M, {
 	'rcarriga/nvim-dap-ui',
 	dependencies = {
 		'rcarriga/nvim-dap-ui',
-		'ofirgall/format-on-leave.nvim'
+		'ofirgall/format-on-leave.nvim',
 	},
 	config = function()
 		local dapui = require('dapui')
@@ -127,7 +138,7 @@ table.insert(M, {
 					size = 0.15,
 					position = 'top',
 					elements = {
-						'scopes' -- local vars
+						'scopes', -- local vars
 					},
 				},
 				{
@@ -169,36 +180,6 @@ table.insert(M, {
 			dap_closed()
 		end
 	end,
-})
-
-table.insert(M, {
-	'Weissle/persistent-breakpoints.nvim',
-	dependencies = {
-		'mfussenegger/nvim-dap',
-		'rmagatti/auto-session',
-	},
-	lazy = false, -- make sure to load this before any files loaded
-	config = function()
-		require('persistent-breakpoints').setup {
-			-- load_breakpoints_event = { 'BufReadPost' },
-		}
-		vim.api.nvim_create_autocmd('BufReadPost', {
-			pattern = '*',
-			callback = require('persistent-breakpoints.api').load_breakpoints,
-		})
-	end,
-	keys = {
-		{
-			'<F9>',
-			function() require('persistent-breakpoints.api').toggle_breakpoint() end,
-			desc = 'Debug: Toggle breakpoint',
-		},
-		{
-			'<leader><F9>',
-			function() require('persistent-breakpoints.api').set_conditional_breakpoint() end,
-			desc = 'Debug: toggle conditional breakpoint',
-		},
-	},
 })
 
 table.insert(M, {

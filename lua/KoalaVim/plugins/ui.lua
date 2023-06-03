@@ -450,6 +450,7 @@ table.insert(M, {
 
 		dashboard.section.header.val = vim.split(logo, '\n')
 		dashboard.section.buttons.val = {
+			dashboard.button('s', ' ' .. ' Load Session', ':SessionList <CR>'),
 			dashboard.button('ff', ' ' .. ' Find file', ':Telescope find_files <CR>'),
 			dashboard.button('fw', ' ' .. ' Find text', ':Telescope live_grep <CR>'),
 			dashboard.button('n', ' ' .. ' New file', ':ene <BAR> startinsert <CR>'),
