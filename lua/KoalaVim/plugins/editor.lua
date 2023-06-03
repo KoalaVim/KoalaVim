@@ -40,13 +40,14 @@ table.insert(M, {
 table.insert(M, {
 	'ofirgall/AutoSave.nvim', -- fork
 	event = 'VeryLazy',
-	config = function()
+	opts = {
+		clean_command_line_interval = 1000,
+		on_off_commands = true,
+		execution_message = '',
+	},
+	config = function(_, opts)
 		local autosave = require('autosave')
-		autosave.setup {
-			clean_command_line_interval = 1000,
-			on_off_commands = true,
-			execution_message = '',
-		}
+		autosave.setup(opts)
 
 		autosave.hook_before_actual_saving = function()
 			-- Ignore RaafatTurki/hex.nvim
@@ -79,40 +80,42 @@ table.insert(M, {
 table.insert(M, {
 	'ofirgall/guess-indent.nvim', -- fork
 	priority = 200, -- Load before auto-session
-	config = function()
-		require('guess-indent').setup {
-			post_guess_hook = function(is_tabs)
-				if is_tabs then
-					vim.opt_local.listchars:append('lead:⋅')
-				else
-					vim.opt_local.listchars:append('lead: ')
-				end
-			end,
-		}
+	opts = {
+		post_guess_hook = function(is_tabs)
+			if is_tabs then
+				vim.opt_local.listchars:append('lead:⋅')
+			else
+				vim.opt_local.listchars:append('lead: ')
+			end
+		end,
+	},
+	config = function(_, opts)
+		require('guess-indent').setup(opts)
 	end,
 })
 
+local floating_code_ns = api.nvim_create_namespace('Floating Window for Code')
+api.nvim_set_hl(floating_code_ns, 'NormalFloat', { link = 'Normal' })
+
 table.insert(M, {
 	'nyngwang/NeoZoom.lua',
-	config = function()
-		local floating_code_ns = api.nvim_create_namespace('Floating Window for Code')
-		api.nvim_set_hl(floating_code_ns, 'NormalFloat', { link = 'Normal' })
-
-		require('neo-zoom').setup {
-			winopts = {
-				offset = {
-					top = 0.1,
-					left = 0.1,
-					width = 0.8,
-					height = 0.8,
-				},
+	opts = {
+		winopts = {
+			offset = {
+				top = 0.1,
+				left = 0.1,
+				width = 0.8,
+				height = 0.8,
 			},
-			callbacks = {
-				function()
-					api.nvim_set_hl_ns(floating_code_ns)
-				end,
-			},
-		}
+		},
+		callbacks = {
+			function()
+				api.nvim_set_hl_ns(floating_code_ns)
+			end,
+		},
+	},
+	config = function(_, opts)
+		require('neo-zoom').setup(opts)
 	end,
 	keys = {
 		{
@@ -128,22 +131,23 @@ table.insert(M, {
 table.insert(M, {
 	'folke/todo-comments.nvim',
 	event = { 'BufReadPost', 'BufNewFile' },
-	config = function()
-		require('todo-comments').setup {
-			signs = false,
-			highlight = {
-				before = '',
-				keyword = 'fg',
-				after = '',
-			},
-			colors = {
-				error = { 'DiagnosticError', 'ErrorMsg', '#DC2626' },
-				warning = { '@text.danger', 'DiagnosticWarning', 'WarningMsg', '#FBBF24' },
-				info = { '@text.warning', 'DiagnosticInfo', '#2563EB' },
-				hint = { '@text.note', 'DiagnosticHint', '#10B981' },
-				default = { '@text.note', '#7C3AED' },
-			},
-		}
+	opts = {
+		signs = false,
+		highlight = {
+			before = '',
+			keyword = 'fg',
+			after = '',
+		},
+		colors = {
+			error = { 'DiagnosticError', 'ErrorMsg', '#DC2626' },
+			warning = { '@text.danger', 'DiagnosticWarning', 'WarningMsg', '#FBBF24' },
+			info = { '@text.warning', 'DiagnosticInfo', '#2563EB' },
+			hint = { '@text.note', 'DiagnosticHint', '#10B981' },
+			default = { '@text.note', '#7C3AED' },
+		},
+	},
+	config = function(_, opts)
+		require('todo-comments').setup(opts)
 	end,
 	keys = {
 		{ ']t', function() require('todo-comments').jump_next() end, desc = 'Next todo comment' },
@@ -154,27 +158,28 @@ table.insert(M, {
 table.insert(M, {
 	'Vigemus/iron.nvim',
 	cmd = { 'IPython', 'Lua' },
-	config = function()
-		require('iron.core').setup {
-			config = {
-				should_map_plug = false,
-				scratch_repl = true,
-				close_window_on_exit = true,
-				repl_definition = {
-					sh = {
-						command = { 'zsh' },
-					},
-					python = {
-						command = { 'ipython3' },
-					},
+	opts = {
+		config = {
+			should_map_plug = false,
+			scratch_repl = true,
+			close_window_on_exit = true,
+			repl_definition = {
+				sh = {
+					command = { 'zsh' },
 				},
-				repl_open_cmd = 'belowright 15 split',
+				python = {
+					command = { 'ipython3' },
+				},
 			},
-			highlight = {
-				italic = false,
-				bold = false,
-			},
-		}
+			repl_open_cmd = 'belowright 15 split',
+		},
+		highlight = {
+			italic = false,
+			bold = false,
+		},
+	},
+	config = function(_, opts)
+		require('iron.core').setup(opts)
 
 		api.nvim_create_user_command('IPython', function()
 			require('iron.core').repl_for('python')
@@ -193,10 +198,11 @@ table.insert(M, {
 table.insert(M, {
 	'norcalli/nvim-colorizer.lua',
 	event = { 'BufReadPost', 'BufNewFile' },
-	config = function()
-		require('colorizer').setup {
-			'*',
-		}
+	opts = {
+		'*',
+	},
+	config = function(_, opts)
+		require('colorizer').setup(opts)
 	end,
 })
 
@@ -205,55 +211,55 @@ table.insert(M, {
 	keys = {
 		{ '<leader>rgb', '<cmd>PickColor<CR>', desc = 'Pick color' },
 	},
-	config = function()
-		require('color-picker').setup {
-		}
+	opts = {
+	},
+	config = function(_, opts)
+		require('color-picker').setup(opts)
 	end,
 })
 
 table.insert(M, {
 	'tiagovla/scope.nvim',
-	config = function()
-		require('scope').setup {
-		}
+	opts = {
+	},
+	config = function(_, opts)
+		require('scope').setup(opts)
 	end,
 })
 
+local femaco_margin = {
+	width = 10,
+	height = 6,
+	top = 2,
+}
 table.insert(M, {
 	'AckslD/nvim-FeMaco.lua',
 	cmd = 'FeMaco',
 	keys = {
 		{ '<leader>e', function() require('femaco.edit').edit_code_block() end, 'Edit markdown codeblocks' },
 	},
-	config = function()
-		local femaco_margin = {
-			width = 10,
-			height = 6,
-			top = 2,
-		}
-		require('femaco').setup {
-			post_open_float = function(winnr)
-				local ns = api.nvim_create_namespace('FeMaco')
-				api.nvim_set_hl(ns, 'NormalFloat', { bg = require('ofirkai').scheme.background })
-				api.nvim_win_set_hl_ns(winnr, ns)
-			end,
-			float_opts = function(code_block)
-				_ = code_block
-				return {
-					relative = 'win',
-					width = vim.api.nvim_win_get_width(0) - femaco_margin.width,
-					height = vim.api.nvim_win_get_height(0) - femaco_margin.height,
-					col = femaco_margin.width / 2,
-					row = femaco_margin.height / 2 - femaco_margin.top,
-					border = 'rounded',
-					zindex = 1,
-				}
-			end,
-			ensure_newline = function(base_filetype)
-				_ = base_filetype
-				return true
-			end,
-		}
+	opts = {
+		post_open_float = function(winnr)
+			api.nvim_win_set_hl_ns(winnr, floating_code_ns)
+		end,
+		float_opts = function(code_block)
+			_ = code_block
+			return {
+				relative = 'win',
+				width = vim.api.nvim_win_get_width(0) - femaco_margin.width,
+				height = vim.api.nvim_win_get_height(0) - femaco_margin.height,
+				col = femaco_margin.width / 2,
+				row = femaco_margin.height / 2 - femaco_margin.top,
+				border = 'rounded',
+				zindex = 1,
+			}
+		end,
+		ensure_newline = function(_)
+			return true
+		end,
+	},
+	config = function(_, opts)
+		require('femaco').setup(opts)
 	end,
 })
 
@@ -262,23 +268,25 @@ table.insert(M, {
 	keys = {
 		{ '<leader>gx', function() require('open').open_cword() end, desc = 'Open current word' },
 	},
-	config = function()
-		require('open').setup {
-		}
+	opts = {
+	},
+	config = function(_, opts)
+		require('open').setup(opts)
 	end,
 	dependencies = {
 		{
 			'ofirgall/open-jira.nvim',
-			config = function()
+			config = function(_, opts)
 				-- Verify open-jira options
-				local opts = require('KoalaVim').opts.plugins.open_jira
-				if not require('KoalaVim.opts').verify(opts) then
-					return
+				if not opts.url then
+					local koala_opts = require('KoalaVim').opts.plugins.open_jira
+					if not require('KoalaVim.opts').verify(koala_opts) then
+						return
+					end
+					opts.url = koala_opts.jira_url
 				end
 
-				require('open-jira').setup {
-					url = opts.jira_url,
-				}
+				require('open-jira').setup(opts)
 			end,
 		},
 	},
@@ -288,35 +296,36 @@ table.insert(M, {
 	'zakharykaplan/nvim-retrail',
 	event = { 'BufReadPost', 'BufNewFile' },
 	cmd = 'TrimWhiteSpace',
-	config = function()
-		retrail = require('retrail')
-		retrail.setup {
-			hlgroup = 'NvimInternalError',
-			filetype = {
-				exclude = {
-					'diff',
-					'git',
-					'gitcommit',
-					'unite',
-					'qf',
-					'help',
-					'markdown',
-					'fugitive',
-					'toggleterm',
-					'log',
-					'noice',
-					'nui',
-					'notify',
-					'floggraph',
-					'chatgpt',
-				},
+	opts = {
+		hlgroup = 'NvimInternalError',
+		filetype = {
+			exclude = {
+				'diff',
+				'git',
+				'gitcommit',
+				'unite',
+				'qf',
+				'help',
+				'markdown',
+				'fugitive',
+				'toggleterm',
+				'log',
+				'noice',
+				'nui',
+				'notify',
+				'floggraph',
+				'chatgpt',
 			},
-			trim = {
-				auto = false,
-				whitespace = true, -- Trailing whitespace as highlighted.
-				blanklines = true, -- Final blank (i.e. whitespace only) lines.
-			},
-		}
+		},
+		trim = {
+			auto = false,
+			whitespace = true, -- Trailing whitespace as highlighted.
+			blanklines = true, -- Final blank (i.e. whitespace only) lines.
+		},
+	},
+	config = function(_, opts)
+		local retrail = require('retrail')
+		retrail.setup(opts)
 		api.nvim_create_user_command('TrimWhiteSpace', function() retrail:trim() end, {})
 	end,
 })
@@ -324,10 +333,11 @@ table.insert(M, {
 table.insert(M, {
 	-- TODO: VimAnavim change to mainline
 	'ofirgall/Navigator.nvim', -- To support awesomewm-vim-tmux-navigator
-	config = function()
-		require('Navigator').setup {
-			disable_on_zoom = false,
-		}
+	opts = {
+		disable_on_zoom = false,
+	},
+	config = function(_, opts)
+		require('Navigator').setup(opts)
 	end,
 	keys = {
 		{ '<C-h>', '<cmd>NavigatorLeft<cr>', mode = { 'n', 'x', 't' }, desc = 'Navigate left' },
@@ -339,10 +349,11 @@ table.insert(M, {
 
 table.insert(M, {
 	'trmckay/based.nvim',
-	config = function()
-		require('based').setup {
-			highlight = 'Title',
-		}
+	opts = {
+		highlight = 'Title',
+	},
+	config = function(_, opts)
+		require('based').setup(opts)
 	end,
 	keys = {
 		{ '<leader>H', function() require('based').convert() end, mode = { 'n', 'v' }, desc = 'Convert hex <=> decimal' },
@@ -352,21 +363,23 @@ table.insert(M, {
 table.insert(M, {
 	'riddlew/swap-split.nvim',
 	cmd = 'SwapSplit',
-	config = function()
-		require('swap-split').setup({
-			ignore_filetypes = {
-				'NvimTree',
-			},
-		})
+	opts = {
+		ignore_filetypes = {
+			'NvimTree',
+		},
+	},
+	config = function(_, opts)
+		require('swap-split').setup(opts)
 	end,
 })
 
 table.insert(M, {
 	'RaafatTurki/hex.nvim',
 	cmd = { 'HexDump', 'HexAssemble', 'HexToggle' },
-	config = function()
-		require('hex').setup {
-		}
+	opts = {
+	},
+	config = function(_, opts)
+		require('hex').setup(opts)
 	end,
 })
 
