@@ -21,7 +21,8 @@ table.insert(M, {
 table.insert(M, {
 	'gbprod/substitute.nvim',
 	keys = {
-		{ 'cx', function() require('substitute').operator() end, mode = { 'n', 'x' }, desc = 'Substitute' },
+		{ 'cx', function() require('substitute').operator() end, mode = { 'n', 'x' },
+			desc = 'Operator: substitute/exchange' },
 	},
 })
 
