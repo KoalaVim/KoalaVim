@@ -18,10 +18,12 @@ table.insert(M, {
 	},
 })
 
--- TODO: replace with gbprod/substitute.nvim
 table.insert(M, {
-	'tommcdo/vim-exchange',
-	keys = { 'cx' },
+	'gbprod/substitute.nvim',
+	keys = {
+		{ 'cx', function() require('substitute').operator() end, mode = { 'n', 'x' },
+			desc = 'Operator: substitute/exchange' },
+	},
 })
 
 table.insert(M, {
@@ -70,7 +72,7 @@ table.insert(M, {
 table.insert(M, {
 	'ggandor/flit.nvim',
 	dependencies = {
-		'ggandor/leap.nvim'
+		'ggandor/leap.nvim',
 	},
 	opts = {
 		labeled_modes = 'nv',
@@ -84,13 +86,13 @@ table.insert(M, {
 table.insert(M, {
 	'andrewferrier/debugprint.nvim',
 	opts = {
-		print_tag = '--- DEBUG PRINT ---'
+		print_tag = '--- DEBUG PRINT ---',
 	},
 	config = function(_, opts)
 		require('debugprint').setup(opts)
 	end,
 	keys = { 'g?p', 'g?P', 'g?v', 'g?V' },
-	cmd = 'DeleteDebugPrints'
+	cmd = 'DeleteDebugPrints',
 })
 
 table.insert(M, {
