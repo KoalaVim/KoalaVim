@@ -14,6 +14,11 @@ M.default_opts = {
 			full_screen_width = M.NO_DEFAULT,
 		},
 	},
+	plugins = {
+		open_jira = {
+			jira_url = M.NO_DEFAULT,
+		},
+	},
 }
 
 local function _verify(opts_tbl, scope_string)

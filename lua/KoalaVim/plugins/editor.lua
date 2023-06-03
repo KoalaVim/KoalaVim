@@ -2,6 +2,7 @@ local M = {}
 -- Misc editor plugins
 local api = vim.api
 
+
 table.insert(M, {
 	'rmagatti/auto-session',
 	opts = {
@@ -269,8 +270,14 @@ table.insert(M, {
 		{
 			'ofirgall/open-jira.nvim',
 			config = function()
+				-- Verify open-jira options
+				local opts = require('KoalaVim').opts.plugins.open_jira
+				if not require('KoalaVim.opts').verify(opts) then
+					return
+				end
+
 				require('open-jira').setup {
-					url = 'https://volumez.atlassian.net/browse/',
+					url = opts.jira_url,
 				}
 			end,
 		},
