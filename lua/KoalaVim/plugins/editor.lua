@@ -35,14 +35,22 @@ table.insert(M, {
 		local fzy_sorter = require('telescope.sorters').get_fzy_sorter()
 		local path_utils = require('KoalaVim.utils.path')
 
-		local current_cwd_session_pattern = '^'..vim.fn.getcwd()
+		local current_cwd_session_pattern = '^' .. vim.fn.getcwd()
 		local session_sorter = require('telescope.sorters').Sorter:new {
 			scoring_function = function(a, prompt, line)
+				local fzy_score = fzy_sorter.scoring_function(a, prompt, line)
+				if fzy_score < 0 then
+					return fzy_score
+				end
+
 				if line:match(current_cwd_session_pattern) then
 					return 0
 				end
-				return fzy_sorter.scoring_function(a, prompt, line)
+				return fzy_score
 			end,
+
+			discard = true,
+			highlighter = fzy_sorter.highlighter,
 		}
 
 		local home_dir_regex = '^' .. vim.loop.os_homedir()
