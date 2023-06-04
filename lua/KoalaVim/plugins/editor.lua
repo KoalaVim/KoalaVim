@@ -131,6 +131,7 @@ table.insert(M, {
 	priority = 200, -- Load before auto-session
 	opts = {
 		post_guess_hook = function(is_tabs)
+			vim.b.Koala_tabs = is_tabs
 			if is_tabs then
 				vim.opt_local.listchars:append('lead:⋅')
 			else

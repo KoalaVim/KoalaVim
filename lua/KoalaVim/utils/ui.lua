@@ -25,6 +25,9 @@ function M.setup_lualine(is_half)
 		},
 	}
 
+	local lualine_b = nil
+	local lualine_y = nil
+
 	-- nvim-lualine/lualine.nvim
 	if is_half then
 		lualine_b = {}
@@ -85,6 +88,17 @@ function M.setup_lualine(is_half)
 					'searchcount',
 					separator = '|',
 					icon = '',
+				},
+				{
+					-- TODO: add more info (shift width and such)
+					function()
+						if vim.b.Koala_tabs then
+							return 'Tabs'
+						else
+							return 'Spaces'
+						end
+					end,
+					separator = '|',
 				},
 				{ get_current_lsp_server_name, icon = ' LSP:' },
 			},
