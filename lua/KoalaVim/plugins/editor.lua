@@ -9,6 +9,7 @@ table.insert(M, {
 		'nvim-lua/plenary.nvim',
 	},
 	opts = {
+		silent = true,
 		-- Auto-session with possession.nvim
 		autosave = {
 			current = true,
@@ -83,6 +84,16 @@ table.insert(M, {
 				sorting_strategy = 'ascending', -- From top
 			})
 		end, {})
+
+		if vim.env.KOALA_RESTART then
+			api.nvim_create_autocmd('VimEnter', {
+				callback = function()
+					vim.schedule(function()
+						vim.cmd(':SessionLoad ' .. require('KoalaVim.utils.path').escaped_session_name_from_cwd())
+					end)
+				end,
+			})
+		end
 	end,
 })
 
