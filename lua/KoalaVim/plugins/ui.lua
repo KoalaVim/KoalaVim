@@ -437,11 +437,11 @@ table.insert(M, {
 ⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣤⣤⣤⣶⣄⠀⠀⠀| |/ /___   __ _| | __ \ \   / (_)_ __ ___
 ⠀⠀⠀⢀⣾⣿⣿⣿⣿⠟⠋⣉⣉⠙⠻⣿⣿⣿⣿⠿⠋⠀⠀⠀| ' // _ \ / _` | |/ _` \ \ / /| | '_ ` _ \
 ⠀⠀⠀⣾⣿⣿⣿⡏⢀⣴⣿⣿⣿⣿⡄⢀⣤⣤⡄⠀⠀⠀⠀⠀| . \ (_) | (_| | | (_| |\ V / | | | | | | |
-⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⢀⣤⣤⠀⠀⠀⠀⠀⠀|_|\_\___/ \__,_|_|\__,_| \_/  |_|_| |_| |_|⠀⠀⠀⠀
-⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⣠⣿⣿⠿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠈⢻⣿⣿⣿⣿⣿⣿⣿⣯⣠⣾⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠉⠻⠿⣿⣿⣿⣿⣿⠿⠋⣠⡾⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠁⠀
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⢀⣤⣤⠀⠀⠀⠀⠀⠀|_|\_\___/ \__,_|_|\__,_| \_/  |_|_| |_| |_|
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⣠⣿⣿⠿⠁
+⠀⠀⠈⢻⣿⣿⣿⣿⣿⣿⣿⣯⣠⣾⡿⠋⠀
+⠀⠀⠀⠀⠉⠻⠿⣿⣿⣿⣿⣿⠿⠋⣠⡾
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠁
 ]]
 
 
@@ -452,7 +452,7 @@ table.insert(M, {
 			dashboard.button('fw', ' ' .. ' Find text', ':Telescope live_grep <CR>'),
 			dashboard.button('n', ' ' .. ' New file', ':ene <BAR> startinsert <CR>'),
 			dashboard.button('r', ' ' .. ' Recent files', ':Telescope oldfiles <CR>'),
-			dashboard.button('g', '' .. ' Git Status', ':Flogsplit <CR><C-w>k:q<CR>:G<CR>'),
+			dashboard.button('g', '' .. ' Git Status', ':lua KOALA_AUTOSAVE_SESSION=false<CR> :Flogsplit <CR><C-w>k:q<CR>:G<CR>'),
 			dashboard.button('l', '󰒲 ' .. ' Lazy', ':Lazy<CR>'),
 			dashboard.button('q', ' ' .. ' Quit', ':qa<CR>'),
 			-- TODO: add session list (s)

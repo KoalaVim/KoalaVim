@@ -2,6 +2,7 @@ local M = {}
 -- Misc editor plugins
 local api = vim.api
 
+KOALA_AUTOSAVE_SESSION = true
 
 table.insert(M, {
 	'ofirgall/possession.nvim', -- fork
@@ -13,7 +14,9 @@ table.insert(M, {
 		-- Auto-session with possession.nvim
 		autosave = {
 			current = true,
-			tmp = true,
+			tmp = function()
+				return KOALA_AUTOSAVE_SESSION
+			end,
 			tmp_name = function()
 				return require('KoalaVim.utils.path').escaped_session_name_from_cwd()
 			end,
