@@ -526,4 +526,12 @@ table.insert(M, {
 	},
 })
 
+table.insert(M, {
+	'tzachar/highlight-undo.nvim',
+	keys = { 'u', '<C-r>' },
+	config = function(opts)
+		require('highlight-undo').setup(opts)
+	end,
+})
+
 return M
