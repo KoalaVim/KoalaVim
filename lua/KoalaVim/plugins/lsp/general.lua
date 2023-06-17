@@ -116,6 +116,60 @@ table.insert(M, {
 	end,
 })
 
+table.insert(M, {
+	-- Formatters/linters
+	'jose-elias-alvarez/null-ls.nvim',
+	event = { 'BufReadPre', 'BufNewFile' },
+	dependencies = { 'mason.nvim' },
+	opts = {
+		sources = {
+		},
+		-- Setup null-ls builtins sources
+		builtins_sources = {
+			formatting = {
+				'stylua',
+				'eslint_d',
+				'prettierd',
+				'shfmt',
+			},
+			code_actions = {
+				'eslint_d',
+			},
+			diagnostics = {
+				'eslint_d',
+			},
+		},
+	},
+	config = function(_, opts)
+		local null_ls = require('null-ls')
+
+		local builtins_sources = {}
+		local function traverse_builtin(aggregated, current)
+
+			for key, value in pairs(current) do
+				-- print(key, value)
+				if type(value) == 'table' then
+					if aggregated[key] == nil then
+						-- TODO: [checkhealth] raise warning
+						print('[null-ls] invalid source, ' .. key .. ' not found')
+					end
+					-- aggregated = aggregated[key]
+					traverse_builtin(aggregated[key], value)
+				elseif type(value) == 'string' then
+					table.insert(builtins_sources, aggregated[value])
+				else
+					-- TODO: [checkhealth] raise warning
+					print('invalid')
+				end
+			end
+		end
+
+		traverse_builtin(null_ls.builtins, opts.builtins_sources)
+		opts.sources = vim.tbl_extend('keep', opts.sources, builtins_sources)
+		null_ls.setup(opts)
+	end,
+})
+
 -- TODO: if I want code action to be always active I need to add event = 'LspAttach'
 table.insert(M, {
 	'glepnir/lspsaga.nvim',
