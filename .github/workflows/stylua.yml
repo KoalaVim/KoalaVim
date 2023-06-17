@@ -18,11 +18,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
-          args: -g '*.lua' .
+          args: .
 
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           branch: ${{ github.head_ref }}
-          commit_message: "chore(docs): auto-generate vimdoc"
-          file_pattern: doc/*.txt
+          commit_message: "chore: auto-format (stylua)"
