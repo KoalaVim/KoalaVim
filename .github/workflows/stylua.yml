@@ -1,6 +1,9 @@
 name: stylua
 
-on: [push]
+on:
+  push:
+    paths:
+      - '**.lua'
 
 env:
   PLUGIN_NAME: ofirkai
