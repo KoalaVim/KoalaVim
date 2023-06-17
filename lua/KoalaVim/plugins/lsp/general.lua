@@ -88,7 +88,7 @@ table.insert(M, {
 		'Mason',
 		'Linters',
 		'LspServers',
-		'Formatters'
+		'Formatters',
 	},
 	opts = {
 		-- Linters
@@ -145,13 +145,12 @@ table.insert(M, {
 
 		local builtins_sources = {}
 		local function traverse_builtin(aggregated, current)
-
 			for key, value in pairs(current) do
 				-- print(key, value)
 				if type(value) == 'table' then
 					if aggregated[key] == nil then
 						-- TODO: [checkhealth] raise warning
-						print('[null-ls] invalid source, ' .. key .. ' not found')
+						print('[null-ls-builtins] invalid source, ' .. key .. ' not found')
 					end
 					-- aggregated = aggregated[key]
 					traverse_builtin(aggregated[key], value)
@@ -159,7 +158,7 @@ table.insert(M, {
 					table.insert(builtins_sources, aggregated[value])
 				else
 					-- TODO: [checkhealth] raise warning
-					print('invalid')
+					print('[null-ls-builtins] expected string|table found ' .. type(key))
 				end
 			end
 		end
