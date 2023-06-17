@@ -31,7 +31,6 @@ table.insert(M, {
 		'dcampos/cmp-snippy',
 		'f3fora/cmp-spell',
 		'ofirgall/cmp-lspkind-priority',
-		'ofirgall/cmp-nvim-lsp-signature-help',
 		'onsails/lspkind.nvim',
 		'windwp/nvim-autopairs',
 	},
