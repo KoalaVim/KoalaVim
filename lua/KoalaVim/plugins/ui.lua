@@ -422,7 +422,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'goolord/alpha-nvim',
+	'ofirgall/alpha-nvim', -- fork
 	event = 'VimEnter',
 	opts = function()
 		local dashboard = require('alpha.themes.dashboard')
@@ -452,10 +452,16 @@ table.insert(M, {
 			dashboard.button('fw', ' ' .. ' Find text', ':Telescope live_grep <CR>'),
 			dashboard.button('n', ' ' .. ' New file', ':ene <BAR> startinsert <CR>'),
 			dashboard.button('r', ' ' .. ' Recent files', ':Telescope oldfiles <CR>'),
-			dashboard.button('g', '' .. ' Git Status', ':lua KOALA_AUTOSAVE_SESSION=false<CR> :Flogsplit <CR><C-w>k:q<CR>:G<CR>'),
+
+			dashboard.button('g', '' .. ' Git Tree & Status', function()
+				KOALA_AUTOSAVE_SESSION = false
+				vim.cmd([[Flogsplit
+				wincmd k | q
+				G]])
+			end),
+
 			dashboard.button('l', '󰒲 ' .. ' Lazy', ':Lazy<CR>'),
 			dashboard.button('q', ' ' .. ' Quit', ':qa<CR>'),
-			-- TODO: add session list (s)
 		}
 		for _, button in ipairs(dashboard.section.buttons.val) do
 			button.opts.hl = 'Constant'
