@@ -1,5 +1,4 @@
-LSP_SERVERS['pyright'] = {
-}
+LSP_SERVERS['pyright'] = {}
 
 -- TODO: upgrade tools
 -- New tools:

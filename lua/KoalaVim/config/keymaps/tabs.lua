@@ -1,5 +1,6 @@
 local map = require('KoalaVim.utils.map').map
 
+-- stylua: ignore start
 -- Tabline binds
 map('n', '<C-q>', function() require('bufdelete').bufdelete(0, true) end, 'Close current tab')
 map('n', '<leader>1', function() require('bufferline').go_to_buffer(1, true) end, 'Go to tab #1')
@@ -12,6 +13,7 @@ map('n', '<leader>7', function() require('bufferline').go_to_buffer(7, true) end
 map('n', '<leader>8', function() require('bufferline').go_to_buffer(8, true) end, 'Go to tab #8')
 map('n', '<leader>9', function() require('bufferline').go_to_buffer(9, true) end, 'Go to tab #9')
 map('n', '<leader>0', function() require('bufferline').go_to_buffer(10, true) end, 'Go to tab #10')
+-- stylua: ignore end
 map('n', '<leader><Tab>', '<cmd>b#<cr>', 'Go to last active tab')
 
 map('n', '<C-,>', '<cmd>BufferLineCyclePrev<CR>', 'Move to left')

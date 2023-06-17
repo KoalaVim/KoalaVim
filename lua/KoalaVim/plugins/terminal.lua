@@ -8,12 +8,26 @@ local M = {}
 table.insert(M, {
 	'akinsho/toggleterm.nvim',
 	keys = {
-		{ '<C-t>', function() toggle_or_open_terminal() end, mode = { 'n', 't', 'v' }, desc = 'toggle all terminals' },
-		{ '<M-e>', function() open_new_terminal('vertical') end, mode = 't', desc = 'Split terminal' },
+		{
+			'<C-t>',
+			function()
+				toggle_or_open_terminal()
+			end,
+			mode = { 'n', 't', 'v' },
+			desc = 'toggle all terminals',
+		},
+		{
+			'<M-e>',
+			function()
+				open_new_terminal('vertical')
+			end,
+			mode = 't',
+			desc = 'Split terminal',
+		},
 	},
 	config = function()
 		local toggle_term = require('toggleterm')
-		toggle_term.setup {
+		toggle_term.setup({
 			open_mapping = [[<Nop>]],
 			insert_mappings = false,
 			terminal_mappings = false,
@@ -26,7 +40,7 @@ table.insert(M, {
 					guifg = '#ffffff',
 				},
 			},
-		}
+		})
 
 		local terms = require('toggleterm.terminal')
 
@@ -60,9 +74,9 @@ table.insert(M, {
 	dependencies = {
 		'chomosuke/term-edit.nvim',
 		config = function()
-			require('term-edit').setup {
+			require('term-edit').setup({
 				prompt_end = '%$ ',
-			}
+			})
 		end,
 	},
 })

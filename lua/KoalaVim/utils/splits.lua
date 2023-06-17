@@ -18,16 +18,16 @@ function M.close_all_but_current()
 	local buf_utils = require('KoalaVim.utils.buf')
 	for _, bufnr in pairs(api.nvim_list_bufs()) do
 		if not buf_utils.is_visible(bufnr) and buf_utils.is_valid(bufnr) then
-			try {
+			try({
 				function()
 					require('bufdelete').bufwipeout(bufnr, true)
 				end,
-				catch {
+				catch({
 					function()
 						-- print('Failed to delete buffer: ' .. bufnr)
 					end,
-				},
-			}
+				}),
+			})
 		end
 	end
 end

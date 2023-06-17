@@ -14,7 +14,7 @@ Box (select box with visual block first): _<C-f>_
 		invoke_on_body = true,
 		hint = {
 			position = 'bottom',
-			border = 'rounded'
+			border = 'rounded',
 		},
 		on_enter = function()
 			vim.o.virtualedit = 'all'
@@ -29,12 +29,12 @@ Box (select box with visual block first): _<C-f>_
 		{ '<C-f>', ':VBox<CR>', { mode = 'v' } },
 		{ '<Esc>', nil, { exit = true, nowait = true } },
 	},
-	cmd = 'Draw'
+	cmd = 'Draw',
 }
 
 table.insert(M, {
 	'jbyuki/venn.nvim',
-	cmd = 'VBox'
+	cmd = 'VBox',
 })
 
 return M

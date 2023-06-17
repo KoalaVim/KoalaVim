@@ -1,6 +1,4 @@
-LSP_SERVERS['cmake'] = {
-}
-
+LSP_SERVERS['cmake'] = {}
 
 local clangd_cmd = {
 	'clangd',
@@ -21,7 +19,6 @@ LSP_SERVERS['clangd'] = {
 	},
 	cmd = clangd_cmd,
 }
-
 
 local add_r_new_line = 'i\\r\\n<Esc>'
 vim.api.nvim_create_autocmd('FileType', {

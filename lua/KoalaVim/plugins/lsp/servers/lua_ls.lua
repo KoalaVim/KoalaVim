@@ -17,11 +17,11 @@ LSP_SERVERS['lua_ls'] = {
 table.insert(M, {
 	'folke/neodev.nvim',
 	config = function()
-		require('neodev').setup {
+		require('neodev').setup({
 			library = {
 				plugins = { 'nvim-treesitter', 'plenary.nvim', 'ofirkai.nvim' },
 			},
-		}
+		})
 	end,
 })
 

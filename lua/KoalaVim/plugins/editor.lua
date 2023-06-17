@@ -40,7 +40,7 @@ table.insert(M, {
 		local path_utils = require('KoalaVim.utils.path')
 
 		local current_cwd_session_pattern = '^' .. vim.fn.getcwd()
-		local session_sorter = require('telescope.sorters').Sorter:new {
+		local session_sorter = require('telescope.sorters').Sorter:new({
 			scoring_function = function(a, prompt, line)
 				local fzy_score = fzy_sorter.scoring_function(a, prompt, line)
 				if fzy_score < 0 then
@@ -55,12 +55,12 @@ table.insert(M, {
 
 			discard = true,
 			highlighter = fzy_sorter.highlighter,
-		}
+		})
 
 		local home_dir_regex = '^' .. vim.loop.os_homedir()
 		local get_session_finder = function()
 			local sessions = require('possession.query').as_list()
-			return require('telescope.finders').new_table {
+			return require('telescope.finders').new_table({
 				results = sessions,
 				entry_maker = function(entry)
 					local unescaped_name = path_utils.unescape_dir(entry.name)
@@ -70,7 +70,7 @@ table.insert(M, {
 						ordinal = unescaped_name,
 					}
 				end,
-			}
+			})
 		end
 
 		vim.api.nvim_create_user_command('SessionList', function()
@@ -184,7 +184,9 @@ table.insert(M, {
 	keys = {
 		{
 			'<leader>z',
-			function() vim.cmd('NeoZoomToggle') end,
+			function()
+				vim.cmd('NeoZoomToggle')
+			end,
 			mode = { 'n', 'v' },
 			desc = 'Zoom split',
 			nowait = true,
@@ -214,8 +216,20 @@ table.insert(M, {
 		require('todo-comments').setup(opts)
 	end,
 	keys = {
-		{ ']t', function() require('todo-comments').jump_next() end, desc = 'Next todo comment' },
-		{ '[t', function() require('todo-comments').jump_prev() end, desc = 'Previous todo comment' },
+		{
+			']t',
+			function()
+				require('todo-comments').jump_next()
+			end,
+			desc = 'Next todo comment',
+		},
+		{
+			'[t',
+			function()
+				require('todo-comments').jump_prev()
+			end,
+			desc = 'Previous todo comment',
+		},
 	},
 })
 
@@ -275,8 +289,7 @@ table.insert(M, {
 	keys = {
 		{ '<leader>rgb', '<cmd>PickColor<CR>', desc = 'Pick color' },
 	},
-	opts = {
-	},
+	opts = {},
 	config = function(_, opts)
 		require('color-picker').setup(opts)
 	end,
@@ -284,8 +297,7 @@ table.insert(M, {
 
 table.insert(M, {
 	'tiagovla/scope.nvim',
-	opts = {
-	},
+	opts = {},
 	config = function(_, opts)
 		require('scope').setup(opts)
 	end,
@@ -300,7 +312,13 @@ table.insert(M, {
 	'AckslD/nvim-FeMaco.lua',
 	cmd = 'FeMaco',
 	keys = {
-		{ '<leader>e', function() require('femaco.edit').edit_code_block() end, 'Edit markdown codeblocks' },
+		{
+			'<leader>e',
+			function()
+				require('femaco.edit').edit_code_block()
+			end,
+			'Edit markdown codeblocks',
+		},
 	},
 	opts = {
 		post_open_float = function(winnr)
@@ -330,10 +348,15 @@ table.insert(M, {
 table.insert(M, {
 	'ofirgall/open.nvim',
 	keys = {
-		{ '<leader>gx', function() require('open').open_cword() end, desc = 'Open current word' },
+		{
+			'<leader>gx',
+			function()
+				require('open').open_cword()
+			end,
+			desc = 'Open current word',
+		},
 	},
-	opts = {
-	},
+	opts = {},
 	config = function(_, opts)
 		require('open').setup(opts)
 	end,
@@ -390,7 +413,9 @@ table.insert(M, {
 	config = function(_, opts)
 		local retrail = require('retrail')
 		retrail.setup(opts)
-		api.nvim_create_user_command('TrimWhiteSpace', function() retrail:trim() end, {})
+		api.nvim_create_user_command('TrimWhiteSpace', function()
+			retrail:trim()
+		end, {})
 	end,
 })
 
@@ -420,7 +445,14 @@ table.insert(M, {
 		require('based').setup(opts)
 	end,
 	keys = {
-		{ '<leader>H', function() require('based').convert() end, mode = { 'n', 'v' }, desc = 'Convert hex <=> decimal' },
+		{
+			'<leader>H',
+			function()
+				require('based').convert()
+			end,
+			mode = { 'n', 'v' },
+			desc = 'Convert hex <=> decimal',
+		},
 	},
 })
 
@@ -440,8 +472,7 @@ table.insert(M, {
 table.insert(M, {
 	'RaafatTurki/hex.nvim',
 	cmd = { 'HexDump', 'HexAssemble', 'HexToggle' },
-	opts = {
-	},
+	opts = {},
 	config = function(_, opts)
 		require('hex').setup(opts)
 	end,
@@ -462,10 +493,27 @@ table.insert(M, {
 		'nvim-lua/plenary.nvim',
 	},
 	keys = {
-		{ '<leader>m', function() require('harpoon.mark').add_file() end, desc = 'Add file to harpoon' },
-		{ '<leader>A', function() require('telescope').extensions.harpoon.marks() end, desc = 'Jump to harpoon file' },
-		{ '<leader>a', function() require('harpoon.ui').toggle_quick_menu() end, desc = 'Jump to harpoon file' },
-
+		{
+			'<leader>m',
+			function()
+				require('harpoon.mark').add_file()
+			end,
+			desc = 'Add file to harpoon',
+		},
+		{
+			'<leader>A',
+			function()
+				require('telescope').extensions.harpoon.marks()
+			end,
+			desc = 'Jump to harpoon file',
+		},
+		{
+			'<leader>a',
+			function()
+				require('harpoon.ui').toggle_quick_menu()
+			end,
+			desc = 'Jump to harpoon file',
+		},
 	},
 	config = function()
 		require('telescope').load_extension('harpoon')

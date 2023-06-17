@@ -21,7 +21,7 @@ return {
 		filter = {
 			event = 'msg_show',
 			kind = '',
-			find = '"[%w%p]+" %d+L, %d+B'
+			find = '"[%w%p]+" %d+L, %d+B',
 		},
 		opts = { skip = true },
 	},
@@ -30,7 +30,7 @@ return {
 		filter = {
 			event = 'msg_show',
 			kind = '',
-			find = '"[%w%p]+"%s+%d+ lines --'
+			find = '"[%w%p]+"%s+%d+ lines --',
 		},
 		opts = { skip = true },
 	},
@@ -39,7 +39,7 @@ return {
 		filter = {
 			event = 'msg_show',
 			kind = '',
-			find = 'No lines in buffer'
+			find = 'No lines in buffer',
 		},
 		opts = { skip = true },
 	},
@@ -48,7 +48,7 @@ return {
 		filter = {
 			event = 'msg_show',
 			kind = 'wmsg',
-			find = 'search hit BOTTOM, continuing at TOP'
+			find = 'search hit BOTTOM, continuing at TOP',
 		},
 		opts = { skip = true },
 	},
@@ -56,7 +56,7 @@ return {
 		filter = {
 			event = 'msg_show',
 			kind = 'wmsg',
-			find = 'search hit TOP, continuing at BOTTOM'
+			find = 'search hit TOP, continuing at BOTTOM',
 		},
 		opts = { skip = true },
 	},
@@ -64,7 +64,7 @@ return {
 		filter = {
 			event = 'msg_show',
 			kind = 'emsg',
-			find = 'Pattern not found:'
+			find = 'Pattern not found:',
 		},
 		opts = { skip = true },
 	},

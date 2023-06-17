@@ -10,7 +10,7 @@ HYDRAS['window_resizer'] = {
 	config = {
 		timeout = 4000,
 		hint = {
-			border = 'rounded'
+			border = 'rounded',
 		},
 	},
 	mode = 'n',

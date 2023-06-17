@@ -21,11 +21,28 @@ table.insert(M, {
 table.insert(M, {
 	'gbprod/substitute.nvim',
 	keys = {
-		{ 'cx', function() require('substitute.exchange').operator() end, desc = 'Operator: substitute/exchange' },
-		{ 'cxx', function() require('substitute.exchange').line() end, desc = 'Operator: substitute/exchange line' },
-		{ 'cx', function() require('substitute.exchange').visual() end, desc = 'Operator: substitute/exchange', mode = 'x' },
-	},
-	opts = {
+		{
+			'cx',
+			function()
+				require('substitute.exchange').operator()
+			end,
+			desc = 'Operator: substitute/exchange',
+		},
+		{
+			'cxx',
+			function()
+				require('substitute.exchange').line()
+			end,
+			desc = 'Operator: substitute/exchange line',
+		},
+		{
+			'cx',
+			function()
+				require('substitute.exchange').visual()
+			end,
+			desc = 'Operator: substitute/exchange',
+			mode = 'x',
+		},
 	},
 	config = function(_, opts)
 		require('substitute').setup(opts)
@@ -71,7 +88,6 @@ table.insert(M, {
 	keys = {
 		{ '<leader>s', '<Plug>(leap-forward)', mode = { 'n', 'x' }, desc = 'Leap forward' },
 		{ '<leader>S', '<Plug>(leap-backward)', mode = { 'n', 'x' }, desc = 'Leap backard' },
-
 	},
 })
 
@@ -110,6 +126,7 @@ table.insert(M, {
 			['before'] = 'after',
 			['prev'] = 'next',
 			['above'] = 'below',
+			['start'] = 'end',
 		},
 		remove_default_keybinds = true,
 	},
@@ -119,14 +136,14 @@ table.insert(M, {
 	keys = {
 		{
 			'<leader>i',
-			function() require('nvim-toggler').toggle() end,
+			function()
+				require('nvim-toggler').toggle()
+			end,
 			mode = { 'n', 'v' },
 			desc = 'Invert words',
 		},
-
 	},
 })
-
 
 local text_case_cmd_table = {
 	['UpperCase'] = 'to_upper_case',
@@ -151,13 +168,14 @@ end
 table.insert(M, {
 	'johmsalas/text-case.nvim',
 	cmd = text_case_cmds,
-	config = function()
+	config = function(_, opts)
 		local textcase = require('textcase')
-		textcase.setup {
-		}
+		textcase.setup(opts)
 
 		for usrcmd, apiname in pairs(text_case_cmd_table) do
-			api.nvim_create_user_command(usrcmd, function() textcase.current_word(apiname) end, {})
+			api.nvim_create_user_command(usrcmd, function()
+				textcase.current_word(apiname)
+			end, {})
 		end
 	end,
 })
@@ -180,7 +198,12 @@ table.insert(M, {
 		{ 'y', '<Plug>(YankyYank)', mode = { 'n', 'x' }, desc = 'Yank with yanky.nvim' },
 		{ 'p', '<Plug>(YankyPutAfter)', mode = { 'n', 'x' }, desc = 'Paste with yanky.nvim' },
 		{ 'P', '<Plug>(YankyPutBefore)', mode = { 'n', 'x' }, desc = 'Paste with yank.nvim' },
-		{ '<leader>p', '"_d<Plug>(YankyPutBefore)', mode = 'x', desc = 'replace text without changing the copy register' },
+		{
+			'<leader>p',
+			'"_d<Plug>(YankyPutBefore)',
+			mode = 'x',
+			desc = 'replace text without changing the copy register',
+		},
 		{ '<M-[>', '<Plug>(YankyCycleForward)', desc = 'Cycle yank history forward' },
 		{ '<M-]>', '<Plug>(YankyCycleBackward)', desc = 'Cycle yank history backward' },
 	},
@@ -195,6 +218,7 @@ table.insert(M, {
 		{ 'sd', desc = 'Delete surround' },
 		{ 'sr', desc = 'Replace surround' },
 
+		--Surround word
 		{ 'sw', 'saiw', desc = 'Surround word', remap = true },
 		{ 'sW', 'saiW', desc = 'Surround WORD', remap = true },
 
@@ -223,7 +247,7 @@ table.insert(M, {
 			surrounds[pair[2]] = tmp
 		end
 
-		require('nvim-surround').setup {
+		require('nvim-surround').setup({
 			keymaps = {
 				normal = 'sa',
 				normal_cur = false,
@@ -242,10 +266,9 @@ table.insert(M, {
 			},
 			surrounds = surrounds,
 			move_cursor = false,
-		}
+		})
 	end,
 })
-
 
 table.insert(M, {
 	'Wansmer/treesj',
@@ -276,10 +299,30 @@ table.insert(M, {
 		require('sibling-swap').setup(opts)
 	end,
 	keys = {
-		{ '<C-Right>', function() require('sibling-swap').swap_with_right() end },
-		{ '<C-Left>', function() require('sibling-swap').swap_with_left() end },
-		{ '<space><Right>', function() require('sibling-swap').swap_with_right_with_opp() end },
-		{ '<space><Left>', function() require('sibling-swap').swap_with_left_with_opp() end },
+		{
+			'<C-Right>',
+			function()
+				require('sibling-swap').swap_with_right()
+			end,
+		},
+		{
+			'<C-Left>',
+			function()
+				require('sibling-swap').swap_with_left()
+			end,
+		},
+		{
+			'<space><Right>',
+			function()
+				require('sibling-swap').swap_with_right_with_opp()
+			end,
+		},
+		{
+			'<space><Left>',
+			function()
+				require('sibling-swap').swap_with_left_with_opp()
+			end,
+		},
 	},
 })
 
@@ -292,10 +335,12 @@ table.insert(M, {
 	config = function(_, opts)
 		require('various-textobjs').setup(opts)
 		local map = require('KoalaVim.utils.map').map
+		-- stylua: ignore start
 		map({ 'o', 'x' }, 'is', function() require('various-textobjs').subword(true) end)
 		map({ 'o', 'x' }, 'as', function() require('various-textobjs').subword(false) end)
 		map({ 'o', 'x' }, 'i|', function() require('various-textobjs').shellPipe(true) end)
 		map({ 'o', 'x' }, 'a|', function() require('various-textobjs').shellPipe(false) end)
+		-- stylua: ignore end
 	end,
 })
 

@@ -4,8 +4,7 @@ local hydra_keys = {}
 local hydra_cmds = {}
 for name, conf in pairs(HYDRAS) do
 	if conf.body then
-		table.insert(hydra_keys,
-			{ conf.body, desc = 'Trigger ' .. name .. ' hydra' })
+		table.insert(hydra_keys, { conf.body, desc = 'Trigger ' .. name .. ' hydra' })
 	end
 	if conf.cmd then
 		table.insert(hydra_cmds, conf.cmd)
@@ -38,7 +37,9 @@ table.insert(M, {
 			-- Setup custom bodies if needed
 			if conf.custom_bodies then
 				for _, body in ipairs(conf.custom_bodies) do
-					require('KoalaVim.utils.map').map(body.mode, body[1], function() body.callback(curr_hydra) end, body.desc)
+					require('KoalaVim.utils.map').map(body.mode, body[1], function()
+						body.callback(curr_hydra)
+					end, body.desc)
 				end
 			end
 		end

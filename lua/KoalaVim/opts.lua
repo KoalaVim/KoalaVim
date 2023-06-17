@@ -24,14 +24,14 @@ M.default_opts = {
 local function _verify(opts_tbl, scope_string)
 	local valid = true
 	for key, value in pairs(opts_tbl) do
-		if (type(value) == 'table') then
+		if type(value) == 'table' then
 			_verify(value, scope_string and scope_string .. key .. '.' or nil)
 		else
 			if value == M.NO_DEFAULT then
 				if scope_string then
 					-- TODO: better warnings
-					print(scope_string .. key ..
-						" isn't configured (you can turn off this message by passing `warnings = false` in koala opts)")
+					-- stylua: ignore
+					print(scope_string .. key .. " isn't configured (you can turn off this message by passing `warnings = false` in koala opts)")
 					valid = false
 				else
 					-- If warnings aren't on just return

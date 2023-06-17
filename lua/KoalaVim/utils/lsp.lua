@@ -39,4 +39,21 @@ function M.late_attach(on_attach_func)
 	end
 end
 
+function M.format(async)
+	local buf = vim.api.nvim_get_current_buf()
+	local ft = vim.bo[buf].filetype
+	local have_nls = #require('null-ls.sources').get_available(ft, 'NULL_LS_FORMATTING') > 0
+
+	vim.lsp.buf.format({
+		async = async,
+		bufnr = buf,
+		filter = function(client)
+			if have_nls then
+				return client.name == 'null-ls'
+			end
+			return client.name ~= 'null-ls'
+		end,
+	})
+end
+
 return M

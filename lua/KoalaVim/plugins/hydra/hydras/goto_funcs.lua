@@ -10,27 +10,39 @@ HYDRAS['Goto funcs'] = {
 	config = {
 		timeout = 4000,
 		hint = {
-			border = 'rounded'
+			border = 'rounded',
 		},
 	},
 	mode = { 'n', 'x' },
 	heads = {
-		{ 'j', function()
-			require('nvim-treesitter.textobjects.move').goto_next_start('@function.name')
-			require('KoalaVim.utils.misc').center_screen()
-		end, },
-		{ 'J', function()
-			require('nvim-treesitter.textobjects.move').goto_next_end('@function.outer')
-			require('KoalaVim.utils.misc').center_screen()
-		end, },
-		{ 'k', function()
-			require('nvim-treesitter.textobjects.move').goto_previous_start('@function.name')
-			require('KoalaVim.utils.misc').center_screen()
-		end, },
-		{ 'K', function()
-			require('nvim-treesitter.textobjects.move').goto_previous_end('@function.outer')
-			require('KoalaVim.utils.misc').center_screen()
-		end, },
+		{
+			'j',
+			function()
+				require('nvim-treesitter.textobjects.move').goto_next_start('@function.name')
+				require('KoalaVim.utils.misc').center_screen()
+			end,
+		},
+		{
+			'J',
+			function()
+				require('nvim-treesitter.textobjects.move').goto_next_end('@function.outer')
+				require('KoalaVim.utils.misc').center_screen()
+			end,
+		},
+		{
+			'k',
+			function()
+				require('nvim-treesitter.textobjects.move').goto_previous_start('@function.name')
+				require('KoalaVim.utils.misc').center_screen()
+			end,
+		},
+		{
+			'K',
+			function()
+				require('nvim-treesitter.textobjects.move').goto_previous_end('@function.outer')
+				require('KoalaVim.utils.misc').center_screen()
+			end,
+		},
 		--
 		{ '<Esc>', nil, { exit = true } },
 	},

@@ -46,7 +46,6 @@ table.insert(M, {
 		LSP_CAPS = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 		LSP_CAPS.textDocument.completion.completionItem.labelDetailsSupport = nil -- Overriding with false doesn't work for some reason
 
-
 		local function setup_server(server)
 			local server_opts_merged = vim.tbl_deep_extend('force', {
 				capabilities = LSP_CAPS,
@@ -67,16 +66,22 @@ table.insert(M, {
 			end
 		end
 
-		require('mason-lspconfig').setup {
+		require('mason-lspconfig').setup({
 			ensure_installed = mason_ensure_installed,
-		}
-		require('mason-lspconfig').setup_handlers {
+		})
+		require('mason-lspconfig').setup_handlers({
 			setup_server,
-		}
+		})
 	end,
 	keys = {
 		{ 'gD', vim.lsp.buf.declaration, desc = 'Go to Declaration' },
-		{ '<leader>F', function() vim.lsp.buf.format({ async = true }) end, desc = 'Format' },
+		{
+			'<leader>F',
+			function()
+				require('KoalaVim.utils.lsp').format(true)
+			end,
+			desc = 'Format',
+		},
 		{ 'K', vim.lsp.buf.hover, desc = 'Trigger hover' },
 		{ '<RightMouse>', '<LeftMouse><cmd>sleep 100m<cr><cmd>lua vim.lsp.buf.hover()<cr>', desc = 'Trigger hover' },
 	},
@@ -102,9 +107,11 @@ table.insert(M, {
 		require('mason').setup(opts)
 
 		-- Aliases for mason
+		-- stylua: ignore start
 		api.nvim_create_user_command('LspServers', function() api.nvim_command('Mason') end, {})
 		api.nvim_create_user_command('Linters', function() api.nvim_command('Mason') end, {})
 		api.nvim_create_user_command('Formatters', function() api.nvim_command('Mason') end, {})
+		-- stylua: ignore end
 
 		local mr = require('mason-registry')
 		for _, tool in ipairs(opts.ensure_installed) do
@@ -122,8 +129,7 @@ table.insert(M, {
 	event = { 'BufReadPre', 'BufNewFile' },
 	dependencies = { 'mason.nvim' },
 	opts = {
-		sources = {
-		},
+		sources = {},
 		-- Setup null-ls builtins sources
 		builtins_sources = {
 			formatting = {
@@ -219,14 +225,20 @@ table.insert(M, {
 table.insert(M, {
 	'ofirgall/inlay-hints.nvim', -- fork
 	keys = {
-		{ '<leader>t', function() require('inlay-hints').toggle() end, desc = 'Toggle inlay-hints' },
+		{
+			'<leader>t',
+			function()
+				require('inlay-hints').toggle()
+			end,
+			desc = 'Toggle inlay-hints',
+		},
 	},
 	config = function()
 		local function trim_hint(hint)
 			return string.gsub(hint, ':', '')
 		end
 
-		require('inlay-hints').setup {
+		require('inlay-hints').setup({
 			renderer = 'inlay-hints/render/eol',
 
 			hints = {
@@ -254,17 +266,17 @@ table.insert(M, {
 					end,
 				},
 			},
-		}
+		})
 	end,
 })
 
 table.insert(M, {
 	'ofirgall/format-on-leave.nvim',
-	ft = { 'go', 'rust', 'lua' },
+	event = 'LspAttach',
 	config = function()
-		require('format-on-leave').setup {
-			pattern = { '*.go', '*.rs', '*.lua' },
-		}
+		require('format-on-leave').setup({
+			format_func = require('KoalaVim.utils.lsp').format,
+		})
 	end,
 })
 
@@ -272,22 +284,25 @@ table.insert(M, {
 	'RRethy/vim-illuminate',
 	event = 'LspAttach',
 	config = function()
-		require('illuminate').configure {
+		require('illuminate').configure({
 			modes_denylist = { 'i' },
-		}
+		})
 	end,
 	keys = {
 		{
 			'<C-n>',
-			function() require 'illuminate'.goto_next_reference({ wrap = true }) end,
+			function()
+				require('illuminate').goto_next_reference({ wrap = true })
+			end,
 			desc = 'jump to Next occurrence of var on cursor',
 		},
 		{
 			'<C-p>',
-			function() require 'illuminate'.goto_prev_reference({ reverse = true, wrap = true }) end,
+			function()
+				require('illuminate').goto_prev_reference({ reverse = true, wrap = true })
+			end,
 			desc = 'jump to Previous occurrence of var on cursor',
 		},
-
 	},
 })
 
@@ -311,8 +326,7 @@ end
 table.insert(M, {
 	'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
 	config = function()
-		require('lsp_lines').setup {
-		}
+		require('lsp_lines').setup()
 	end,
 	keys = {
 		{ '<leader>l', toggle_lsp_diagnostics, desc = 'Toggle lsp diagnostics' },
@@ -327,7 +341,7 @@ table.insert(M, {
 		'MunifTanjim/nui.nvim',
 	},
 	config = function()
-		require('nvim-navbuddy').setup {
+		require('nvim-navbuddy').setup({
 			window = {
 				size = '80%',
 				left = {
@@ -340,7 +354,7 @@ table.insert(M, {
 			lsp = {
 				auto_attach = true,
 			},
-		}
+		})
 
 		require('KoalaVim.utils.lsp').late_attach(function(client, bufnr)
 			require('nvim-navbuddy').attach(client, bufnr)

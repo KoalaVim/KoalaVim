@@ -41,7 +41,7 @@ table.insert(M, {
 		-- ofirgall/cmp-lspkind-priority
 		local compare = require('cmp.config.compare')
 		local lspkind_priority = require('cmp-lspkind-priority')
-		lspkind_priority.setup {
+		lspkind_priority.setup({
 			priority = {
 				'Module',
 				'Variable',
@@ -70,11 +70,11 @@ table.insert(M, {
 				'TypeParameter',
 				'Text',
 			},
-		}
+		})
 
 		local snippy = require('snippy')
 		local cmp = require('cmp')
-		cmp.setup {
+		cmp.setup({
 			snippet = {
 				expand = function(args)
 					require('snippy').expand_snippet(args.body) -- For `snippy` users.
@@ -125,7 +125,7 @@ table.insert(M, {
 				format = lspkind.cmp_format({
 					symbol_map = require('ofirkai.plugins.nvim-cmp').kind_icons,
 					maxwidth = 50,
-					mode = 'symbol'
+					mode = 'symbol',
 				}),
 			},
 			window = require('ofirkai.plugins.nvim-cmp').window,
@@ -160,7 +160,7 @@ table.insert(M, {
 			experimental = {
 				ghost_text = false,
 			},
-		}
+		})
 		cmp.setup.cmdline('/', {
 			sources = {
 				all_visible_buffers_source(nil, 15),
@@ -203,8 +203,7 @@ table.insert(M, {
 		'hrsh7th/nvim-cmp',
 	},
 	config = function()
-		require('cmp_git').setup {
-		}
+		require('cmp_git').setup()
 
 		require('cmp').setup.filetype('dap-repl', {
 			sources = {
@@ -260,8 +259,8 @@ table.insert(M, {
 		'hrsh7th/nvim-cmp',
 	},
 	config = function()
-		require('crates').setup {
-		}
+		require('crates').setup()
+
 		require('cmp').setup.filetype('toml', {
 			sources = {
 				{ name = 'crates', priority = 500 },

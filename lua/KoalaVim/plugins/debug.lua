@@ -7,12 +7,13 @@ table.insert(M, {
 		dap.defaults.fallback.stepping_granularity = 'line'
 		--- Signs ---
 		-- Sign priority = 11
+		-- stylua: ignore start
 		vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'DiagnosticError', linehl = '', numhl = '' })
 		vim.fn.sign_define('DapBreakpointCondition', { text = '', texthl = 'DiagnosticWarn', linehl = '', numhl = '' })
 		vim.fn.sign_define('DapBreakpointRejected', { text = '', texthl = 'DiagnosticWarn', linehl = '', numhl = '' })
 		vim.fn.sign_define('DapLogPoint', { text = '', texthl = 'DiagnosticWarn', linehl = '', numhl = '' })
-		vim.fn.sign_define('DapStopped',
-			{ text = '', texthl = 'DiagnosticInfo', linehl = 'CursorLine', numhl = 'CursorLine' })
+		vim.fn.sign_define('DapStopped', { text = '', texthl = 'DiagnosticInfo', linehl = 'CursorLine', numhl = 'CursorLine' })
+		-- stylua: ignore end
 
 		--- Setup Adapaters ---
 
@@ -65,21 +66,34 @@ table.insert(M, {
 			port = 2345,
 		}
 
-		vim.api.nvim_create_user_command('ClearBreakpoints',
-			function()
-				require('dap').clear_breakpoints()
-			end, {})
+		vim.api.nvim_create_user_command('ClearBreakpoints', function()
+			require('dap').clear_breakpoints()
+		end, {})
 	end,
 	lazy = true, -- Loading with dap-ui
 	keys = {
 		{
 			'<F9>',
-			function() require 'dap'.toggle_breakpoint() end,
+			function()
+				require('dap').toggle_breakpoint()
+			end,
 			desc = 'Debug: Toggle breakpoint',
 		},
 		-- TODO: conditional breakpoint
-		{ '<F5>', function() require 'dap'.continue() end, desc = 'Debug: continue' },
-		{ '<F6>', function() require 'dap'.terminate() end, desc = 'Debug: terminate' },
+		{
+			'<F5>',
+			function()
+				require('dap').continue()
+			end,
+			desc = 'Debug: continue',
+		},
+		{
+			'<F6>',
+			function()
+				require('dap').terminate()
+			end,
+			desc = 'Debug: terminate',
+		},
 		{
 			'<F10>',
 			function()
@@ -106,22 +120,27 @@ table.insert(M, {
 		},
 		{
 			'<leader>rp',
-			function() require('dap').repl.open() end,
+			function()
+				require('dap').repl.open()
+			end,
 			desc = 'Debug: open repl',
 		},
 		{
 			'<leader>rc',
-			function() require('dap').run_to_cursor() end,
+			function()
+				require('dap').run_to_cursor()
+			end,
 			desc = 'Debug: Run to cursor',
 		},
 		{
 			'<leader>k',
-			function() require('dapui').eval() end,
+			function()
+				require('dapui').eval()
+			end,
 			desc = 'Debug: evaluate',
 		},
 	},
 })
-
 
 table.insert(M, {
 	'rcarriga/nvim-dap-ui',
@@ -131,7 +150,7 @@ table.insert(M, {
 	},
 	config = function()
 		local dapui = require('dapui')
-		dapui.setup {
+		dapui.setup({
 			expand_lines = false,
 			layouts = {
 				{
@@ -151,14 +170,18 @@ table.insert(M, {
 					},
 				},
 			},
-		}
+		})
 
 		local dap_closed = function()
 			dapui.close({})
 			vim.api.nvim_command('tabclose $') -- $(last) is the debug page
 
-			require('KoalaVim.utils.map').map('n', '<RightMouse>',
-				'<LeftMouse><cmd>sleep 100m<cr><cmd>lua vim.lsp.buf.hover()<cr>', 'Trigger hover')
+			require('KoalaVim.utils.map').map(
+				'n',
+				'<RightMouse>',
+				'<LeftMouse><cmd>sleep 100m<cr><cmd>lua vim.lsp.buf.hover()<cr>',
+				'Trigger hover'
+			)
 
 			require('format-on-leave').enable()
 		end
@@ -186,9 +209,27 @@ table.insert(M, {
 	-- Cycle breakpoints with ]d/[d
 	'ofirgall/goto-breakpoints.nvim',
 	keys = {
-		{ ']d', function() require('goto-breakpoints').next() end, desc = 'Goto next breakpoint' },
-		{ '[d', function() require('goto-breakpoints').prev() end, desc = 'Goto prev breakpoint' },
-		{ ']S', function() require('goto-breakpoints').stopped() end, desc = 'Goto DAP stopped location' },
+		{
+			']d',
+			function()
+				require('goto-breakpoints').next()
+			end,
+			desc = 'Goto next breakpoint',
+		},
+		{
+			'[d',
+			function()
+				require('goto-breakpoints').prev()
+			end,
+			desc = 'Goto prev breakpoint',
+		},
+		{
+			']S',
+			function()
+				require('goto-breakpoints').stopped()
+			end,
+			desc = 'Goto DAP stopped location',
+		},
 	},
 })
 

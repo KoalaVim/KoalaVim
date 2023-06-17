@@ -1,18 +1,17 @@
 local M = {}
 
-LSP_SERVERS['gopls'] = {
-}
+LSP_SERVERS['gopls'] = {}
 
 table.insert(M, {
 	'ray-x/go.nvim',
 	dependencies = {
 		'ray-x/guihua.lua',
-		'neovim/nvim-lspconfig'
+		'neovim/nvim-lspconfig',
 	},
 	ft = { 'go', 'gomod' },
 	build = ':lua require("go.install").update_all_sync()',
 	config = function()
-		require('go').setup {
+		require('go').setup({
 			-- No keymaps
 			lsp_keymaps = false,
 			lsp_codelens = false,
@@ -47,7 +46,7 @@ table.insert(M, {
 					},
 				},
 			},
-		}
+		})
 
 		-- setup lspconfig
 		require('lspconfig').gopls.setup(require('go.lsp').config())
@@ -59,8 +58,8 @@ table.insert(M, {
 			pattern = 'go',
 			callback = function(events)
 				map_buffer(events.buf, 'n', '<leader>e', '<cmd>GoIfErr<cr>', 'Golang: create if err')
-				map_buffer(events.buf, 'n', '<leader>fln', '<cmd>s/Println/Printf/<cr>$F"' .. add_new_line,
-					'Golang: change println to printf')
+				-- stylua: ignore
+				map_buffer( events.buf, 'n', '<leader>fln', '<cmd>s/Println/Printf/<cr>$F"' .. add_new_line, 'Golang: change println to printf')
 			end,
 		})
 	end,

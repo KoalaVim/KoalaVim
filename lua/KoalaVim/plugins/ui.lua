@@ -33,7 +33,7 @@ table.insert(M, {
 			vim.cmd('colorscheme pablo')
 			return
 		end
-		require('ofirkai').setup {
+		require('ofirkai').setup({
 			scheme = {
 				-- background = '#232323', -- Gray -5
 				-- background = '#1e1e1e', -- Gray -10
@@ -48,7 +48,7 @@ table.insert(M, {
 
 				winbar_bg = '#1d1d14', -- Original -5
 			},
-		}
+		})
 	end,
 })
 
@@ -88,7 +88,7 @@ table.insert(M, {
 		end
 	end,
 	config = function()
-		require('dressing').setup {
+		require('dressing').setup({
 			input = {
 				insert_only = false,
 				start_in_insert = false,
@@ -117,7 +117,7 @@ table.insert(M, {
 					winhighlight = require('ofirkai.plugins.dressing').winhighlight,
 				},
 			},
-		}
+		})
 	end,
 })
 
@@ -168,7 +168,7 @@ table.insert(M, {
 			map_buffer(bufnr, 'n', 'gh', git_hist_path, 'Nvimtree: view git history in current path')
 		end
 
-		require('nvim-tree').setup {
+		require('nvim-tree').setup({
 			on_attach = on_attach,
 			view = {
 				adaptive_size = true,
@@ -191,7 +191,7 @@ table.insert(M, {
 					},
 				},
 			},
-		}
+		})
 	end,
 })
 
@@ -224,7 +224,6 @@ table.insert(M, {
 	end,
 })
 
-
 -- Shows context in status line (with lsp)
 table.insert(M, {
 	'SmiteshP/nvim-navic',
@@ -244,7 +243,7 @@ table.insert(M, {
 	'akinsho/bufferline.nvim',
 	event = 'VeryLazy',
 	config = function()
-		require('bufferline').setup {
+		require('bufferline').setup({
 			options = {
 				separator_style = 'slant',
 				offsets = { { filetype = 'NvimTree', text = 'File Explorer', text_align = 'center' } },
@@ -254,7 +253,7 @@ table.insert(M, {
 				max_name_length = 40,
 			},
 			highlights = require('ofirkai.tablines.bufferline').highlights,
-		}
+		})
 	end,
 })
 
@@ -262,14 +261,14 @@ table.insert(M, {
 table.insert(M, {
 	'rcarriga/nvim-notify',
 	config = function()
-		require('notify').setup {
+		require('notify').setup({
 			background_colour = require('ofirkai.design').scheme.ui_bg,
 			fps = 60,
 			stages = 'slide',
 			timeout = 1000,
 			max_width = 50,
 			max_height = 20,
-		}
+		})
 	end,
 })
 
@@ -278,7 +277,7 @@ table.insert(M, {
 	'folke/noice.nvim',
 	event = 'VeryLazy',
 	config = function()
-		require('noice').setup {
+		require('noice').setup({
 			popupmenu = {
 				enabled = false,
 			},
@@ -294,7 +293,7 @@ table.insert(M, {
 				},
 			},
 			routes = require('KoalaVim.misc.noice_routes'),
-		}
+		})
 	end,
 	keys = {
 		{
@@ -327,12 +326,12 @@ table.insert(M, {
 	'nvim-zh/colorful-winsep.nvim',
 	config = function()
 		local scheme = require('ofirkai.design').scheme
-		require('colorful-winsep').setup {
+		require('colorful-winsep').setup({
 			highlight = {
 				bg = scheme.background,
 				fg = scheme.vert_split_fg_active,
 			},
-		}
+		})
 	end,
 })
 
@@ -341,7 +340,7 @@ table.insert(M, {
 	'b0o/incline.nvim',
 	event = 'BufReadPre',
 	config = function()
-		require('incline').setup {
+		require('incline').setup({
 			render = function(props)
 				local relative_name = vim.fn.fnamemodify(api.nvim_buf_get_name(props.buf), ':~:.')
 				local filename = vim.fn.fnamemodify(api.nvim_buf_get_name(props.buf), ':t')
@@ -351,7 +350,8 @@ table.insert(M, {
 				return {
 					-- { get_diagnostic_label(props) },
 					-- { get_git_diff(props) },
-					{ ft_icon, guifg = ft_color }, { ' ' },
+					{ ft_icon, guifg = ft_color },
+					{ ' ' },
 					{ relative_name, gui = modified },
 				}
 			end,
@@ -366,7 +366,7 @@ table.insert(M, {
 				focused_win = true,
 				only_win = true,
 			},
-		}
+		})
 	end,
 })
 
@@ -391,7 +391,6 @@ table.insert(M, {
 	lazy = true,
 })
 
-
 table.insert(M, {
 	'folke/which-key.nvim',
 	event = 'VeryLazy',
@@ -414,6 +413,7 @@ table.insert(M, {
 
 		-- Hack to show surround and split args
 		local map = require('KoalaVim.utils.map').map
+		-- stylua: ignore
 		map('', 's', function() wk.show_command('s') end, {})
 		map('', '<leader><leader>', '<cmd>WhichKey<cr>', {})
 
@@ -443,7 +443,6 @@ table.insert(M, {
 ⠀⠀⠀⠀⠉⠻⠿⣿⣿⣿⣿⣿⠿⠋⣠⡾
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠁
 ]]
-
 
 		dashboard.section.header.val = vim.split(logo, '\n')
 		dashboard.section.buttons.val = {
@@ -515,7 +514,9 @@ table.insert(M, {
 	keys = {
 		{
 			'<C-l>',
-			function() require('lsp_signature').toggle_float_win() end,
+			function()
+				require('lsp_signature').toggle_float_win()
+			end,
 			mode = 'i',
 			desc = 'Toggle signature',
 		},

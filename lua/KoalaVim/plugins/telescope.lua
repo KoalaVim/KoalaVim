@@ -63,10 +63,11 @@ end
 
 local function live_grep_current_dir(default_text)
 	default_text = default_text or ''
-	live_grep({
-		default_text = '-g"' .. vim.fn.fnamemodify(vim.fn.expand('%'), ':.:h') .. '/*"' .. ' -F "' .. default_text })
-end
 
+	local telescope_text = '-g"' .. vim.fn.fnamemodify(vim.fn.expand('%'), ':.:h') .. '/*"' .. ' -F "' .. default_text
+
+	live_grep({ default_text = telescope_text })
+end
 
 -- TODO: convert to lua + make live_grep local
 vim.cmd("function! LiveGrepRawOperator(...) \n lua live_grep({}, 'n') \n endfunction") -- used by `<leader>fm`
@@ -81,9 +82,7 @@ local function goto_def()
 	elseif ft == 'help' then
 		api.nvim_command(':help ' .. vim.fn.expand('<cword>'))
 	else
-		require 'telescope.builtin'.lsp_definitions({
-			show_line = false,
-		})
+		require('telescope.builtin').lsp_definitions({ show_line = false })
 	end
 end
 
@@ -94,11 +93,8 @@ local function lsp_references()
 	})
 end
 
-
 local function lsp_implementations()
-	require('telescope.builtin').lsp_implementations {
-		show_line = false,
-	}
+	require('telescope.builtin').lsp_implementations({ show_line = false })
 end
 
 local split_if_not_exist = require('KoalaVim.utils.splits').split_if_not_exist
@@ -123,7 +119,7 @@ table.insert(M, {
 		'nvim-telescope/telescope-ui-select.nvim',
 	},
 	config = function()
-		require('telescope').setup {
+		require('telescope').setup({
 			defaults = {
 				dynamic_preview_title = true,
 				mappings = {
@@ -135,6 +131,7 @@ table.insert(M, {
 						['<C-h>'] = require('telescope.actions.layout').cycle_layout_prev,
 						['<C-l>'] = require('telescope.actions.layout').cycle_layout_next,
 						['<CR>'] = require('telescope.actions').select_default + require('telescope.actions').center,
+						-- stylua: ignore
 						['<C-x>'] = require('telescope.actions').select_horizontal + require('telescope.actions').center,
 						['<C-v>'] = require('telescope.actions').select_vertical + require('telescope.actions').center,
 						['<C-t>'] = require('telescope.actions').select_tab + require('telescope.actions').center,
@@ -147,6 +144,7 @@ table.insert(M, {
 						['<C-l>'] = require('telescope.actions.layout').cycle_layout_next,
 						['<C-o>'] = 'select_horizontal',
 						['<CR>'] = require('telescope.actions').select_default + require('telescope.actions').center,
+						-- stylua: ignore
 						['<C-x>'] = require('telescope.actions').select_horizontal + require('telescope.actions').center,
 						['<C-v>'] = require('telescope.actions').select_vertical + require('telescope.actions').center,
 						['<C-t>'] = require('telescope.actions').select_tab + require('telescope.actions').center,
@@ -170,10 +168,7 @@ table.insert(M, {
 				cycle_layout_list = cycle_layout_list,
 			},
 			extensions = {
-				['ui-select'] = {
-					-- require('telescope.themes').get_dropdown {
-					-- },
-				},
+				['ui-select'] = {},
 				undo = {
 					side_by_side = true,
 					layout_strategy = 'vertical',
@@ -199,22 +194,30 @@ table.insert(M, {
 				find_files = {
 					hidden = true,
 					follow = true,
-					layout_strategy = 'horizontal'
+					layout_strategy = 'horizontal',
 				},
 			},
-		}
+		})
 	end,
 	keys = {
 		-- General telescope utils
 		{
 			'<leader>fr',
-			function() require('telescope.builtin').resume({ initial_mode = 'normal' }) end,
-			desc = 'Find resume'
+			function()
+				require('telescope.builtin').resume({ initial_mode = 'normal' })
+			end,
+			desc = 'Find resume',
 		},
 		-- Find files
 		{ '<leader>ff', find_files, desc = 'Find file' },
 		{ mode = 'v', '<leader>ff', '<Esc><cmd>lua find_files("v")<cr>', desc = 'find file, text from visual' },
-		{ '<leader>fcf', function() find_files('cword') end, desc = 'Find files with current word' },
+		{
+			'<leader>fcf',
+			function()
+				find_files('cword')
+			end,
+			desc = 'Find files with current word',
+		},
 		{ '<leader>T', find_current_file, desc = 'find files with the current file (use to find _test fast)' },
 		-- Find buffer
 		{ '<leader>fb', '<cmd>Telescope buffers<CR>', desc = 'Browse open buffers' },
@@ -230,7 +233,7 @@ table.insert(M, {
 				vim.api.nvim_input('<cmd>vsplit<cr>')
 				goto_def()
 			end,
-			desc = 'Go to Definition in split'
+			desc = 'Go to Definition in split',
 		},
 		{
 			'<C-LeftMouse>',
@@ -238,7 +241,7 @@ table.insert(M, {
 				vim.api.nvim_input('<LeftMouse>')
 				goto_def()
 			end,
-			desc = 'Go to Definition'
+			desc = 'Go to Definition',
 		},
 		{
 			'gvd',
@@ -246,7 +249,7 @@ table.insert(M, {
 				split_if_not_exist(true)
 				goto_def()
 			end,
-			desc = 'Go to Definition in Vsplit'
+			desc = 'Go to Definition in Vsplit',
 		},
 		{
 			'gxd',
@@ -254,7 +257,7 @@ table.insert(M, {
 				split_if_not_exist(false)
 				goto_def()
 			end,
-			desc = 'Go to Definition in Xsplit'
+			desc = 'Go to Definition in Xsplit',
 		},
 
 		-- Goto references
@@ -265,7 +268,7 @@ table.insert(M, {
 				split_if_not_exist(true)
 				lsp_references()
 			end,
-			desc = 'Go to References in Vsplit'
+			desc = 'Go to References in Vsplit',
 		},
 		{
 			'gxr',
@@ -273,7 +276,7 @@ table.insert(M, {
 				split_if_not_exist(false)
 				lsp_references()
 			end,
-			desc = 'Go to References in Xsplit'
+			desc = 'Go to References in Xsplit',
 		},
 
 		-- Goto implementations
@@ -284,7 +287,7 @@ table.insert(M, {
 				split_if_not_exist(true)
 				lsp_implementations()
 			end,
-			desc = 'Go to Implementation in Vsplit'
+			desc = 'Go to Implementation in Vsplit',
 		},
 		{
 			'gxi',
@@ -298,31 +301,33 @@ table.insert(M, {
 		-- Goto type
 		{
 			'gt',
-			function() require 'telescope.builtin'.lsp_type_definitions() end,
+			function()
+				require('telescope.builtin').lsp_type_definitions()
+			end,
 			desc = 'Go to Type',
 		},
 		{
 			'gvt',
 			function()
 				split_if_not_exist(true)
-				require 'telescope.builtin'.lsp_type_definitions {}
+				require('telescope.builtin').lsp_type_definitions({})
 			end,
-			desc = 'Go to Type in Vsplit'
+			desc = 'Go to Type in Vsplit',
 		},
 		{
 			'gxt',
 			function()
 				split_if_not_exist(false)
-				require 'telescope.builtin'.lsp_type_definitions {}
+				require('telescope.builtin').lsp_type_definitions({})
 			end,
-			desc = 'Go to Type in Xsplit'
+			desc = 'Go to Type in Xsplit',
 		},
 
 		-- Goto symbol
 		{
 			'gs',
 			function()
-				require 'telescope.builtin'.lsp_document_symbols({
+				require('telescope.builtin').lsp_document_symbols({
 					symbol_width = 65,
 					symbol_type_width = 8,
 					fname_width = 0,
@@ -335,26 +340,31 @@ table.insert(M, {
 					preview = { hide_on_startup = true },
 				})
 			end,
-			desc = 'Go Symbols'
+			desc = 'Go Symbols',
 		},
 		{
 			'gS',
-			function() require 'telescope.builtin'.lsp_dynamic_workspace_symbols() end,
+			function()
+				require('telescope.builtin').lsp_dynamic_workspace_symbols()
+			end,
 			'Go workspace Symbols',
 		},
 
 		-- Go to problem
 		{
 			'gp',
-			function() require 'telescope.builtin'.diagnostics { bufnr = 0 } end,
-			desc = 'Go to Problems'
+			function()
+				require('telescope.builtin').diagnostics({ bufnr = 0 })
+			end,
+			desc = 'Go to Problems',
 		},
 		{
 			'gP',
-			function() require 'telescope.builtin'.diagnostics() end,
+			function()
+				require('telescope.builtin').diagnostics()
+			end,
 			desc = 'Go to workspace Problems',
 		},
-
 	},
 })
 
@@ -387,17 +397,31 @@ table.insert(M, {
 			mode = 'v',
 			'<leader>fw',
 			'<Esc><cmd>lua live_grep({}, "v")<cr>',
-			desc = 'search in all files (default text is from visual)'
+			desc = 'search in all files (default text is from visual)',
 		},
-		{ '<leader>fcw', function() live_grep({}, 'cword') end, desc = 'Find current word' },
-		{ '<leader>fcW', function() live_grep({}, 'cWORD') end, desc = 'Find current word' },
+		{
+			'<leader>fcw',
+			function()
+				live_grep({}, 'cword')
+			end,
+			desc = 'Find current word',
+		},
+		{
+			'<leader>fcW',
+			function()
+				live_grep({}, 'cWORD')
+			end,
+			desc = 'Find current word',
+		},
 		{ '<leader>fm', ':set opfunc=LiveGrepRawOperator<CR>g@', desc = 'Find with movement' },
 		-- Find in current dir
 		{ '<leader>fcd', live_grep_current_dir, desc = 'Find in current dir' },
 		{
 			'<leader>fcdw',
-			function() live_grep_current_dir(vim.fn.expand('<cword>')) end,
-			desc = 'Find in current dir current word'
+			function()
+				live_grep_current_dir(vim.fn.expand('<cword>'))
+			end,
+			desc = 'Find in current dir current word',
 		},
 	},
 	dependencies = 'nvim-telescope/telescope.nvim',
@@ -421,7 +445,7 @@ table.insert(M, {
 					sorting_strategy = 'ascending', -- From top
 				})
 			end,
-			desc = 'Spell suggest'
+			desc = 'Spell suggest',
 		},
 		{
 			'sy',
@@ -436,7 +460,7 @@ table.insert(M, {
 					sorting_strategy = 'ascending', -- From top
 				})
 			end,
-			desc = 'Synonyms'
+			desc = 'Synonyms',
 		},
 	},
 })
@@ -464,7 +488,7 @@ table.insert(M, {
 	},
 	config = function()
 		local easypick = require('easypick')
-		easypick.setup {
+		easypick.setup({
 			pickers = {
 				{
 					name = 'dirtyfiles',
@@ -472,7 +496,7 @@ table.insert(M, {
 					previewer = easypick.previewers.default(),
 				},
 			},
-		}
+		})
 	end,
 })
 

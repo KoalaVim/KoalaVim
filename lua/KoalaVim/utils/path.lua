@@ -1,6 +1,6 @@
 local M = {}
 
-local IS_WIN32 = vim.fn.has 'win32' == 1
+local IS_WIN32 = vim.fn.has('win32') == 1
 
 -- thx for rmagatti/auto-session for those very helpful functions
 function M.win32_unescaped_dir(dir)

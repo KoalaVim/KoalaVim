@@ -5,13 +5,12 @@ table.insert(M, {
 	'jackMort/ChatGPT.nvim',
 	cmd = { 'ChatGPT', 'ChatGPTActAs', 'ChatGPTRunCustomCodeAction', 'ChatGPTEditWithInstructions' },
 	config = function()
-		require('chatgpt').setup {
-		}
+		require('chatgpt').setup()
 	end,
 	dependencies = {
 		'MunifTanjim/nui.nvim',
 		'nvim-lua/plenary.nvim',
-		'nvim-telescope/telescope.nvim'
+		'nvim-telescope/telescope.nvim',
 	},
 })
 

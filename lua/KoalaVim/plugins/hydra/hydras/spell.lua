@@ -13,7 +13,7 @@ HYDRAS['spell fixer'] = {
 		timeout = 10000,
 		invoke_on_body = true,
 		hint = {
-			border = 'rounded'
+			border = 'rounded',
 		},
 		on_enter = function()
 			spell_status_before = vim.opt.spell
@@ -26,14 +26,21 @@ HYDRAS['spell fixer'] = {
 	mode = 'n',
 	body = '<C-s>',
 	heads = {
-		{ 'j', function()
-			vim.api.nvim_input(']s')
-			require('KoalaVim.utils.misc').center_screen()
-		end, },
-		{ 'k', function()
-			vim.api.nvim_input('[s')
-			require('KoalaVim.utils.misc').center_screen()
-		end, },
+		{
+			'j',
+			function()
+				vim.api.nvim_input(']s')
+				require('KoalaVim.utils.misc').center_screen()
+			end,
+		},
+		{
+			'k',
+			function()
+				vim.api.nvim_input('[s')
+				require('KoalaVim.utils.misc').center_screen()
+			end,
+		},
+
 		{ '<Enter>', '<cmd>telescope spell_suggest<CR>' },
 		--
 		{ '<Esc>', nil, { exit = true, nowait = true } },

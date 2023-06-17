@@ -20,8 +20,12 @@ function M.setup_lualine(is_half)
 	local ofirkai_lualine = require('ofirkai.statuslines.lualine')
 	local y_section = {
 		{
-			function() return require('gitblame').get_current_blame_text() end,
-			cond = function() return package.loaded['gitblame'] and require('gitblame').is_blame_text_available() end,
+			function()
+				return require('gitblame').get_current_blame_text()
+			end,
+			cond = function()
+				return package.loaded['gitblame'] and require('gitblame').is_blame_text_available()
+			end,
 		},
 	}
 
@@ -37,7 +41,7 @@ function M.setup_lualine(is_half)
 		lualine_y = y_section
 	end
 
-	require('lualine').setup {
+	require('lualine').setup({
 		options = {
 			theme = ofirkai_lualine.theme,
 			icons_enabled = true,
@@ -62,8 +66,12 @@ function M.setup_lualine(is_half)
 			lualine_c = {
 				{ 'filename', shorting_target = 0, icon = '' },
 				{
-					function() return require('nvim-navic').get_location() end,
-					cond = function() return package.loaded['nvim-navic'] and require('nvim-navic').is_available() end,
+					function()
+						return require('nvim-navic').get_location()
+					end,
+					cond = function()
+						return package.loaded['nvim-navic'] and require('nvim-navic').is_available()
+					end,
 				},
 				{
 					function()
@@ -80,8 +88,12 @@ function M.setup_lualine(is_half)
 			},
 			lualine_x = {
 				{
-					function() return ' RECORDING ' .. vim.fn.reg_recording() end,
-					cond = function() return vim.fn.reg_recording() ~= '' end,
+					function()
+						return ' RECORDING ' .. vim.fn.reg_recording()
+					end,
+					cond = function()
+						return vim.fn.reg_recording() ~= ''
+					end,
 					separator = '|',
 				},
 				{
@@ -105,7 +117,7 @@ function M.setup_lualine(is_half)
 			lualine_y = lualine_y,
 			lualine_z = { { 'filetype', separator = '' }, 'progress' },
 		},
-	}
+	})
 end
 
 return M

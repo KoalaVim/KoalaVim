@@ -114,7 +114,7 @@ table.insert(M, {
 				'#68dd6a',
 				'#ff880e',
 				'#41a2ac',
-				'#26cca0'
+				'#26cca0',
 			},
 			-- colors = {}, -- table of hex strings
 			-- termcolors = {} -- table of colour name strings
@@ -124,7 +124,7 @@ table.insert(M, {
 			enable = true,
 			enable_autocmd = false,
 			config = {
-				query = '; %s'
+				query = '; %s',
 			},
 		},
 	},
@@ -149,8 +149,7 @@ table.insert(M, {
 		'nvim-treesitter/nvim-treesitter',
 	},
 	config = function()
-		require('treesitter-context').setup {
-		}
+		require('treesitter-context').setup()
 	end,
 })
 

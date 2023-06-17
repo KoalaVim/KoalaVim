@@ -1,6 +1,8 @@
 local map = require('KoalaVim.utils.map').map
 
-map('n', '<F8>', function() require('KoalaVim.utils.misc').restart_nvim() end, 'Restart nvim')
+map('n', '<F8>', function()
+	require('KoalaVim.utils.misc').restart_nvim()
+end, 'Restart nvim')
 
 -- Scroll with arrows
 -- TODO: move to personal
@@ -16,7 +18,10 @@ map('n', '<M-r>', '<cmd>echo "Current File Reloaded!"<cr><cmd>luafile %<cr>', 'R
 map('t', '<Esc>', '<C-\\><C-n>', 'Escape from terminal with escape key')
 
 -- deploy
-map('n', '<leader>b', function() require('KoalaVim.utils.misc').deploy() end, 'Build & deploy')
+map('n', '<leader>b', function()
+	require('KoalaVim.utils.misc').deploy()
+end, 'Build & deploy')
+
 map('n', '<leader>B', function()
 	require('KoalaVim.utils.misc').reset_deploy()
 	require('KoalaVim.utils.misc').deploy()

@@ -1,6 +1,5 @@
 local M = {}
 
-
 local api = vim.api
 
 table.insert(M, {
@@ -9,21 +8,29 @@ table.insert(M, {
 	cmd = 'Gitsigns',
 	config = function()
 		local gs = require('gitsigns')
-		gs.setup {
+		gs.setup({
 			sign_priority = 9,
 			on_attach = function(bufnr)
 				local map_buffer = require('KoalaVim.utils.map').map_buffer
 
 				-- Navigation
 				map_buffer(bufnr, 'n', ']c', function()
-					if vim.wo.diff then return ']c' end
-					vim.schedule(function() gs.next_hunk({ navigation_message = false }) end)
+					if vim.wo.diff then
+						return ']c'
+					end
+					vim.schedule(function()
+						gs.next_hunk({ navigation_message = false })
+					end)
 					return '<Ignore>'
 				end, { expr = true })
 
 				map_buffer(bufnr, 'n', '[c', function()
-					if vim.wo.diff then return '[c' end
-					vim.schedule(function() gs.prev_hunk({ navigation_message = false }) end)
+					if vim.wo.diff then
+						return '[c'
+					end
+					vim.schedule(function()
+						gs.prev_hunk({ navigation_message = false })
+					end)
 					return '<Ignore>'
 				end, { expr = true })
 				-- Actions
@@ -33,12 +40,14 @@ table.insert(M, {
 				map_buffer(bufnr, 'n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>', 'Undo Stage')
 				map_buffer(bufnr, 'n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>', 'Reset Buffer')
 				map_buffer(bufnr, 'n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>', 'Preview Hunk')
-				map_buffer(bufnr, 'n', '<leader>hb', '<cmd>lua require"gitsigns".blame_line{full=true}<CR>', 'Blame Line')
+				map_buffer(bufnr, 'n', '<leader>hb', function()
+					require('gitsigns').blame_line({ full = true })
+				end, 'Blame Line')
 				map_buffer(bufnr, 'n', '<leader>hd', '<cmd>Gitsigns toggle_deleted<CR>', 'Toggle Deleted Virtual Text')
 				-- Text object
 				map_buffer(bufnr, { 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', 'Select Hunk')
 			end,
-		}
+		})
 	end,
 })
 
@@ -51,19 +60,21 @@ table.insert(M, {
 		{
 			'gh',
 			':set opfunc=GitHistoryOperator<CR>g@',
-			desc = 'show Git History with operator, e.g: gh3<cr> shows the history of the 3 lines below'
+			desc = 'show Git History with operator, e.g: gh3<cr> shows the history of the 3 lines below',
 		},
 		{
 			'gh',
 			'<Esc><cmd>lua require("utils.git").show_history("n")<cr>',
 			mode = 'v',
-			desc = 'show Git History with visual mode'
+			desc = 'show Git History with visual mode',
 		},
 	},
 	cmd = { 'Git', 'G' },
 	config = function()
 		-- callback for `gh`
-		vim.cmd("function! GitHistoryOperator(...) \n lua require('KoalaVim.utils.git').show_history('n') \n endfunction")
+		vim.cmd(
+			"function! GitHistoryOperator(...) \n lua require('KoalaVim.utils.git').show_history('n') \n endfunction"
+		)
 
 		-- Jump to first group of files
 		api.nvim_create_autocmd('BufWinEnter', {
@@ -82,7 +93,6 @@ table.insert(M, {
 	end,
 })
 
-
 table.insert(M, {
 	'sindrets/diffview.nvim',
 	cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
@@ -93,9 +103,9 @@ table.insert(M, {
 		{ '<leader>gH', '<cmd>DiffviewFileHistory .<CR>', desc = 'Git workspace History' },
 	},
 	config = function()
-		local cb = require 'diffview.config'.diffview_callback
+		local cb = require('diffview.config').diffview_callback
 		local actions = require('diffview.actions')
-		require('diffview').setup {
+		require('diffview').setup({
 			watch_index = false,
 			file_history_panel = {
 				log_options = {
@@ -148,7 +158,7 @@ table.insert(M, {
 					layout = 'diff2_horizontal',
 				},
 			},
-		}
+		})
 	end,
 })
 
@@ -158,7 +168,7 @@ table.insert(M, {
 		{ '<leader>hh', '<cmd>GitMessenger<CR>', desc = 'Hunk history' },
 	},
 	dependencies = {
-		'tpope/vim-fugitive'
+		'tpope/vim-fugitive',
 	},
 	config = function()
 		vim.g.git_messenger_floating_win_opts = { border = 'single' }
@@ -201,15 +211,14 @@ table.insert(M, {
 	'ofirgall/commit-prefix.nvim',
 	ft = 'gitcommit',
 	config = function()
-		require('commit-prefix').setup {
-		}
+		require('commit-prefix').setup()
 	end,
 })
 
 table.insert(M, {
 	'rbong/vim-flog',
 	dependencies = {
-		'tpope/vim-fugitive'
+		'tpope/vim-fugitive',
 	},
 	cmd = { 'Flog', 'Flogsplit', 'Floggit' },
 	keys = {
@@ -261,12 +270,12 @@ table.insert(M, {
 		api.nvim_create_autocmd('FileType', {
 			pattern = 'floggraph',
 			callback = function(events)
+				-- stylua: ignore start
 				map_buffer(events.buf, 'n', '<C-d>', flog_diff_current, 'Floggraph: show diff from head to current')
-				map_buffer(events.buf, 'x', '<C-d>', '<Esc><cmd>lua flog_diff_current_visual()<cr>',
-					'Floggraph: show diff of selection')
-				map_buffer(events.buf, 'x', '<C-s>', '<Esc><cmd>lua flog_diff_current_visual()<cr>',
-					'Floggraph: show diff of selection')
+				map_buffer( events.buf, 'x', '<C-d>', '<Esc><cmd>lua flog_diff_current_visual()<cr>', 'Floggraph: show diff of selection')
+				map_buffer( events.buf, 'x', '<C-s>', '<Esc><cmd>lua flog_diff_current_visual()<cr>', 'Floggraph: show diff of selection')
 				map_buffer(events.buf, 'n', '<C-s>', flog_show_current, 'Floggraph: show current in diffview')
+				-- stylua: ignore end
 			end,
 		})
 	end,
@@ -276,8 +285,7 @@ table.insert(M, {
 	'pwntester/octo.nvim',
 	cmd = 'Octo',
 	config = function()
-		require('octo').setup {
-		}
+		require('octo').setup()
 	end,
 })
 

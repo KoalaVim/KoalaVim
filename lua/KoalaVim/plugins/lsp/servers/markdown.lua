@@ -1,7 +1,6 @@
 local M = {}
 
-LSP_SERVERS['marksman'] = {
-}
+LSP_SERVERS['marksman'] = {}
 
 -- Load ignored words
 local path = vim.fn.stdpath('config') .. '/spell/en.utf-8.add'
@@ -32,11 +31,10 @@ table.insert(M, {
 	cmd = 'MarkdownPreviewOpen',
 	build = 'deno task --quiet build:fast',
 	config = function()
-		require('peek').setup {
-		}
+		require('peek').setup({})
 		vim.api.nvim_create_user_command('MarkdownPreviewOpen', require('peek').open, {})
 		vim.api.nvim_create_user_command('MarkdownPreviewClose', require('peek').close, {})
-	end
+	end,
 })
 
 return M
