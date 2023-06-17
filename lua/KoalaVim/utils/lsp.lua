@@ -21,6 +21,14 @@ function M.goto_prev_diag(opts)
 	require('KoalaVim.utils.misc').center_screen()
 end
 
+function M.goto_next_error()
+	M.goto_next_diag({ severity = vim.diagnostic.severity.ERROR })
+end
+
+function M.goto_prev_error()
+	M.goto_prev_diag({ severity = vim.diagnostic.severity.ERROR })
+end
+
 function M.late_attach(on_attach_func)
 	local clients = lsp.get_active_clients()
 	for _, client in ipairs(clients) do

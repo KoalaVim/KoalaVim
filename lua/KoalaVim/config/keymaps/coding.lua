@@ -27,13 +27,14 @@ map('n', '<C-i>', '<C-i>zz', 'Recenter after C-i')
 map('n', '<leader><F2>', '*:%s///g<left><left>', 'Rename current word with <leader>F2')
 map('x', '<F2>', '"hy:%s/<C-r>h//g<left><left>', 'Rename visual')
 
-map('n', ']g', function() require('KoalaVim.utils.lsp').goto_next_diag() end, 'Next diagnostic (problem)')
-map('n', '[g', function() require('KoalaVim.utils.lsp').goto_prev_diag() end, 'Prev diagnostic (problem)')
+map('n', ']w', function() require('KoalaVim.utils.lsp').goto_next_diag() end, 'Next diagnostic (warning)')
+map('n', '[w', function() require('KoalaVim.utils.lsp').goto_prev_diag() end, 'Prev diagnostic (warning)')
 
-map('n', ']G', function() require('KoalaVim.utils.lsp').goto_next_diag({ severity = vim.diagnostic.severity.ERROR }) end,
-'Next error')
-map('n', '[G', function() require('KoalaVim.utils.lsp').goto_prev_diag({ severity = vim.diagnostic.severity.ERROR }) end,
-'Prev error')
+map('n', ']g', function() require('KoalaVim.utils.lsp').goto_next_error() end, 'Next error')
+map('n', '[g', function() require('KoalaVim.utils.lsp').goto_prev_error() end, 'Prev error')
+
+map('n', ']e', function() require('KoalaVim.utils.lsp').goto_next_error() end, 'Next error')
+map('n', '[e', function() require('KoalaVim.utils.lsp').goto_prev_error() end, 'Prev error')
 
 -- requires nvim-treesitter/nvim-treesitter-textobjects
 map('i', '<M-]>', '<C-O>]a', 'Jump to next argument in insert mode', { silent = true, remap = true })
