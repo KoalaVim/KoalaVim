@@ -59,7 +59,7 @@ table.insert(M, {
 			callback = function(events)
 				map_buffer(events.buf, 'n', '<leader>e', '<cmd>GoIfErr<cr>', 'Golang: create if err')
 				-- stylua: ignore
-				map_buffer( events.buf, 'n', '<leader>fln', '<cmd>s/Println/Printf/<cr>$F"' .. add_new_line, 'Golang: change println to printf')
+				map_buffer(events.buf, 'n', '<leader>fln', '<cmd>s/Println/Printf/<cr>$F"' .. add_new_line, 'Golang: change println to printf')
 			end,
 		})
 	end,
