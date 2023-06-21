@@ -145,7 +145,7 @@ table.insert(M, {
 table.insert(M, {
 	'rcarriga/nvim-dap-ui',
 	dependencies = {
-		'rcarriga/nvim-dap-ui',
+		'mfussenegger/nvim-dap',
 		'ofirgall/format-on-leave.nvim',
 	},
 	config = function()
@@ -231,6 +231,20 @@ table.insert(M, {
 			desc = 'Goto DAP stopped location',
 		},
 	},
+})
+
+table.insert(M, {
+	'theHamsta/nvim-dap-virtual-text',
+	dependencies = {
+		'mfussenegger/nvim-dap',
+		'nvim-treesitter/nvim-treesitter',
+	},
+	opts = {
+		virt_text_pos = 'eol',
+	},
+	config = function(_, opts)
+		require('nvim-dap-virtual-text').setup(opts)
+	end,
 })
 
 return M
