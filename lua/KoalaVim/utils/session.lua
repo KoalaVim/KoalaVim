@@ -1,7 +1,11 @@
 local M = {}
 
+function M.cwd_session()
+	return require('KoalaVim.utils.path').escaped_session_name_from_cwd()
+end
+
 function M.load_cwd_session()
-	vim.cmd(':SessionLoad ' .. require('KoalaVim.utils.path').escaped_session_name_from_cwd())
+	require('possession.session').load(M.cwd_session())
 end
 
 local path_utils = require('KoalaVim.utils.path')

@@ -5,7 +5,7 @@ KOALA_SESSION_ENABLED = true
 
 -- Disables session saving if a session already exists
 function KoalaDisableAutoSession()
-	local cwd_session = require('KoalaVim.utils.path').escaped_session_name_from_cwd()
+	local cwd_session = require('KoalaVim.utils.session').cwd_session()
 
 	if require('possession.session').exists(cwd_session) then
 		KOALA_AUTOSAVE_SESSION = false
@@ -32,7 +32,7 @@ table.insert(M, {
 				return KOALA_AUTOSAVE_SESSION
 			end,
 			tmp_name = function()
-				return require('KoalaVim.utils.path').escaped_session_name_from_cwd()
+				return require('KoalaVim.utils.session').cwd_session()
 			end,
 		},
 		commands = {
