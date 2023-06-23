@@ -26,7 +26,7 @@ function KoalaEnableSession()
 end
 
 table.insert(M, {
-	'ofirgall/possession.nvim', -- fork
+	'jedrzejboczar/possession.nvim',
 	dependencies = {
 		'nvim-lua/plenary.nvim',
 	},
