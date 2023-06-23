@@ -446,14 +446,27 @@ table.insert(M, {
 
 		dashboard.section.header.val = vim.split(logo, '\n')
 		dashboard.section.buttons.val = {
-			dashboard.button('s', ' ' .. ' Load Session', ':SessionList <CR>'),
-			dashboard.button('ff', ' ' .. ' Find file', ':Telescope find_files <CR>'),
-			dashboard.button('fw', ' ' .. ' Find text', ':Telescope live_grep <CR>'),
-			dashboard.button('n', ' ' .. ' New file', ':ene <BAR> startinsert <CR>'),
-			dashboard.button('r', ' ' .. ' Recent files', ':Telescope oldfiles <CR>'),
+			dashboard.button('ss', '  Load Session', function()
+				require('KoalaVim.utils.session').load_cwd_session()
+			end),
+			dashboard.button('sl', '  Session List', ':SessionList <CR>'),
+			dashboard.button('t', '  File Tree', ':NvimTreeOpen <CR>'),
+			dashboard.button('ff', '  Find File', function()
+				KoalaDisableAutoSession()
+				require('telescope.builtin').find_files()
+			end),
+			dashboard.button('fw', '  Find Text (words)', function()
+				KoalaDisableAutoSession()
+				require('telescope.builtin').live_grep()
+			end),
+			dashboard.button('r', '  Recent files', function()
+				KoalaDisableAutoSession()
+				require('telescope.builtin').oldfiles()
+			end),
 
-			dashboard.button('g', '' .. ' Git Tree & Status', function()
-				KOALA_AUTOSAVE_SESSION = false
+			dashboard.button('g', '  Git Tree & Status', function()
+				KoalaDisableSession()
+
 				vim.cmd([[Flogsplit
 				wincmd k | q
 				G]])
@@ -469,7 +482,7 @@ table.insert(M, {
 		dashboard.section.footer.opts.hl = 'Number'
 		dashboard.section.header.opts.hl = 'Title'
 		dashboard.section.buttons.opts.hl = 'Number'
-		dashboard.opts.layout[1].val = 8
+		dashboard.opts.layout[1].val = 4
 		return dashboard
 	end,
 	config = function(_, dashboard)

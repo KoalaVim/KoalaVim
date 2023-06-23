@@ -112,7 +112,7 @@ end
 table.insert(M, {
 	'nvim-telescope/telescope.nvim',
 	cmd = 'Telescope',
-	version = false,
+	lazy = true,
 	dependencies = {
 		'nvim-lua/plenary.nvim',
 		'nvim-telescope/telescope-fzf-native.nvim',

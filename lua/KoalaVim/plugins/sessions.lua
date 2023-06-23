@@ -1,6 +1,22 @@
 local M = {}
 
 KOALA_AUTOSAVE_SESSION = true
+KOALA_SESSION_ENABLED = true
+
+-- Disables session saving if a session already exists
+function KoalaDisableAutoSession()
+	local cwd_session = require('KoalaVim.utils.path').escaped_session_name_from_cwd()
+
+	if require('possession.session').exists(cwd_session) then
+		KOALA_AUTOSAVE_SESSION = false
+		vim.notify('AutoSession Saving Disabled!')
+	end
+end
+
+-- Disables session saving at all
+function KoalaDisableSession()
+	KOALA_AUTOSAVE_SESSION = false
+end
 
 table.insert(M, {
 	'ofirgall/possession.nvim', -- fork
