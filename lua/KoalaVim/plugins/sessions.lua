@@ -1,21 +1,28 @@
 local M = {}
 
 KOALA_AUTOSAVE_SESSION = true
-KOALA_SESSION_ENABLED = true
 
--- Disables session saving if a session already exists
+-- Disables auto session saving if a session already exists
 function KoalaDisableAutoSession()
 	local cwd_session = require('KoalaVim.utils.session').cwd_session()
 
 	if require('possession.session').exists(cwd_session) then
 		KOALA_AUTOSAVE_SESSION = false
-		vim.notify('AutoSession Saving Disabled!')
+		vim.notify('AutoSession Saving Disabled! (:SaveSession to override)')
 	end
 end
 
--- Disables session saving at all
+-- Disables auto session saving at all
 function KoalaDisableSession()
 	KOALA_AUTOSAVE_SESSION = false
+end
+
+-- Enables auto session saving
+function KoalaEnableSession()
+	if KOALA_AUTOSAVE_SESSION == false then
+		KOALA_AUTOSAVE_SESSION = true
+		vim.notify('AutoSession Saving Enabled!')
+	end
 end
 
 table.insert(M, {
@@ -36,12 +43,12 @@ table.insert(M, {
 			end,
 		},
 		commands = {
-			save = 'SessionSave',
-			load = 'SessionLoad',
-			rename = 'SessionRename',
-			close = 'SessionClose',
-			delete = 'SessionDelete',
-			show = 'SessionShow',
+			save = 'SaveNameSession',
+			load = 'LoadNameSession',
+			rename = 'RenameSession',
+			close = 'CloseSession',
+			delete = 'DeleteSession',
+			show = nil,
 			list = nil,
 			migrate = nil,
 		},
@@ -52,6 +59,17 @@ table.insert(M, {
 
 		vim.api.nvim_create_user_command('SessionList', function()
 			require('KoalaVim.utils.session').list_sessions()
+		end, {})
+
+		vim.api.nvim_create_user_command('SaveSession', function()
+			KoalaEnableSession()
+		end, {})
+
+		vim.api.nvim_create_user_command('LoadSession', function()
+			local cwd_session = require('KoalaVim.utils.session').cwd_session()
+			require('KoalaVim.utils.session').load_cwd_session()
+
+			KoalaEnableSession()
 		end, {})
 
 		if vim.env.KOALA_RESTART then
