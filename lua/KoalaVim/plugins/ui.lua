@@ -540,6 +540,7 @@ table.insert(M, {
 		floating_window = false,
 		hint_scheme = 'LspSignatureHintVirtualText',
 		hint_prefix = ' ',
+		timer_interval = 5000, -- Heavy impact on performance
 	},
 	config = function(_, opts)
 		require('lsp_signature').setup(opts)
