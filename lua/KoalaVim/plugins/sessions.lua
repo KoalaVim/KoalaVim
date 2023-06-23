@@ -39,10 +39,10 @@ table.insert(M, {
 		end, {})
 
 		if vim.env.KOALA_RESTART then
-			api.nvim_create_autocmd('VimEnter', {
+			vim.api.nvim_create_autocmd('VimEnter', {
 				callback = function()
 					vim.schedule(function()
-						vim.cmd(':SessionLoad ' .. require('KoalaVim.utils.path').escaped_session_name_from_cwd())
+						require('KoalaVim.utils.session').load_cwd_session()
 					end)
 				end,
 			})

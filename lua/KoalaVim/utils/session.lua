@@ -1,5 +1,9 @@
 local M = {}
 
+function M.load_cwd_session()
+	vim.cmd(':SessionLoad ' .. require('KoalaVim.utils.path').escaped_session_name_from_cwd())
+end
+
 local path_utils = require('KoalaVim.utils.path')
 
 local function get_session_sorter()
@@ -26,7 +30,6 @@ local function get_session_sorter()
 end
 
 local function get_session_finder()
-	print('get_session_finder')
 	local home_dir_regex = '^' .. vim.loop.os_homedir()
 	local sessions = require('possession.query').as_list()
 
