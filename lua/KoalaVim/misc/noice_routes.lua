@@ -133,4 +133,14 @@ return {
 		},
 		opts = { skip = true },
 	},
+	-- Route ':Inspect' to messages
+	-- TODO: works only when Inspect is called from the cmdline, does not work for keybind
+	{
+		filter = {
+			event = 'msg_show',
+			kind = 'echo',
+			cmdline = 'Inspect',
+		},
+		view = 'messages',
+	},
 }
