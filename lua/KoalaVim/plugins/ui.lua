@@ -3,19 +3,20 @@ local api = vim.api
 
 local function node_relative_path()
 	local node = require('nvim-tree.api').tree.get_node_under_cursor()
-	return vim.fn.fnamemodify(node.absolute_path, ':~:.')
+	return vim.fn.fnamemodify(node.absolute_path, ':.:h')
 end
 
 local function search_in_path()
-	opts = {}
+	local opts = {}
 	opts.default_text = '-g"' .. node_relative_path() .. '/**" "'
 	require('nvim-tree.api').tree.close() -- Close tree before jumping to file
 	require('telescope').extensions.live_grep_args.live_grep_args(opts)
 end
 
 local function find_in_path()
+	local rel_path = node_relative_path()
 	require('nvim-tree.api').tree.close() -- Close tree before jumping to file
-	vim.api.nvim_exec2('Telescope find_files cwd=' .. node_relative_path(), {}) -- TODO: to lua
+	vim.api.nvim_exec2('Telescope find_files cwd=' .. rel_path, {}) -- TODO: to lua
 end
 
 local function git_hist_path()
