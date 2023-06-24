@@ -178,6 +178,14 @@ table.insert(M, {
 			},
 			renderer = {
 				symlink_destination = false,
+				indent_width = 3,
+				indent_markers = {
+					enable = true,
+					inline_arrows = true,
+					icons = {
+						item = '│',
+					},
+				},
 				icons = {
 					git_placement = 'after',
 					modified_placement = 'after',
