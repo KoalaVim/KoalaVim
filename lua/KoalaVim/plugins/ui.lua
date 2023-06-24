@@ -28,28 +28,14 @@ table.insert(M, {
 	'ofirgall/ofirkai.nvim',
 	lazy = false, -- make sure we load this during startup if it is your main colorscheme
 	priority = 1000, -- make sure to load this before all the other start plugins
-	config = function()
+	config = function(_, opts)
+		-- TODO: move to personal
 		if NVLOG then
 			vim.o.termguicolors = true
 			vim.cmd('colorscheme pablo')
 			return
 		end
-		require('ofirkai').setup({
-			scheme = {
-				-- background = '#232323', -- Gray -5
-				-- background = '#1e1e1e', -- Gray -10
-				-- background = '#282923', -- Original
-				-- background = '#252520', -- Original -5
-				-- background = '#262620', -- Original -5, +1 for RG
-				-- background = '#25251f', -- Original -6, +1 for RG
-				background = '#23231d', -- Original -8, +1 for RG
-				-- background = '#22221c', -- Original -9, +1 for RG
-				-- background = '#21211b', -- Original -10, +1 for RG
-				-- background = '#20201a', -- Original -11, +1 for RG
-
-				winbar_bg = '#1d1d14', -- Original -5
-			},
-		})
+		require('ofirkai').setup(opts)
 	end,
 })
 
@@ -63,7 +49,7 @@ table.insert(M, {
 		space_char_blankline = ' ',
 		show_current_context = true,
 		show_current_context_start = false,
-		context_highlight_list = { 'InlayHints' },
+		context_highlight_list = { 'IndentContext' },
 	},
 	init = function()
 		-- dots to indicate spaces
