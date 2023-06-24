@@ -194,8 +194,13 @@ table.insert(M, {
 table.insert(M, {
 	'nvim-lualine/lualine.nvim',
 	event = 'VeryLazy',
-	config = function()
-		require('KoalaVim.utils.ui').setup_lualine(false)
+	config = function(_, opts)
+		if opts.options == nil then
+			opts.options = {
+				theme = require('ofirkai.statuslines.lualine').theme,
+			}
+		end
+		require('KoalaVim.utils.ui').setup_lualine(false, opts)
 
 		-- Refresh lualine for recording macros
 		api.nvim_create_autocmd({ 'RecordingEnter', 'RecordingLeave' }, {

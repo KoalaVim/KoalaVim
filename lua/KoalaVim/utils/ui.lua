@@ -1,5 +1,7 @@
 local M = {}
 
+M.lualine_opts = {}
+
 local function get_current_lsp_server_name()
 	local msg = '———'
 	local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
@@ -16,8 +18,11 @@ local function get_current_lsp_server_name()
 	return msg
 end
 
-function M.setup_lualine(is_half)
-	local ofirkai_lualine = require('ofirkai.statuslines.lualine')
+function M.setup_lualine(is_half, opts)
+	if opts then
+		M.lualine_opts = opts
+	end
+
 	local y_section = {
 		{
 			function()
@@ -43,7 +48,7 @@ function M.setup_lualine(is_half)
 
 	require('lualine').setup({
 		options = {
-			theme = ofirkai_lualine.theme,
+			theme = M.lualine_opts.options.theme,
 			icons_enabled = true,
 			path = 1,
 			always_divide_middle = false,
