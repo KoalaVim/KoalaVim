@@ -242,18 +242,19 @@ table.insert(M, {
 table.insert(M, {
 	'akinsho/bufferline.nvim',
 	event = 'VeryLazy',
-	config = function()
-		require('bufferline').setup({
-			options = {
-				separator_style = 'slant',
-				offsets = { { filetype = 'NvimTree', text = 'File Explorer', text_align = 'center' } },
-				show_buffer_icons = true,
-				themable = true,
-				numbers = 'ordinal',
-				max_name_length = 40,
-			},
-			highlights = require('ofirkai.tablines.bufferline').highlights,
-		})
+	opts = {
+		options = {
+			separator_style = 'slant',
+			offsets = { { filetype = 'NvimTree', text = 'File Explorer', text_align = 'center' } },
+			show_buffer_icons = true,
+			themable = true,
+			numbers = 'ordinal',
+			max_name_length = 40,
+		},
+		highlights = require('ofirkai.tablines.bufferline').highlights,
+	},
+	config = function(_, opts)
+		require('bufferline').setup(opts)
 	end,
 })
 
