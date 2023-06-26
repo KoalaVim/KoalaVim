@@ -153,6 +153,7 @@ table.insert(M, {
 			map_buffer(bufnr, 'n', 'ff', find_in_path, 'Nvimtree: find files in current path')
 			map_buffer(bufnr, 'n', 'gh', git_hist_path, 'Nvimtree: view git history in current path')
 			map_buffer(bufnr, 'n', 'gh', git_hist_path, 'Nvimtree: view git history in current path')
+			map_buffer(bufnr, 'n', '<F2>', tree_api.fs.rename, 'Nvimtree: rename file')
 		end
 
 		require('nvim-tree').setup({
