@@ -28,6 +28,15 @@ function KoalaEnableSession()
 	end
 end
 
+-- Delete current session and disable suto saving
+function KoalaDeleteCurrentSession()
+	local cwd_session = require('KoalaVim.utils.session').cwd_session()
+
+	require('possession.session').delete(cwd_session, {})
+	vim.notify('Session Deleted! AutoSession Saving Disabled!')
+	KOALA_AUTOSAVE_SESSION = false
+end
+
 table.insert(M, {
 	'jedrzejboczar/possession.nvim',
 	dependencies = {
@@ -46,11 +55,11 @@ table.insert(M, {
 			end,
 		},
 		commands = {
-			save = 'SaveNameSession',
-			load = 'LoadNameSession',
+			save = 'SaveNamedSession',
+			load = 'LoadNamedSession',
 			rename = 'RenameSession',
-			close = 'CloseSession',
-			delete = 'DeleteSession',
+			close = nil,
+			delete = 'DeleteNamedSession',
 			show = nil,
 			list = nil,
 			migrate = nil,
@@ -104,6 +113,10 @@ table.insert(M, {
 			require('KoalaVim.utils.session').load_cwd_session()
 
 			KoalaEnableSession()
+		end, {})
+
+		vim.api.nvim_create_user_command('DeleteSession', function()
+			KoalaDeleteCurrentSession()
 		end, {})
 
 		if auto_load_session then
