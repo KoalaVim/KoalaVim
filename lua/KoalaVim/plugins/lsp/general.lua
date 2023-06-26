@@ -199,8 +199,8 @@ table.insert(M, {
 				enable_in_insert = false,
 			},
 			rename = {
+				quit = '<Escape>',
 				in_select = false,
-				whole_project = false,
 			},
 			symbol_in_winbar = {
 				enable = false,
