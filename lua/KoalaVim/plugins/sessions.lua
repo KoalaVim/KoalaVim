@@ -1,5 +1,8 @@
 local M = {}
 
+-- TODO: restore fugitive
+-- TODO: handle zombie files
+
 KOALA_AUTOSAVE_SESSION = true
 
 -- Disables auto session saving if a session already exists
@@ -93,10 +96,11 @@ table.insert(M, {
 
 		vim.api.nvim_create_user_command('SaveSession', function()
 			KoalaEnableSession()
+			local cwd_session = require('KoalaVim.utils.session').cwd_session()
+			require('possession.session').save(cwd_session, { no_confirm = true })
 		end, {})
 
 		vim.api.nvim_create_user_command('LoadSession', function()
-			local cwd_session = require('KoalaVim.utils.session').cwd_session()
 			require('KoalaVim.utils.session').load_cwd_session()
 
 			KoalaEnableSession()
