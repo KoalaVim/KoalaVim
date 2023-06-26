@@ -196,14 +196,10 @@ table.insert(M, {
 	end,
 	keys = {
 		{ 'y', '<Plug>(YankyYank)', mode = { 'n', 'x' }, desc = 'Yank with yanky.nvim' },
-		{ 'p', '<Plug>(YankyPutAfter)', mode = { 'n', 'x' }, desc = 'Paste with yanky.nvim' },
-		{ 'P', '<Plug>(YankyPutBefore)', mode = { 'n', 'x' }, desc = 'Paste with yank.nvim' },
-		{
-			'<leader>p',
-			'"_d<Plug>(YankyPutBefore)',
-			mode = 'x',
-			desc = 'replace text without changing the copy register',
-		},
+		{ 'p', '<Plug>(YankyPutAfter)', desc = 'Paste with yanky.nvim' },
+		{ 'P', '<Plug>(YankyPutBefore)', desc = 'Paste with yank.nvim' },
+		{ 'p', '"_d<Plug>(YankyPutBefore)', mode = 'x', desc = 'replace text without changing the copy register' },
+		{ 'P', '"_d<Plug>(YankyPutAfter)', mode = 'x', desc = 'replace text without changing the copy register' },
 		{ '<M-[>', '<Plug>(YankyCycleForward)', desc = 'Cycle yank history forward' },
 		{ '<M-]>', '<Plug>(YankyCycleBackward)', desc = 'Cycle yank history backward' },
 	},

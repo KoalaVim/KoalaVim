@@ -6,6 +6,8 @@ map('', '<leader>Y', '"+y$', 'Copy rest of the line to os clipboard like "Y" but
 map('', '<C-c>', '<cmd>let @+=@"<CR>', 'Copy to os clipboard from default register')
 map('n', '<leader>p', '"+p', 'paste from os clipboard')
 map('n', '<leader>P', '"+P', 'paste from os clipboard')
+map('x', '<leader>p', '"_d"+P', 'paste from os clipboard')
+map('x', '<leader>P', '"_d"+p', 'paste from os clipboard')
 map({ 'v' }, '<C-c>', '"+y', 'Copy text in visual')
 
 -- Deleting text without yanking
