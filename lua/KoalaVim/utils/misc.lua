@@ -11,17 +11,4 @@ function M.restart_nvim()
 	api.nvim_feedkeys(':wqa\n', 'n', false)
 end
 
-local deployedTerminal = nil
-function M.reset_deploy()
-	deployedTerminal = require('toggleterm.terminal').Terminal:new({ cmd = 'deploy', dir = '%:p:h' })
-end
-
-function M.deploy()
-	if deployedTerminal == nil then
-		M.reset_deploy()
-	end
-	---@diagnostic disable-next-line: need-check-nil
-	deployedTerminal:toggle()
-end
-
 return M

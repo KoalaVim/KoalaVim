@@ -52,6 +52,17 @@ table.insert(M, {
 			list = nil,
 			migrate = nil,
 		},
+		hooks = {
+			before_save = function(_)
+				local data = {}
+				data.build = require('KoalaVim.utils.build').get_session_data()
+
+				return data
+			end,
+			after_load = function(_, user_data)
+				require('KoalaVim.utils.build').restore_session_data(user_data.build or {})
+			end,
+		},
 	},
 	config = function(_, opts)
 		local auto_load_session = vim.env.KOALA_RESTART
