@@ -252,9 +252,10 @@ table.insert(M, {
 			numbers = 'ordinal',
 			max_name_length = 40,
 		},
-		highlights = require('ofirkai.tablines.bufferline').highlights,
 	},
 	config = function(_, opts)
+		-- TODO: merge highlights with user opts
+		opts.highlights = require('ofirkai.tablines.bufferline').highlights
 		require('bufferline').setup(opts)
 	end,
 })
