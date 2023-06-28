@@ -75,6 +75,13 @@ table.insert(M, {
 				require('KoalaVim.utils.build').restore_session_data(user_data.build or {})
 			end,
 		},
+		plugins = {
+			delete_hidden_buffers = {
+				hooks = {
+					'before_load',
+				}
+			}
+		}
 	},
 	config = function(_, opts)
 		local auto_load_session = vim.env.KOALA_RESTART
