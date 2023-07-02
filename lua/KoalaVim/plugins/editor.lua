@@ -495,7 +495,7 @@ table.insert(M, {
 	},
 	config = function(_, opts)
 		require('muren').setup(opts)
-	end
+	end,
 })
 
 return M
