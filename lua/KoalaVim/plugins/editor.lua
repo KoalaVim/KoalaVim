@@ -484,4 +484,18 @@ table.insert(M, {
 	end,
 })
 
+table.insert(M, {
+	'AckslD/muren.nvim',
+	cmd = {
+		'MurenToggle',
+		'MurenOpen',
+		'MurenClose',
+		'MurenFresh',
+		'MurenUnique',
+	},
+	config = function(_, opts)
+		require('muren').setup(opts)
+	end
+})
+
 return M
