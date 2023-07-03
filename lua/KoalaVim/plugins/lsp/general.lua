@@ -199,7 +199,7 @@ table.insert(M, {
 				enable_in_insert = false,
 			},
 			rename = {
-				quit = '<Escape>',
+				quit = '<esc>',
 				in_select = false,
 			},
 			symbol_in_winbar = {
