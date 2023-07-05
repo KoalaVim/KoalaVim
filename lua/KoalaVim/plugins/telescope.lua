@@ -179,13 +179,13 @@ table.insert(M, {
 					mappings = {
 						n = {
 							['<cr>'] = require('telescope-undo.actions').restore,
-							['<S-cr>'] = require('telescope-undo.actions').yank_deletions,
-							['<C-cr>'] = require('telescope-undo.actions').yank_additions,
+							['d'] = require('telescope-undo.actions').yank_deletions,
+							['y'] = require('telescope-undo.actions').yank_additions,
 						},
 						i = {
 							['<S-cr>'] = require('telescope-undo.actions').yank_deletions,
-							['<cr>'] = require('telescope-undo.actions').restore,
-							['<C-cr>'] = require('telescope-undo.actions').yank_additions,
+							['<C-d>'] = require('telescope-undo.actions').restore,
+							['<C-y>'] = require('telescope-undo.actions').yank_additions,
 						},
 					},
 				},
