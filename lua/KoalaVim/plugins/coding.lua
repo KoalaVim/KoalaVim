@@ -85,7 +85,7 @@ local flash_ts_opts = {
 }
 
 table.insert(M, {
-	'folke/flash.nvim',
+	'ofirgall/flash.nvim', -- fork
 	event = 'VeryLazy',
 	keys = {
 		-- stylua: ignore start
@@ -99,6 +99,9 @@ table.insert(M, {
 	opts = {
 		highlight = { backdrop = false },
 		modes = {
+			search = {
+				re_enable_on_search = false,
+			},
 			char = {
 				enabled = true,
 				jump_labels = true,
@@ -109,20 +112,16 @@ table.insert(M, {
 	config = function(_, opts)
 		require('flash').setup(opts)
 
-		-- f, F, t, T with labels
-		-- local config = require('flash.config')
-		-- local char = require('flash.plugins.char')
-		-- for _, motion in ipairs({ 'f', 't', 'F', 'T' }) do
-		-- 	vim.keymap.set({ 'n', 'x', 'o' }, motion, function()
-		-- 		require('flash').jump(config.get({
-		-- 			mode = 'char',
-		-- 			search = {
-		-- 				mode = char.mode(motion),
-		-- 				max_length = 1,
-		-- 			},
-		-- 		}, char.motions[motion]))
-		-- 	end)
-		-- end
+		api.nvim_create_autocmd('FileType', {
+			-- TODO: add autocmd group
+			-- group = koala_early_autocmds,
+			pattern = { 'log' },
+			callback = function()
+				-- Toggle off flash for log files
+				require('flash').toggle(false)
+			end,
+		})
+		vim.cmd(':doautocmd FileType')
 	end,
 })
 
