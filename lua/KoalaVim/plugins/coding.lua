@@ -85,7 +85,7 @@ local flash_ts_opts = {
 }
 
 table.insert(M, {
-	'ofirgall/flash.nvim', -- fork
+	'folke/flash.nvim',
 	event = 'VeryLazy',
 	keys = {
 		-- stylua: ignore start
@@ -99,9 +99,6 @@ table.insert(M, {
 	opts = {
 		highlight = { backdrop = false },
 		modes = {
-			search = {
-				re_enable_on_search = false,
-			},
 			char = {
 				enabled = true,
 				jump_labels = true,
