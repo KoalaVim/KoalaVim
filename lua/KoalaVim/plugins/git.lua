@@ -14,6 +14,7 @@ table.insert(M, {
 				local map_buffer = require('KoalaVim.utils.map').map_buffer
 
 				-- Navigation
+				-- TODO: center screen after jump
 				map_buffer(bufnr, 'n', ']c', function()
 					if vim.wo.diff then
 						return ']c'

@@ -45,13 +45,12 @@ HYDRAS['diff_viewer'] = {
 		{
 			'j',
 			function()
-				-- TODO: make it move by changes only if there are no hunks
-				-- local diff = api.nvim_get_option_value('diff', {})
-				-- if diff then
-				-- 	api.nvim_feedkeys(']c', 'n', false)
-				-- else
-				-- 	require('gitsigns').next_hunk({ navigation_message = false })
-				-- end
+				local diff = api.nvim_get_option_value('diff', {})
+				if diff then
+					-- TODO: center screen after jump
+					return ']c'
+				end
+
 				require('gitsigns').next_hunk({ navigation_message = false })
 				require('KoalaVim.utils.misc').center_screen()
 				return '<Ignore>'
@@ -61,13 +60,12 @@ HYDRAS['diff_viewer'] = {
 		{
 			'k',
 			function()
-				-- TODO: make it move by changes only if there are no hunks
-				-- local diff = api.nvim_get_option_value('diff', {})
-				-- if diff then
-				-- 	api.nvim_feedkeys('[c', 'n', false)
-				-- else
-				-- 	require('gitsigns').prev_hunk({ navigation_message = false })
-				-- end
+				local diff = api.nvim_get_option_value('diff', {})
+				if diff then
+					-- TODO: center screen after jump
+					return '[c'
+				end
+
 				require('gitsigns').prev_hunk({ navigation_message = false })
 				require('KoalaVim.utils.misc').center_screen()
 				return '<Ignore>'
