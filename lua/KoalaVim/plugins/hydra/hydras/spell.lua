@@ -24,8 +24,7 @@ HYDRAS['spell fixer'] = {
 		end,
 	},
 	mode = 'n',
-	-- TODO: create bind/usercmd
-	-- body = '<C-s>',
+	body = '<C-s>',
 	heads = {
 		{
 			'j',

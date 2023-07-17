@@ -76,50 +76,33 @@ table.insert(M, {
 	end,
 })
 
-local flash_ts_opts = {
-	label = {
-		rainbow = {
-			enabled = true,
-		},
-	},
-}
-
 table.insert(M, {
-	'folke/flash.nvim',
-	event = 'VeryLazy',
-	keys = {
-		-- stylua: ignore start
-		{ '<leader>s', mode = { 'n', 'x', 'o' }, function() require('flash').jump() end, desc = 'Flash', },
-		{ 'S', mode = { 'n', 'o', 'x' }, function() require('flash').treesitter(flash_ts_opts) end, desc = 'Flash Treesitter' },
-		{ 'r', mode = 'o', function() require('flash').remote() end, desc = 'Remote Flash' },
-		{ 'R', mode = { 'o', 'x' }, function() require('flash').treesitter_search(flash_ts_opts) end, desc = 'Flash Treesitter Search' },
-		{ '<C-s>', mode = { 'c' }, function() require('flash').toggle() end, desc = 'Toggle Flash Search' },
-		-- stylua: ignore end
-	},
+	'ggandor/leap.nvim',
 	opts = {
-		highlight = { backdrop = false },
-		modes = {
-			char = {
-				enabled = true,
-				jump_labels = true,
-				highlight = { backdrop = false },
-			},
-		},
+		max_aot_targets = nil,
+		highlight_unlabeled = false,
 	},
 	config = function(_, opts)
-		require('flash').setup(opts)
-
-		api.nvim_create_autocmd('FileType', {
-			-- TODO: add autocmd group
-			-- group = koala_early_autocmds,
-			pattern = { 'log' },
-			callback = function()
-				-- Toggle off flash for log files
-				require('flash').toggle(false)
-			end,
-		})
-		vim.cmd(':doautocmd FileType')
+		require('leap').setup(opts)
 	end,
+	keys = {
+		{ '<leader>s', '<Plug>(leap-forward)', mode = { 'n', 'x' }, desc = 'Leap forward' },
+		{ '<leader>S', '<Plug>(leap-backward)', mode = { 'n', 'x' }, desc = 'Leap backard' },
+	},
+})
+
+table.insert(M, {
+	'ggandor/flit.nvim',
+	dependencies = {
+		'ggandor/leap.nvim',
+	},
+	opts = {
+		labeled_modes = 'nv',
+	},
+	config = function(_, opts)
+		require('flit').setup(opts)
+	end,
+	keys = { 'f', 'F', 't', 'T' },
 })
 
 table.insert(M, {
