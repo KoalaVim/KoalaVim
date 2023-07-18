@@ -65,7 +65,7 @@ table.insert(M, {
 		},
 		{
 			'gh',
-			'<Esc><cmd>lua require("utils.git").show_history("n")<cr>',
+			'<Esc><cmd>lua require("KoalaVim.utils.git").show_history("v")<cr>',
 			mode = 'v',
 			desc = 'show Git History with visual mode',
 		},
