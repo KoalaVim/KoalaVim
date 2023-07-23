@@ -104,7 +104,6 @@ table.insert(M, {
 		end
 
 		require('possession').setup(opts)
-		require('telescope').load_extension('possession')
 
 		vim.api.nvim_create_user_command('SessionList', function()
 			require('KoalaVim.utils.session').list_sessions()
