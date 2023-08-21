@@ -1,6 +1,6 @@
 local api = vim.api
 
-local koala_early_autocmds = api.nvim_create_augroup('koala', { clear = true })
+local koala_early_autocmds = api.nvim_create_augroup('koala_early', { clear = true })
 
 api.nvim_create_autocmd('FileType', {
 	group = koala_early_autocmds,
