@@ -7,8 +7,6 @@ table.insert(M, {
 		'theHamsta/nvim-dap-virtual-text',
 	},
 	config = function()
-		-- TODO: don't load from possession load breakpoint from possession on start
-
 		local dap = require('dap')
 		dap.defaults.fallback.stepping_granularity = 'line'
 		--- Signs ---
