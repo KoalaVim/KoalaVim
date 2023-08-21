@@ -110,9 +110,9 @@ function M.setup_lualine(is_half, opts)
 					-- TODO: add more info (shift width and such)
 					function()
 						if vim.b.Koala_tabs then
-							return 'Tabs'
+							return ' Tabs'
 						else
-							return 'Spaces'
+							return '󱁐 Spaces'
 						end
 					end,
 					separator = '|',
