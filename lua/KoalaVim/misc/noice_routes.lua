@@ -143,4 +143,13 @@ return {
 		},
 		view = 'messages',
 	},
+	-- Disable '[LSP] Format request failed, no matching language servers.' notifications
+	{
+		filter = {
+			event = 'notify',
+			kind = 'info',
+			find = 'Format request failed, no matching language servers.',
+		},
+		opts = { skip = true },
+	},
 }
