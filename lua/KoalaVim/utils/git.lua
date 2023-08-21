@@ -3,7 +3,9 @@ local M = {}
 local api = vim.api
 
 function M.show_history(mode)
-	current_line = api.nvim_get_current_line()
+	local start_pos = nil
+	local end_pos = nil
+
 	if mode == 'v' then
 		start_pos = api.nvim_buf_get_mark(0, '<')
 		end_pos = api.nvim_buf_get_mark(0, '>')
@@ -12,8 +14,8 @@ function M.show_history(mode)
 		end_pos = api.nvim_buf_get_mark(0, ']')
 	end
 
-	start_line = start_pos[1]
-	end_line = end_pos[1]
+	local start_line = start_pos[1]
+	local end_line = end_pos[1]
 
 	api.nvim_command('Git log -L' .. start_line .. ',' .. end_line .. ':' .. vim.fn.expand('%'))
 end
