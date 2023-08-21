@@ -2,7 +2,13 @@ local M = {}
 
 table.insert(M, {
 	'mfussenegger/nvim-dap',
+	dependencies = {
+		'rcarriga/nvim-dap-ui',
+		'theHamsta/nvim-dap-virtual-text',
+	},
 	config = function()
+		-- TODO: don't load from possession load breakpoint from possession on start
+
 		local dap = require('dap')
 		dap.defaults.fallback.stepping_granularity = 'line'
 		--- Signs ---
@@ -70,7 +76,6 @@ table.insert(M, {
 			require('dap').clear_breakpoints()
 		end, {})
 	end,
-	lazy = true, -- Loading with dap-ui
 	keys = {
 		{
 			'<F9>',
@@ -144,8 +149,8 @@ table.insert(M, {
 
 table.insert(M, {
 	'rcarriga/nvim-dap-ui',
+	lazy = true, -- Loading with dap-ui
 	dependencies = {
-		'mfussenegger/nvim-dap',
 		'ofirgall/format-on-leave.nvim',
 	},
 	config = function()
@@ -235,8 +240,8 @@ table.insert(M, {
 
 table.insert(M, {
 	'theHamsta/nvim-dap-virtual-text',
+	lazy = true,
 	dependencies = {
-		'mfussenegger/nvim-dap',
 		'nvim-treesitter/nvim-treesitter',
 	},
 	opts = {
