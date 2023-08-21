@@ -130,7 +130,6 @@ table.insert(M, {
 			},
 			window = require('ofirkai.plugins.nvim-cmp').window,
 			sources = cmp.config.sources({
-				{ name = 'nvim_lsp_signature_help', priority = 1500 },
 				{ name = 'nvim_lsp', priority = 1000 },
 				{ name = 'path', option = { trailing_slash = true }, priority = 500 },
 				{ name = 'snippy', priority = 200 },
