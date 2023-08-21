@@ -296,6 +296,9 @@ table.insert(M, {
 				},
 			},
 			routes = require('KoalaVim.misc.noice_routes'),
+			presets = {
+				lsp_doc_border = true, -- add a border to hover docs and signature help
+			},
 		})
 	end,
 	keys = {
