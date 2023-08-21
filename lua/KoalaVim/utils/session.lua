@@ -6,6 +6,7 @@ end
 
 function M.load_cwd_session()
 	require('possession.session').load(M.cwd_session())
+	KoalaEnableSession()
 end
 
 local path_utils = require('KoalaVim.utils.path')

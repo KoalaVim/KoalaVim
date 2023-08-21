@@ -117,6 +117,16 @@ function M.setup_lualine(is_half, opts)
 					end,
 					separator = '|',
 				},
+				{
+					function()
+						if KOALA_SESSION_LOADED then
+							return ' Session'
+						else
+							return ' No Session'
+						end
+					end,
+					separator = '|',
+				},
 				{ get_current_lsp_server_name, icon = ' LSP:' },
 			},
 			lualine_y = lualine_y,

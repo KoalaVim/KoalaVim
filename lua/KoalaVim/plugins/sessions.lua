@@ -4,6 +4,7 @@ local M = {}
 -- TODO: handle zombie files
 
 KOALA_AUTOSAVE_SESSION = true
+KOALA_SESSION_LOADED = false
 
 -- Disables auto session saving if a session already exists
 function KoalaDisableAutoSession()
@@ -28,7 +29,7 @@ function KoalaEnableSession()
 	end
 end
 
--- Delete current session and disable suto saving
+-- Delete current session and disable auto saving
 function KoalaDeleteCurrentSession()
 	local cwd_session = require('KoalaVim.utils.session').cwd_session()
 
@@ -73,6 +74,7 @@ table.insert(M, {
 			end,
 			after_load = function(_, user_data)
 				require('KoalaVim.utils.build').restore_session_data(user_data.build or {})
+				KOALA_SESSION_LOADED = true
 			end,
 		},
 		plugins = {
@@ -117,8 +119,6 @@ table.insert(M, {
 
 		vim.api.nvim_create_user_command('LoadSession', function()
 			require('KoalaVim.utils.session').load_cwd_session()
-
-			KoalaEnableSession()
 		end, {})
 
 		vim.api.nvim_create_user_command('DeleteSession', function()
