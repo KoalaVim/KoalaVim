@@ -5,7 +5,12 @@ function M.cwd_session()
 end
 
 function M.load_cwd_session()
-	require('possession.session').load(M.cwd_session())
+	local cwd_session = M.cwd_session()
+	if not require('possession.session').exists(cwd_session) then
+		vim.notify("Session doesn't exist!")
+		return
+	end
+	require('possession.session').load(cwd_session)
 	KoalaEnableSession()
 end
 
