@@ -119,7 +119,7 @@ function M.setup_lualine(is_half, opts)
 				},
 				{
 					function()
-						if KOALA_SESSION_LOADED then
+						if KOALA_SESSION_LOADED or KOALA_AUTOSAVE_SESSION then
 							return ' Session'
 						else
 							return ' No Session'
