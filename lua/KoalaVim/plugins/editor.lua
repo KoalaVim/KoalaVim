@@ -462,7 +462,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'chrisgrieser/nvim-genghis',
+	'ofirgall/nvim-genghis', -- fork
 	cmd = {
 		'NewFromSelection',
 		'Duplicate',
@@ -471,9 +471,15 @@ table.insert(M, {
 		'Move',
 		'CopyFilename',
 		'CopyFilepath',
+		'CopyRelativePath',
+		'CopyDirectoryPath',
+		'CopyRelativeDirectoryPath',
 		'Chmodx',
 		'New',
 	},
+	config = function()
+		vim.g.genghis_use_systemclipboard = true
+	end,
 })
 
 table.insert(M, {
