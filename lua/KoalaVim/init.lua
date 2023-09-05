@@ -20,11 +20,6 @@ function M.init()
 				pattern = 'KoalaVimStarted',
 				modeline = false,
 			})
-
-			-- TODO: remove vim script from my KoalaVim
-			-- 			vim.cmd([[
-			-- source $HOME/.config/nvim/vim/file_util.vim
-			-- ]])
 		end,
 	})
 end
