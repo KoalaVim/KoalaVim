@@ -16,7 +16,16 @@ M.default_opts = {
 	},
 	plugins = {
 		open_jira = {
+			-- type: string
+			-- Your base jira url. In order to open tickets. example: https://mycompany.atlassian.net/browse/
 			jira_url = M.NO_DEFAULT,
+		},
+	},
+	lsp = {
+		format = {
+			-- type: string[]
+			-- List of lsp clients to not apply format with
+			blacklist = {},
 		},
 	},
 }
