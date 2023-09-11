@@ -26,6 +26,7 @@ end
 -- Color scheme
 table.insert(M, {
 	'ofirgall/ofirkai.nvim',
+	branch = 'dark_blue',
 	lazy = false, -- make sure we load this during startup if it is your main colorscheme
 	priority = 1000, -- make sure to load this before all the other start plugins
 	config = function(_, opts)
@@ -37,6 +38,9 @@ table.insert(M, {
 		end
 		require('ofirkai').setup(opts)
 	end,
+	opts = {
+		theme = 'dark_blue',
+	},
 })
 
 -- Indent guides
