@@ -286,7 +286,7 @@ table.insert(M, {
 			},
 			lsp = {
 				signature = {
-					enabled = false, -- I prefer to use cmp-nvim-lsp-signature-help with minimal design
+					enabled = true,
 				},
 				override = {
 					-- Override `vim.lsp.buf.hover` and `nvim-cmp` doc formatter with `noice` doc formatter.
@@ -323,6 +323,14 @@ table.insert(M, {
 			'Scroll down in hover',
 			silent = true,
 			expr = true,
+		},
+		{
+			'<c-l>',
+			function()
+				require('KoalaVim.utils.noice').show_signature()
+			end,
+			'Show function signature',
+			mode = 'i',
 		},
 	},
 })
