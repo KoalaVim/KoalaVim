@@ -5,6 +5,7 @@ local M = {}
 
 KOALA_AUTOSAVE_SESSION = true
 KOALA_SESSION_LOADED = false
+KOALA_DASHBOARD_CLOSED = false
 
 -- Disables auto session saving if a session already exists
 function KoalaDisableAutoSession()
@@ -49,7 +50,7 @@ table.insert(M, {
 		autosave = {
 			current = true,
 			tmp = function()
-				return KOALA_AUTOSAVE_SESSION
+				return KOALA_AUTOSAVE_SESSION and KOALA_DASHBOARD_CLOSED
 			end,
 			tmp_name = function()
 				return require('KoalaVim.utils.session').cwd_session()

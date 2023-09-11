@@ -502,8 +502,16 @@ table.insert(M, {
 	config = function(_, dashboard)
 		-- Don't load dashboard on restart
 		if vim.env.KOALA_RESTART then
+			KOALA_DASHBOARD_CLOSED = true
 			return
 		end
+
+		vim.api.nvim_create_autocmd('User', {
+			pattern = 'AlphaClosed',
+			callback = function()
+				KOALA_DASHBOARD_CLOSED = true
+			end,
+		})
 
 		-- close Lazy and re-open when the dashboard is ready
 		if vim.o.filetype == 'lazy' then
