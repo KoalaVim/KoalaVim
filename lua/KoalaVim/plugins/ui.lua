@@ -534,31 +534,4 @@ table.insert(M, {
 	end,
 })
 
-table.insert(M, {
-	'ray-x/lsp_signature.nvim',
-	-- TODO: lazy load this, `LspAttach` doesnt work
-	lazy = false,
-	keys = {
-		{
-			'<C-l>',
-			function()
-				require('lsp_signature').toggle_float_win()
-			end,
-			mode = 'i',
-			desc = 'Toggle signature',
-		},
-	},
-	opts = {
-		bind = true,
-		use_lspsaga = false,
-		floating_window = false,
-		hint_scheme = 'LspSignatureHintVirtualText',
-		hint_prefix = ' ',
-		timer_interval = 5000, -- Heavy impact on performance
-	},
-	config = function(_, opts)
-		require('lsp_signature').setup(opts)
-	end,
-})
-
 return M
