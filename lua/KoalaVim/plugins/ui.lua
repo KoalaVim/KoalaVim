@@ -30,12 +30,6 @@ table.insert(M, {
 	lazy = false, -- make sure we load this during startup if it is your main colorscheme
 	priority = 1000, -- make sure to load this before all the other start plugins
 	config = function(_, opts)
-		-- TODO: move to personal
-		if NVLOG then
-			vim.o.termguicolors = true
-			vim.cmd('colorscheme pablo')
-			return
-		end
 		require('ofirkai').setup(opts)
 	end,
 	opts = {
