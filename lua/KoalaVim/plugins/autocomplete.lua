@@ -134,13 +134,13 @@ table.insert(M, {
 				{ name = 'path', option = { trailing_slash = true }, priority = 500 },
 				{ name = 'snippy', priority = 200 },
 				-- { name = 'buffer', priority = 100, max_item_count = 5 },
-				all_visible_buffers_source(150, 15),
+				all_visible_buffers_source(150, 10),
 				{ name = 'spell', priority = 50, max_item_count = 5 },
 			}),
-			performance = {
-				debounce = 30, -- default: 60
-				throttle = 15, -- default: 30
-			},
+			-- performance = {
+			-- 	debounce = 30, -- default: 60
+			-- 	throttle = 15, -- default: 30
+			-- },
 			sorting = {
 				comparators = {
 					lspkind_priority.compare, -- compare.kind,
