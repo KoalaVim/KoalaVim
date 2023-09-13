@@ -3,6 +3,11 @@ local api = vim.api
 
 local function node_relative_path()
 	local node = require('nvim-tree.api').tree.get_node_under_cursor()
+
+	if node.fs_stat.type == 'directory' then
+		return vim.fn.fnamemodify(node.absolute_path, ':.')
+	end
+
 	return vim.fn.fnamemodify(node.absolute_path, ':.:h')
 end
 
