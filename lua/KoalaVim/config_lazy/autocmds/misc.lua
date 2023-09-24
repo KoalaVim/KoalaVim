@@ -48,3 +48,18 @@ api.nvim_create_autocmd('FileType', {
 		vim.cmd('wincmd L')
 	end,
 })
+
+-- Show absolute line numbers in insert mode
+api.nvim_create_autocmd('InsertEnter', {
+	group = koala_autocmds,
+	callback = function()
+		vim.wo.relativenumber = false
+	end,
+})
+
+api.nvim_create_autocmd('InsertLeave', {
+	group = koala_autocmds,
+	callback = function()
+		vim.wo.relativenumber = true
+	end,
+})
