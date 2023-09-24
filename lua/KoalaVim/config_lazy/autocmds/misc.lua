@@ -2,8 +2,6 @@ local api = vim.api
 
 local koala_autocmds = api.nvim_create_augroup('koala_lazy', { clear = true })
 
-local get_all_non_floating_wins = require('KoalaVim.utils.windows').get_all_non_floating_wins
-
 -- Highlight on yank
 api.nvim_create_autocmd('TextYankPost', {
 	group = koala_autocmds,
@@ -70,6 +68,7 @@ api.nvim_create_autocmd('InsertLeave', {
 api.nvim_create_autocmd('BufEnter', {
 	group = koala_autocmds,
 	callback = function()
+		local get_all_non_floating_wins = require('KoalaVim.utils.windows').get_all_non_floating_wins
 		local last_buf_ft = api.nvim_buf_get_option(0, 'filetype')
 		if last_buf_ft == 'NvimTree' and #get_all_non_floating_wins() == 1 then
 			vim.cmd('quit')
