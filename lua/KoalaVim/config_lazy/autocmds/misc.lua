@@ -68,6 +68,7 @@ api.nvim_create_autocmd('InsertLeave', {
 
 -- Close nvim if last buffer is NvimTree
 api.nvim_create_autocmd('BufEnter', {
+	group = koala_autocmds,
 	callback = function()
 		local last_buf_ft = api.nvim_buf_get_option(0, 'filetype')
 		if last_buf_ft == 'NvimTree' and #get_all_non_floating_wins() == 1 then
