@@ -169,26 +169,6 @@ table.insert(M, {
 			},
 			extensions = {
 				['ui-select'] = {},
-				undo = {
-					side_by_side = true,
-					layout_strategy = 'vertical',
-					layout_config = {
-						preview_height = 0.5,
-						preview_cutoff = 30,
-					},
-					mappings = {
-						n = {
-							['<cr>'] = require('telescope-undo.actions').restore,
-							['d'] = require('telescope-undo.actions').yank_deletions,
-							['y'] = require('telescope-undo.actions').yank_additions,
-						},
-						i = {
-							['<S-cr>'] = require('telescope-undo.actions').yank_deletions,
-							['<C-d>'] = require('telescope-undo.actions').restore,
-							['<C-y>'] = require('telescope-undo.actions').yank_additions,
-						},
-					},
-				},
 			},
 			pickers = {
 				find_files = {
@@ -463,19 +443,6 @@ table.insert(M, {
 			desc = 'Synonyms',
 		},
 	},
-})
-
-table.insert(M, {
-	-- Undotree
-	'debugloop/telescope-undo.nvim',
-	dependencies = 'nvim-telescope/telescope.nvim',
-	cmd = 'UndoTree',
-	config = function()
-		require('telescope').load_extension('undo')
-		vim.api.nvim_create_user_command('UndoTree', function()
-			require('telescope').extensions.undo.undo()
-		end, {})
-	end,
 })
 
 table.insert(M, {
