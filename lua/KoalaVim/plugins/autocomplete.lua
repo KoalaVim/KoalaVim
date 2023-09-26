@@ -29,10 +29,10 @@ table.insert(M, {
 		'hrsh7th/cmp-cmdline',
 		'dcampos/nvim-snippy',
 		'dcampos/cmp-snippy',
-		'f3fora/cmp-spell',
 		'ofirgall/cmp-lspkind-priority',
 		'onsails/lspkind.nvim',
 		'windwp/nvim-autopairs',
+		'octaltree/cmp-look', -- TODO: maybe replace with https://github.com/uga-rosa/cmp-dictionary to support non linux users
 	},
 	config = function()
 		-- onsails/lspkind-nvim
@@ -135,7 +135,13 @@ table.insert(M, {
 				{ name = 'snippy', priority = 200 },
 				-- { name = 'buffer', priority = 100, max_item_count = 5 },
 				all_visible_buffers_source(150, 10),
-				{ name = 'spell', priority = 50, max_item_count = 5 },
+				{
+					name = 'look',
+					priority = 50,
+					max_item_count = 5,
+					keyword_length = 3,
+					option = { convert_case = true, loud = true },
+				},
 			}),
 			-- performance = {
 			-- 	debounce = 30, -- default: 60
