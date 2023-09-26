@@ -1,6 +1,7 @@
 local api = vim.api
 
 local koala_autocmds = api.nvim_create_augroup('koala_lazy', { clear = true })
+local koala_opts = require('KoalaVim').opts.autocmds
 
 -- Highlight on yank
 api.nvim_create_autocmd('TextYankPost', {
@@ -49,20 +50,22 @@ api.nvim_create_autocmd('FileType', {
 	end,
 })
 
--- Show absolute line numbers in insert mode
-api.nvim_create_autocmd('InsertEnter', {
-	group = koala_autocmds,
-	callback = function()
-		vim.wo.relativenumber = false
-	end,
-})
+if koala_opts.absolute_lines then
+	-- Show absolute line numbers in insert mode
+	api.nvim_create_autocmd('InsertEnter', {
+		group = koala_autocmds,
+		callback = function()
+			vim.wo.relativenumber = false
+		end,
+	})
 
-api.nvim_create_autocmd('InsertLeave', {
-	group = koala_autocmds,
-	callback = function()
-		vim.wo.relativenumber = true
-	end,
-})
+	api.nvim_create_autocmd('InsertLeave', {
+		group = koala_autocmds,
+		callback = function()
+			vim.wo.relativenumber = true
+		end,
+	})
+end
 
 -- Close nvim if last buffer is NvimTree
 api.nvim_create_autocmd('BufEnter', {

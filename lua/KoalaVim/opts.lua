@@ -13,6 +13,9 @@ M.default_opts = {
 			-- Amount of columns when using full screen (use `echo $COLUMNS`)
 			full_screen_width = M.NO_DEFAULT,
 		},
+		-- type: number
+		-- Show absolute lines in insert mode
+		absolute_lines = true,
 	},
 	plugins = {
 		open_jira = {
