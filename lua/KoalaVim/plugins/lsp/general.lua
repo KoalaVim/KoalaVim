@@ -18,8 +18,17 @@ table.insert(M, {
 	event = { 'BufReadPre', 'BufNewFile' },
 	dependencies = {
 		'hrsh7th/cmp-nvim-lsp',
-		'folke/neodev.nvim', -- Must be loaded before setting up lua_ls
 		'mason.nvim',
+		{
+			'folke/neodev.nvim', -- Must be loaded before setting up lua_ls
+			config = function()
+				require('neodev').setup({
+					library = {
+						plugins = { 'nvim-treesitter', 'plenary.nvim', 'ofirkai.nvim' },
+					},
+				})
+			end,
+		},
 		'williamboman/mason-lspconfig.nvim',
 		{
 			'mhanberg/output-panel.nvim',

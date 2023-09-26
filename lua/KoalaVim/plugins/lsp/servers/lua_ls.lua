@@ -13,16 +13,4 @@ LSP_SERVERS['lua_ls'] = {
 	},
 }
 
--- FIXME: `vim.` doesn't work
-table.insert(M, {
-	'folke/neodev.nvim',
-	config = function()
-		require('neodev').setup({
-			library = {
-				plugins = { 'nvim-treesitter', 'plenary.nvim', 'ofirkai.nvim' },
-			},
-		})
-	end,
-})
-
 return M
