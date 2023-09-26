@@ -33,6 +33,7 @@ table.insert(M, {
 		'onsails/lspkind.nvim',
 		'windwp/nvim-autopairs',
 		'octaltree/cmp-look', -- TODO: maybe replace with https://github.com/uga-rosa/cmp-dictionary to support non linux users
+		'hrsh7th/cmp-calc',
 	},
 	config = function()
 		-- onsails/lspkind-nvim
@@ -142,6 +143,7 @@ table.insert(M, {
 					keyword_length = 3,
 					option = { convert_case = true, loud = true },
 				},
+				{ name = 'calc', priority = 50 },
 			}),
 			-- performance = {
 			-- 	debounce = 30, -- default: 60
