@@ -249,7 +249,9 @@ table.insert(M, {
 	opts = {
 		options = {
 			separator_style = 'slant',
-			offsets = { { filetype = 'NvimTree', text = 'File Explorer', text_align = 'center' } },
+			offsets = {
+				{ filetype = 'NvimTree', text = 'File Explorer', text_align = 'center', highlight = 'NvimTreeNormal' },
+			},
 			show_buffer_icons = true,
 			themable = true,
 			numbers = 'ordinal',
@@ -259,7 +261,12 @@ table.insert(M, {
 	config = function(_, opts)
 		-- TODO: merge highlights with user opts
 		opts.highlights = require('ofirkai.tablines.bufferline').highlights
-		require('bufferline').setup(opts)
+
+		local bufferline = require('bufferline')
+		opts.options.style_preset = {
+			bufferline.style_preset.no_italic,
+		}
+		bufferline.setup(opts)
 	end,
 })
 
