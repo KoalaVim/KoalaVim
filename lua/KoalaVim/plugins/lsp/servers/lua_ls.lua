@@ -9,6 +9,9 @@ LSP_SERVERS['lua_ls'] = {
 			hint = {
 				enable = true,
 			},
+			workspace = {
+				checkThirdParty = false,
+			},
 		},
 	},
 }
