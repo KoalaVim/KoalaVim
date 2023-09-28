@@ -130,7 +130,7 @@ function M.setup_lualine(is_half, opts)
 				{ get_current_lsp_server_name, icon = ' LSP:' },
 			},
 			lualine_y = lualine_y,
-			lualine_z = { { 'filetype', separator = '' }, 'progress' },
+			lualine_z = { { 'filetype', separator = '' }, 'location' },
 		},
 	})
 end
