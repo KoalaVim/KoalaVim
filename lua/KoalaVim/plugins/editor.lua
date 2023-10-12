@@ -490,7 +490,7 @@ table.insert(M, {
 		require('interestingwords').setup({
 			colors = { '#aeee00', '#ff0000', '#0000ff', '#b88823', '#ffa724', '#ff2c4b' },
 			color_key = '<leader>m',
-			search_count = true,
+			search_count = false,
 			navigation = false,
 			search_key = nil,
 			cancel_search_key = nil,
