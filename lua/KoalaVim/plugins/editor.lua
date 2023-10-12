@@ -482,7 +482,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'Mr-LLLLL/interestingwords.nvim',
+	'ofirgall/interestingwords.nvim', -- fork
 	keys = {
 		{ '<leader>m', desc = 'Mark (highlight) an interesting word (toggle)', mode = { 'n', 'x' } },
 	},
