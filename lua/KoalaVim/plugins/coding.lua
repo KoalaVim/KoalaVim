@@ -350,7 +350,11 @@ table.insert(M, {
 table.insert(M, {
 	'mg979/vim-visual-multi',
 	keys = {
-		{ '<M-d>', desc = 'Multi cursor: add selection for current word (equivalent to Ctrl-D in VSCode/Sublime)' },
+		{
+			'<M-d>',
+			desc = 'Multi cursor: add selection for current word (equivalent to Ctrl-D in VSCode/Sublime)',
+			mode = { 'n', 'x' },
+		},
 		{ '<M-J>', desc = 'Multi cusror: add below' },
 		{ '<M-K>', desc = 'Multi cusror: add above' },
 	},
