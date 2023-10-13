@@ -134,7 +134,7 @@ table.insert(M, {
 
 table.insert(M, {
 	-- Formatters/linters
-	'jose-elias-alvarez/null-ls.nvim',
+	'nvimtools/none-ls.nvim',
 	event = { 'BufReadPre', 'BufNewFile' },
 	dependencies = { 'mason.nvim' },
 	opts = {
