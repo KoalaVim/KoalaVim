@@ -402,4 +402,14 @@ let g:VM_maps['Add Cursor Up'] = '<M-K>'
 -- 	end,
 -- })
 
+table.insert(M, {
+	'fedepujol/move.nvim',
+	keys = {
+		{ '<C-k>', ':MoveBlock(-1)<CR>', mode = 'v', silent = true },
+		{ '<C-j>', ':MoveBlock(1)<CR>', mode = 'v', silent = true },
+		{ '<C-l>', ':MoveHBlock(1)<CR>', mode = 'v', silent = true },
+		{ '<C-h>', ':MoveHBlock(-1)<CR>', mode = 'v', silent = true },
+	},
+})
+
 return M

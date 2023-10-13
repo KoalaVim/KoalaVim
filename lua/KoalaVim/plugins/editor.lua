@@ -331,10 +331,10 @@ table.insert(M, {
 		require('Navigator').setup(opts)
 	end,
 	keys = {
-		{ '<C-h>', '<cmd>NavigatorLeft<cr>', mode = { 'n', 'x', 't' }, desc = 'Navigate left' },
-		{ '<C-j>', '<cmd>NavigatorDown<cr>', mode = { 'n', 'x', 't' }, desc = 'Navigate down' },
-		{ '<C-k>', '<cmd>NavigatorUp<cr>', mode = { 'n', 'x', 't' }, desc = 'Navigate up' },
-		{ '<C-l>', '<cmd>NavigatorRight<cr>', mode = { 'n', 'x', 't' }, desc = 'Navigate right' },
+		{ '<C-h>', '<cmd>NavigatorLeft<cr>', mode = { 'n', 't' }, desc = 'Navigate left' },
+		{ '<C-j>', '<cmd>NavigatorDown<cr>', mode = { 'n', 't' }, desc = 'Navigate down' },
+		{ '<C-k>', '<cmd>NavigatorUp<cr>', mode = { 'n', 't' }, desc = 'Navigate up' },
+		{ '<C-l>', '<cmd>NavigatorRight<cr>', mode = { 'n', 't' }, desc = 'Navigate right' },
 	},
 })
 
