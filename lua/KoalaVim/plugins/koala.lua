@@ -9,7 +9,7 @@ table.insert(M, {
 
 		-- Override 's' default behavior
 		local map = require('KoalaVim.utils.map').map
-		map('', 's', function() end, '', {})
+		map('n', 's', function() end, '', {})
 	end,
 })
 

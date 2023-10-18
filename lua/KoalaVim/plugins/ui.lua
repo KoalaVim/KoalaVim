@@ -437,7 +437,7 @@ table.insert(M, {
 		-- Hack to show surround and split args
 		local map = require('KoalaVim.utils.map').map
 		-- stylua: ignore
-		map('', 's', function() wk.show_command('s') end, '', {})
+		map('n', 's', function() wk.show_command('s') end, '', {})
 		map('', '<leader><leader>', '<cmd>WhichKey<cr>', '', {})
 
 		wk.register(keymaps)
