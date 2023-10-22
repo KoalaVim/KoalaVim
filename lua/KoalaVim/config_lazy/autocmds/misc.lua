@@ -62,6 +62,9 @@ if koala_opts.absolute_lines then
 	api.nvim_create_autocmd('InsertLeave', {
 		group = koala_autocmds,
 		callback = function()
+			if vim.wo.number == false then
+				return
+			end
 			vim.wo.relativenumber = true
 		end,
 	})
