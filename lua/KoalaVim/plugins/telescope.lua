@@ -78,6 +78,10 @@ end
 
 local split_if_not_exist = require('KoalaVim.utils.splits').split_if_not_exist
 
+local function open_with_trouble(prompt_bufnr, _mode)
+	require('trouble.providers.telescope').smart_open_with_trouble(prompt_bufnr, _mode)
+end
+
 ---------------------------------------------------------------------
 
 local M = {}
@@ -115,6 +119,7 @@ table.insert(M, {
 						['<C-v>'] = require('telescope.actions').select_vertical + require('telescope.actions').center,
 						['<C-t>'] = require('telescope.actions').select_tab + require('telescope.actions').center,
 						['<C-s>'] = require('telescope.actions.layout').toggle_preview,
+						['<M-q>'] = open_with_trouble,
 					},
 					n = {
 						['<C-j>'] = 'move_selection_next',
@@ -128,6 +133,7 @@ table.insert(M, {
 						['<C-v>'] = require('telescope.actions').select_vertical + require('telescope.actions').center,
 						['<C-t>'] = require('telescope.actions').select_tab + require('telescope.actions').center,
 						['<C-s>'] = require('telescope.actions.layout').toggle_preview,
+						['<M-q>'] = open_with_trouble,
 					},
 				},
 				layout_config = {

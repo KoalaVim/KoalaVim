@@ -26,6 +26,3 @@ map('n', '<leader>B', function()
 	require('KoalaVim.utils.build').reset_deploy()
 	require('KoalaVim.utils.build').deploy()
 end, 'Reset deploy, build & deploy')
-
-map('n', ']q', '<cmd>cnext<CR>', 'Quickfix next')
-map('n', '[q', '<cmd>cprev<CR>', 'Quickfix prev')
