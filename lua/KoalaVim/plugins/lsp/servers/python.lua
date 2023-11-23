@@ -1,7 +1,6 @@
 LSP_SERVERS['pyright'] = {
 	settings = {
 		pyright = {
-			disableLanguageServices = true,
 			disableOrganizeImports = true,
 			reportMissingModuleSource = 'none',
 			reportMissingImports = 'none',
