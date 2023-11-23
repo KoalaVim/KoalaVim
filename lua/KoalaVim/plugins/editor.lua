@@ -15,13 +15,14 @@ table.insert(M, {
 		autosave.setup(opts)
 
 		autosave.hook_before_actual_saving = function()
+			---@diagnostic disable-next-line: undefined-field
 			-- Ignore RaafatTurki/hex.nvim
 			if vim.b.hex then
 				vim.g.auto_save_abort = true
 				return
 			end
 
-			mode = vim.api.nvim_get_mode()
+			local mode = vim.api.nvim_get_mode()
 			-- Don't save while we in insert/select mode (triggered with autopair and such)
 			if mode.mode ~= 'n' then
 				vim.g.auto_save_abort = true
@@ -47,6 +48,7 @@ table.insert(M, {
 	priority = 200, -- Load before auto-session
 	opts = {
 		post_guess_hook = function(is_tabs)
+			---@diagnostic disable-next-line: inject-field
 			vim.b.Koala_tabs = is_tabs
 			if is_tabs then
 				vim.opt_local.listchars:append('lead:⋅')
