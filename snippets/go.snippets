@@ -6,3 +6,9 @@ snippet struct
 	type ${1:name} struct {
 		$2
 	}
+# print caller
+snippet caller
+	_, file, no, ok := runtime.Caller(1)
+	if ok {
+		fmt.Printf("called from %s#%d\n", file, no)
+	}
