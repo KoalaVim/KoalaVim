@@ -379,11 +379,11 @@ table.insert(M, {
 				}
 			end,
 			window = {
+				zindex = 4, -- Below NeoZoom.lua (5)
 				margin = {
-					horizontal = 0,
+					horizontal = 2,
 					vertical = 0,
 				},
-				zindex = 4, -- Below NeoZoom.lua (5)
 			},
 			hide = {
 				focused_win = true,
