@@ -183,7 +183,7 @@ table.insert(M, {
 			end,
 			desc = 'Find files with current word',
 		},
-		{ '<leader>T', find_current_file, desc = 'find files with the current file (use to find _test fast)' },
+		{ '<leader>o', find_current_file, desc = 'find files with the current file (use to find _test fast)' },
 		-- Find buffer
 		{ '<leader>fb', '<cmd>Telescope buffers<CR>', desc = 'Browse open buffers' },
 

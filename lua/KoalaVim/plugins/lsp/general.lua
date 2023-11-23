@@ -247,7 +247,7 @@ table.insert(M, {
 	'ofirgall/inlay-hints.nvim', -- fork
 	keys = {
 		{
-			'<leader>t',
+			'<leader>T',
 			function()
 				require('inlay-hints').toggle()
 			end,
