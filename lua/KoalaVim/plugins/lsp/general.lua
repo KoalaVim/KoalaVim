@@ -1,6 +1,12 @@
 local M = {}
 
 local api = vim.api
+local diagnostics_icons = {
+	Error = '',
+	Warn = '⚠ ',
+	Hint = '',
+	Info = '',
+}
 
 LSP_ON_ATTACH = function(client, buffer)
 	-- Disable semantic tokens (affects on highlights)
@@ -81,6 +87,12 @@ table.insert(M, {
 		require('mason-lspconfig').setup_handlers({
 			setup_server,
 		})
+
+		-- Icons
+		for name, icon in pairs(diagnostics_icons) do
+			name = 'DiagnosticSign' .. name
+			vim.fn.sign_define(name, { text = icon, texthl = name, numhl = '' })
+		end
 	end,
 	keys = {
 		{ 'gD', vim.lsp.buf.declaration, desc = 'Go to Declaration' },
