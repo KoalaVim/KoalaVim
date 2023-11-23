@@ -131,7 +131,11 @@ table.insert(M, {
 			},
 			window = require('ofirkai.plugins.nvim-cmp').window,
 			sources = cmp.config.sources({
-				{ name = 'nvim_lsp', priority = 1000 },
+				{
+					name = 'nvim_lsp',
+					priority = 1000,
+					max_item_count = 10,
+				},
 				{ name = 'path', option = { trailing_slash = true }, priority = 500 },
 				{ name = 'snippy', priority = 200 },
 				-- { name = 'buffer', priority = 100, max_item_count = 5 },
