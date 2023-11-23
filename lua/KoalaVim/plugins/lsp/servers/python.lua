@@ -1,9 +1,37 @@
-LSP_SERVERS['pyright'] = {}
+LSP_SERVERS['pyright'] = {
+	settings = {
+		pyright = {
+			disableLanguageServices = true,
+			disableOrganizeImports = true,
+			reportMissingModuleSource = 'none',
+			reportMissingImports = 'none',
+			reportUndefinedVariable = 'none',
+		},
+		python = {
+			analysis = {
+				autoSearchPaths = true,
+				diagnosticMode = 'workspace',
+				typeCheckingMode = 'off',
+				useLibraryCodeForTypes = true,
+			},
+		},
+	},
+}
+
+LSP_SERVERS['ruff_lsp'] = {
+	on_attach = function(client, buffer)
+		LSP_ON_ATTACH(client, buffer)
+		client.server_capabilities.hoverProvider = false
+	end,
+	init_options = {
+		settings = {
+			args = {},
+		},
+	},
+}
 
 -- TODO: upgrade tools
 -- New tools:
--- https://github.com/charliermarsh/ruff
--- https://github.com/mtshiba/pylyzer
--- https://github.com/astral-sh/ruff-lsp (optional)
+-- https://github.com/mtshiba/pylyzer (not ready yet)
 
 return {}
