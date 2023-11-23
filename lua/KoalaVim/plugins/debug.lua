@@ -66,7 +66,7 @@ table.insert(M, {
 
 		dap.adapters.go = {
 			type = 'server',
-			host = 'rhel8-5.local',
+			host = 'rhel8-6.local',
 			port = 2345,
 		}
 
