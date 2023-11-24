@@ -347,35 +347,6 @@ table.insert(M, {
 	end,
 })
 
-table.insert(M, {
-	'mg979/vim-visual-multi',
-	keys = {
-		{
-			'<M-d>',
-			desc = 'Multi cursor: add selection for current word (equivalent to Ctrl-D in VSCode/Sublime)',
-			mode = { 'n', 'x' },
-		},
-		{ '<C-Down>', desc = 'Multi cusror: add below' },
-		{ '<C-Up>', desc = 'Multi cusror: add above' },
-	},
-	init = function()
-		-- TODO: create an hydra for it
-		vim.cmd([[
-let g:VM_maps = {}
-let g:VM_maps['Find Under']         = '<M-d>'
-let g:VM_maps['Find Subword Under'] = '<M-d>'
-let g:VM_maps['Add Cursor Down'] = '<C-Down>'
-let g:VM_maps['Add Cursor Up'] = '<C-Up>'
-]])
-
-		vim.g.VM_highlight_matches = 'hi! link Search LspReferenceWrite' -- Non selected matches
-		vim.g.VM_Mono_hl = 'TabLine' -- Cursor while in normal
-		vim.g.VM_Extend_hl = 'TabLineSel' -- In Selection (NotUsed)
-		vim.g.VM_Cursor_hl = 'TabLineSel' -- Cursor while in alt+d
-		vim.g.VM_Insert_hl = 'TabLineSel' -- Cursor in insert
-	end,
-})
-
 -- TODO: dial.nvim doesn't work for some reason
 -- table.insert(M, {
 -- 	-- Enhance C-X/A

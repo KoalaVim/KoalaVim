@@ -30,8 +30,9 @@ table.insert(M, {
 		local Hydra = require('hydra')
 		local hydra_autocmds = vim.api.nvim_create_augroup('koala_hydra', { clear = true })
 
-		for _, conf in pairs(HYDRAS) do
+		for name, conf in pairs(HYDRAS) do
 			local curr_hydra = Hydra(conf)
+			HYDRAS_OBJS[name] = curr_hydra
 
 			-- Setup user cmd if needed
 			if conf.cmd then
@@ -53,14 +54,18 @@ table.insert(M, {
 
 			-- Setup custom bodies if needed
 			if conf.custom_bodies then
-				for _, body in ipairs(conf.custom_bodies) do
-					require('KoalaVim.utils.map').map(body.mode, body[1], function()
-						body.callback(curr_hydra)
-					end, body.desc)
-				end
+				map_hydra_custom_bodies(name)
 			end
 		end
 	end,
 })
+
+function map_hydra_custom_bodies(name)
+	for _, body in ipairs(HYDRAS[name].custom_bodies) do
+		print('mapping ' .. body[1])
+		vim.keymap.del(body.mode, body[1])
+		require('KoalaVim.utils.map').map(body.mode, body[1], body[2], body.desc)
+	end
+end
 
 return M

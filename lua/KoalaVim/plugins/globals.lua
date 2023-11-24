@@ -2,7 +2,8 @@
 local M = {}
 
 LSP_SERVERS = {}
-HYDRAS = {}
+HYDRAS = {} -- Hydras to created
+HYDRAS_OBJS = {} -- Created hydras
 --TODO: some help files are ghost files
 GHOST_FILETYPES = { 'fugitive', 'NvimTree' }
 

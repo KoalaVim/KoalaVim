@@ -1,7 +1,9 @@
 -- TODO: @function.name fallback
 -- TODO: change hydras global to system like LazyVim's lspconfig
 
-HYDRAS['Goto funcs'] = {
+local name = 'Goto Functions'
+
+HYDRAS[name] = {
 	hint = [[
  _j_ _J_ : up
  _k_ _K_ : down
@@ -49,43 +51,43 @@ HYDRAS['Goto funcs'] = {
 	custom_bodies = {
 		{
 			'gj',
-			mode = { 'n', 'x' },
-			desc = 'Go down a function',
-			callback = function(hydra)
+			function()
 				require('nvim-treesitter.textobjects.move').goto_next_start('@function.name')
 				require('KoalaVim.utils.misc').center_screen()
-				hydra:activate()
+				HYDRAS_OBJS[name]:activate()
 			end,
+			mode = { 'n', 'x' },
+			desc = 'Go down a function',
 		},
 		{
 			'gk',
-			mode = { 'n', 'x' },
-			desc = 'Go up a function',
-			callback = function(hydra)
+			function()
 				require('nvim-treesitter.textobjects.move').goto_previous_start('@function.name')
 				require('KoalaVim.utils.misc').center_screen()
-				hydra:activate()
+				HYDRAS_OBJS[name]:activate()
 			end,
+			mode = { 'n', 'x' },
+			desc = 'Go up a function',
 		},
 		{
 			'gJ',
-			mode = { 'n', 'x' },
-			desc = 'Go down to an end of a function',
-			callback = function(hydra)
+			function()
 				require('nvim-treesitter.textobjects.move').goto_next_end('@function.outer')
 				require('KoalaVim.utils.misc').center_screen()
-				hydra:activate()
+				HYDRAS_OBJS[name]:activate()
 			end,
+			mode = { 'n', 'x' },
+			desc = 'Go down to an end of a function',
 		},
 		{
 			'gK',
-			mode = { 'n', 'x' },
-			desc = 'Go up to an end of a function',
-			callback = function(hydra)
+			function()
 				require('nvim-treesitter.textobjects.move').goto_previous_end('@function.outer')
 				require('KoalaVim.utils.misc').center_screen()
-				hydra:activate()
+				HYDRAS_OBJS[name]:activate()
 			end,
+			mode = { 'n', 'x' },
+			desc = 'Go up to an end of a function',
 		},
 	},
 }
