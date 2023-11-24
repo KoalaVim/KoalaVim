@@ -355,8 +355,8 @@ table.insert(M, {
 			desc = 'Multi cursor: add selection for current word (equivalent to Ctrl-D in VSCode/Sublime)',
 			mode = { 'n', 'x' },
 		},
-		{ '<M-J>', desc = 'Multi cusror: add below' },
-		{ '<M-K>', desc = 'Multi cusror: add above' },
+		{ '<C-Down>', desc = 'Multi cusror: add below' },
+		{ '<C-Up>', desc = 'Multi cusror: add above' },
 	},
 	init = function()
 		-- TODO: create an hydra for it
@@ -364,8 +364,8 @@ table.insert(M, {
 let g:VM_maps = {}
 let g:VM_maps['Find Under']         = '<M-d>'
 let g:VM_maps['Find Subword Under'] = '<M-d>'
-let g:VM_maps['Add Cursor Down'] = '<M-J>'
-let g:VM_maps['Add Cursor Up'] = '<M-K>'
+let g:VM_maps['Add Cursor Down'] = '<C-Down>'
+let g:VM_maps['Add Cursor Up'] = '<C-Up>'
 ]])
 
 		vim.g.VM_highlight_matches = 'hi! link Search LspReferenceWrite' -- Non selected matches
