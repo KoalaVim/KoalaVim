@@ -8,6 +8,12 @@ local diagnostics_icons = {
 	Info = '',
 }
 
+-- diagnostics_icons.Error, '', '', '', '', '',
+local diagnostics_virt_text_settings = {
+	severity = vim.diagnostic.severity.ERROR,
+	prefix = '',
+}
+
 LSP_ON_ATTACH = function(client, buffer)
 	-- Disable semantic tokens (affects on highlights)
 	client.server_capabilities.semanticTokensProvider = nil
@@ -50,7 +56,7 @@ table.insert(M, {
 			update_in_insert = false, -- disable updates
 			-- Start virtual text and lines disabled
 			virtual_lines = false,
-			virtual_text = { severity = vim.diagnostic.severity.ERROR },
+			virtual_text = diagnostics_virt_text_settings,
 			signs = {
 				priority = 8,
 			},
@@ -328,12 +334,12 @@ table.insert(M, {
 })
 
 -- Disable virtual text and enables lsp lines and vise versa
-toggle_lsp_diagnostics = function()
+local function toggle_lsp_diagnostics()
 	local new_lines_value = not vim.diagnostic.config().virtual_lines
 	local virtual_text = nil
 
 	if new_lines_value == false then
-		virtual_text = { severity = vim.diagnostic.severity.ERROR }
+		virtual_text = diagnostics_virt_text_settings
 	else
 		virtual_text = false
 	end
