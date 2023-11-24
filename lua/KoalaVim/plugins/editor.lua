@@ -505,7 +505,7 @@ table.insert(M, {
 	'folke/trouble.nvim',
 	lazy = true,
 	dependencies = { 'nvim-tree/nvim-web-devicons' },
-	cmd = { 'TroubleToggle', 'Troubble' },
+	cmd = { 'TroubleToggle', 'Trouble' },
 	opts = { use_diagnostic_signs = true },
 	keys = {
 		{ '<leader>t', '<cmd>TroubleToggle<cr>', desc = 'Toggle Trouble Panel' },
