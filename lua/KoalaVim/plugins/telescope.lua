@@ -16,6 +16,10 @@ end
 
 local function find_current_file()
 	local current_file = vim.fn.expand('%:t:r')
+
+	-- replace -/_ with spaces to allow fzf find more files
+	current_file = current_file:gsub('[-_]', ' ')
+
 	require('telescope.builtin').find_files({
 		default_text = current_file,
 		hidden = true,
