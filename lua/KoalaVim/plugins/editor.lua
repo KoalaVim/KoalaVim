@@ -538,4 +538,12 @@ table.insert(M, {
 	},
 })
 
+table.insert(M, {
+	'linrongbin16/gitlinker.nvim',
+	cmd = 'GitLink',
+	config = function(_, opts)
+		require('gitlinker').setup(opts)
+	end,
+})
+
 return M
