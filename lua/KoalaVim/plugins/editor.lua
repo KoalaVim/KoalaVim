@@ -506,7 +506,6 @@ table.insert(M, {
 	lazy = true,
 	dependencies = { 'nvim-tree/nvim-web-devicons' },
 	cmd = { 'TroubleToggle', 'Trouble' },
-	opts = { use_diagnostic_signs = true },
 	keys = {
 		{ '<leader>t', '<cmd>TroubleToggle<cr>', desc = 'Toggle Trouble Panel' },
 		{ '<leader>xx', '<cmd>TroubleToggle document_diagnostics<cr>', desc = 'Document Diagnostics (Trouble)' },
@@ -536,6 +535,12 @@ table.insert(M, {
 			desc = 'Next trouble/quickfix item',
 		},
 	},
+	opts = {
+		use_diagnostic_signs = true,
+	},
+	config = function(_, opts)
+		require('trouble').setup(opts)
+	end,
 })
 
 table.insert(M, {
