@@ -454,7 +454,7 @@ table.insert(M, {
 table.insert(M, {
 	'tzachar/highlight-undo.nvim',
 	keys = { 'u', '<C-r>' },
-	config = function(opts)
+	config = function(_, opts)
 		require('highlight-undo').setup(opts)
 	end,
 })
@@ -488,16 +488,17 @@ table.insert(M, {
 	keys = {
 		{ '<leader>m', desc = 'Mark (highlight) an interesting word (toggle)', mode = { 'n', 'x' } },
 	},
-	config = function()
-		require('interestingwords').setup({
-			colors = { '#aeee00', '#ff0000', '#0000ff', '#b88823', '#ffa724', '#ff2c4b' },
-			color_key = '<leader>m',
-			search_count = false,
-			navigation = false,
-			search_key = nil,
-			cancel_search_key = nil,
-			cancel_color_key = nil,
-		})
+	opts = {
+		colors = { '#aeee00', '#ff0000', '#0000ff', '#b88823', '#ffa724', '#ff2c4b' },
+		color_key = '<leader>m',
+		search_count = false,
+		navigation = false,
+		search_key = nil,
+		cancel_search_key = nil,
+		cancel_color_key = nil,
+	},
+	config = function(_, opts)
+		require('interestingwords').setup(opts)
 	end,
 })
 
