@@ -113,7 +113,7 @@ table.insert(M, {
 			end,
 			desc = 'Format',
 		},
-		{ 'K',            vim.lsp.buf.hover,                                                desc = 'Trigger hover' },
+		{ 'K', vim.lsp.buf.hover, desc = 'Trigger hover' },
 		{ '<RightMouse>', '<LeftMouse><cmd>sleep 100m<cr><cmd>lua vim.lsp.buf.hover()<cr>', desc = 'Trigger hover' },
 	},
 })
