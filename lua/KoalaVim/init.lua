@@ -2,7 +2,12 @@ local M = {}
 
 DEBUG_MODE = true -- TODO: opts
 
--- Global debug function
+M._debug_file = nil
+
+-- Global debug function.
+-- Using notify, use `:Noice` or `<leader>N` to see the output
+-- Goes to: `/tmp/kvim.log` as well
+--
 -- obj can be a table or a vlue
 -- label: optional string to label debug messages
 function DEBUG(obj, label)
@@ -16,16 +21,25 @@ function DEBUG(obj, label)
 	if is_table then
 		title = (label or '') .. ' (table)'
 	else
-		title = label .. '=' .. obj
+		title = (label and label .. '=' or '') .. tostring(obj)
 	end
 
 	local info = debug.getinfo(2)
 	title = info.short_src .. ':' .. info.currentline .. ': ' .. title
 	-- Using notify because we have noice :)
 	vim.notify(title, vim.log.levels.DEBUG)
+	local text = title
 	if is_table then
+		text = text .. vim.inspect(obj)
 		vim.notify(vim.inspect(obj), vim.log.levels.DEBUG)
 	end
+
+	M._debug_file:write(text .. '\n')
+end
+
+local function init_debug()
+	-- TODO: log cycle
+	M._debug_file = io.open('/tmp/kvim.log', 'w')
 end
 
 function M.setup(opts)
@@ -33,6 +47,10 @@ function M.setup(opts)
 end
 
 function M.init()
+	if DEBUG_MODE then
+		init_debug()
+	end
+
 	local rdir = require('KoalaVim.utils.require_dir')
 
 	rdir.recursive_require('config', 'KoalaVim')
