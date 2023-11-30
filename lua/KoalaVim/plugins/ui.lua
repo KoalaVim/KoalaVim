@@ -20,7 +20,7 @@ end
 
 local function find_in_path()
 	local rel_path = node_relative_path()
-	require('nvim-tree.api').tree.close() -- Close tree before jumping to file
+	require('nvim-tree.api').tree.close()                        -- Close tree before jumping to file
 	vim.api.nvim_exec2('Telescope find_files cwd=' .. rel_path, {}) -- TODO: to lua
 end
 
@@ -341,6 +341,15 @@ table.insert(M, {
 			'Show function signature',
 			mode = 'i',
 		},
+		{
+			'<leader>N',
+			function()
+				-- Open noice
+				require('noice.commands').cmd('')
+				vim.cmd('NeoZoomToggle')
+			end,
+			'Open Noice',
+		},
 	},
 })
 
@@ -373,7 +382,7 @@ table.insert(M, {
 				return {
 					-- { get_diagnostic_label(props) },
 					-- { get_git_diff(props) },
-					{ ft_icon, guifg = ft_color },
+					{ ft_icon,       guifg = ft_color },
 					{ ' ' },
 					{ relative_name, gui = modified },
 				}
