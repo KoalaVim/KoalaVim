@@ -1,6 +1,6 @@
 local M = {}
 
-DEBUG_MODE = true -- TODO: opts
+DEBUG_MODE = false -- TODO: opts
 
 M._debug_file = nil
 
