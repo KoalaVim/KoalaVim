@@ -160,6 +160,7 @@ table.insert(M, {
 	event = { 'BufReadPre', 'BufNewFile' },
 	dependencies = { 'mason.nvim' },
 	opts = {
+		-- debug = true, -- Goes to ~/.cache/nvim/null-ls.log
 		sources = {},
 		-- Setup null-ls builtins sources as traversed table
 		builtins_sources = {
