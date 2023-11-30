@@ -192,21 +192,49 @@ table.insert(M, {
 			end
 		end
 
+		local builtins_sources_overrides = {}
+
 		-- Process configured sources
 		for src, src_opts in pairs(NONE_LS_SRCS) do
 			-- Merge sources
 			opts.sources = vim.tbl_extend('force', opts.sources, src_opts.sources or {})
 
 			-- Fill traversed builtins_sources
-			for _, src_builtin_source in ipairs(src_opts.builtins_sources) do
-				table.insert(opts.builtins_sources[src_builtin_source], src)
+			for k, v in pairs(src_opts.builtins_sources) do
+				local src_type = v
+				-- Take overrides of builtin_opts
+				if type(v) == 'table' then
+					src_type = k
+					builtins_sources_overrides[src] = v
+				end
+
+				table.insert(opts.builtins_sources[src_type], src)
 			end
 		end
+
+		DEBUG(builtins_sources_overrides, 'builtins_sources_overrides')
 
 		traverse_builtin(null_ls.builtins, opts.builtins_sources)
 		opts.sources = vim.tbl_extend('keep', opts.sources, builtins_sources)
 
-		DEBUG(opts, 'null_ls opts')
+		local mypy_i = 0
+		for i, src_opts in ipairs(opts.sources) do
+			local src = src_opts.name
+
+			if builtins_sources_overrides[src] then
+				-- DEBUG(src, "src override for")
+				DEBUG(src_opts._opts.args, 'before')
+				opts.sources[i]._opts =
+					vim.tbl_deep_extend('force', opts.sources[i]._opts, builtins_sources_overrides[src])
+				DEBUG(opts.sources[i]._opts.args, 'after')
+				mypy_i = i
+				opts.sources[i]._opts.args({ bufname = 'ofir', temp_path = 'tmp' })
+			end
+		end
+
+		-- DEBUG(opts.sources[mypy_i], 'null_ls opts')
+		DEBUG(opts.sources[mypy_i], 'null_ls opts')
+		DEBUG(opts.sources[mypy_i]._opts.args, 'args')
 		null_ls.setup(opts)
 	end,
 })
@@ -252,8 +280,8 @@ table.insert(M, {
 		})
 	end,
 	keys = {
-		{ '<F2>',      '<cmd>Lspsaga rename<cr>',                desc = 'Rename symbos with F2' },
-		{ '<F4>',      '<cmd>Lspsaga code_action<cr>',           desc = 'Code action with F4' },
+		{ '<F2>', '<cmd>Lspsaga rename<cr>', desc = 'Rename symbos with F2' },
+		{ '<F4>', '<cmd>Lspsaga code_action<cr>', desc = 'Code action with F4' },
 		{ '<leader>L', '<cmd>Lspsaga show_line_diagnostics<CR>', desc = 'show Problem' },
 	},
 })
