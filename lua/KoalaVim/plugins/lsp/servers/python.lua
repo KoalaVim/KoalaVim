@@ -39,12 +39,9 @@ NONE_LS_SRCS['mypy'] = {
 				require('KoalaVim.consts').null_ls.methods.DIAGNOSTICS_ON_SAVE,
 			},
 			diagnostics_postprocess = function(diagnostic)
-				if
-					diagnostic.code == 'import-not-found'
-					or diagnostic.message
-						== 'See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports'
-				then
-					diagnostic.severity = vim.diagnostic.severity['WARN']
+				if diagnostic.code == 'import-not-found' then
+					diagnostic.code = 'Missing library stubs (typeshed) or py.typed file'
+					diagnostic.severity = vim.diagnostic.severity['INFO']
 				end
 			end,
 		},
