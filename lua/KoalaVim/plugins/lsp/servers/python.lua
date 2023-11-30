@@ -17,6 +17,7 @@ LSP_SERVERS['pyright'] = {
 	},
 }
 
+-- Linter and diagnostics
 LSP_SERVERS['ruff_lsp'] = {
 	on_attach = function(client, buffer)
 		LSP_ON_ATTACH(client, buffer)
@@ -25,6 +26,18 @@ LSP_SERVERS['ruff_lsp'] = {
 	init_options = {
 		settings = {
 			args = {},
+		},
+	},
+}
+
+-- Type checker
+NONE_LS_SRCS['mypy'] = {
+	builtins_sources = {
+		diagnostics = {
+			method = {
+				require('KoalaVim.consts').null_ls.methods.DIAGNOSTICS_ON_OPEN,
+				require('KoalaVim.consts').null_ls.methods.DIAGNOSTICS_ON_SAVE,
+			},
 		},
 	},
 }

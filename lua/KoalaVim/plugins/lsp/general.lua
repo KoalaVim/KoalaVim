@@ -128,10 +128,11 @@ table.insert(M, {
 	},
 	opts = {
 		-- Linters
-		-- TODO: configure
+		-- TODO: take from NONE_LS_SRCS
 		ensure_installed = {
 			'stylua',
 			'shfmt',
+			'mypy',
 		},
 	},
 	config = function(_, opts)
@@ -212,29 +213,21 @@ table.insert(M, {
 			end
 		end
 
-		DEBUG(builtins_sources_overrides, 'builtins_sources_overrides')
+		-- DEBUG(builtins_sources_overrides, 'builtins_sources_overrides')
 
 		traverse_builtin(null_ls.builtins, opts.builtins_sources)
 		opts.sources = vim.tbl_extend('keep', opts.sources, builtins_sources)
 
-		local mypy_i = 0
 		for i, src_opts in ipairs(opts.sources) do
 			local src = src_opts.name
 
 			if builtins_sources_overrides[src] then
-				-- DEBUG(src, "src override for")
-				DEBUG(src_opts._opts.args, 'before')
-				opts.sources[i]._opts =
-					vim.tbl_deep_extend('force', opts.sources[i]._opts, builtins_sources_overrides[src])
-				DEBUG(opts.sources[i]._opts.args, 'after')
-				mypy_i = i
-				opts.sources[i]._opts.args({ bufname = 'ofir', temp_path = 'tmp' })
+				opts.sources[i] = opts.sources[i].with(builtins_sources_overrides[src])
 			end
 		end
 
-		-- DEBUG(opts.sources[mypy_i], 'null_ls opts')
-		DEBUG(opts.sources[mypy_i], 'null_ls opts')
-		DEBUG(opts.sources[mypy_i]._opts.args, 'args')
+		-- DEBUG(opts, 'null_ls opts')
+
 		null_ls.setup(opts)
 	end,
 })
