@@ -1,5 +1,33 @@
 local M = {}
 
+DEBUG_MODE = true -- TODO: opts
+
+-- Global debug function
+-- obj can be a table or a vlue
+-- label: optional string to label debug messages
+function DEBUG(obj, label)
+	if not DEBUG_MODE then
+		return
+	end
+
+	local title = ''
+	local is_table = type(obj) == 'table'
+
+	if is_table then
+		title = (label or '') .. ' (table)'
+	else
+		title = label .. '=' .. obj
+	end
+
+	local info = debug.getinfo(2)
+	title = info.short_src .. ':' .. info.currentline .. ': ' .. title
+	-- Using notify because we have noice :)
+	vim.notify(title, vim.log.levels.DEBUG)
+	if is_table then
+		vim.notify(vim.inspect(obj), vim.log.levels.DEBUG)
+	end
+end
+
 function M.setup(opts)
 	require('KoalaVim.opts').load_opts(opts)
 end
