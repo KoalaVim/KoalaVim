@@ -101,7 +101,11 @@ table.insert(M, {
 		end
 	end,
 	keys = {
-		{ 'gD', vim.lsp.buf.declaration, desc = 'Go to Declaration' },
+		{
+			'gD',
+			vim.lsp.buf.declaration,
+			desc = 'Go to Declaration',
+		},
 		{
 			'<leader>F',
 			function()
@@ -109,7 +113,7 @@ table.insert(M, {
 			end,
 			desc = 'Format',
 		},
-		{ 'K', vim.lsp.buf.hover, desc = 'Trigger hover' },
+		{ 'K',            vim.lsp.buf.hover,                                                desc = 'Trigger hover' },
 		{ '<RightMouse>', '<LeftMouse><cmd>sleep 100m<cr><cmd>lua vim.lsp.buf.hover()<cr>', desc = 'Trigger hover' },
 	},
 })
@@ -157,20 +161,11 @@ table.insert(M, {
 	dependencies = { 'mason.nvim' },
 	opts = {
 		sources = {},
-		-- Setup null-ls builtins sources
+		-- Setup null-ls builtins sources as traversed table
 		builtins_sources = {
-			formatting = {
-				'stylua',
-				'eslint_d',
-				'prettierd',
-				'shfmt',
-			},
-			code_actions = {
-				'eslint_d',
-			},
-			diagnostics = {
-				'eslint_d',
-			},
+			formatting = {},
+			code_actions = {},
+			diagnostics = {},
 		},
 	},
 	config = function(_, opts)
@@ -196,8 +191,21 @@ table.insert(M, {
 			end
 		end
 
+		-- Process configured sources
+		for src, src_opts in pairs(NONE_LS_SRCS) do
+			-- Merge sources
+			opts.sources = vim.tbl_extend('force', opts.sources, src_opts.sources or {})
+
+			-- Fill traversed builtins_sources
+			for _, src_builtin_source in ipairs(src_opts.builtins_sources) do
+				table.insert(opts.builtins_sources[src_builtin_source], src)
+			end
+		end
+
 		traverse_builtin(null_ls.builtins, opts.builtins_sources)
 		opts.sources = vim.tbl_extend('keep', opts.sources, builtins_sources)
+
+		DEBUG(opts, 'null_ls opts')
 		null_ls.setup(opts)
 	end,
 })
@@ -243,8 +251,8 @@ table.insert(M, {
 		})
 	end,
 	keys = {
-		{ '<F2>', '<cmd>Lspsaga rename<cr>', desc = 'Rename symbos with F2' },
-		{ '<F4>', '<cmd>Lspsaga code_action<cr>', desc = 'Code action with F4' },
+		{ '<F2>',      '<cmd>Lspsaga rename<cr>',                desc = 'Rename symbos with F2' },
+		{ '<F4>',      '<cmd>Lspsaga code_action<cr>',           desc = 'Code action with F4' },
 		{ '<leader>L', '<cmd>Lspsaga show_line_diagnostics<CR>', desc = 'show Problem' },
 	},
 })

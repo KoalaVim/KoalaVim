@@ -40,4 +40,18 @@ LSP_SERVERS['tsserver'] = {
 	},
 }
 
+-- Linter
+NONE_LS_SRCS['eslint_d'] = {
+	builtins_sources = {
+		'formatting',
+		'code_actions',
+		'diagnostics',
+	},
+}
+
+-- Formatter
+NONE_LS_SRCS['prettierd'] = {
+	builtins_sources = { 'formatting' },
+}
+
 return M
