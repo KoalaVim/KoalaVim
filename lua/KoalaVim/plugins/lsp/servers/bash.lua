@@ -1,8 +1,7 @@
 NONE_LS_SRCS['shfmt'] = {
-    builtins_sources = {
-        'formatting'
-    }
+	builtins_sources = {
+		'formatting',
+	},
 }
 
 return {}
-

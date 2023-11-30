@@ -45,7 +45,7 @@ table.insert(M, {
 
 table.insert(M, {
 	'ofirgall/guess-indent.nvim', -- fork
-	priority = 200,            -- Load before auto-session
+	priority = 200, -- Load before auto-session
 	opts = {
 		post_guess_hook = function(is_tabs)
 			---@diagnostic disable-next-line: inject-field
@@ -334,9 +334,9 @@ table.insert(M, {
 		require('Navigator').setup(opts)
 	end,
 	keys = {
-		{ '<C-h>', '<cmd>NavigatorLeft<cr>',  mode = { 'n', 't' }, desc = 'Navigate left' },
-		{ '<C-j>', '<cmd>NavigatorDown<cr>',  mode = { 'n', 't' }, desc = 'Navigate down' },
-		{ '<C-k>', '<cmd>NavigatorUp<cr>',    mode = { 'n', 't' }, desc = 'Navigate up' },
+		{ '<C-h>', '<cmd>NavigatorLeft<cr>', mode = { 'n', 't' }, desc = 'Navigate left' },
+		{ '<C-j>', '<cmd>NavigatorDown<cr>', mode = { 'n', 't' }, desc = 'Navigate down' },
+		{ '<C-k>', '<cmd>NavigatorUp<cr>', mode = { 'n', 't' }, desc = 'Navigate up' },
 		{ '<C-l>', '<cmd>NavigatorRight<cr>', mode = { 'n', 't' }, desc = 'Navigate right' },
 	},
 })
@@ -509,11 +509,11 @@ table.insert(M, {
 	dependencies = { 'nvim-tree/nvim-web-devicons' },
 	cmd = { 'TroubleToggle', 'Trouble' },
 	keys = {
-		{ '<leader>t',  '<cmd>TroubleToggle<cr>',                       desc = 'Toggle Trouble Panel' },
-		{ '<leader>xx', '<cmd>TroubleToggle document_diagnostics<cr>',  desc = 'Document Diagnostics (Trouble)' },
+		{ '<leader>t', '<cmd>TroubleToggle<cr>', desc = 'Toggle Trouble Panel' },
+		{ '<leader>xx', '<cmd>TroubleToggle document_diagnostics<cr>', desc = 'Document Diagnostics (Trouble)' },
 		{ '<leader>xX', '<cmd>TroubleToggle workspace_diagnostics<cr>', desc = 'Workspace Diagnostics (Trouble)' },
-		{ '<leader>xl', '<cmd>TroubleToggle loclist<cr>',               desc = 'Location List (Trouble)' },
-		{ '<leader>xq', '<cmd>TroubleToggle quickfix<cr>',              desc = 'Quickfix List (Trouble)' },
+		{ '<leader>xl', '<cmd>TroubleToggle loclist<cr>', desc = 'Location List (Trouble)' },
+		{ '<leader>xq', '<cmd>TroubleToggle quickfix<cr>', desc = 'Quickfix List (Trouble)' },
 		{
 			'[q',
 			function()
