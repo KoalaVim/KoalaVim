@@ -12,3 +12,11 @@ snippet caller
 	if ok {
 		fmt.Printf("called from %s#%d\n", file, no)
 	}
+# enum
+snippet enum
+	type ${1:name} ${2:type}
+
+	const (
+		$1${3:FirstName} $1 = ${4:iota}
+		$1${5:SecondName}
+	)
