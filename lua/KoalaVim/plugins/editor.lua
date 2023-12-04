@@ -555,6 +555,7 @@ table.insert(M, {
 
 table.insert(M, {
 	'nvim-pack/nvim-spectre',
+	lazy = true, -- Used by nvim-tree
 	dependencies = {
 		'nvim-lua/plenary.nvim',
 	},

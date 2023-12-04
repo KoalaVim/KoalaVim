@@ -24,6 +24,13 @@ local function find_in_path()
 	vim.api.nvim_exec2('Telescope find_files cwd=' .. rel_path, {}) -- TODO: to lua
 end
 
+local function find_and_replace_in_path()
+	local rel_path = node_relative_path() .. '/**'
+
+	require('nvim-tree.api').tree.close() -- Close tree before jumping to file
+	require('spectre').open({ path = rel_path })
+end
+
 local function git_hist_path()
 	vim.fn.execute('DiffviewFileHistory ' .. node_relative_path())
 end
@@ -153,6 +160,7 @@ table.insert(M, {
 			map_buffer(bufnr, 'n', 'l', tree_api.node.open.edit, 'Nvimtree: open node')
 			map_buffer(bufnr, 'n', 'fw', search_in_path, 'Nvimtree: find word in current path')
 			map_buffer(bufnr, 'n', 'ff', find_in_path, 'Nvimtree: find files in current path')
+			map_buffer(bufnr, 'n', 'fn', find_and_replace_in_path, 'Nvimtree: find and replace in current path')
 			map_buffer(bufnr, 'n', 'gh', git_hist_path, 'Nvimtree: view git history in current path')
 			map_buffer(bufnr, 'n', 'gh', git_hist_path, 'Nvimtree: view git history in current path')
 			map_buffer(bufnr, 'n', '<F2>', tree_api.fs.rename, 'Nvimtree: rename file')
