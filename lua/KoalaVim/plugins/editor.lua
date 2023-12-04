@@ -553,4 +553,41 @@ table.insert(M, {
 	end,
 })
 
+table.insert(M, {
+	'nvim-pack/nvim-spectre',
+	dependencies = {
+		'nvim-lua/plenary.nvim',
+	},
+	cmd = 'FindAndReplace',
+	keys = {
+		{
+			'<leader>fnr',
+			function()
+				require('spectre').toggle()
+			end,
+			desc = 'Toggle Find and Replace',
+			mode = 'n',
+		},
+		{
+			'<leader>fnc',
+			function()
+				require('spectre').open_visual({ select_word = true })
+			end,
+			desc = 'Find and replace current word',
+			mode = 'n',
+		},
+		{
+			'<leader>fn',
+			'<esc><cmd>lua require("spectre").open_visual()<CR>',
+			mode = 'x',
+			desc = 'Find and replace selected text',
+		},
+	},
+	config = function(_, opts)
+		vim.api.nvim_create_user_command('FindAndReplace', function()
+			require('spectre').toggle(opts)
+		end, {})
+	end,
+})
+
 return M
