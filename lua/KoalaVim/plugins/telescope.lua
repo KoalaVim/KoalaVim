@@ -98,7 +98,7 @@ if NVLOG then
 end
 table.insert(M, {
 	'nvim-telescope/telescope.nvim',
-	cmd = 'Telescope',
+	cmd = { 'Telescope', 'CmdHistory' },
 	lazy = true,
 	dependencies = {
 		'nvim-lua/plenary.nvim',
@@ -167,6 +167,11 @@ table.insert(M, {
 				},
 			},
 		})
+
+		-- User Commands
+		api.nvim_create_user_command('CmdHistory', function()
+			require('telescope.builtin').command_history()
+		end, {})
 	end,
 	keys = {
 		-- General telescope utils
