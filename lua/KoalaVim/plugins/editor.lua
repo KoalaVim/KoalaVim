@@ -504,7 +504,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'folke/trouble.nvim',
+	'ofirgall/trouble.nvim', -- fork
 	lazy = true,
 	dependencies = { 'nvim-tree/nvim-web-devicons' },
 	cmd = { 'TroubleToggle', 'Trouble' },
