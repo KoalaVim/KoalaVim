@@ -1,7 +1,5 @@
 local M = {}
 
-DEBUG_MODE = false -- TODO: opts
-
 M._debug_file = nil
 
 -- Global debug function.
@@ -10,11 +8,7 @@ M._debug_file = nil
 --
 -- obj can be a table or a vlue
 -- label: optional string to label debug messages
-function DEBUG(obj, label)
-	if not DEBUG_MODE then
-		return
-	end
-
+DEBUG = function(obj, label)
 	local title = ''
 	local is_table = type(obj) == 'table'
 
@@ -47,8 +41,11 @@ function M.setup(opts)
 end
 
 function M.init()
-	if DEBUG_MODE then
+	if vim.env.KOALA_DEBUG then
 		init_debug()
+	else
+		-- Disable debug
+		DEBUG = function() end
 	end
 
 	local rdir = require('KoalaVim.utils.require_dir')
