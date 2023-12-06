@@ -34,21 +34,68 @@ function M.setup_lualine(is_half, opts)
 		},
 	}
 
+	-- TODO: export to ofirkai.nvim
+
+	local lualine_a = nil
 	local lualine_b = nil
 	local lualine_y = nil
+	local lualine_z = nil
 
 	-- nvim-lualine/lualine.nvim
 	if is_half then
+		lualine_a = { { 'mode', separator = { left = '', right = '' }, padding = 0 } }
 		lualine_b = {}
 		lualine_y = {}
+		lualine_z = {
+			{ 'filetype', icon_only = true, separator = '', padding = 0 },
+			{ 'location', padding = 0 },
+		}
 	else
+		lualine_a = { { 'mode', separator = { left = '' } } }
 		lualine_b = { { 'branch', icon = '' }, 'diff', 'diagnostics' }
 		lualine_y = y_section
+		lualine_z = {
+			{ 'filetype', padding = 0, separator = '' },
+			{ 'location', padding = { left = 0, right = 1 } },
+		}
 	end
+
+	local colors = {
+		blue = '#80a0ff',
+		dark_blue = '#688AA8',
+		cyan = '#79dac8',
+		black = '#080808',
+		white = '#b4b4b4',
+		red = '#ff5189',
+		violet = '#d183e8',
+		grey = '#282828',
+
+		c_fg = '#051829',
+	}
+
+	local bubbles_theme = {
+		normal = {
+			a = { fg = colors.black, bg = colors.dark_blue },
+			b = { fg = colors.white, bg = colors.grey },
+			c = { fg = colors.white, bg = colors.c_fg },
+		},
+
+		insert = { a = { fg = colors.black, bg = '#8071A8' } },
+		command = { a = { fg = colors.black, bg = '#A669A8' } },
+		visual = { a = { fg = colors.black, bg = '#4CA86F' } },
+		replace = { a = { fg = colors.black, bg = '#60A8A4' } },
+
+		inactive = {
+			a = { fg = colors.white, bg = colors.black },
+			b = { fg = colors.white, bg = colors.black },
+			c = { fg = colors.black, bg = colors.black },
+		},
+	}
 
 	require('lualine').setup({
 		options = {
-			theme = M.lualine_opts.options.theme,
+			-- theme = M.lualine_opts.options.theme,
+			theme = bubbles_theme,
 			icons_enabled = true,
 			path = 1,
 			always_divide_middle = false,
@@ -65,31 +112,16 @@ function M.setup_lualine(is_half, opts)
 				},
 			},
 			globalstatus = true,
+
+			-- Bubbles
+			component_separators = '|',
+			section_separators = { left = '', right = '' },
 		},
 		sections = {
+			lualine_a = lualine_a,
 			lualine_b = lualine_b,
 			lualine_c = {
 				{ 'filename', shorting_target = 0, icon = '' },
-				{
-					function()
-						return require('nvim-navic').get_location()
-					end,
-					cond = function()
-						return package.loaded['nvim-navic'] and require('nvim-navic').is_available()
-					end,
-				},
-				{
-					function()
-						return require('jsonpath').get()
-					end,
-					cond = function()
-						if not package.loaded['jsonpath'] then
-							return false
-						end
-						local ft = vim.api.nvim_buf_get_option(0, 'filetype')
-						return ft == 'json' or ft == 'jsonc'
-					end,
-				},
 			},
 			lualine_x = {
 				{
@@ -130,7 +162,38 @@ function M.setup_lualine(is_half, opts)
 				{ get_current_lsp_server_name, icon = ' LSP:' },
 			},
 			lualine_y = lualine_y,
-			lualine_z = { { 'filetype', separator = '' }, 'location' },
+			lualine_z = lualine_z,
+		},
+		winbar = {
+			lualine_b = {
+				{
+					'filename',
+					path = 0,
+					-- color = { fg = colors.black, bg = '#60A8A4' },
+				},
+			},
+			lualine_c = {
+				{
+					function()
+						return require('nvim-navic').get_location()
+					end,
+					cond = function()
+						return package.loaded['nvim-navic'] and require('nvim-navic').is_available()
+					end,
+				},
+				{
+					function()
+						return require('jsonpath').get()
+					end,
+					cond = function()
+						if not package.loaded['jsonpath'] then
+							return false
+						end
+						local ft = vim.api.nvim_buf_get_option(0, 'filetype')
+						return ft == 'json' or ft == 'jsonc'
+					end,
+				},
+			},
 		},
 	})
 end
