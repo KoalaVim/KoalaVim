@@ -10,6 +10,10 @@ table.insert(M, {
 		-- Override 's' default behavior
 		local map = require('KoalaVim.utils.map').map
 		map('n', 's', function() end, '', {})
+
+		-- check for updates
+		local update_checker = require('KoalaVim.utils.update_checker')
+		update_checker.check()
 	end,
 })
 
