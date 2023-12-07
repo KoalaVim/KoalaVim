@@ -55,7 +55,7 @@ function M.setup_lualine(is_half, opts)
 		lualine_b = { { 'branch', icon = '' }, 'diff', 'diagnostics' }
 		lualine_y = y_section
 		lualine_z = {
-			{ 'filetype', padding = 0, separator = '' },
+			{ 'filetype', padding = 0, separator = ' ' },
 			{ 'location', padding = { left = 0, right = 1 } },
 		}
 	end
@@ -109,6 +109,8 @@ function M.setup_lualine(is_half, opts)
 					'git',
 					'gitrebase',
 					'quickfix',
+					'alpha',
+					'Trouble',
 				},
 			},
 			globalstatus = true,
