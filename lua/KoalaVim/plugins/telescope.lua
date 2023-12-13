@@ -27,10 +27,11 @@ local function find_current_file()
 	})
 end
 
-local function find_files(mode, cwd)
+function find_files(mode, cwd)
 	require('telescope.builtin').find_files({
 		cwd = cwd,
 		default_text = telescope_default_text(mode),
+		file_ignore_patterns = { '.git' },
 	})
 end
 

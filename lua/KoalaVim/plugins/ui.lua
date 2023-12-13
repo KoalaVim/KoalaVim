@@ -493,7 +493,7 @@ table.insert(M, {
 			dashboard.button('t', '  File Tree', ':NvimTreeOpen <CR>'),
 			dashboard.button('ff', '  Find File', function()
 				KoalaDisableAutoSession()
-				require('telescope.builtin').find_files()
+				find_files()
 			end),
 			dashboard.button('fw', '  Find Text (words)', function()
 				KoalaDisableAutoSession()
