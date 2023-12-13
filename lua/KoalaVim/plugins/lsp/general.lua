@@ -72,6 +72,10 @@ table.insert(M, {
 				capabilities = LSP_CAPS,
 				on_attach = LSP_ON_ATTACH,
 			}, LSP_SERVERS[server] or {})
+
+			if server_opts_merged.lazy then
+				return -- Server is lazy initialized
+			end
 			require('lspconfig')[server].setup(server_opts_merged)
 		end
 
