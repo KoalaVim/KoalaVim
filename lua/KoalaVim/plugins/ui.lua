@@ -512,7 +512,9 @@ table.insert(M, {
 				G]])
 			end),
 
-			dashboard.button('l', '󰒲 ' .. ' Lazy', ':Lazy<CR>'),
+			dashboard.button('c', ' ' .. ' Change Log', function()
+				require('KoalaVim.utils.changelog').check()
+			end),
 			dashboard.button('q', ' ' .. ' Quit', ':qa<CR>'),
 		}
 		for _, button in ipairs(dashboard.section.buttons.val) do
