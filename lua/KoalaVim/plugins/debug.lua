@@ -22,22 +22,17 @@ table.insert(M, {
 		--- Setup Adapaters ---
 
 		-- C/C++/Rust
-		local last_file = './a.out'
 		dap.configurations.cpp = {
 			{
 				name = 'Launch file',
 				type = 'codelldb',
 				request = 'launch',
-				program = function()
-					---@diagnostic disable-next-line: redundant-parameter, param-type-mismatch
-					last_file = vim.fn.input('Path to executable: ', last_file, 'file')
-					return last_file
-				end,
+				program = require('KoalaVim.utils.debug').choose_file,
 				cwd = vim.fn.getcwd(),
 				stopOnEntry = false,
 			},
 		}
-		dap.configurations.c = dap.configurations.cpp
+		-- dap.configurations.c = dap.configurations.cpp -- Debug c with codelldb instead
 		dap.configurations.rust = dap.configurations.cpp
 
 		dap.adapters.codelldb = {
@@ -47,6 +42,28 @@ table.insert(M, {
 				command = 'codelldb',
 				args = { '--port', '${port}' },
 			},
+		}
+
+		-- C (remote gdb)
+		dap.configurations.c = {
+			{
+				name = 'Attach to gdbserver :1234',
+				type = 'cppdbg',
+				request = 'launch',
+				MIMode = 'gdb',
+				miDebuggerServerAddress = 'localhost:1234',
+				miDebuggerPath = 'gdb',
+				program = require('KoalaVim.utils.debug').choose_file,
+				cwd = vim.fn.getcwd(),
+				stopOnEntry = false,
+			},
+		}
+
+		-- From mason
+		dap.adapters.cppdbg = {
+			id = 'cppdbg',
+			type = 'executable',
+			command = 'OpenDebugAD7',
 		}
 
 		-- Golang
@@ -96,6 +113,13 @@ table.insert(M, {
 				require('dap').terminate()
 			end,
 			desc = 'Debug: terminate',
+		},
+		{
+			'<F7>',
+			function()
+				require('dap').disconnect()
+			end,
+			desc = 'Debug: continue',
 		},
 		{
 			'<F10>',

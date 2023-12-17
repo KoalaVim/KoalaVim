@@ -69,11 +69,13 @@ table.insert(M, {
 			before_save = function(_)
 				local data = {}
 				data.build = require('KoalaVim.utils.build').get_session_data()
+				data.debug = require('KoalaVim.utils.debug').get_session_data()
 
 				return data
 			end,
 			after_load = function(_, user_data)
 				require('KoalaVim.utils.build').restore_session_data(user_data.build or {})
+				require('KoalaVim.utils.debug').restore_session_data(user_data.debug or {})
 				KOALA_SESSION_LOADED = true
 			end,
 		},
