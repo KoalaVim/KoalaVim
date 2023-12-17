@@ -54,6 +54,10 @@ local BASE_HEIGHT = 3
 local MAX_COMMITS = 15
 
 function M.render(message, error)
+	if message == '' then
+		return -- No updates to show. local git is ahead of remote probably
+	end
+
 	local buf = api.nvim_create_buf(false, true)
 	api.nvim_buf_set_option(buf, 'filetype', 'KoalaUpdates')
 	local ns = api.nvim_create_namespace('KoalaUpdates')
