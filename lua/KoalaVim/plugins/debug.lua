@@ -117,9 +117,9 @@ table.insert(M, {
 		{
 			'<F7>',
 			function()
-				require('dap').disconnect()
+				require('dap').close()
 			end,
-			desc = 'Debug: continue',
+			desc = 'Debug: close',
 		},
 		{
 			'<F10>',
@@ -185,6 +185,7 @@ table.insert(M, {
 					position = 'top',
 					elements = {
 						'scopes', -- local vars
+						'repl',
 					},
 				},
 				{
