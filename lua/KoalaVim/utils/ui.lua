@@ -66,9 +66,11 @@ function M.setup_lualine(is_half, opts)
 		cyan = '#79dac8',
 		black = '#080808',
 		white = '#b4b4b4',
+		real_white = '#c7c7c7',
+		blueish_white = '#b8bdd4',
 		red = '#ff5189',
 		violet = '#d183e8',
-		grey = '#282828',
+		grey = '#053957',
 
 		c_fg = '#051829',
 	}
@@ -76,8 +78,8 @@ function M.setup_lualine(is_half, opts)
 	local bubbles_theme = {
 		normal = {
 			a = { fg = colors.black, bg = colors.dark_blue },
-			b = { fg = colors.white, bg = colors.grey },
-			c = { fg = colors.white, bg = colors.c_fg },
+			b = { fg = colors.real_white, bg = colors.grey },
+			c = { fg = colors.blueish_white, bg = colors.c_fg },
 		},
 
 		insert = { a = { fg = colors.black, bg = '#8071A8' } },
