@@ -126,6 +126,7 @@ table.insert(M, {
 	'williamboman/mason.nvim',
 	cmd = {
 		'Mason',
+		'MasonInstall',
 		'Linters',
 		'LspServers',
 		'Formatters',
