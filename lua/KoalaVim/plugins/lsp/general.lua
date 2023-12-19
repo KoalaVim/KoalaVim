@@ -123,9 +123,10 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'williamboman/mason.nvim',
+	'amittamari/mason.nvim', -- fork
 	cmd = {
 		'Mason',
+		'MasonInstall',
 		'Linters',
 		'LspServers',
 		'Formatters',
@@ -137,6 +138,9 @@ table.insert(M, {
 			'stylua',
 			'shfmt',
 			'mypy',
+		},
+		npm = {
+			install_args = { '--registry', 'https://registry.npmjs.org/' },
 		},
 	},
 	config = function(_, opts)
