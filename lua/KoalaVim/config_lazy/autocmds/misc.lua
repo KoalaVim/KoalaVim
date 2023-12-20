@@ -1,7 +1,7 @@
 local api = vim.api
 
 local koala_autocmds = api.nvim_create_augroup('koala_lazy', { clear = true })
-local koala_opts = require('KoalaVim').opts.autocmds
+local koala_opts = require('KoalaVim').conf.autocmds
 
 -- Highlight on yank
 api.nvim_create_autocmd('TextYankPost', {

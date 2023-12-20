@@ -36,10 +36,6 @@ local function init_debug()
 	M._debug_file = io.open('/tmp/kvim.log', 'w')
 end
 
-function M.setup(opts)
-	require('KoalaVim.opts').load_opts(opts)
-end
-
 function M.init()
 	if vim.env.KOALA_DEBUG then
 		init_debug()
@@ -67,6 +63,6 @@ function M.init()
 	})
 end
 
-M.opts = require('KoalaVim.opts').default_opts
+M.conf = {}
 
 return M

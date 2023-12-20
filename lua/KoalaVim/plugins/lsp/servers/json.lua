@@ -12,12 +12,16 @@ table.insert(M, {
 	'b0o/SchemaStore.nvim',
 	ft = { 'yaml', 'yaml.docker-compose', 'json', 'jsonc' },
 	config = function()
+		-- Add kvim.jsonc scheme
+		local json_schemes = require('schemastore').json.schemas()
+		table.insert(json_schemes, require('KoalaVim.conf').get_scheme())
+
 		require('lspconfig').jsonls.setup({
 			capabilities = LSP_CAPS,
 			on_attach = LSP_ON_ATTACH,
 			settings = {
 				json = {
-					schemas = require('schemastore').json.schemas(),
+					schemas = json_schemes,
 					validate = { enable = true },
 				},
 			},

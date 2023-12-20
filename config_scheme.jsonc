@@ -1,0 +1,71 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "https://example.com/koalavim.schema.json",
+    "title": "KoalaVim config",
+    "description": "Settings for KoalaVim",
+    "type": "object",
+    "properties": {
+        "autocmds": {
+            "description": "Settings for automated features",
+            "type": "object",
+            "properties": {
+                "half_screen": {
+                    "description": "Change layout + UI when neovim is set to half screen",
+                    "type": "object",
+                    "properties": {
+                        "full_screen_width": {
+                            "description": "Amount of columns when full screen (use `echo $COLUMNS`)",
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    }
+                },
+                "absolute_lines": {
+                    "description": "Show absolute lines in insert mode",
+                    "type": "boolean"
+                }
+            }
+        },
+        "plugins": {
+            "description": "Plugin settings",
+            "type": "object",
+            "properties": {
+                "open_jira": {
+                    "description": "Open jira tickets quickly",
+                    "type": "object",
+                    "properties": {
+                        "jira_url": {
+                            "description": "Your base jira url. In order to open tickets. example: https://mycompany.atlassian.net/browse/",
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "lsp": {
+            "description": "Language server protocol settings (intellisense)",
+            "type": "object",
+            "properties": {
+                "format": {
+                    "description": "Formatting options",
+                    "type": "object",
+                    "properties": {
+                        "blacklist": {
+                            "description": "List of lsp clients to not apply format with",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                                // TODO: can we autocomplete lsp server names?
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

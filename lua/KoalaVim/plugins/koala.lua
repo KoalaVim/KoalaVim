@@ -4,8 +4,9 @@ local M = {}
 table.insert(M, {
 	'KoalaVim/KoalaVim',
 	priority = 9999999, -- Load KoalaVim first
-	config = function(_, opts)
-		require('KoalaVim').setup(opts)
+	config = function()
+		require('KoalaVim.conf').load()
+		require('KoalaVim.conf').reg_autocmd()
 
 		-- Override 's' default behavior
 		local map = require('KoalaVim.utils.map').map

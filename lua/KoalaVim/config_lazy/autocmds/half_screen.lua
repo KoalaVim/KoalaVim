@@ -1,6 +1,6 @@
 -- Verify half_screen options
-local opts = require('KoalaVim').opts.autocmds.half_screen
-if not require('KoalaVim.opts').verify(opts) then
+local conf = require('KoalaVim').conf.autocmds.half_screen
+if not require('KoalaVim.conf').verify(conf) then
 	return
 end
 
@@ -102,7 +102,7 @@ local function set_full_layout()
 end
 
 local function is_half()
-	return api.nvim_get_option_value('columns', {}) <= opts.full_screen_width / 2
+	return api.nvim_get_option_value('columns', {}) <= conf.full_screen_width / 2
 end
 
 local function set_layout()

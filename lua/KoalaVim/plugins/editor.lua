@@ -271,8 +271,8 @@ table.insert(M, {
 			config = function(_, opts)
 				-- Verify open-jira options
 				if not opts.url then
-					local koala_opts = require('KoalaVim').opts.plugins.open_jira
-					if not require('KoalaVim.opts').verify(koala_opts) then
+					local koala_opts = require('KoalaVim').conf.plugins.open_jira
+					if not require('KoalaVim.conf').verify(koala_opts) then
 						return
 					end
 					opts.url = koala_opts.jira_url
