@@ -29,7 +29,7 @@ Box (select box with visual block first): _<C-f>_
 		{ '<C-f>', ':VBox<CR>', { mode = 'v' } },
 		{ '<Esc>', nil, { exit = true, nowait = true } },
 	},
-	cmd = 'Draw',
+	cmd = { name = 'Draw', desc = 'Draw boxes and arrows' },
 }
 
 table.insert(M, {

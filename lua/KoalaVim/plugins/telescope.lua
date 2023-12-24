@@ -1,6 +1,7 @@
 -- TODO: lazy load this functions
 
 local api = vim.api
+local usercmd = require('KoalaVim.utils.cmd')
 
 local function telescope_default_text(mode)
 	if mode == nil then
@@ -170,7 +171,7 @@ table.insert(M, {
 		})
 
 		-- User Commands
-		api.nvim_create_user_command('CmdHistory', function()
+		usercmd.create('CmdHistory', 'Show commands history', function()
 			require('telescope.builtin').command_history()
 		end, {})
 	end,

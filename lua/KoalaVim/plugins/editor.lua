@@ -2,6 +2,8 @@ local M = {}
 -- Misc editor plugins
 local api = vim.api
 
+local usercmd = require('KoalaVim.utils.cmd')
+
 table.insert(M, {
 	'ofirgall/AutoSave.nvim', -- fork
 	event = 'VeryLazy',
@@ -164,13 +166,13 @@ table.insert(M, {
 	config = function(_, opts)
 		require('iron.core').setup(opts)
 
-		api.nvim_create_user_command('IPython', function()
+		usercmd.create('IPython', 'Open IPython interpreter in split', function()
 			require('iron.core').repl_for('python')
 			require('iron.core').focus_on('python')
 			api.nvim_feedkeys('i', 'n', false)
 		end, {})
 
-		api.nvim_create_user_command('Lua', function()
+		usercmd.create('Lua', 'Open Lua interpreter in split', function()
 			require('iron.core').repl_for('lua')
 			require('iron.core').focus_on('lua')
 			api.nvim_feedkeys('i', 'n', false)
@@ -318,7 +320,7 @@ table.insert(M, {
 	config = function(_, opts)
 		local retrail = require('retrail')
 		retrail.setup(opts)
-		api.nvim_create_user_command('TrimWhiteSpace', function()
+		usercmd.create('TrimWhiteSpace', 'Remove line ending whitespace', function()
 			retrail:trim()
 		end, {})
 	end,
@@ -585,7 +587,7 @@ table.insert(M, {
 		},
 	},
 	config = function(_, opts)
-		vim.api.nvim_create_user_command('FindAndReplace', function()
+		usercmd.create('FindAndReplace', 'Find and replace text', function()
 			require('spectre').toggle(opts)
 		end, {})
 	end,

@@ -26,14 +26,16 @@ LSP_SERVERS['ltex'] = {
 	},
 }
 
+local cmd = require('KoalaVim.utils.cmd')
+
 table.insert(M, {
 	'toppair/peek.nvim',
 	cmd = 'MarkdownPreviewOpen',
 	build = 'deno task --quiet build:fast',
 	config = function()
 		require('peek').setup({})
-		vim.api.nvim_create_user_command('MarkdownPreviewOpen', require('peek').open, {})
-		vim.api.nvim_create_user_command('MarkdownPreviewClose', require('peek').close, {})
+		cmd.create('MarkdownPreviewOpen', 'Open markdown preview', require('peek').open, {})
+		cmd.create('MarkdownPreviewClose', 'Close markdown preview', require('peek').close, {})
 	end,
 })
 

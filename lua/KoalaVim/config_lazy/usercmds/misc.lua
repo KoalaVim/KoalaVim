@@ -2,31 +2,32 @@
 local api = vim.api
 local opt = vim.opt
 
-api.nvim_create_user_command('CloseAllButCurrent', function()
+local usercmd = require('KoalaVim.utils.cmd')
+
+usercmd.create('CloseAllButCurrent', 'Close all buffers but current', function()
 	require('KoalaVim.utils.splits').close_all_but_current()
 end, {})
 
-api.nvim_create_user_command('CloseBuffersLeft', function()
+usercmd.create('CloseBuffersLeft', 'Close all left buffers', function()
 	api.nvim_command('BufferLineCloseLeft')
 end, {})
 
-api.nvim_create_user_command('CloseBuffersRight', function()
+usercmd.create('CloseBuffersRight', 'Close all right buffers', function()
 	api.nvim_command('BufferLineCloseRight')
 end, {})
 
-api.nvim_create_user_command('SetOsClipboard', function()
+usercmd.create('SetOsClipboard', 'Set vim clipboard to OS clipboard', function()
 	opt.clipboard = 'unnamedplus'
 end, {})
 
-api.nvim_create_user_command('NoOsClipboard', function()
+usercmd.create('NoOsClipboard', 'Set vim clipboard to default', function()
 	opt.clipboard = ''
 end, {})
 
-api.nvim_create_user_command('ListKeys', function()
+usercmd.create('ListKeys', 'List all the keys', function()
 	require('telescope.builtin').keymaps()
 end, {})
 
--- TODO: install SSR
-api.nvim_create_user_command('SSR', function()
-	require('ssr').open()
+usercmd.create('ListCmds', 'List the cmds', function()
+	require('telescope.builtin').commands()
 end, {})

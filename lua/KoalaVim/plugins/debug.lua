@@ -1,5 +1,7 @@
 local M = {}
 
+local usercmd = require('KoalaVim.utils.cmd')
+
 table.insert(M, {
 	'mfussenegger/nvim-dap',
 	dependencies = {
@@ -87,7 +89,7 @@ table.insert(M, {
 			port = 2345,
 		}
 
-		vim.api.nvim_create_user_command('ClearBreakpoints', function()
+		usercmd.create('ClearBreakpoints', 'Debug: clear all breakpoints', function()
 			require('dap').clear_breakpoints()
 		end, {})
 	end,

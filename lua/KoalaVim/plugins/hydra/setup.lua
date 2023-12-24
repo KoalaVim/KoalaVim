@@ -1,5 +1,7 @@
 local M = {}
 
+local usercmd = require('KoalaVim.utils.cmd')
+
 local hydra_keys = {}
 local hydra_cmds = {}
 local hydra_fts = {}
@@ -8,7 +10,7 @@ for name, conf in pairs(HYDRAS) do
 		table.insert(hydra_keys, { conf.body, desc = 'Trigger ' .. name .. ' hydra' })
 	end
 	if conf.cmd then
-		table.insert(hydra_cmds, conf.cmd)
+		table.insert(hydra_cmds, conf.cmd.name)
 	end
 	if conf.ft then
 		table.insert(hydra_fts, conf.ft)
@@ -35,7 +37,7 @@ table.insert(M, {
 
 			-- Setup user cmd if needed
 			if conf.cmd then
-				vim.api.nvim_create_user_command(conf.cmd, function()
+				usercmd.create(conf.cmd.name, conf.cmd.desc, function()
 					curr_hydra:activate()
 				end, {})
 			end

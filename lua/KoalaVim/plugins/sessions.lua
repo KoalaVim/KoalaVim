@@ -1,5 +1,7 @@
 local M = {}
 
+local usercmd = require('KoalaVim.utils.cmd')
+
 -- TODO: restore fugitive
 -- TODO: handle zombie files
 
@@ -109,21 +111,21 @@ table.insert(M, {
 
 		require('possession').setup(opts)
 
-		vim.api.nvim_create_user_command('SessionList', function()
+		usercmd.create('SessionList', 'Sessions: open sessions list', function()
 			require('KoalaVim.utils.session').list_sessions()
 		end, {})
 
-		vim.api.nvim_create_user_command('SaveSession', function()
+		usercmd.create('SaveSession', 'Sessions: save current session as the cwd session', function()
 			KoalaEnableSession()
 			local cwd_session = require('KoalaVim.utils.session').cwd_session()
 			require('possession.session').save(cwd_session, { no_confirm = true })
 		end, {})
 
-		vim.api.nvim_create_user_command('LoadSession', function()
+		usercmd.create('LoadSession', 'Sessions: Load the cwd session', function()
 			require('KoalaVim.utils.session').load_cwd_session()
 		end, {})
 
-		vim.api.nvim_create_user_command('DeleteSession', function()
+		usercmd.create('DeleteSession', 'Sessions: Delete the current session', function()
 			KoalaDeleteCurrentSession()
 		end, {})
 

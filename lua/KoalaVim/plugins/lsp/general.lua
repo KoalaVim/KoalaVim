@@ -1,5 +1,7 @@
 local M = {}
 
+local usercmd = require('KoalaVim.utils.cmd')
+
 local api = vim.api
 local diagnostics_icons = {
 	Error = '',
@@ -46,7 +48,7 @@ table.insert(M, {
 			'mhanberg/output-panel.nvim',
 			config = function()
 				require('output_panel').setup()
-				vim.api.nvim_create_user_command('LspOutput', ':OutputPanel', {})
+				usercmd.create('LspOutput', 'LSP: show servers output panel', ':OutputPanel', {})
 			end,
 		},
 	},
@@ -148,9 +150,9 @@ table.insert(M, {
 
 		-- Aliases for mason
 		-- stylua: ignore start
-		api.nvim_create_user_command('LspServers', function() api.nvim_command('Mason') end, {})
-		api.nvim_create_user_command('Linters', function() api.nvim_command('Mason') end, {})
-		api.nvim_create_user_command('Formatters', function() api.nvim_command('Mason') end, {})
+		usercmd.create('LspServers', 'LSP: show installable servers', function() api.nvim_command('Mason') end, {})
+		usercmd.create('Linters', 'LSP: show installable linters', function() api.nvim_command('Mason') end, {})
+		usercmd.create('Formatters', 'LSP: show installable formatters', function() api.nvim_command('Mason') end, {})
 		-- stylua: ignore end
 
 		local mr = require('mason-registry')

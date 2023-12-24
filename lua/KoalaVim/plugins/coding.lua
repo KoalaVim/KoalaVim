@@ -1,7 +1,7 @@
 local M = {}
 -- Plugins you interact by actual coding
 
-local api = vim.api
+local usercmd = require('KoalaVim.utils.cmd')
 
 table.insert(M, {
 	'numToStr/Comment.nvim',
@@ -173,7 +173,7 @@ table.insert(M, {
 		textcase.setup(opts)
 
 		for usrcmd, apiname in pairs(text_case_cmd_table) do
-			api.nvim_create_user_command(usrcmd, function()
+			usercmd.create(usrcmd, 'Convert case to ' .. usrcmd, function()
 				textcase.current_word(apiname)
 			end, {})
 		end
