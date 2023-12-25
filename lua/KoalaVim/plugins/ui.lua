@@ -554,7 +554,9 @@ table.insert(M, {
 				dashboard.section.footer.val = {
 					' Press SPACE twice for keybind help',
 					'',
-					' Type :ListKeys for keybind help',
+					' Type :ListKeys for keybinds help',
+					'',
+					' Type :ListCmds for commands help',
 				}
 				pcall(vim.cmd.AlphaRedraw)
 			end,
