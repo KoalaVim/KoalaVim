@@ -484,6 +484,7 @@ table.insert(M, {
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠁
 ]]
 
+		local kvim_conf = require('KoalaVim.conf')
 		dashboard.section.header.val = vim.split(logo, '\n')
 		dashboard.section.buttons.val = {
 			dashboard.button('ss', '  Load Session', function()
@@ -514,7 +515,18 @@ table.insert(M, {
 
 			dashboard.button('kc', ' ' .. ' Koala Config', function()
 				KoalaDisableAutoSession(true)
-				vim.cmd(':e ~/.kvim.conf')
+				vim.cmd(':e ' .. kvim_conf.get_user_conf())
+			end),
+
+			dashboard.button('krc', ' ' .. ' Koala Repo Config', function()
+				local repo_conf = kvim_conf.get_repo_conf()
+				if repo_conf == nil then
+					vim.notify('Not in a git repository')
+					return
+				end
+				KoalaDisableAutoSession(true)
+				kvim_conf.create_default_conf_if_not_exist(repo_conf)
+				vim.cmd(':e ' .. repo_conf)
 			end),
 
 			dashboard.button('kl', ' ' .. ' Koala Change Log', function()

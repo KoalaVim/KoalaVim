@@ -2,11 +2,29 @@ local M = {}
 
 local PATTERN = { '.kvim.conf', 'default_kvim.conf' }
 
+function M.get_repo_conf()
+	local output = vim.fn.system("git rev-parse --show-toplevel | tr -d '\\n'")
+	if output:find('fatal: ') then
+		return nil
+	end
+	return output .. '/.kvim.conf'
+end
+
+function M.get_user_conf()
+	-- VLZ-532
+	-- TODO: windows support?
+	return vim.fn.expand('$HOME') .. '/.kvim.conf'
+end
+
 local function _get_kvim_dir()
 	local info = debug.getinfo(1, 'S')
 	local curr_path = string.match(info.source, '^@(.*)')
 
 	return curr_path:gsub('lua/KoalaVim/conf.lua', '')
+end
+
+function M.get_kvim_conf()
+	return _get_kvim_dir() .. '/default_kvim.conf'
 end
 
 function M.reg_autocmd()
@@ -40,8 +58,7 @@ local function _verify(opts_tbl, scope_string)
 					print(scope_string .. key .. " isn't configured (you can turn off this message by passing `warnings = false` in koala opts)")
 					valid = false
 				else
-					-- If warnings aren't on just return
-					return false
+					-- If warnings aren't on just return return false
 				end
 			end
 		end
@@ -57,7 +74,7 @@ end
 local function _create_default_conf(file)
 	local f = io.open(file, 'w')
 	if f == nil then
-		print('failed to create default conf at ' .. conf)
+		print('failed to create default conf at ' .. file)
 		return
 	end
 
@@ -65,23 +82,46 @@ local function _create_default_conf(file)
 	f:close()
 end
 
-local function _load_file(file)
+function M.create_default_conf_if_not_exist(file)
 	local f = io.open(file, 'r')
 	if f == nil then
 		_create_default_conf(file)
+		return
+	end
+	f:close()
+end
+
+local function _load_file(file, create_if_not_exist)
+	if file == nil then
+		return {}
+	end
+
+	local f = io.open(file, 'r')
+	if f == nil then
+		if create_if_not_exist then
+			_create_default_conf(file)
+		end
 		return {}
 	end
 	local content = f:read('*all')
 	f:close()
 
-	return vim.json.decode(content, {})
+	local ok, res, a = pcall(vim.json.decode, content, {})
+	if not ok then
+		-- TODO: health
+		print('Failed to decode ' .. file)
+		print('Error: ' .. res)
+		return
+	end
+	return res
 end
 
 function M.load()
-	local default = _load_file(_get_kvim_dir() .. '/default_kvim.conf')
-	-- TODO: windows support?
-	local user = _load_file(vim.fn.expand('$HOME/.kvim.conf'))
-	local conf = vim.tbl_deep_extend('keep', user, default)
+	local default = _load_file(M.get_kvim_conf(), false)
+	local user = _load_file(M.get_user_conf(), true)
+	local git = _load_file(M.get_repo_conf(), false)
+	local conf = vim.tbl_deep_extend('keep', git, user, default)
+
 	-- TODO: show config verification warnings in the dashboard
 	-- _verify(conf, '')
 	require('KoalaVim').conf = conf
