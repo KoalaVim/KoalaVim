@@ -9,12 +9,14 @@ KOALA_AUTOSAVE_SESSION = true
 KOALA_SESSION_LOADED = false
 
 -- Disables auto session saving if a session already exists
-function KoalaDisableAutoSession()
+function KoalaDisableAutoSession(silent)
 	local cwd_session = require('KoalaVim.utils.session').cwd_session()
 
 	if require('possession.session').exists(cwd_session) then
 		KOALA_AUTOSAVE_SESSION = false
-		vim.notify('AutoSession Saving Disabled! (:SaveSession to override)')
+		if not silent then
+			vim.notify('AutoSession Saving Disabled! (:SaveSession to override)')
+		end
 	end
 end
 

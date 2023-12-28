@@ -512,9 +512,15 @@ table.insert(M, {
 				G]])
 			end),
 
-			dashboard.button('c', ' ' .. ' Change Log', function()
+			dashboard.button('kc', ' ' .. ' Koala Config', function()
+				KoalaDisableAutoSession(true)
+				vim.cmd(':e ~/.kvim.conf')
+			end),
+
+			dashboard.button('kl', ' ' .. ' Koala Change Log', function()
 				require('KoalaVim.utils.changelog').check()
 			end),
+
 			dashboard.button('q', ' ' .. ' Quit', ':qa<CR>'),
 		}
 		for _, button in ipairs(dashboard.section.buttons.val) do
