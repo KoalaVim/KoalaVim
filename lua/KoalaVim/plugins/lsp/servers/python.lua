@@ -82,6 +82,10 @@ NONE_LS_SRCS['mypy'] = {
 	},
 }
 
+NONE_LS_SRCS['black'] = {
+	builtins_sources = { 'formatting' },
+}
+
 -- TODO: upgrade tools
 -- New tools:
 -- https://github.com/mtshiba/pylyzer (not ready yet)
