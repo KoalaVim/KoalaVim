@@ -54,10 +54,21 @@ function M.verify(opts_tbl)
 	return _verify(opts_tbl, nil)
 end
 
+local function _create_default_conf(file)
+	local f = io.open(file, 'w')
+	if f == nil then
+		print('failed to create default conf at ' .. conf)
+		return
+	end
+
+	f:write('{}')
+	f:close()
+end
+
 local function _load_file(file)
 	local f = io.open(file, 'r')
 	if f == nil then
-		print('failed to open ' .. file)
+		_create_default_conf(file)
 		return {}
 	end
 	local content = f:read('*all')
