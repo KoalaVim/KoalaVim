@@ -38,7 +38,7 @@ table.insert(M, {
 			config = function()
 				require('neodev').setup({
 					library = {
-						plugins = { 'nvim-treesitter', 'plenary.nvim', 'ofirkai.nvim' },
+						plugins = { 'nvim-treesitter', 'plenary.nvim', 'ofirkai.nvim', 'lazy.nvim' },
 					},
 				})
 			end,

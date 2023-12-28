@@ -7,7 +7,10 @@ local Git = require('lazy.manage.git')
 local Config = require('lazy.core.config')
 local Process = require('lazy.manage.process')
 
-function M.check()
+local function _check()
+	-- Leverage lazy to fetch koala updates
+	require('lazy').check({ plugins = { 'KoalaVim' }, show = false })
+
 	local koala_spec = Config.plugins['KoalaVim']
 	if not koala_spec then
 		M.render("didn't find KoalaVim in plugins spec", true)
@@ -125,6 +128,10 @@ function M.render(message, error)
 			end
 		end,
 	})
+end
+
+function M.check()
+	vim.schedule(_check)
 end
 
 return M
