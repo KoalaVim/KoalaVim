@@ -44,6 +44,10 @@ function M.init()
 		DEBUG = function() end
 	end
 
+	vim.api.nvim_create_user_command('LazyRestoreLogged', function()
+		require('KoalaVim.utils.restore').restore_logged()
+	end, {})
+
 	local rdir = require('KoalaVim.utils.require_dir')
 
 	rdir.recursive_require('config', 'KoalaVim')
