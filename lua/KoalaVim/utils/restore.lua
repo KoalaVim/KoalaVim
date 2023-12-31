@@ -4,7 +4,7 @@ function M.restore_logged()
 	local res = require('lazy').restore()
 	res:wait()
 
-	local plugins = res['_opts']['plugins']
+	local plugins = res['_plugins']
 	local ret = { plugins = {} }
 
 	for _, plugin in ipairs(plugins) do
