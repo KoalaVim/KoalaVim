@@ -92,7 +92,7 @@ function M.setup_lualine(is_half, opts)
 		inactive = {
 			a = { fg = colors.black, bg = colors.black },
 			b = { fg = colors.white, bg = colors.dark_grey },
-			c = { fg = colors.black, bg = colors.black },
+			c = { fg = colors.white, bg = colors.black },
 		},
 	}
 
@@ -125,6 +125,25 @@ function M.setup_lualine(is_half, opts)
 					return ft == 'json' or ft == 'jsonc'
 				end,
 			},
+		},
+	}
+
+	local inactive_winbar = {}
+	-- inactive_winbar.lualine_b = winbar.lualine_b
+	inactive_winbar.lualine_b = {
+		{
+			'filename',
+			path = 1,
+		},
+	}
+	inactive_winbar.lualine_c = {
+		{ 'diff', separator = ' ', padding = { left = 1, right = 0 } },
+		{ 'diagnostics', separator = ' ', padding = 0 },
+		{
+			function()
+				-- empty string in order to color the section
+				return ' '
+			end,
 		},
 	}
 
@@ -203,7 +222,7 @@ function M.setup_lualine(is_half, opts)
 			lualine_z = lualine_z,
 		},
 		winbar = winbar,
-		inactive_winbar = winbar,
+		inactive_winbar = inactive_winbar,
 	})
 end
 

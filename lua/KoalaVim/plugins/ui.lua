@@ -375,41 +375,6 @@ table.insert(M, {
 	end,
 })
 
--- Floating bufferline
-table.insert(M, {
-	'b0o/incline.nvim',
-	event = 'BufReadPre',
-	config = function()
-		require('incline').setup({
-			render = function(props)
-				local relative_name = vim.fn.fnamemodify(api.nvim_buf_get_name(props.buf), ':~:.')
-				local filename = vim.fn.fnamemodify(api.nvim_buf_get_name(props.buf), ':t')
-				local ft_icon, ft_color = require('nvim-web-devicons').get_icon_color(filename)
-				local modified = vim.api.nvim_buf_get_option(props.buf, 'modified') and 'bold,italic' or 'bold'
-
-				return {
-					-- { get_diagnostic_label(props) },
-					-- { get_git_diff(props) },
-					{ ft_icon, guifg = ft_color },
-					{ ' ' },
-					{ relative_name, gui = modified },
-				}
-			end,
-			window = {
-				zindex = 4, -- Below NeoZoom.lua (5)
-				margin = {
-					horizontal = 2,
-					vertical = 0,
-				},
-			},
-			hide = {
-				focused_win = true,
-				only_win = true,
-			},
-		})
-	end,
-})
-
 -- Status column line
 table.insert(M, {
 	'luukvbaal/statuscol.nvim',
