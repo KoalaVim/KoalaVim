@@ -3,7 +3,7 @@ local M = {}
 M.lualine_opts = {}
 
 local function get_current_lsp_server_name()
-	local msg = '———'
+	local msg = 'n/a'
 	local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
 	local clients = vim.lsp.get_active_clients()
 	if next(clients) == nil then
@@ -18,9 +18,27 @@ local function get_current_lsp_server_name()
 	return msg
 end
 
+local function gen_info_string(icon, desc, icons_only)
+	if icons_only then
+		return icon
+	end
+
+	return icon .. ' ' .. desc
+end
+
 function M.setup_lualine(is_half, opts)
 	if opts then
 		M.lualine_opts = opts
+	end
+
+	local icons_only = require('KoalaVim').conf.ui.statusline.icons_only
+	if is_half then
+		icons_only = true
+	end
+
+	local info_seperator = ' │ '
+	if icons_only then
+		info_seperator = ' '
 	end
 
 	local y_section = {
@@ -196,40 +214,49 @@ function M.setup_lualine(is_half, opts)
 			lualine_x = {
 				{
 					function()
-						return ' RECORDING ' .. vim.fn.reg_recording()
+						return gen_info_string('', 'RECORDING', icons_only) .. ' ' .. vim.fn.reg_recording()
 					end,
 					cond = function()
 						return vim.fn.reg_recording() ~= ''
 					end,
-					separator = '|',
+					separator = info_seperator,
+					padding = 0,
 				},
 				{
 					'searchcount',
-					separator = '|',
 					icon = '',
+					separator = ' | ',
+					padding = 0,
 				},
 				{
 					-- TODO: add more info (shift width and such)
 					function()
 						if vim.b.Koala_tabs then
-							return ' Tabs'
+							return gen_info_string('', 'Tabs', icons_only)
 						else
-							return '󱁐 Spaces'
+							return gen_info_string('󱁐', 'Spaces', icons_only)
 						end
 					end,
-					separator = '|',
+					separator = info_seperator,
+					padding = 0,
 				},
 				{
 					function()
 						if KOALA_SESSION_LOADED or KOALA_AUTOSAVE_SESSION then
-							return ' Session'
+							return gen_info_string('', 'Session', icons_only)
 						else
-							return ' No Session'
+							return gen_info_string('', 'No Session', icons_only)
 						end
 					end,
-					separator = '|',
+					separator = info_seperator,
+					padding = 0,
 				},
-				{ get_current_lsp_server_name, icon = ' LSP:' },
+				{
+					get_current_lsp_server_name,
+					icon = gen_info_string('', 'LSP:', icons_only),
+					padding = { left = 0, right = 1 },
+					separator = info_seperator,
+				},
 			},
 			lualine_y = lualine_y,
 			lualine_z = lualine_z,

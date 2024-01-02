@@ -5,6 +5,22 @@
     "description": "Settings for KoalaVim",
     "type": "object",
     "properties": {
+        "ui": {
+            "description": "Settings for UI",
+            "type": "object",
+            "properties": {
+                "statusline": {
+                    "description": "Status line settings",
+                    "type": "object",
+                    "properties": {
+                        "icons_only": {
+                            "description": "Remove text description from session status, tabs/spaces and LSP status",
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
         "autocmds": {
             "description": "Settings for automated features",
             "type": "object",
