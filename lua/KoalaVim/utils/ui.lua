@@ -225,7 +225,7 @@ function M.setup_lualine(is_half, opts)
 				{
 					'searchcount',
 					icon = '',
-					separator = ' | ',
+					separator = ' │ ',
 					padding = 0,
 				},
 				{
