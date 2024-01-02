@@ -41,6 +41,13 @@ function M.setup_lualine(is_half, opts)
 	local lualine_y = nil
 	local lualine_z = nil
 
+	local kvim_icons = require('KoalaVim.utils.icons')
+
+	local diagnostics_section = {
+		'diagnostics',
+		symbols = kvim_icons.pad_right(kvim_icons.diagnostics, ' '),
+	}
+
 	-- nvim-lualine/lualine.nvim
 	if is_half then
 		lualine_a = { { 'mode', separator = { left = '', right = '' }, padding = 0 } }
@@ -52,7 +59,7 @@ function M.setup_lualine(is_half, opts)
 		}
 	else
 		lualine_a = { { 'mode', separator = { left = '' } } }
-		lualine_b = { { 'branch', icon = '' }, 'diff', 'diagnostics' }
+		lualine_b = { { 'branch', icon = '' }, 'diff', diagnostics_section }
 		lualine_y = y_section
 		lualine_z = {
 			{ 'filetype', padding = 0, separator = ' ' },
@@ -131,6 +138,8 @@ function M.setup_lualine(is_half, opts)
 	}
 
 	local inactive_winbar = {}
+	local inactive_diagnostics_section = vim.tbl_extend('force', diagnostics_section, { separator = ' ', padding = 0 })
+
 	-- inactive_winbar.lualine_b = winbar.lualine_b
 	inactive_winbar.lualine_b = {
 		{
@@ -148,7 +157,7 @@ function M.setup_lualine(is_half, opts)
 			padding = 0,
 		},
 		{ 'diff', separator = ' ', padding = 0 },
-		{ 'diagnostics', separator = ' ', padding = 0 },
+		inactive_diagnostics_section,
 	}
 
 	require('lualine').setup({

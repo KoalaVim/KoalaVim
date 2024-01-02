@@ -3,12 +3,6 @@ local M = {}
 local usercmd = require('KoalaVim.utils.cmd')
 
 local api = vim.api
-local diagnostics_icons = {
-	Error = '',
-	Warn = '⚠ ',
-	Hint = '',
-	Info = '',
-}
 
 -- diagnostics_icons.Error, '', '', '', '', '',
 local diagnostics_virt_text_settings = {
@@ -101,7 +95,8 @@ table.insert(M, {
 		})
 
 		-- Icons
-		for name, icon in pairs(diagnostics_icons) do
+		for name, icon in pairs(require('KoalaVim.utils.icons').diagnostics) do
+			name = name:gsub('^%l', string.upper) -- Captial first letter
 			name = 'DiagnosticSign' .. name
 			vim.fn.sign_define(name, { text = icon, texthl = name, numhl = '' })
 		end
