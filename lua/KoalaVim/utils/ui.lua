@@ -75,6 +75,8 @@ function M.setup_lualine(is_half, opts)
 		dark_grey = '#2c2c2c',
 
 		c_fg = '#051829',
+
+		background_from_theme = '#080c10',
 	}
 
 	local bubbles_theme = {
@@ -92,7 +94,7 @@ function M.setup_lualine(is_half, opts)
 		inactive = {
 			a = { fg = colors.black, bg = colors.black },
 			b = { fg = colors.white, bg = colors.dark_grey },
-			c = { fg = colors.white, bg = colors.black },
+			c = { fg = colors.white, bg = colors.background_from_theme },
 		},
 	}
 
@@ -137,14 +139,16 @@ function M.setup_lualine(is_half, opts)
 		},
 	}
 	inactive_winbar.lualine_c = {
-		{ 'diff', separator = ' ', padding = { left = 1, right = 0 } },
-		{ 'diagnostics', separator = ' ', padding = 0 },
 		{
 			function()
-				-- empty string in order to color the section
+				-- empty for consistent left padding
 				return ' '
 			end,
+			separator = '',
+			padding = 0,
 		},
+		{ 'diff', separator = ' ', padding = 0 },
+		{ 'diagnostics', separator = ' ', padding = 0 },
 	}
 
 	require('lualine').setup({
