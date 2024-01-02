@@ -63,6 +63,7 @@ function M.setup_lualine(is_half, opts)
 	local colors = {
 		blue = '#80a0ff',
 		dark_blue = '#688AA8',
+		dark_blue_inactive = '#405b73',
 		cyan = '#79dac8',
 		black = '#080808',
 		white = '#b4b4b4',
@@ -70,7 +71,8 @@ function M.setup_lualine(is_half, opts)
 		blueish_white = '#b8bdd4',
 		red = '#ff5189',
 		violet = '#d183e8',
-		grey = '#053957',
+		mid_blue = '#053957',
+		dark_grey = '#2c2c2c',
 
 		c_fg = '#051829',
 	}
@@ -78,7 +80,7 @@ function M.setup_lualine(is_half, opts)
 	local bubbles_theme = {
 		normal = {
 			a = { fg = colors.black, bg = colors.dark_blue },
-			b = { fg = colors.real_white, bg = colors.grey },
+			b = { fg = colors.real_white, bg = colors.mid_blue },
 			c = { fg = colors.blueish_white, bg = colors.c_fg },
 		},
 
@@ -88,9 +90,41 @@ function M.setup_lualine(is_half, opts)
 		replace = { a = { fg = colors.black, bg = '#60A8A4' } },
 
 		inactive = {
-			a = { fg = colors.white, bg = colors.black },
-			b = { fg = colors.white, bg = colors.black },
+			a = { fg = colors.black, bg = colors.black },
+			b = { fg = colors.white, bg = colors.dark_grey },
 			c = { fg = colors.black, bg = colors.black },
+		},
+	}
+
+	local winbar = {
+		lualine_b = {
+			{
+				'filename',
+				path = 0,
+				-- color = { fg = colors.black, bg = '#60A8A4' },
+			},
+		},
+		lualine_c = {
+			{
+				function()
+					return require('nvim-navic').get_location()
+				end,
+				cond = function()
+					return package.loaded['nvim-navic'] and require('nvim-navic').is_available()
+				end,
+			},
+			{
+				function()
+					return require('jsonpath').get()
+				end,
+				cond = function()
+					if not package.loaded['jsonpath'] then
+						return false
+					end
+					local ft = vim.api.nvim_buf_get_option(0, 'filetype')
+					return ft == 'json' or ft == 'jsonc'
+				end,
+			},
 		},
 	}
 
@@ -168,37 +202,8 @@ function M.setup_lualine(is_half, opts)
 			lualine_y = lualine_y,
 			lualine_z = lualine_z,
 		},
-		winbar = {
-			lualine_b = {
-				{
-					'filename',
-					path = 0,
-					-- color = { fg = colors.black, bg = '#60A8A4' },
-				},
-			},
-			lualine_c = {
-				{
-					function()
-						return require('nvim-navic').get_location()
-					end,
-					cond = function()
-						return package.loaded['nvim-navic'] and require('nvim-navic').is_available()
-					end,
-				},
-				{
-					function()
-						return require('jsonpath').get()
-					end,
-					cond = function()
-						if not package.loaded['jsonpath'] then
-							return false
-						end
-						local ft = vim.api.nvim_buf_get_option(0, 'filetype')
-						return ft == 'json' or ft == 'jsonc'
-					end,
-				},
-			},
-		},
+		winbar = winbar,
+		inactive_winbar = winbar,
 	})
 end
 
