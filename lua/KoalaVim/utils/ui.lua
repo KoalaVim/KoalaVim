@@ -23,6 +23,10 @@ local function gen_info_string(icon, desc, icons_only)
 		return icon
 	end
 
+	if icon == nil then
+		return desc
+	end
+
 	return icon .. ' ' .. desc
 end
 
@@ -253,7 +257,7 @@ function M.setup_lualine(is_half, opts)
 				},
 				{
 					get_current_lsp_server_name,
-					icon = gen_info_string('', 'LSP:', icons_only),
+					icon = gen_info_string(nil, ' LSP:', icons_only),
 					padding = { left = 0, right = 1 },
 					separator = info_seperator,
 				},
