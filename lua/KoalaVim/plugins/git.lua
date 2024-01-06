@@ -285,8 +285,8 @@ table.insert(M, {
 table.insert(M, {
 	'pwntester/octo.nvim',
 	cmd = 'Octo',
-	config = function()
-		require('octo').setup()
+	config = function(_, opts)
+		require('octo').setup(opts)
 	end,
 })
 
