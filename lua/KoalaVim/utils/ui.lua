@@ -2,6 +2,8 @@ local M = {}
 
 M.lualine_opts = {}
 
+local uv = vim.loop
+
 local function get_current_lsp_server_name()
 	local msg = 'n/a'
 	local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
@@ -28,6 +30,41 @@ local function gen_info_string(icon, desc, icons_only)
 	end
 
 	return icon .. ' ' .. desc
+end
+
+local function lsp_count_str(lsp_count, key)
+	local workspace = lsp_count.workspace[key]
+	local file = lsp_count.file[key]
+
+	local ret = tostring(file)
+	if workspace > file then
+		ret = ret .. '(' .. tostring(workspace) .. ')'
+	end
+
+	return ret
+end
+
+LAST_LSP_COUNT = 0
+LAST_LSP_COUNT_RES = ''
+
+local function get_lsp_count()
+	local now = uv.now()
+	if now - LAST_LSP_COUNT < 800 then
+		return LAST_LSP_COUNT_RES
+	end
+	LAST_LSP_COUNT = now
+
+	local lsp_count = require('dr-lsp').lspCountTable()
+	if lsp_count == nil then
+		return ''
+	end
+
+	LAST_LSP_COUNT_RES = string.format(
+		'𝘿 %s 𝙍 %s',
+		lsp_count_str(lsp_count, 'definitions'),
+		lsp_count_str(lsp_count, 'references')
+	)
+	return LAST_LSP_COUNT_RES
 end
 
 function M.setup_lualine(is_half, opts)
@@ -227,7 +264,18 @@ function M.setup_lualine(is_half, opts)
 					padding = 0,
 				},
 				{
+					get_lsp_count,
+					separator = ' | ',
+					padding = 0,
+				},
+				{
 					'searchcount',
+					cond = function()
+						return vim.fn.searchcount({ max_count = 1 }).total > 0
+					end,
+					fmt = function(str)
+						return str:gsub('', '')
+					end,
 					icon = '',
 					separator = ' │ ',
 					padding = 0,

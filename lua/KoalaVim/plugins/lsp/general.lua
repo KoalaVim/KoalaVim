@@ -438,4 +438,10 @@ table.insert(M, {
 	},
 })
 
+table.insert(M, {
+	-- Adds definition and references to statusline
+	'chrisgrieser/nvim-dr-lsp',
+	lazy = true,
+})
+
 return M
