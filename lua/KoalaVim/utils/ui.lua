@@ -274,7 +274,7 @@ function M.setup_lualine(is_half, opts)
 						return vim.fn.searchcount({ max_count = 1 }).total > 0
 					end,
 					fmt = function(str)
-						return str:gsub('', '')
+						return str:gsub('[%[%]]', '')
 					end,
 					icon = '',
 					separator = ' │ ',
