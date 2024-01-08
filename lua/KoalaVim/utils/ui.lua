@@ -32,11 +32,17 @@ local function gen_info_string(icon, desc, icons_only)
 	return icon .. ' ' .. desc
 end
 
-local function lsp_count_str(lsp_count, key)
-	local workspace = lsp_count.workspace[key]
-	local file = lsp_count.file[key]
+local function lsp_count_str(lsp_count, type)
+	local workspace = lsp_count.workspace[type]
+	local file = lsp_count.file[type]
 
-	local ret = tostring(file)
+	local ret = ''
+	if lsp_count.location.type == type then
+		ret = tostring(lsp_count.location.index) .. '/'
+	end
+
+	ret = ret .. tostring(file)
+
 	if workspace > file then
 		ret = ret .. '(' .. tostring(workspace) .. ')'
 	end
@@ -44,27 +50,35 @@ local function lsp_count_str(lsp_count, key)
 	return ret
 end
 
-LAST_LSP_COUNT = 0
-LAST_LSP_COUNT_RES = ''
+local function refresh_status_line()
+	-- print('refresh_status_line')
+	require('lualine').refresh({
+		scope = 'window',
+		place = { 'statusline' },
+	})
+	-- vim.cmd('redrawstatus')
+end
+
+function REFRESH_LSP_COUNT()
+	require('dr-lsp').lspCountTable(0)
+
+	require('lualine').refresh({
+		scope = 'window',
+		place = { 'statusline' },
+	})
+end
 
 local function get_lsp_count()
-	local now = uv.now()
-	if now - LAST_LSP_COUNT < 800 then
-		return LAST_LSP_COUNT_RES
-	end
-	LAST_LSP_COUNT = now
-
-	local lsp_count = require('dr-lsp').lspCountTable()
+	local lsp_count = require('dr-lsp').lspCountTable(500, refresh_status_line)
 	if lsp_count == nil then
 		return ''
 	end
 
-	LAST_LSP_COUNT_RES = string.format(
-		'𝘿 %s 𝙍 %s',
-		lsp_count_str(lsp_count, 'definitions'),
-		lsp_count_str(lsp_count, 'references')
+	return string.format(
+		'𝙍 %s 𝘿 %s',
+		lsp_count_str(lsp_count, 'references'),
+		lsp_count_str(lsp_count, 'definitions')
 	)
-	return LAST_LSP_COUNT_RES
 end
 
 function M.setup_lualine(is_half, opts)

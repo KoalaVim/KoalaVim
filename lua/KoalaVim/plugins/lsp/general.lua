@@ -355,6 +355,7 @@ table.insert(M, {
 			'<C-n>',
 			function()
 				require('illuminate').goto_next_reference({ wrap = true })
+				REFRESH_LSP_COUNT()
 			end,
 			desc = 'jump to Next occurrence of var on cursor',
 		},
@@ -362,6 +363,7 @@ table.insert(M, {
 			'<C-p>',
 			function()
 				require('illuminate').goto_prev_reference({ reverse = true, wrap = true })
+				REFRESH_LSP_COUNT()
 			end,
 			desc = 'jump to Previous occurrence of var on cursor',
 		},
@@ -440,7 +442,7 @@ table.insert(M, {
 
 table.insert(M, {
 	-- Adds definition and references to statusline
-	'chrisgrieser/nvim-dr-lsp',
+	'ofirgall/nvim-dr-lsp', -- fork
 	lazy = true,
 })
 
