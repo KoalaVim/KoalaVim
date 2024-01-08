@@ -13,6 +13,11 @@ map('n', '<M-q>', function() require('KoalaVim.utils.splits').close() end, 'Clos
 map('n', '<M-w>', function() require('KoalaVim.utils.splits').close() end, 'Close split')
 map('t', '<M-q>', '<cmd>bd!<CR>', 'Close terminal')
 
+map('n', '<C-w>h', '<C-w>H', 'Move up left')
+map('n', '<C-w>j', '<C-w>J', 'Move split up')
+map('n', '<C-w>k', '<C-w>K', 'Move split down')
+map('n', '<C-w>l', '<C-w>L', 'Move up right')
+
 -- Duplicate your view into split (MAX 2)
 map('n', 'gV', function() require('KoalaVim.utils.splits').split_if_not_exist(true) end, 'Vertical split if not exist')
 map('n', 'gX', function() require('KoalaVim.utils.splits').split_if_not_exist(false) end, 'Horziontal split if not exist')
