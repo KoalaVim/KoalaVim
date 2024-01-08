@@ -60,6 +60,10 @@ function M.smart_split(direction)
 end
 
 function M.split_if_not_exist(is_vsplit)
+	-- TODO: trinary expression
+	local pos_index = nil
+	local split_command = nil
+
 	if is_vsplit then
 		pos_index = 1
 		split_command = 'vsplit'
