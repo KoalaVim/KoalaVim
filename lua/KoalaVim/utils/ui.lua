@@ -60,6 +60,10 @@ local function refresh_status_line()
 end
 
 function REFRESH_LSP_COUNT()
+	-- TODO: config
+	if true then
+		return
+	end
 	require('dr-lsp').lspCountTable(0)
 
 	require('lualine').refresh({
@@ -69,6 +73,11 @@ function REFRESH_LSP_COUNT()
 end
 
 local function get_lsp_count()
+	-- TODO: config
+	if true then
+		return ''
+	end
+
 	local lsp_count = require('dr-lsp').lspCountTable(500, refresh_status_line)
 	if lsp_count == nil then
 		return ''
