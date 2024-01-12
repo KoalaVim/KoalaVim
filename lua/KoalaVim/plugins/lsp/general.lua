@@ -342,7 +342,7 @@ table.insert(M, {
 	event = 'LspAttach',
 	config = function()
 		require('format-on-leave').setup({
-			format_func = require('KoalaVim.utils.lsp').format,
+			format_func = require('KoalaVim.utils.lsp').auto_format,
 		})
 	end,
 })

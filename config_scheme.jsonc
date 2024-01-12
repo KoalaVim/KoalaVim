@@ -67,12 +67,26 @@
             "description": "Language server protocol settings (intellisense)",
             "type": "object",
             "properties": {
+                "autoformat": {
+                    "description": "Auto formatting options",
+                    "type": "object",
+                    "properties": {
+                        "blacklist": {
+                            "description": "List of lsp clients to not apply auto format with (useful for slow LSP formatters)",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                                // TODO: can we autocomplete lsp server names?
+                            }
+                        }
+                    }
+                },
                 "format": {
                     "description": "Formatting options",
                     "type": "object",
                     "properties": {
                         "blacklist": {
-                            "description": "List of lsp clients to not apply format with",
+                            "description": "List of lsp clients to not apply format with (including autoformat)",
                             "type": "array",
                             "items": {
                                 "type": "string"

@@ -3,6 +3,8 @@ local M = {}
 local api = vim.api
 local lsp = vim.lsp
 
+local conf = require('KoalaVim').conf.lsp
+
 function M.goto_next_diag(opts)
 	local next = vim.diagnostic.get_next(opts)
 	if next == nil then
@@ -39,11 +41,10 @@ function M.late_attach(on_attach_func)
 	end
 end
 
-function M.format(async)
+local function _format(async, blacklist)
 	local buf = vim.api.nvim_get_current_buf()
 	local ft = vim.bo[buf].filetype
 	local available_nls = require('null-ls.sources').get_available(ft, 'NULL_LS_FORMATTING')
-	local blacklist = require('KoalaVim').conf.lsp.format.blacklist
 
 	vim.lsp.buf.format({
 		async = async,
@@ -65,6 +66,17 @@ function M.format(async)
 			return client.name ~= 'null-ls'
 		end,
 	})
+end
+
+AUTO_FORMAT_BLACKLIST = nil
+function M.auto_format(async)
+	-- Lazy load and cache auto format blacklist
+	AUTO_FORMAT_BLACKLIST = AUTO_FORMAT_BLACKLIST or vim.list_extend(conf.autoformat.blacklist, conf.format.blacklist)
+	_format(async, AUTO_FORMAT_BLACKLIST)
+end
+
+function M.format(async)
+	_format(async, conf.format.blacklist)
 end
 
 return M
