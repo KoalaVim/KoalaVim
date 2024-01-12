@@ -70,10 +70,7 @@ LSP_SERVERS['pylsp'] = {
 NONE_LS_SRCS['mypy'] = {
 	builtins_sources = {
 		diagnostics = {
-			method = {
-				require('KoalaVim.consts').null_ls.methods.DIAGNOSTICS_ON_OPEN,
-				require('KoalaVim.consts').null_ls.methods.DIAGNOSTICS_ON_SAVE,
-			},
+			method = require('KoalaVim.consts').null_ls.methods.DIAGNOSTICS_ON_SAVE,
 			diagnostics_postprocess = function(diagnostic)
 				if diagnostic.code == 'import-not-found' then
 					diagnostic.code = 'Missing library stubs (typeshed) or py.typed file'
