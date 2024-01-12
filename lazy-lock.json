@@ -96,7 +96,7 @@
   "nvim-various-textobjs": { "branch": "main", "commit": "56662b7ea1983e28c778357e98c0744e2581b9e1" },
   "nvim-web-devicons": { "branch": "master", "commit": "4ec26d67d419c12a4abaea02f1b6c57b40c08d7e" },
   "octo.nvim": { "branch": "master", "commit": "f37efab489a99b4a104e5ee18c73453d5e828b62" },
-  "ofirkai.nvim": { "branch": "master", "commit": "ed0eacd0bbac6b4bd8fb32cad540f011811dcd53" },
+  "ofirkai.nvim": { "branch": "master", "commit": "fb3777f19eb68d75b3145c7038c1f3fbb4e17312" },
   "open-jira.nvim": { "branch": "master", "commit": "dcbe121d675df64f93aa0e50f32c86a1d7439e28" },
   "open.nvim": { "branch": "master", "commit": "178015f7b78a650b36b73567aba00ba00b6feab0" },
   "output-panel.nvim": { "branch": "main", "commit": "3f199ff9e7d56fa30e39edfb07a883ef4142cd98" },
