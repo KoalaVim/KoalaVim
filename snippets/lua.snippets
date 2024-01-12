@@ -1,6 +1,12 @@
 snippet insertplug
 	table.insert(M, {
-		'${1}'
+		'${1}',
+		opts = {
+			${3}
+		},
+		config = function(_, opts)
+			require('${2}').setup(opts)
+		end,
 	})
 snippet styluaignore
 	-- stylua: ignore ${1}
