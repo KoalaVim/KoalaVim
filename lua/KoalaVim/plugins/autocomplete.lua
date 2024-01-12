@@ -1,5 +1,10 @@
 local M = {}
 
+local function is_entry_not_cword(entry, ctx)
+	local word = entry:get_word()
+	return word ~= string.sub(ctx.cursor_before_line, -#word, ctx.cursor.col - 1)
+end
+
 local function all_visible_buffers_source(priority, max_item_count)
 	return {
 		name = 'buffer',
@@ -14,6 +19,7 @@ local function all_visible_buffers_source(priority, max_item_count)
 			end,
 		},
 		max_item_count = max_item_count,
+		-- entry_filter = is_entry_not_cword,
 	}
 end
 
@@ -90,7 +96,7 @@ table.insert(M, {
 				['<C-n>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 'c' }),
 				['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 'c' }),
 				['<CR>'] = cmp.mapping(function(fallback)
-					if cmp.visible() then
+					if cmp.visible() and cmp.get_selected_entry() ~= nil then
 						cmp.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert })
 					else
 						fallback()
@@ -135,6 +141,15 @@ table.insert(M, {
 					name = 'nvim_lsp',
 					priority = 1000,
 					max_item_count = 10,
+					entry_filter = function(entry, ctx)
+						-- Don't try to complete keywords or text when the user already typed the content
+						local type = require('cmp.types').lsp.CompletionItemKind[entry:get_kind()]
+						if type == 'Keyword' or type == 'Text' then
+							return is_entry_not_cword(entry, ctx)
+						end
+
+						return true
+					end,
 				},
 				{ name = 'path', option = { trailing_slash = true }, priority = 500 },
 				{ name = 'snippy', priority = 200 },

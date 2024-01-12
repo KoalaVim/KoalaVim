@@ -593,4 +593,16 @@ table.insert(M, {
 	end,
 })
 
+table.insert(M, {
+	'RRethy/nvim-treesitter-endwise',
+	opts = {
+		endwise = {
+			enable = true,
+		},
+	},
+	config = function(_, opts)
+		require('nvim-treesitter.configs').setup(opts)
+	end,
+})
+
 return M
