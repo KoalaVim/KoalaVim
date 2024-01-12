@@ -20,6 +20,11 @@ LSP_ON_ATTACH = function(client, buffer)
 	end
 end
 
+LSP_ON_ATTACH_NO_HOVER = function(client, buffer)
+	LSP_ON_ATTACH(client, buffer)
+	client.server_capabilities.hoverProvider = false
+end
+
 -- Setup actual servers + generic lsp stuff
 table.insert(M, {
 	'neovim/nvim-lspconfig',

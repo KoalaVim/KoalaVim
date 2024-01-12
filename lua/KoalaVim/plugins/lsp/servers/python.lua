@@ -20,8 +20,7 @@ LSP_SERVERS['pyright'] = {
 -- Linter and diagnostics
 LSP_SERVERS['ruff_lsp'] = {
 	on_attach = function(client, buffer)
-		LSP_ON_ATTACH(client, buffer)
-		client.server_capabilities.hoverProvider = false
+		LSP_ON_ATTACH_NO_HOVER(client, buffer)
 	end,
 	init_options = {
 		settings = {
@@ -32,6 +31,9 @@ LSP_SERVERS['ruff_lsp'] = {
 
 -- For plugins
 LSP_SERVERS['pylsp'] = {
+	on_attach = function(client, buffer)
+		LSP_ON_ATTACH_NO_HOVER(client, buffer)
+	end,
 	settings = {
 		pylsp = {
 			plugins = {
