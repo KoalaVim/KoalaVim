@@ -1,6 +1,7 @@
 local M = {}
 
 local PATTERN = { '.kvim.conf', 'default_kvim.conf' }
+local json_file = require('KoalaVim.utils.json_file')
 
 function M.get_repo_conf()
 	local output = vim.fn.system("git rev-parse --show-toplevel | tr -d '\\n'")
@@ -11,7 +12,6 @@ function M.get_repo_conf()
 end
 
 function M.get_user_conf()
-	-- VLZ-532
 	-- TODO: windows support?
 	return vim.fn.expand('$HOME') .. '/.kvim.conf'
 end
@@ -71,55 +71,10 @@ function M.verify(opts_tbl)
 	return _verify(opts_tbl, nil)
 end
 
-local function _create_default_conf(file)
-	local f = io.open(file, 'w')
-	if f == nil then
-		print('failed to create default conf at ' .. file)
-		return
-	end
-
-	f:write('{}')
-	f:close()
-end
-
-function M.create_default_conf_if_not_exist(file)
-	local f = io.open(file, 'r')
-	if f == nil then
-		_create_default_conf(file)
-		return
-	end
-	f:close()
-end
-
-local function _load_file(file, create_if_not_exist)
-	if file == nil then
-		return {}
-	end
-
-	local f = io.open(file, 'r')
-	if f == nil then
-		if create_if_not_exist then
-			_create_default_conf(file)
-		end
-		return {}
-	end
-	local content = f:read('*all')
-	f:close()
-
-	local ok, res, a = pcall(vim.json.decode, content, {})
-	if not ok then
-		-- TODO: health
-		print('Failed to decode ' .. file)
-		print('Error: ' .. res)
-		return
-	end
-	return res
-end
-
 function M.load()
-	local default = _load_file(M.get_kvim_conf(), false)
-	local user = _load_file(M.get_user_conf(), true)
-	local git = _load_file(M.get_repo_conf(), false)
+	local default = json_file.load(M.get_kvim_conf(), false)
+	local user = json_file.load(M.get_user_conf(), true)
+	local git = json_file.load(M.get_repo_conf(), false)
 	local conf = vim.tbl_deep_extend('keep', git, user, default)
 
 	-- TODO: show config verification warnings in the dashboard

@@ -7,6 +7,7 @@ table.insert(M, {
 	config = function()
 		require('KoalaVim.conf').load()
 		require('KoalaVim.conf').reg_autocmd()
+		require('KoalaVim.state'):load()
 
 		-- Override 's' default behavior
 		local map = require('KoalaVim.utils.map').map

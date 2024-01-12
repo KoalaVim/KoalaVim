@@ -120,6 +120,7 @@ table.insert(M, {
 -- File explorer
 table.insert(M, {
 	'nvim-tree/nvim-tree.lua',
+	lazy = true,
 	cmd = 'NvimTreeOpen',
 	init = function()
 		-- Load nvim-tree.lua if neovim opened with args
@@ -470,6 +471,13 @@ table.insert(M, {
 	end,
 })
 
+function CLOSE_KOALA_DASHBOARD(clear_messages)
+	KOALA_DASHBOARD_CLOSED = true
+	if clear_messages then
+		vim.api.nvim_exec_autocmds('User', { pattern = 'AlphaClosed' })
+	end
+end
+
 table.insert(M, {
 	'ofirgall/alpha-nvim', -- fork
 	event = 'VimEnter',
@@ -497,24 +505,34 @@ table.insert(M, {
 		dashboard.section.header.val = vim.split(logo, '\n')
 		dashboard.section.buttons.val = {
 			dashboard.button('ss', '  Load Session', function()
+				CLOSE_KOALA_DASHBOARD()
+
 				require('KoalaVim.utils.session').load_cwd_session()
 			end),
 			dashboard.button('sl', '  Session List', ':SessionList <CR>'),
-			dashboard.button('t', '  File Tree', ':NvimTreeOpen <CR>'),
+			dashboard.button('t', '  File Tree', function()
+				CLOSE_KOALA_DASHBOARD(true)
+				require('nvim-tree.api').tree.open()
+			end),
 			dashboard.button('ff', '  Find File', function()
+				CLOSE_KOALA_DASHBOARD()
+
 				KoalaDisableAutoSession()
 				find_files()
 			end),
 			dashboard.button('fw', '  Find Text (words)', function()
+				CLOSE_KOALA_DASHBOARD()
 				KoalaDisableAutoSession()
 				require('telescope.builtin').live_grep()
 			end),
 			dashboard.button('r', '  Recent files', function()
+				CLOSE_KOALA_DASHBOARD()
 				KoalaDisableAutoSession()
 				require('telescope.builtin').oldfiles()
 			end),
 
 			dashboard.button('g', '  Git Tree & Status', function()
+				CLOSE_KOALA_DASHBOARD()
 				KoalaDisableSession()
 
 				vim.cmd([[Flogsplit
@@ -523,11 +541,14 @@ table.insert(M, {
 			end),
 
 			dashboard.button('kc', ' ' .. ' Koala Config', function()
+				CLOSE_KOALA_DASHBOARD()
 				KoalaDisableAutoSession(true)
 				vim.cmd(':e ' .. kvim_conf.get_user_conf())
 			end),
 
 			dashboard.button('krc', ' ' .. ' Koala Repo Config', function()
+				CLOSE_KOALA_DASHBOARD()
+
 				local repo_conf = kvim_conf.get_repo_conf()
 				if repo_conf == nil then
 					vim.notify('Not in a git repository')
@@ -539,6 +560,8 @@ table.insert(M, {
 			end),
 
 			dashboard.button('kl', ' ' .. ' Koala Change Log', function()
+				CLOSE_KOALA_DASHBOARD()
+
 				require('KoalaVim.utils.changelog').check()
 			end),
 

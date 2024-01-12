@@ -1,16 +1,18 @@
 local M = {}
 
 local api = vim.api
+local uv = vim.loop
+
+local kstate = require('KoalaVim').state
+local kstate_manager = require('KoalaVim.state')
+local UPDATE_FETCH_INTERVAL = 30 * 60 -- 30 mins
 
 -- Using lazy modules as lib
 local Git = require('lazy.manage.git')
 local Config = require('lazy.core.config')
 local Process = require('lazy.manage.process')
 
-local function _check()
-	-- Leverage lazy to fetch koala updates
-	require('lazy').check({ plugins = { 'KoalaVim' }, show = false })
-
+local function _check_local_git()
 	local koala_spec = Config.plugins['KoalaVim']
 	if not koala_spec then
 		M.render("didn't find KoalaVim in plugins spec", true)
@@ -33,6 +35,10 @@ local function _check()
 		return nil -- No updates
 	end
 
+	if KOALA_DASHBOARD_CLOSED then
+		return nil
+	end
+
 	-- Get git log
 	Process.spawn('git', {
 		args = {
@@ -50,6 +56,26 @@ local function _check()
 			M.render(output, not ok)
 		end,
 	})
+end
+
+local function _on_lazy_check_done()
+	-- update state
+	kstate.last_update_check = os.time()
+	kstate_manager.save()
+	_check_local_git()
+end
+
+local function _check()
+	local last_update_check = kstate.last_update_check or 0
+	if os.time() - last_update_check < UPDATE_FETCH_INTERVAL then
+		-- No need to fetch
+		_check_local_git()
+		return
+	end
+
+	-- Leverage lazy to fetch koala updates
+	local res = require('lazy').check({ plugins = { 'KoalaVim' }, show = false })
+	res:wait(_on_lazy_check_done)
 end
 
 local WIN_WIDTH = 65

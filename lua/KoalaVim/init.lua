@@ -68,5 +68,6 @@ function M.init()
 end
 
 M.conf = {}
+M.state = {}
 
 return M
