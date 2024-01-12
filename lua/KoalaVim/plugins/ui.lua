@@ -311,6 +311,10 @@ table.insert(M, {
 					['vim.lsp.util.stylize_markdown'] = true,
 					['cmp.entry.get_documentation'] = true,
 				},
+				progress = {
+					-- Using fidget.nvim instead
+					enabled = false,
+				},
 			},
 			routes = require('KoalaVim.misc.noice_routes'),
 			presets = {
@@ -359,6 +363,46 @@ table.insert(M, {
 			'Open Noice',
 		},
 	},
+})
+
+table.insert(M, {
+	'j-hui/fidget.nvim',
+	opts = {
+		progress = {
+			poll_rate = 10,
+			ignore_done_already = true,
+			display = {
+				done_ttl = 1,
+				icon_style = 'NoiceLspProgressSpinner',
+				done_style = 'Title',
+				group_style = 'Title',
+
+				format_message = function(msg)
+					local message = msg.message
+					if not message then
+						if msg.done then
+							return ''
+						end
+						message = 'In progress...'
+					end
+
+					if msg.percentage ~= nil then
+						message = string.format('%.0f%%', msg.percentage)
+					end
+					return message
+				end,
+			},
+		},
+
+		notification = {
+			view = {
+				group_separator = false,
+			},
+		},
+	},
+	config = function(_, opts)
+		require('fidget').setup(opts)
+	end,
 })
 
 -- Highlight current window seperator
