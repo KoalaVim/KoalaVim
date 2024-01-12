@@ -605,4 +605,19 @@ table.insert(M, {
 	end,
 })
 
+table.insert(M, {
+	'chrisgrieser/nvim-puppeteer',
+	-- Supported languages
+	ft = {
+		'python',
+		'javascript',
+		'typescript',
+		'javascriptreact',
+		'typescriptreact',
+		'vue',
+		'astro',
+		'lua',
+	},
+})
+
 return M
