@@ -207,9 +207,9 @@ function M.update()
 
 			local res = require('KoalaVim.utils.restore').restore_logged({ show = true })
 			if #res['plugins'] > 0 then
-				health.warn('`:Lazy restore` failed')
+				health.warn('Failed to update KoalaVim. `:Lazy restore` failed', true)
 			else
-				health.info('Update finished successfully. Restart nvim to take effect')
+				health.info('Update finished successfully. Restart nvim to take effect', true)
 			end
 
 			progress:finish()
