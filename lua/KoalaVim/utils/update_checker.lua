@@ -7,8 +7,6 @@ local kstate_manager = require('KoalaVim.state')
 local UPDATE_FETCH_INTERVAL = 60 * 5 -- 5 mins
 local PROGRESS = nil
 
-local count = 0
-
 -- Using lazy modules as lib
 local Git = require('lazy.manage.git')
 local Config = require('lazy.core.config')
@@ -34,8 +32,6 @@ local function _check_local_git()
 	end
 
 	if Git.eq(curr, target) then
-		M.render('bdika ' .. count, false)
-		count = count + 1
 		return nil -- No updates
 	end
 
