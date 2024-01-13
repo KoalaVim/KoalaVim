@@ -1,12 +1,13 @@
 local M = {}
 
+local health = require('KoalaVim.health')
+
 local function _create_default_file(file, default_content)
 	vim.mkdir(vim.fs.dirname(file), 'p')
 
 	local f = io.open(file, 'w')
 	if f == nil then
-		-- TODO: health
-		print('failed to create default file at ' .. file)
+		health.warn(string.format('Failed to create default file at ' .. file))
 		return
 	end
 
@@ -32,15 +33,13 @@ function M.load(file, create_if_not_exist, default_content)
 	end
 
 	-- Read content from existing file
-	content = f:read('*all')
+	local str_content = f:read('*all')
 	f:close()
 
 	-- Decode content to table
-	local ok, res, a = pcall(vim.json.decode, content, {})
+	local ok, res, a = pcall(vim.json.decode, str_content, {})
 	if not ok then
-		-- TODO: health
-		print('Failed to decode ' .. file)
-		print('Error: ' .. res)
+		health.warn(string.format('Failed to decode `%s` err: `%s`', file, res))
 		return content
 	end
 
@@ -55,22 +54,20 @@ function M.save(file, content, dont_try_create_dir)
 	local f = io.open(file, 'w')
 
 	if f == nil then
-		-- TODO: health
 		if not dont_try_create_dir then
 			-- Try again after creating parent dir
 			vim.fn.mkdir(vim.fs.dirname(file), 'p')
 			return M.save(file, content, dont_try_create_dir)
 		end
-		print('failed to create file at ' .. file)
+		health.warn(string.format('Failed to create file at ' .. file))
 		return
 	end
 
 	-- Encode content to json
 	local ok, res, a = pcall(vim.json.encode, content)
 	if not ok then
-		-- TODO: health
-		print('Failed to encode ' .. file)
-		print('Error: ' .. res)
+		health.warn(string.format('Failed to encode `%s` err: `%s`', file, res))
+		vim.print(content)
 		return
 	end
 
