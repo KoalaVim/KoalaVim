@@ -393,7 +393,7 @@ local function toggle_lsp_diagnostics()
 end
 
 table.insert(M, {
-	'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
+	'ofirgall/lsp_lines.nvim', -- mirror of https://git.sr.ht/~whynothugo/lsp_lines.nvim
 	config = function()
 		require('lsp_lines').setup()
 	end,
