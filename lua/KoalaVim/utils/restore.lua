@@ -1,7 +1,7 @@
 local M = {}
 
-function M.restore_logged()
-	local res = require('lazy').restore()
+function M.restore_logged(opts)
+	local res = require('lazy').restore(opts)
 	res:wait()
 
 	local plugins = res['_plugins']
@@ -16,7 +16,7 @@ function M.restore_logged()
 		end
 	end
 
-	print(vim.json.encode(ret))
+	return ret
 end
 
 return M

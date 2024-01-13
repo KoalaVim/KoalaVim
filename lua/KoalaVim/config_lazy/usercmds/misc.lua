@@ -31,3 +31,7 @@ end, {})
 usercmd.create('ListCmds', 'List the cmds', function()
 	require('telescope.builtin').commands()
 end, {})
+
+usercmd.create('KoalaUpdate', 'Update KoalaVim', function()
+	require('KoalaVim.utils.update_checker').update()
+end)
