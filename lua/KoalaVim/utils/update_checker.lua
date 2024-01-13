@@ -181,4 +181,40 @@ function M.check()
 	vim.schedule(_check)
 end
 
+function M.update()
+	local health = require('KoalaVim.health')
+	local progress = require('fidget.progress').handle.create({
+		title = 'Koala Update',
+		message = 'Running `koala update`',
+		lsp_client = { name = 'KoalaVim' },
+		percentage = 0,
+	})
+
+	Process.spawn('koala', {
+		args = { 'update', '--no-restore' },
+		on_exit = function(ok, output)
+			if not ok then
+				progress:cancel()
+				health.warn(string.format('Failed to update KoalaVim: ' .. output), true)
+				return
+			end
+
+			progress:report({
+				title = 'Koala Update',
+				message = 'Running `:Lazy restore`',
+				percentage = 50,
+			})
+
+			local res = require('KoalaVim.utils.restore').restore_logged({ show = true })
+			if #res['plugins'] > 0 then
+				health.warn('`:Lazy restore` failed')
+			else
+				health.info('Update finished successfully. Restart nvim to take effect')
+			end
+
+			progress:finish()
+		end,
+	})
+end
+
 return M

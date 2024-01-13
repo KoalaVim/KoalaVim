@@ -45,7 +45,8 @@ function M.init()
 	end
 
 	vim.api.nvim_create_user_command('LazyRestoreLogged', function()
-		require('KoalaVim.utils.restore').restore_logged()
+		local ret = require('KoalaVim.utils.restore').restore_logged()
+		print(vim.json.encode(ret))
 	end, {})
 
 	local rdir = require('KoalaVim.utils.require_dir')
