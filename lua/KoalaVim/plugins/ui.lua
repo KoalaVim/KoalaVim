@@ -561,7 +561,7 @@ table.insert(M, {
 				vim.cmd(':e ' .. repo_conf)
 			end),
 
-			dashboard.button('ku', 'Koala Update', function ()
+			dashboard.button('ku', ' ' .. ' Koala Update', function()
 				CLOSE_KOALA_DASHBOARD()
 
 				require('KoalaVim.utils.update_checker').update()
