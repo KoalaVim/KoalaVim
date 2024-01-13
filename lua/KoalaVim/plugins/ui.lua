@@ -554,8 +554,10 @@ table.insert(M, {
 					vim.notify('Not in a git repository')
 					return
 				end
+
 				KoalaDisableAutoSession(true)
-				kvim_conf.create_default_conf_if_not_exist(repo_conf)
+				local json_file = require('KoalaVim.utils.json_file')
+				json_file.create_default(repo_conf, {})
 				vim.cmd(':e ' .. repo_conf)
 			end),
 

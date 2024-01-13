@@ -3,7 +3,7 @@ local M = {}
 local health = require('KoalaVim.health')
 
 local function _create_default_file(file, default_content)
-	vim.mkdir(vim.fs.dirname(file), 'p')
+	vim.fn.mkdir(vim.fs.dirname(file), 'p')
 
 	local f = io.open(file, 'w')
 	if f == nil then
@@ -11,7 +11,17 @@ local function _create_default_file(file, default_content)
 		return
 	end
 
-	f.write(vim.json.encode(default_content))
+	local str_content = '{}'
+	if not vim.tbl_isempty(default_content) then
+		local ok, res = pcall(vim.json.encode, default_content)
+		if not ok or not res then
+			health.warn(string.format('Failed to encode default file `%s` err: `%s`', file, res))
+			vim.print(default_content)
+			return
+		end
+		str_content = res
+	end
+	f:write(str_content)
 	f:close()
 end
 
@@ -64,7 +74,7 @@ function M.save(file, content, dont_try_create_dir)
 	end
 
 	-- Encode content to json
-	local ok, res, a = pcall(vim.json.encode, content)
+	local ok, res = pcall(vim.json.encode, content)
 	if not ok then
 		health.warn(string.format('Failed to encode `%s` err: `%s`', file, res))
 		vim.print(content)
