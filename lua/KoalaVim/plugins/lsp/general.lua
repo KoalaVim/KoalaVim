@@ -182,23 +182,22 @@ table.insert(M, {
 	},
 	config = function(_, opts)
 		local null_ls = require('null-ls')
+		local health = require('KoalaVim.health')
 
 		local builtins_sources = {}
 		local function traverse_builtin(aggregated, current)
 			for key, value in pairs(current) do
-				-- print(key, value)
 				if type(value) == 'table' then
 					if aggregated[key] == nil then
-						-- TODO: [checkhealth] raise warning
-						print('[null-ls-builtins] invalid source, ' .. key .. ' not found')
+						health.warn('[null-ls-builtins] invalid source, ' .. key .. ' not found')
+					else
+						-- aggregated = aggregated[key]
+						traverse_builtin(aggregated[key], value)
 					end
-					-- aggregated = aggregated[key]
-					traverse_builtin(aggregated[key], value)
 				elseif type(value) == 'string' then
 					table.insert(builtins_sources, aggregated[value])
 				else
-					-- TODO: [checkhealth] raise warning
-					print('[null-ls-builtins] expected string|table found ' .. type(key))
+					health.warn('[null-ls-builtins] expected string|table found ' .. type(key))
 				end
 			end
 		end
