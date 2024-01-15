@@ -120,7 +120,6 @@ table.insert(M, {
 -- File explorer
 table.insert(M, {
 	'nvim-tree/nvim-tree.lua',
-	lazy = true,
 	cmd = 'NvimTreeOpen',
 	init = function()
 		-- Load nvim-tree.lua if neovim opened with args
@@ -398,6 +397,12 @@ table.insert(M, {
 		notification = {
 			view = {
 				group_separator = false,
+			},
+		},
+
+		integration = {
+			['nvim-tree'] = {
+				enable = false,
 			},
 		},
 	},
