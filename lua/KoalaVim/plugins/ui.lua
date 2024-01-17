@@ -367,6 +367,7 @@ table.insert(M, {
 
 table.insert(M, {
 	'j-hui/fidget.nvim',
+	event = 'VeryLazy',
 	opts = {
 		progress = {
 			poll_rate = 10,
