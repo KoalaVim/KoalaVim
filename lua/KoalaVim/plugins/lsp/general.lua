@@ -140,6 +140,8 @@ table.insert(M, {
 			'stylua',
 			'shfmt',
 			'mypy',
+			-- TODO: take from DAP
+			'debugpy',
 		},
 		npm = {
 			install_args = { '--registry', 'https://registry.npmjs.org/' },
