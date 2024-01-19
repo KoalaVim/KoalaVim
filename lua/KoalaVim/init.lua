@@ -44,10 +44,10 @@ function M.init()
 		DEBUG = function() end
 	end
 
-	vim.api.nvim_create_user_command('LazyRestoreLogged', function()
-		local ret = require('KoalaVim.utils.restore').restore_logged()
+	vim.api.nvim_create_user_command('LazyRestoreLogged', function(opts)
+		local ret = require('KoalaVim.utils.restore').restore_logged({ plugins = opts.fargs })
 		print(vim.json.encode(ret))
-	end, {})
+	end, { nargs = '*' })
 
 	local rdir = require('KoalaVim.utils.require_dir')
 
