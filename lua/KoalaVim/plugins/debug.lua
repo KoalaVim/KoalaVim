@@ -147,6 +147,8 @@ table.insert(M, {
 		usercmd.create('ClearBreakpoints', 'Debug: clear all breakpoints', function()
 			require('dap').clear_breakpoints()
 		end, {})
+
+		require('KoalaVim.utils.debug').init()
 	end,
 	keys = {
 		{
@@ -205,7 +207,7 @@ table.insert(M, {
 		{
 			'<leader>rp',
 			function()
-				require('dap').repl.open()
+				require('KoalaVim.utils.debug').toggle_repl()
 			end,
 			desc = 'Debug: open repl',
 		},

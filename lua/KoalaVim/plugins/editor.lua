@@ -68,7 +68,7 @@ local floating_code_ns = api.nvim_create_namespace('Floating Window for Code')
 api.nvim_set_hl(floating_code_ns, 'NormalFloat', { link = 'Normal' })
 
 table.insert(M, {
-	'nyngwang/NeoZoom.lua',
+	'ofirgall/NeoZoom.lua', -- fork
 	opts = {
 		winopts = {
 			offset = {

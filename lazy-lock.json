@@ -4,7 +4,7 @@
   "CodeGPT.nvim": { "branch": "master", "commit": "14269e1320b276b5c5a5924936caa04e0743164c" },
   "Comment.nvim": { "branch": "master", "commit": "a89339ffbee677ab0521a483b6dac7e2e67c907e" },
   "Navigator.nvim": { "branch": "master", "commit": "631898141d639acd79f12432be9ac91af3cbc71f" },
-  "NeoZoom.lua": { "branch": "main", "commit": "33a45965f99b24a8e7da98f9c976285f946689fe" },
+  "NeoZoom.lua": { "branch": "main", "commit": "17f4f5cd6994bcc4f22c0ce54c6a3fe1ae271992" },
   "SchemaStore.nvim": { "branch": "main", "commit": "177cae4f44ddf7c166ef263956378ae308ff77ff" },
   "ai.vim": { "branch": "main", "commit": "17a61d5bd8b84791b7db6757abefb763f98a4fd1" },
   "alpha-nvim": { "branch": "main", "commit": "907326b3cd9d80608736866367961982a1566bde" },
