@@ -29,50 +29,13 @@ LSP_SERVERS['ruff_lsp'] = {
 	},
 }
 
--- For plugins
-LSP_SERVERS['pylsp'] = {
-	on_attach = function(client, buffer)
-		LSP_ON_ATTACH_NO_HOVER(client, buffer)
-	end,
-	settings = {
-		pylsp = {
-			plugins = {
-				-- Auto import code actions
-				rope_autoimport = {
-					enabled = true,
-					completions = { enabled = false },
-					code_actions = { enabled = true },
-				},
-
-				-- Disable LSP plugins
-				autopep8 = { enabled = false },
-				flake8 = { enabled = false },
-				jedi_completion = { enabled = false },
-				jedi_definition = { enabled = false },
-				jedi_hover = { enabled = false },
-				jedi_references = { enabled = false },
-				jedi_signature_help = { enabled = false },
-				jedi_symbols = { enabled = false },
-				mccabe = { enabled = false },
-				preload = { enabled = false },
-				pycodestyle = { enabled = false },
-				pydocstyle = { enabled = false },
-				pyflakes = { enabled = false },
-				pylint = { enabled = false },
-				rope_completion = { enabled = false },
-				yapf = { enabled = false },
-			},
-		},
-	},
-}
-
 -- Type checker
 NONE_LS_SRCS['mypy'] = {
 	builtins_sources = {
 		diagnostics = {
 			method = require('KoalaVim.consts').null_ls.methods.DIAGNOSTICS_ON_SAVE,
 			diagnostics_postprocess = function(diagnostic)
-				if diagnostic.code == 'import-not-found' then
+				if diagnostic.code == 'import-not-found' or diagnostic.code == 'import-untyped' then
 					diagnostic.code = 'Missing library stubs (typeshed) or py.typed file'
 					diagnostic.severity = vim.diagnostic.severity['INFO']
 				end
