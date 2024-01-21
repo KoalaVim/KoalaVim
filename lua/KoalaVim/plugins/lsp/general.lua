@@ -81,7 +81,7 @@ table.insert(M, {
 		end
 
 		local function setup_server_filtered(server)
-			if vim.tbl_contains(LSP_SERVERS, server) then
+			if LSP_SERVERS[server] then
 				return setup_server(server)
 			end
 		end
