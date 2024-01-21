@@ -80,6 +80,12 @@ table.insert(M, {
 			require('lspconfig')[server].setup(server_opts_merged)
 		end
 
+		local function setup_server_filtered(server)
+			if vim.tbl_contains(LSP_SERVERS, server) then
+				return setup_server(server)
+			end
+		end
+
 		local mason_ensure_installed = {}
 		local mlsp = require('mason-lspconfig')
 		local mason_available_servers = mlsp.get_available_servers()
@@ -96,7 +102,7 @@ table.insert(M, {
 			ensure_installed = mason_ensure_installed,
 		})
 		require('mason-lspconfig').setup_handlers({
-			setup_server,
+			setup_server_filtered,
 		})
 
 		-- Icons
