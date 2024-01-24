@@ -1,3 +1,6 @@
+local M = {}
+
+-- TODO: check on https://github.com/mtshiba/pylyzer
 LSP_SERVERS['pyright'] = {
 	settings = {
 		pyright = {
@@ -42,6 +45,11 @@ NONE_LS_SRCS['mypy'] = {
 			end,
 		},
 	},
+	with = {
+		extra_args = {
+			'--check-untyped-defs',
+		},
+	},
 }
 
 NONE_LS_SRCS['black'] = {
@@ -52,4 +60,4 @@ NONE_LS_SRCS['black'] = {
 -- New tools:
 -- https://github.com/mtshiba/pylyzer (not ready yet)
 
-return {}
+return M

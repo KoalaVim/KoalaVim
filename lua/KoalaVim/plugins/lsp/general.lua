@@ -241,6 +241,10 @@ table.insert(M, {
 			if builtins_sources_overrides[src] then
 				opts.sources[i] = opts.sources[i].with(builtins_sources_overrides[src])
 			end
+
+			if NONE_LS_SRCS[src].with then
+				opts.sources[i] = opts.sources[i].with(NONE_LS_SRCS[src].with)
+			end
 		end
 
 		-- DEBUG(opts, 'null_ls opts')
