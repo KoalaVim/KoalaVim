@@ -45,7 +45,7 @@
   "hydra.nvim": { "branch": "master", "commit": "3ced42c0b6a6c85583ff0f221635a7f4c1ab0dd0" },
   "icon-picker.nvim": { "branch": "master", "commit": "8e89c06411584e02a928b3baaee056eab24466b3" },
   "indent-blankline.nvim": { "branch": "master", "commit": "018bd04d80c9a73d399c1061fa0c3b14a7614399" },
-  "inlay-hints.nvim": { "branch": "main", "commit": "393f4c5fee4463918971d32e1235c4aede466cea" },
+  "inlay-hints.nvim": { "branch": "main", "commit": "efaf1c8b1ee801a1dadb322b5dfbd1f31f669937" },
   "interestingwords.nvim": { "branch": "master", "commit": "2876dae26a51de62f2389857d0858dd8b7146836" },
   "iron.nvim": { "branch": "master", "commit": "792dd11752c4699ea52c737b5e932d6f21b25834" },
   "iswap.nvim": { "branch": "master", "commit": "aed5aa196651926871a9d881a80aef868199c2a5" },
