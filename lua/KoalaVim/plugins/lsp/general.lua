@@ -10,10 +10,12 @@ local diagnostics_virt_text_settings = {
 	prefix = '',
 }
 
-LSP_ON_ATTACH = function(client, buffer)
-	-- Disable semantic tokens (affects on highlights)
+LSP_ON_INIT = function(client)
+	-- Disable semantic tokens (breaks highlighting)
 	client.server_capabilities.semanticTokensProvider = nil
+end
 
+LSP_ON_ATTACH = function(client, buffer)
 	-- Attach navic
 	if client.server_capabilities.documentSymbolProvider then
 		require('nvim-navic').attach(client, buffer)
@@ -72,6 +74,7 @@ table.insert(M, {
 			local server_opts_merged = vim.tbl_deep_extend('force', {
 				capabilities = LSP_CAPS,
 				on_attach = LSP_ON_ATTACH,
+				on_init = LSP_ON_INIT,
 			}, LSP_SERVERS[server] or {})
 
 			if server_opts_merged.lazy then
