@@ -24,7 +24,8 @@ function M.get_session_data()
 	if package.loaded['dapui'] then
 		-- TODO: use common function with dap_closed
 		require('dapui').close()
-		vim.api.nvim_command('tabclose $') -- $(last) is the debug page
+		-- TODO: track debug page and close if needed
+		-- vim.api.nvim_command('tabclose $') -- $(last) is the debug page
 	end
 
 	return {
