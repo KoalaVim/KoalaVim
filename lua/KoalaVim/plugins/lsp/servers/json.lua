@@ -19,6 +19,7 @@ table.insert(M, {
 		require('lspconfig').jsonls.setup({
 			capabilities = LSP_CAPS,
 			on_attach = LSP_ON_ATTACH,
+			on_init = LSP_ON_INIT,
 			settings = {
 				json = {
 					schemas = json_schemes,
@@ -30,6 +31,7 @@ table.insert(M, {
 		require('lspconfig').yamlls.setup({
 			capabilities = LSP_CAPS,
 			on_attach = LSP_ON_ATTACH,
+			on_init = LSP_ON_INIT,
 			settings = {
 				yaml = {
 					schemaStore = {

@@ -24,6 +24,7 @@ table.insert(M, {
 			},
 
 			lsp_cfg = {
+				on_init = LSP_ON_INIT,
 				capabilities = LSP_CAPS,
 				settings = {
 					gopls = {

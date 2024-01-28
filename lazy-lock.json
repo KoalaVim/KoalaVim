@@ -77,7 +77,6 @@
   "nvim-genghis": { "branch": "main", "commit": "a0875229e1d74f83170b87555ca14f310c4870bb" },
   "nvim-ghost.nvim": { "branch": "main", "commit": "a1ca0b2dac59881066d7ac9373cf64d59ba29d6a" },
   "nvim-lspconfig": { "branch": "master", "commit": "465042c0f786992212284311ebb5da1f89479774" },
-  "nvim-lspimport": { "branch": "main", "commit": "f846a7e1bd2e5791dad06589ea9a6b4a3d01a3d8" },
   "nvim-navbuddy": { "branch": "master", "commit": "5828e8e54b747983913f596d546c356151993511" },
   "nvim-navic": { "branch": "master", "commit": "83dc174da915f9dbc9b51169e9b62a2e0d42b527" },
   "nvim-notify": { "branch": "master", "commit": "159c6cf1be25a933f35e97499314c9faab55c98f" },

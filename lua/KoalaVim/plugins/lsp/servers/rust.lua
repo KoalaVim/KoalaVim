@@ -7,6 +7,7 @@ table.insert(M, {
 		require('rust-tools').setup({
 			server = {
 				on_attach = LSP_ON_ATTACH,
+				on_init = LSP_ON_INIT,
 				capabilities = LSP_CAPS,
 				settings = {
 					['rust-analyzer'] = {
