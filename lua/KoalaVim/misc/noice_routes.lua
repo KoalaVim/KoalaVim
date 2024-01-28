@@ -152,4 +152,13 @@ return {
 		},
 		opts = { skip = true },
 	},
+	-- Disable `go.nvim` warning for false on_init not a function warning
+	{
+		filter = {
+			event = 'notify',
+			kind = 'info',
+			find = 'gopls setup for on_init is not function',
+		},
+		opts = { skip = true },
+	},
 }
