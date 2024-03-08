@@ -36,7 +36,7 @@ function M.load(file, create_if_not_exist, default_content)
 	if f == nil then
 		if create_if_not_exist then
 			-- Create default file and assign default content
-			_create_default_file(file, default_content)
+			_create_default_file(file, default_content or {})
 		end
 
 		return content
