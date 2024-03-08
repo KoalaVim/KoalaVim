@@ -32,12 +32,11 @@ DEBUG = function(obj, label)
 end
 
 local function init_debug()
-	-- TODO: log cycle
-	M._debug_file = io.open('/tmp/kvim.log', 'w')
+	M._debug_file = io.open(vim.env.KOALA_DEBUG_OUT, 'w')
 end
 
 function M.init()
-	if vim.env.KOALA_DEBUG then
+	if vim.env.KOALA_DEBUG_OUT then
 		init_debug()
 	else
 		-- Disable debug
