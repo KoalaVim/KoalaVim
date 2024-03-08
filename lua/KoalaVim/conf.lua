@@ -12,7 +12,9 @@ function M.get_repo_conf()
 end
 
 function M.get_user_conf()
-	-- TODO: windows support?
+	if vim.env.KOALA_KVIM_CONF then -- prioritize `kv` conf
+		return vim.env.KOALA_KVIM_CONF
+	end
 	return vim.fn.expand('$HOME') .. '/.kvim.conf'
 end
 
