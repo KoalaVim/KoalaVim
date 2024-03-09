@@ -541,9 +541,7 @@ table.insert(M, {
 				CLOSE_KOALA_DASHBOARD()
 				KoalaDisableSession()
 
-				vim.cmd([[Flogsplit
-				wincmd k | q
-				G]])
+				require('KoalaVim.utils.modes').load('git')
 			end),
 
 			dashboard.button('kc', ' ' .. ' Koala Config', function()
@@ -594,6 +592,11 @@ table.insert(M, {
 	config = function(_, dashboard)
 		-- Don't load dashboard on restart
 		if vim.env.KOALA_RESTART then
+			return
+		end
+
+		-- Skip dashboard when loading into koala mode
+		if vim.env.KOALA_MODE then
 			return
 		end
 

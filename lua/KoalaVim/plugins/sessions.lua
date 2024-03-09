@@ -93,24 +93,29 @@ table.insert(M, {
 		},
 	},
 	config = function(_, opts)
-		local auto_load_session = vim.env.KOALA_RESTART
+		local auto_load_session = false
+		if not vim.env.KOALA_NO_SESSION then
+			auto_load_session = vim.env.KOALA_RESTART
 
-		-- Disable session saving if files passed in argline
-		-- Load session only if dirs passed at the cmdline
-		local argv = vim.fn.argv()
-		for i, arg in ipairs(argv) do
-			-- Skip first arg (nvim bin) and flags
-			local skip = i == 1 or arg:sub(1, 1) == '-'
-			if not skip then
-				if vim.fn.isdirectory(arg) ~= 1 then
-					KoalaDisableSession()
-					auto_load_session = false
-					break
-				else
-					auto_load_session = true
-					vim.api.nvim_set_current_dir(arg)
+			-- Disable session saving if files passed in argline
+			-- Load session only if dirs passed at the cmdline
+			local argv = vim.fn.argv()
+			for i, arg in ipairs(argv) do
+				-- Skip first arg (nvim bin) and flags
+				local skip = i == 1 or arg:sub(1, 1) == '-'
+				if not skip then
+					if vim.fn.isdirectory(arg) ~= 1 then
+						KoalaDisableSession()
+						auto_load_session = false
+						break
+					else
+						auto_load_session = true
+						vim.api.nvim_set_current_dir(arg)
+					end
 				end
 			end
+		else
+			KoalaDisableSession()
 		end
 
 		require('possession').setup(opts)
