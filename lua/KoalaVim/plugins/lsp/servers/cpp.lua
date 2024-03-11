@@ -18,6 +18,7 @@ LSP_SERVERS['clangd'] = {
 		clangdFileStatus = true,
 	},
 	cmd = clangd_cmd,
+	filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
 }
 
 local add_r_new_line = 'i\\r\\n<Esc>'
