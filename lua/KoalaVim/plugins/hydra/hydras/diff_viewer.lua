@@ -47,8 +47,7 @@ HYDRAS['diff_viewer'] = {
 			function()
 				local diff = api.nvim_get_option_value('diff', {})
 				if diff then
-					-- TODO: center screen after jump
-					return ']c'
+					return ']czz'
 				end
 
 				require('gitsigns').next_hunk({ navigation_message = false })
@@ -62,8 +61,7 @@ HYDRAS['diff_viewer'] = {
 			function()
 				local diff = api.nvim_get_option_value('diff', {})
 				if diff then
-					-- TODO: center screen after jump
-					return '[c'
+					return '[czz'
 				end
 
 				require('gitsigns').prev_hunk({ navigation_message = false })
