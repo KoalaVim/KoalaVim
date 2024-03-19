@@ -101,17 +101,14 @@ table.insert(M, {
 			-- Load session only if dirs passed at the cmdline
 			local argv = vim.fn.argv()
 			for i, arg in ipairs(argv) do
-				-- Skip first arg (nvim bin) and flags
-				local skip = i == 1 or arg:sub(1, 1) == '-'
-				if not skip then
-					if vim.fn.isdirectory(arg) ~= 1 then
-						KoalaDisableSession()
-						auto_load_session = false
-						break
-					else
-						auto_load_session = true
-						vim.api.nvim_set_current_dir(arg)
-					end
+				if vim.fn.isdirectory(arg) ~= 1 then
+					KoalaDisableSession()
+					auto_load_session = false
+					break
+				else
+					-- FIXME: sometimes this crashes nvim
+					auto_load_session = true
+					vim.api.nvim_set_current_dir(arg)
 				end
 			end
 		else
