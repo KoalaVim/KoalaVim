@@ -26,3 +26,6 @@ snippet switch
 	case ${2:match}:
 		$0
 	}
+# testify no error
+snippet noerr
+	s.Require().NoError(err)
