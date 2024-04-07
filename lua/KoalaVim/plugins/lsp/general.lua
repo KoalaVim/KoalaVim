@@ -465,18 +465,4 @@ table.insert(M, {
 	lazy = true,
 })
 
-table.insert(M, {
-	'zeioth/garbage-day.nvim',
-	dependencies = 'neovim/nvim-lspconfig',
-	event = 'VeryLazy',
-	opts = {
-		notifications = true,
-		grace_period = 60 * 5, -- 5 minutes
-		wakeup_delay = 5,
-	},
-	config = function(_, opts)
-		require('garbage-day').setup(opts)
-	end,
-})
-
 return M
