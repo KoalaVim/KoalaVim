@@ -318,6 +318,10 @@ table.insert(M, {
 		},
 	},
 	config = function(_, opts)
+		-- Overriding neovim's default whitespace trim autocmd, clashes with autosave
+		---@diagnostic disable-next-line: duplicate-set-field
+		require('editorconfig').properties.trim_trailing_whitespace = function() end
+
 		local retrail = require('retrail')
 		retrail.setup(opts)
 		usercmd.create('TrimWhiteSpace', 'Remove line ending whitespace', function()
