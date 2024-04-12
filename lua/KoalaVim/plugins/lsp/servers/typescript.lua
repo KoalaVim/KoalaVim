@@ -1,44 +1,29 @@
 local M = {}
 
-local function organize_imports()
-	local params = {
-		command = '_typescript.organizeImports',
-		arguments = { vim.api.nvim_buf_get_name(0) },
-		title = '',
-	}
-
-	vim.lsp.buf.execute_command(params)
-end
-
-LSP_SERVERS['tsserver'] = {
-	settings = {
-		javascript = {
-			inlayHints = {
-				includeInlayEnumMemberValueHints = true,
-				includeInlayFunctionLikeReturnTypeHints = true,
-				includeInlayFunctionParameterTypeHints = true,
-				includeInlayParameterNameHints = 'all', -- 'none' | 'literals' | 'all';
-				includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-				includeInlayPropertyDeclarationTypeHints = true,
-				includeInlayVariableTypeHints = true,
+table.insert(M, {
+	'pmizio/typescript-tools.nvim',
+	dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+	ft = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact' },
+	config = function()
+		require('typescript-tools').setup({
+			on_attach = LSP_ON_ATTACH,
+			on_init = LSP_ON_INIT,
+			capabilities = LSP_CAPS,
+			settings = {
+				jsx_close_tag = { enable = true },
+				tsserver_file_preferences = {
+					includeInlayEnumMemberValueHints = true,
+					includeInlayFunctionLikeReturnTypeHints = true,
+					includeInlayFunctionParameterTypeHints = true,
+					includeInlayParameterNameHints = 'all', -- 'none' | 'literals' | 'all';
+					includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+					includeInlayPropertyDeclarationTypeHints = true,
+					includeInlayVariableTypeHints = true,
+				},
 			},
-		},
-		typescript = {
-			inlayHints = {
-				includeInlayEnumMemberValueHints = true,
-				includeInlayFunctionLikeReturnTypeHints = true,
-				includeInlayFunctionParameterTypeHints = true,
-				includeInlayParameterNameHints = 'all', -- 'none' | 'literals' | 'all';
-				includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-				includeInlayPropertyDeclarationTypeHints = true,
-				includeInlayVariableTypeHints = true,
-			},
-		},
-	},
-	commands = {
-		OrganizeImports = { organize_imports, description = 'Organize Imports' },
-	},
-}
+		})
+	end,
+})
 
 -- Linter
 NONE_LS_SRCS['eslint_d'] = {
