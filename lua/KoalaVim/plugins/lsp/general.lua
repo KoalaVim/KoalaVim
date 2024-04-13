@@ -256,6 +256,28 @@ table.insert(M, {
 	end,
 })
 
+-- TODO fix me?
+local MASON_BIN_PATH = vim.fn.expand('$HOME/.local/share/kvim/upstream/nvim/mason/bin/')
+
+table.insert(M, {
+	'stevearc/conform.nvim',
+	event = { 'BufWritePre' },
+	cmd = { 'ConformInfo' },
+	config = function()
+		local formatters = {}
+		for _, formatter in ipairs(CONFORM_FORMATTERS_BY_FT) do
+			if formatters[formatter] == nil then
+				table.insert(formatters, { command = MASON_BIN_PATH .. formatter })
+			end
+		end
+
+		require('conform').setup({
+			formatters_by_ft = CONFORM_FORMATTERS_BY_FT,
+			formatters = formatters,
+		})
+	end,
+})
+
 -- TODO: if I want code action to be always active I need to add event = 'LspAttach'
 table.insert(M, {
 	'glepnir/lspsaga.nvim',
