@@ -41,7 +41,7 @@ table.insert(M, {
 		'octaltree/cmp-look', -- TODO: maybe replace with https://github.com/uga-rosa/cmp-dictionary to support non linux users
 		'hrsh7th/cmp-calc',
 	},
-	config = function()
+	config = function(_, opts)
 		-- onsails/lspkind-nvim
 		local lspkind = require('lspkind')
 
@@ -140,7 +140,7 @@ table.insert(M, {
 				{
 					name = 'nvim_lsp',
 					priority = 1000,
-					max_item_count = 10,
+					max_item_count = opts.lsp_max_item_count or 10,
 					entry_filter = function(entry, ctx)
 						-- Don't try to complete keywords or text when the user already typed the content
 						local type = require('cmp.types').lsp.CompletionItemKind[entry:get_kind()]
