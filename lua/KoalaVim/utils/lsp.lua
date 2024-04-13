@@ -41,31 +41,34 @@ function M.late_attach(on_attach_func)
 	end
 end
 
+-- TODO fix me
 local function _format(async, blacklist)
 	local buf = vim.api.nvim_get_current_buf()
-	local ft = vim.bo[buf].filetype
-	local available_nls = require('null-ls.sources').get_available(ft, 'NULL_LS_FORMATTING')
+	-- local ft = vim.bo[buf].filetype
+	-- local available_nls = require('null-ls.sources').get_available(ft, 'NULL_LS_FORMATTING')
 
-	vim.lsp.buf.format({
-		async = async,
-		bufnr = buf,
-		filter = function(client)
-			if #available_nls > 0 then
-				for _, nls_src in ipairs(available_nls) do
-					if vim.tbl_contains(blacklist, nls_src.name) then
-						return false
-					end
-				end
-				return client.name == 'null-ls'
-			end
+	require('conform').format({ async = async, bufnr = buf })
 
-			if vim.tbl_contains(blacklist, client.name) then
-				return false
-			end
-
-			return client.name ~= 'null-ls'
-		end,
-	})
+	-- vim.lsp.buf.format({
+	-- 	async = async,
+	-- 	bufnr = buf,
+	-- 	filter = function(client)
+	-- 		if #available_nls > 0 then
+	-- 			for _, nls_src in ipairs(available_nls) do
+	-- 				if vim.tbl_contains(blacklist, nls_src.name) then
+	-- 					return false
+	-- 				end
+	-- 			end
+	-- 			return client.name == 'null-ls'
+	-- 		end
+	--
+	-- 		if vim.tbl_contains(blacklist, client.name) then
+	-- 			return false
+	-- 		end
+	--
+	-- 		return client.name ~= 'null-ls'
+	-- 	end,
+	-- })
 end
 
 AUTO_FORMAT_BLACKLIST = nil

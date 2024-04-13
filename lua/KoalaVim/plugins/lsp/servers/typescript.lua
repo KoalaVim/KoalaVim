@@ -1,9 +1,11 @@
 local M = {}
 
+local FTS = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact' }
+
 table.insert(M, {
 	'pmizio/typescript-tools.nvim',
 	dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
-	ft = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact' },
+	ft = FTS,
 	config = function()
 		require('typescript-tools').setup({
 			on_attach = LSP_ON_ATTACH,
@@ -28,15 +30,13 @@ table.insert(M, {
 -- Linter
 NONE_LS_SRCS['eslint_d'] = {
 	builtins_sources = {
-		'formatting',
 		'code_actions',
 		'diagnostics',
 	},
 }
 
--- Formatter
-NONE_LS_SRCS['prettierd'] = {
-	builtins_sources = { 'formatting' },
-}
+for _, ft in ipairs(FTS) do
+	CONFORM_FORMATTERS_BY_FT[ft] = { 'eslint_d', 'prettierd' }
+end
 
 return M
