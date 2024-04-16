@@ -5,6 +5,32 @@
     "description": "Settings for KoalaVim",
     "type": "object",
     "properties": {
+        "editor": {
+            "description": "Settings for related to text editing",
+            "type": "object",
+            "properties": {
+                "indent": {
+                    "description": "Indentation settings",
+                    "type": "object",
+                    "properties": {
+                        "tab_size": {
+                            "description": "Control tab sizing (not spaces)",
+                            "type": "object"
+                            "properties": {
+                                "min": {
+                                    "description": "Minimum tab size",
+                                    "type": "integer"
+                                }
+                                "max": {
+                                    "description": "Maximum tab size",
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "ui": {
             "description": "Settings for UI",
             "type": "object",

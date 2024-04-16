@@ -57,9 +57,32 @@ table.insert(M, {
 			else
 				vim.opt_local.listchars:append('lead: ')
 			end
+			local tab_size = require('KoalaVim').conf.editor.indent.tab_size
+			local n = math.max(tab_size.min, math.min(vim.bo[0].tabstop, tab_size.max))
+			vim.bo[0].tabstop = n
 		end,
 	},
 	config = function(_, opts)
+		local conf = require('KoalaVim').conf.editor.indent
+
+		-- Override default editorconfig indent size handler by one that cap the tab size to 4
+		---@diagnostic disable-next-line: duplicate-set-field
+		require('editorconfig').properties.indent_size = function(bufnr, val, ec_opts)
+			if val == 'tab' then
+				vim.bo[bufnr].shiftwidth = 0
+				vim.bo[bufnr].softtabstop = 0
+			else
+				local n = assert(tonumber(val), 'indent_size must be a number')
+				n = math.max(conf.tab_size.min, math.min(n, conf.tab_size.max))
+
+				vim.bo[bufnr].shiftwidth = n
+				vim.bo[bufnr].softtabstop = -1
+				if not ec_opts.tab_width then
+					vim.bo[bufnr].tabstop = n
+				end
+			end
+		end
+
 		require('guess-indent').setup(opts)
 	end,
 })

@@ -123,6 +123,7 @@
   "toggleterm.nvim": { "branch": "main", "commit": "1c5996ee3c30b54751093fe68d40676859e7778f" },
   "treesj": { "branch": "main", "commit": "61830dd2ba196e3e62557386607928889741ab3d" },
   "trouble.nvim": { "branch": "main", "commit": "14ea233434172e9f626b78373ff959bf6018c23e" },
+  "typescript-tools.nvim": { "branch": "master", "commit": "c43d9580c3ff5999a1eabca849f807ab33787ea7" },
   "undotree": { "branch": "master", "commit": "0e11ba7325efbbb3f3bebe06213afa3e7ec75131" },
   "venn.nvim": { "branch": "main", "commit": "c114563960b8fb1197695d42798d1f3e7190b798" },
   "vim-be-good": { "branch": "master", "commit": "c290810728a4f75e334b07dc0f3a4cdea908d351" },
