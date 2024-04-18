@@ -6,11 +6,14 @@ table.insert(M, {
 	'lewis6991/gitsigns.nvim',
 	event = { 'BufReadPost', 'BufNewFile' },
 	cmd = 'Gitsigns',
-	config = function()
+	opts = {
+		sign_priority = 9,
+		signcolumn = true,
+	},
+	config = function(_, opts)
 		local gs = require('gitsigns')
-		gs.setup({
-			sign_priority = 9,
-			on_attach = function(bufnr)
+		if opts.on_attach == nil then
+			opts.on_attach = function(bufnr)
 				local map_buffer = require('KoalaVim.utils.map').map_buffer
 
 				-- Navigation
@@ -47,8 +50,10 @@ table.insert(M, {
 				map_buffer(bufnr, 'n', '<leader>hd', '<cmd>Gitsigns toggle_deleted<CR>', 'Toggle Deleted Virtual Text')
 				-- Text object
 				map_buffer(bufnr, { 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', 'Select Hunk')
-			end,
-		})
+			end
+		end
+
+		gs.setup(opts)
 	end,
 })
 
