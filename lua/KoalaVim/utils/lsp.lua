@@ -47,18 +47,18 @@ local function _format(async, blacklist)
 	local conform = require('conform')
 
 	local formatters = conform.list_formatters(buf)
+
 	if #formatters > 0 then
-		for _, formatter in ipairs(formatters) do
-			if vim.tbl_contains(blacklist, formatter.name) then
-				return -- blacklisted
-			end
-		end
+		formatters = vim.tbl_filter(function(formatter)
+			return not vim.tbl_contains(blacklist, formatter.name)
+		end, formatters)
 	end
 
 	require('conform').format({
 		async = async,
 		bufnr = buf,
-		lsp_fallback = true,
+		formatters = formatters,
+		lsp_fallback = #formatters == 0, -- prioritize non-lsp formatters
 
 		-- applied only for lsp
 		filter = function(client)
