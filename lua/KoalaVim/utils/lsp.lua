@@ -44,35 +44,27 @@ end
 -- TODO fix me
 local function _format(async, blacklist)
 	local buf = vim.api.nvim_get_current_buf()
-	-- local ft = vim.bo[buf].filetype
-	-- local available_nls = require('null-ls.sources').get_available(ft, 'NULL_LS_FORMATTING')
+	local conform = require('conform')
+
+	local formatters = conform.list_formatters(buf)
+	if #formatters > 0 then
+		for _, formatter in ipairs(formatters) do
+			if vim.tbl_contains(blacklist, formatter.name) then
+				return -- blacklisted
+			end
+		end
+	end
 
 	require('conform').format({
 		async = async,
 		bufnr = buf,
 		lsp_fallback = true,
-	})
 
-	-- vim.lsp.buf.format({
-	-- 	async = async,
-	-- 	bufnr = buf,
-	-- 	filter = function(client)
-	-- 		if #available_nls > 0 then
-	-- 			for _, nls_src in ipairs(available_nls) do
-	-- 				if vim.tbl_contains(blacklist, nls_src.name) then
-	-- 					return false
-	-- 				end
-	-- 			end
-	-- 			return client.name == 'null-ls'
-	-- 		end
-	--
-	-- 		if vim.tbl_contains(blacklist, client.name) then
-	-- 			return false
-	-- 		end
-	--
-	-- 		return client.name ~= 'null-ls'
-	-- 	end,
-	-- })
+		-- applied only for lsp
+		filter = function(client)
+			return not vim.tbl_contains(blacklist, client.name)
+		end,
+	})
 end
 
 AUTO_FORMAT_BLACKLIST = nil
