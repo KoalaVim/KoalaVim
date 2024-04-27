@@ -379,9 +379,11 @@ table.insert(M, {
 table.insert(M, {
 	'ofirgall/format-on-leave.nvim',
 	event = 'LspAttach',
+	branch = 'conform', -- FIXME: remove this after merging to master
 	config = function()
 		require('format-on-leave').setup({
 			format_func = require('KoalaVim.utils.lsp').auto_format,
+			conform = true,
 		})
 	end,
 })

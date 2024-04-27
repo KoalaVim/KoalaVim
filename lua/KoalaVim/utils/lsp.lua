@@ -61,7 +61,7 @@ local function _format(async, blacklist)
 	local cursor = api.nvim_win_get_cursor(win)
 
 	require('conform').format({
-		async = true, -- always async
+		async = async,
 		bufnr = buf,
 		formatters = formatters,
 		lsp_fallback = #formatters == 0, -- prioritize non-lsp formatters
