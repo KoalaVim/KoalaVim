@@ -47,7 +47,11 @@ local function _format(async, blacklist)
 	-- local ft = vim.bo[buf].filetype
 	-- local available_nls = require('null-ls.sources').get_available(ft, 'NULL_LS_FORMATTING')
 
-	require('conform').format({ async = async, bufnr = buf })
+	require('conform').format({
+		async = async,
+		bufnr = buf,
+		lsp_fallback = true,
+	})
 
 	-- vim.lsp.buf.format({
 	-- 	async = async,
