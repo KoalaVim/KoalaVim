@@ -57,8 +57,11 @@ local function _format(async, blacklist)
 		end, formatters)
 	end
 
+	local win = api.nvim_get_current_win()
+	local cursor = api.nvim_win_get_cursor(win)
+
 	require('conform').format({
-		async = async,
+		async = true, -- always async
 		bufnr = buf,
 		formatters = formatters,
 		lsp_fallback = #formatters == 0, -- prioritize non-lsp formatters
@@ -67,7 +70,15 @@ local function _format(async, blacklist)
 		filter = function(client)
 			return not vim.tbl_contains(blacklist, client.name)
 		end,
-	})
+	}, function(_, did_edit) -- callback after formatting
+		if not did_edit then
+			return
+		end
+
+		-- restore cursor position after async formatting.
+		-- workaround when cursor is on formatted line, it get mispositioned afterwards.
+		api.nvim_win_set_cursor(win, cursor)
+	end)
 end
 
 AUTO_FORMAT_BLACKLIST = nil
