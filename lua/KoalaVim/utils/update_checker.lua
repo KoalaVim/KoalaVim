@@ -162,15 +162,27 @@ function M.render(message, error)
 
 		api.nvim_set_option_value('winhighlight', 'Normal:Normal,FloatBorder:' .. border_hl, { win = WIN })
 
+		local close_pop_up = function()
+			if api.nvim_buf_is_valid(WIN) then
+				api.nvim_win_close(WIN, true)
+			end
+			if api.nvim_buf_is_valid(BUF) then
+				api.nvim_buf_delete(BUF, { force = true })
+			end
+		end
+
 		-- Clean pop up after alpha closed
 		api.nvim_create_autocmd('User', {
 			pattern = 'AlphaClosed',
-			callback = function()
-				if api.nvim_buf_is_valid(WIN) then
-					api.nvim_win_close(WIN, true)
-				end
-				if api.nvim_buf_is_valid(BUF) then
-					api.nvim_buf_delete(BUF, { force = true })
+			callback = close_pop_up,
+		})
+
+		-- Clean pop up after losing focus of the dashboard
+		api.nvim_create_autocmd('WinLeave', {
+			callback = function(events)
+				local ft = vim.bo[events.buf].ft
+				if ft == 'alpha' or ft == 'KoalaUpdates' then
+					close_pop_up()
 				end
 			end,
 		})

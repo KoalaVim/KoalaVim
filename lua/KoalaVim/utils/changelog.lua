@@ -48,8 +48,8 @@ function M.render(message, error)
 	local buf = api.nvim_create_buf(false, true)
 	vim.keymap.set('n', 'q', ':q<CR>', { buffer = buf })
 
-	api.nvim_buf_set_option(buf, 'filetype', 'KoalaUpdates')
-	local ns = api.nvim_create_namespace('KoalaUpdates')
+	api.nvim_buf_set_option(buf, 'filetype', 'KoalaChangeLog')
+	local ns = api.nvim_create_namespace('KoalaChangeLog')
 
 	api.nvim_buf_clear_namespace(buf, ns, 0, -1)
 
@@ -104,15 +104,27 @@ function M.render(message, error)
 
 	api.nvim_set_option_value('winhighlight', 'Normal:Normal,FloatBorder:' .. border_hl, { win = win })
 
+	local close_pop_up = function()
+		if api.nvim_buf_is_valid(win) then
+			api.nvim_win_close(win, true)
+		end
+		if api.nvim_buf_is_valid(buf) then
+			api.nvim_buf_delete(buf, { force = true })
+		end
+	end
+
 	-- Clean pop up after alpha closed
 	api.nvim_create_autocmd('User', {
 		pattern = 'AlphaClosed',
-		callback = function()
-			if api.nvim_buf_is_valid(win) then
-				api.nvim_win_close(win, true)
-			end
-			if api.nvim_buf_is_valid(buf) then
-				api.nvim_buf_delete(buf, { force = true })
+		callback = close_pop_up,
+	})
+
+	-- Clean pop up after losing focus of the dashboard
+	api.nvim_create_autocmd('WinLeave', {
+		callback = function(events)
+			local ft = vim.bo[events.buf].ft
+			if ft == 'alpha' or ft == 'KoalaChangeLog' then
+				close_pop_up()
 			end
 		end,
 	})
