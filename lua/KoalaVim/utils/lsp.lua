@@ -41,7 +41,6 @@ function M.late_attach(on_attach_func)
 	end
 end
 
--- TODO fix me
 local function _format(async, blacklist)
 	local buf = vim.api.nvim_get_current_buf()
 	local conform = require('conform')
@@ -51,6 +50,10 @@ local function _format(async, blacklist)
 	if #formatters > 0 then
 		formatters = vim.tbl_filter(function(formatter)
 			return not vim.tbl_contains(blacklist, formatter.name)
+		end, formatters)
+
+		formatters = vim.tbl_map(function(formatter)
+			return formatter.name
 		end, formatters)
 	end
 
