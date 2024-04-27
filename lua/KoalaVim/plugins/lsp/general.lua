@@ -251,6 +251,9 @@ table.insert(M, {
 		end
 
 		-- DEBUG(opts, 'null_ls opts')
+		if #opts.builtins_sources.formatting > 0 then
+			health.error("[null-ls] formatting with null-ls isn't supported, use conform.")
+		end
 
 		null_ls.setup(opts)
 	end,
