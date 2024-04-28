@@ -259,9 +259,6 @@ table.insert(M, {
 	end,
 })
 
--- TODO fix me?
-local MASON_BIN_PATH = vim.fn.expand('$HOME/.local/share/kvim/upstream/nvim/mason/bin/')
-
 table.insert(M, {
 	'stevearc/conform.nvim',
 	event = { 'BufWritePre' },
@@ -270,7 +267,7 @@ table.insert(M, {
 		local formatters = {}
 		for _, formatter in ipairs(CONFORM_FORMATTERS_BY_FT) do
 			if formatters[formatter] == nil then
-				table.insert(formatters, { command = MASON_BIN_PATH .. formatter })
+				table.insert(formatters, { command = formatter })
 			end
 		end
 
