@@ -2,7 +2,7 @@ local M = {}
 
 -- for some reason format of rust-analyzer + conform + format-on-leave doesn't work.
 -- using rustfmt through conform solves the problem.
-CONFORM_FORMATTERS_BY_FT['rust'] = { 'rustfmt' }
+CONFORM_FORMATTERS['rustfmt'] = { 'rust' }
 
 table.insert(M, {
 	'simrat39/rust-tools.nvim',

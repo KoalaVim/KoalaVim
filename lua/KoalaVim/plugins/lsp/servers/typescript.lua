@@ -35,8 +35,7 @@ NONE_LS_SRCS['eslint_d'] = {
 	},
 }
 
-for _, ft in ipairs(FTS) do
-	CONFORM_FORMATTERS_BY_FT[ft] = { 'eslint_d', 'prettierd' }
-end
+CONFORM_FORMATTERS['eslint_d'] = FTS
+CONFORM_FORMATTERS['prettierd'] = FTS
 
 return M

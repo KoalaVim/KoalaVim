@@ -16,6 +16,6 @@ LSP_SERVERS['lua_ls'] = {
 	},
 }
 
-CONFORM_FORMATTERS_BY_FT['lua'] = { 'stylua' }
+CONFORM_FORMATTERS['stylua'] = { 'lua' }
 
 return M

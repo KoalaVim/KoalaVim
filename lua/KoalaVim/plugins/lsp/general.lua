@@ -266,16 +266,23 @@ table.insert(M, {
 		},
 	},
 	config = function()
-		local formatters = {}
-		for _, formatter in ipairs(CONFORM_FORMATTERS_BY_FT) do
-			if formatters[formatter] == nil then
-				table.insert(formatters, { command = formatter })
+		local formatters_cmds = {}
+		local formatters_by_ft = {}
+		for formatter, fts in pairs(CONFORM_FORMATTERS) do
+			table.insert(formatters_cmds, { command = formatter })
+
+			for _, ft in ipairs(fts) do
+				if formatters_by_ft[ft] == nil then
+					formatters_by_ft[ft] = { formatter }
+				else
+					table.insert(formatters_by_ft[ft], formatter)
+				end
 			end
 		end
 
 		require('conform').setup({
-			formatters_by_ft = CONFORM_FORMATTERS_BY_FT,
-			formatters = formatters,
+			formatters_by_ft = formatters_by_ft,
+			formatters = formatters_cmds,
 		})
 	end,
 })
