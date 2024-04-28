@@ -75,7 +75,7 @@ local function _format(buf, async, blacklist)
 		end
 
 		-- write changes to formatted buffer and return to the current buffer
-		vim.cmd('let buf=bufnr("%") | exec "' .. buf .. 'bufdo silent! write" | exec "b" buf')
+		vim.cmd('let buf=bufnr("%") | exec "' .. buf .. 'bufdo silent! write!" | exec "b" buf')
 
 		-- restore cursor position after async formatting.
 		-- workaround when cursor is on formatted line, it get mispositioned afterwards.

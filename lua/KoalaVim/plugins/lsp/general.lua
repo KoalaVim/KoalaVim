@@ -380,7 +380,9 @@ table.insert(M, {
 	config = function()
 		require('format-on-leave').setup({
 			format_func = require('KoalaVim.utils.lsp').auto_format,
-			conform = true,
+			conform = {
+				enabled = true,
+			},
 		})
 	end,
 })
