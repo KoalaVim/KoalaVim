@@ -137,11 +137,7 @@ table.insert(M, {
 	},
 	opts = {
 		-- Linters
-		-- TODO: take from NONE_LS_SRCS
 		ensure_installed = {
-			'stylua',
-			'shfmt',
-			'mypy',
 			-- TODO: take from DAP
 			'debugpy',
 		},
@@ -150,6 +146,25 @@ table.insert(M, {
 		},
 	},
 	config = function(_, opts)
+		-- convert to list to set
+		local ensure_installed = {}
+		for _, formatter in ipairs(opts.ensure_installed) do
+			ensure_installed[formatter] = true
+		end
+
+		-- Add to ensure_installed from conform formatters
+		for formatter, _ in pairs(CONFORM_FORMATTERS) do
+			ensure_installed[formatter] = true
+		end
+
+		for null_ls_src, _ in pairs(NONE_LS_SRCS) do
+			ensure_installed[null_ls_src] = true
+		end
+
+		-- convert set to list
+		opts.ensure_installed = vim.tbl_keys(ensure_installed)
+		-- DEBUG(opts.ensure_installed, 'ensure_installed')
+
 		require('mason').setup(opts)
 
 		-- Aliases for mason
