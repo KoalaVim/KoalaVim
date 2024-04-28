@@ -41,8 +41,7 @@ function M.late_attach(on_attach_func)
 	end
 end
 
-local function _format(async, blacklist)
-	local buf = vim.api.nvim_get_current_buf()
+local function _format(buf, async, blacklist)
 	local conform = require('conform')
 
 	local formatters = conform.list_formatters(buf)
@@ -75,6 +74,9 @@ local function _format(async, blacklist)
 			return
 		end
 
+		-- write changes to formatted buffer and return to the current buffer
+		vim.cmd('let buf=bufnr("%") | exec "' .. buf .. 'bufdo silent! write" | exec "b" buf')
+
 		-- restore cursor position after async formatting.
 		-- workaround when cursor is on formatted line, it get mispositioned afterwards.
 		api.nvim_win_set_cursor(win, cursor)
@@ -82,14 +84,14 @@ local function _format(async, blacklist)
 end
 
 AUTO_FORMAT_BLACKLIST = nil
-function M.auto_format(async)
+function M.auto_format(async, buf)
 	-- Lazy load and cache auto format blacklist
 	AUTO_FORMAT_BLACKLIST = AUTO_FORMAT_BLACKLIST or vim.list_extend(conf.autoformat.blacklist, conf.format.blacklist)
-	_format(async, AUTO_FORMAT_BLACKLIST)
+	_format(buf, async, AUTO_FORMAT_BLACKLIST)
 end
 
 function M.format(async)
-	_format(async, conf.format.blacklist)
+	_format(vim.api.nvim_get_current_buf(), async, conf.format.blacklist)
 end
 
 return M
