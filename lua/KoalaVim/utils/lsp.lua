@@ -75,7 +75,11 @@ local function _format(buf, async, blacklist)
 		end
 
 		-- write changes to formatted buffer and return to the current buffer
+		local saved_view = vim.fn.winsaveview()
 		vim.cmd('let buf=bufnr("%") | exec "' .. buf .. 'bufdo silent! write!" | exec "b" buf')
+
+		-- restore view after bufdo recenters the view
+		vim.fn.winrestview({ topline = saved_view.topline })
 
 		-- restore cursor position after async formatting.
 		-- workaround when cursor is on formatted line, it get mispositioned afterwards.
