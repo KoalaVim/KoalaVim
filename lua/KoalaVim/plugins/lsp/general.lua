@@ -121,13 +121,6 @@ table.insert(M, {
 			vim.lsp.buf.declaration,
 			desc = 'Go to Declaration',
 		},
-		{
-			'<leader>F',
-			function()
-				require('KoalaVim.utils.lsp').format(true)
-			end,
-			desc = 'Format',
-		},
 		{ 'K', vim.lsp.buf.hover, desc = 'Trigger hover' },
 		{ '<RightMouse>', '<LeftMouse><cmd>sleep 100m<cr><cmd>lua vim.lsp.buf.hover()<cr>', desc = 'Trigger hover' },
 	},
@@ -263,6 +256,15 @@ table.insert(M, {
 	'stevearc/conform.nvim',
 	event = { 'BufWritePre' },
 	cmd = { 'ConformInfo' },
+	keys = {
+		{
+			'<leader>F',
+			function()
+				require('KoalaVim.utils.lsp').format(true)
+			end,
+			desc = 'Format',
+		},
+	},
 	config = function()
 		local formatters = {}
 		for _, formatter in ipairs(CONFORM_FORMATTERS_BY_FT) do
