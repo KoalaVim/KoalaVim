@@ -41,7 +41,7 @@ function M.late_attach(on_attach_func)
 	end
 end
 
-local function _format(buf, async, blacklist)
+local function _format(buf, win, async, blacklist)
 	local conform = require('conform')
 
 	local formatters = conform.list_formatters(buf)
@@ -56,7 +56,6 @@ local function _format(buf, async, blacklist)
 		end, formatters)
 	end
 
-	local win = api.nvim_get_current_win()
 	local cursor = api.nvim_win_get_cursor(win)
 
 	require('conform').format({
@@ -88,14 +87,14 @@ local function _format(buf, async, blacklist)
 end
 
 AUTO_FORMAT_BLACKLIST = nil
-function M.auto_format(async, buf)
+function M.auto_format(async, buf, win)
 	-- Lazy load and cache auto format blacklist
 	AUTO_FORMAT_BLACKLIST = AUTO_FORMAT_BLACKLIST or vim.list_extend(conf.autoformat.blacklist, conf.format.blacklist)
-	_format(buf, async, AUTO_FORMAT_BLACKLIST)
+	_format(buf, win, async, AUTO_FORMAT_BLACKLIST)
 end
 
 function M.format(async)
-	_format(vim.api.nvim_get_current_buf(), async, conf.format.blacklist)
+	_format(api.nvim_get_current_buf(), api.nvim_get_current_win(), async, conf.format.blacklist)
 end
 
 return M
