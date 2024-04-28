@@ -269,7 +269,7 @@ table.insert(M, {
 
 table.insert(M, {
 	'stevearc/conform.nvim',
-	event = { 'BufWritePre' },
+	module = true, -- loaded as module by format-on-leave
 	cmd = { 'ConformInfo' },
 	keys = {
 		{
