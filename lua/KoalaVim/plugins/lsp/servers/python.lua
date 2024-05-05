@@ -52,9 +52,7 @@ NONE_LS_SRCS['mypy'] = {
 	},
 }
 
-NONE_LS_SRCS['black'] = {
-	builtins_sources = { 'formatting' },
-}
+CONFORM_FORMATTERS['black'] = { 'python' }
 
 -- TODO: upgrade tools
 -- New tools:

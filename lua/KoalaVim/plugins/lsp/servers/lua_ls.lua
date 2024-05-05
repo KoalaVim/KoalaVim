@@ -16,10 +16,6 @@ LSP_SERVERS['lua_ls'] = {
 	},
 }
 
-NONE_LS_SRCS['stylua'] = {
-	builtins_sources = {
-		'formatting',
-	},
-}
+CONFORM_FORMATTERS['stylua'] = { 'lua' }
 
 return M

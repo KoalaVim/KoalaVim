@@ -121,13 +121,6 @@ table.insert(M, {
 			vim.lsp.buf.declaration,
 			desc = 'Go to Declaration',
 		},
-		{
-			'<leader>F',
-			function()
-				require('KoalaVim.utils.lsp').format(true)
-			end,
-			desc = 'Format',
-		},
 		{ 'K', vim.lsp.buf.hover, desc = 'Trigger hover' },
 		{ '<RightMouse>', '<LeftMouse><cmd>sleep 100m<cr><cmd>lua vim.lsp.buf.hover()<cr>', desc = 'Trigger hover' },
 	},
@@ -144,11 +137,7 @@ table.insert(M, {
 	},
 	opts = {
 		-- Linters
-		-- TODO: take from NONE_LS_SRCS
 		ensure_installed = {
-			'stylua',
-			'shfmt',
-			'mypy',
 			-- TODO: take from DAP
 			'debugpy',
 		},
@@ -157,6 +146,25 @@ table.insert(M, {
 		},
 	},
 	config = function(_, opts)
+		-- convert to list to set
+		local ensure_installed = {}
+		for _, formatter in ipairs(opts.ensure_installed) do
+			ensure_installed[formatter] = true
+		end
+
+		-- Add to ensure_installed from conform formatters
+		for formatter, _ in pairs(CONFORM_FORMATTERS) do
+			ensure_installed[formatter] = true
+		end
+
+		for null_ls_src, _ in pairs(NONE_LS_SRCS) do
+			ensure_installed[null_ls_src] = true
+		end
+
+		-- convert set to list
+		opts.ensure_installed = vim.tbl_keys(ensure_installed)
+		-- DEBUG(opts.ensure_installed, 'ensure_installed')
+
 		require('mason').setup(opts)
 
 		-- Aliases for mason
@@ -251,8 +259,46 @@ table.insert(M, {
 		end
 
 		-- DEBUG(opts, 'null_ls opts')
+		if #opts.builtins_sources.formatting > 0 then
+			health.error("[null-ls] formatting with null-ls isn't supported, use conform.")
+		end
 
 		null_ls.setup(opts)
+	end,
+})
+
+table.insert(M, {
+	'stevearc/conform.nvim',
+	module = true, -- loaded as module by format-on-leave
+	cmd = { 'ConformInfo' },
+	keys = {
+		{
+			'<leader>F',
+			function()
+				require('KoalaVim.utils.lsp').format(true)
+			end,
+			desc = 'Format',
+		},
+	},
+	config = function()
+		local formatters_cmds = {}
+		local formatters_by_ft = {}
+		for formatter, fts in pairs(CONFORM_FORMATTERS) do
+			table.insert(formatters_cmds, { command = formatter })
+
+			for _, ft in ipairs(fts) do
+				if formatters_by_ft[ft] == nil then
+					formatters_by_ft[ft] = { formatter }
+				else
+					table.insert(formatters_by_ft[ft], formatter)
+				end
+			end
+		end
+
+		require('conform').setup({
+			formatters_by_ft = formatters_by_ft,
+			formatters = formatters_cmds,
+		})
 	end,
 })
 
@@ -354,9 +400,13 @@ table.insert(M, {
 table.insert(M, {
 	'ofirgall/format-on-leave.nvim',
 	event = 'LspAttach',
+	branch = 'conform', -- FIXME: remove this after merging to master
 	config = function()
 		require('format-on-leave').setup({
 			format_func = require('KoalaVim.utils.lsp').auto_format,
+			conform = {
+				enabled = true,
+			},
 		})
 	end,
 })

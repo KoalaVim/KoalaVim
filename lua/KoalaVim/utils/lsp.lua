@@ -41,42 +41,60 @@ function M.late_attach(on_attach_func)
 	end
 end
 
-local function _format(async, blacklist)
-	local buf = vim.api.nvim_get_current_buf()
-	local ft = vim.bo[buf].filetype
-	local available_nls = require('null-ls.sources').get_available(ft, 'NULL_LS_FORMATTING')
+local function _format(buf, win, async, blacklist)
+	local conform = require('conform')
 
-	vim.lsp.buf.format({
+	local formatters = conform.list_formatters(buf)
+
+	if #formatters > 0 then
+		formatters = vim.tbl_filter(function(formatter)
+			return not vim.tbl_contains(blacklist, formatter.name)
+		end, formatters)
+
+		formatters = vim.tbl_map(function(formatter)
+			return formatter.name
+		end, formatters)
+	end
+
+	local cursor = api.nvim_win_get_cursor(win)
+
+	require('conform').format({
 		async = async,
 		bufnr = buf,
+		formatters = formatters,
+		lsp_fallback = #formatters == 0, -- prioritize non-lsp formatters
+
+		-- applied only for lsp
 		filter = function(client)
-			if #available_nls > 0 then
-				for _, nls_src in ipairs(available_nls) do
-					if vim.tbl_contains(blacklist, nls_src.name) then
-						return false
-					end
-				end
-				return client.name == 'null-ls'
-			end
-
-			if vim.tbl_contains(blacklist, client.name) then
-				return false
-			end
-
-			return client.name ~= 'null-ls'
+			return not vim.tbl_contains(blacklist, client.name)
 		end,
-	})
+	}, function(_, did_edit) -- callback after formatting
+		if not did_edit then
+			return
+		end
+
+		-- write changes to formatted buffer and return to the current buffer
+		local saved_view = vim.fn.winsaveview()
+		vim.cmd('let buf=bufnr("%") | exec "' .. buf .. 'bufdo silent! write!" | exec "b" buf')
+
+		-- restore view after bufdo recenters the view
+		vim.fn.winrestview({ topline = saved_view.topline })
+
+		-- restore cursor position after async formatting.
+		-- workaround when cursor is on formatted line, it get mispositioned afterwards.
+		api.nvim_win_set_cursor(win, cursor)
+	end)
 end
 
 AUTO_FORMAT_BLACKLIST = nil
-function M.auto_format(async)
+function M.auto_format(async, buf, win)
 	-- Lazy load and cache auto format blacklist
 	AUTO_FORMAT_BLACKLIST = AUTO_FORMAT_BLACKLIST or vim.list_extend(conf.autoformat.blacklist, conf.format.blacklist)
-	_format(async, AUTO_FORMAT_BLACKLIST)
+	_format(buf, win, async, AUTO_FORMAT_BLACKLIST)
 end
 
 function M.format(async)
-	_format(async, conf.format.blacklist)
+	_format(api.nvim_get_current_buf(), api.nvim_get_current_win(), async, conf.format.blacklist)
 end
 
 return M
