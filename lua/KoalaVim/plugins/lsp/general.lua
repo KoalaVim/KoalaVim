@@ -439,21 +439,30 @@ table.insert(M, {
 	},
 })
 
--- Disable virtual text and enables lsp lines and vise versa
-local function toggle_lsp_diagnostics()
-	local new_lines_value = not vim.diagnostic.config().virtual_lines
-	local virtual_text = nil
+local DIAGNOSTICS_CFG = {
+	{
+		virtual_lines = false,
+		virtual_text = true,
+	},
+	{
+		virtual_lines = true,
+		virtual_text = false,
+	},
+	{
+		virtual_lines = false,
+		virtual_text = false,
+	},
+}
 
-	if new_lines_value == false then
-		virtual_text = diagnostics_virt_text_settings
-	else
-		virtual_text = false
+local CURR_DIAGNOSTICS_CFG = 1
+
+local function cycle_lsp_diagnostics()
+	CURR_DIAGNOSTICS_CFG = CURR_DIAGNOSTICS_CFG + 1
+	if CURR_DIAGNOSTICS_CFG > #DIAGNOSTICS_CFG then
+		CURR_DIAGNOSTICS_CFG = 1
 	end
 
-	vim.diagnostic.config({
-		virtual_lines = new_lines_value,
-		virtual_text = virtual_text,
-	})
+	vim.diagnostic.config(DIAGNOSTICS_CFG[CURR_DIAGNOSTICS_CFG])
 end
 
 table.insert(M, {
@@ -462,7 +471,11 @@ table.insert(M, {
 		require('lsp_lines').setup()
 	end,
 	keys = {
-		{ '<leader>l', toggle_lsp_diagnostics, desc = 'Toggle lsp diagnostics' },
+		{
+			'<leader>l',
+			cycle_lsp_diagnostics,
+			desc = 'Cycle between lsp diagnostics mode',
+		},
 	},
 })
 
