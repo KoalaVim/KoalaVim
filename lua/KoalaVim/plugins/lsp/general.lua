@@ -442,15 +442,18 @@ table.insert(M, {
 local DIAGNOSTICS_CFG = {
 	{
 		virtual_lines = false,
+		virtual_text = false,
+		diagflow = true,
+	},
+	{
+		virtual_lines = false,
 		virtual_text = true,
+		diagflow = false,
 	},
 	{
 		virtual_lines = true,
 		virtual_text = false,
-	},
-	{
-		virtual_lines = false,
-		virtual_text = false,
+		diagflow = false,
 	},
 }
 
@@ -462,7 +465,13 @@ local function cycle_lsp_diagnostics()
 		CURR_DIAGNOSTICS_CFG = 1
 	end
 
-	vim.diagnostic.config(DIAGNOSTICS_CFG[CURR_DIAGNOSTICS_CFG])
+	local cfg = DIAGNOSTICS_CFG[CURR_DIAGNOSTICS_CFG]
+	vim.diagnostic.config(cfg)
+	if cfg.diagflow then
+		require('diagflow').enable()
+	else
+		require('diagflow').disable()
+	end
 end
 
 table.insert(M, {
@@ -477,6 +486,29 @@ table.insert(M, {
 			desc = 'Cycle between lsp diagnostics mode',
 		},
 	},
+})
+
+table.insert(M, {
+	'ofirgall/diagflow.nvim', -- fork
+	event = 'LspAttach',
+	opts = {
+		scope = 'line',
+		placement = 'inline',
+		inline_padding_left = 4,
+		show_sign = true,
+
+		toggle_event = { 'InsertEnter', 'InsertLeave' },
+
+		severity_colors = {
+			error = 'CursorDiagnosticFloatingError',
+			warning = 'CursorDiagnosticFloatingWarn',
+			info = 'CursorDiagnosticFloatingInfo',
+			hint = 'CursorDiagnosticFloatingHint',
+		},
+	},
+	config = function(_, opts)
+		require('diagflow').setup(opts)
+	end,
 })
 
 table.insert(M, {
