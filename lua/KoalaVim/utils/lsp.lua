@@ -97,4 +97,52 @@ function M.format(async)
 	_format(api.nvim_get_current_buf(), api.nvim_get_current_win(), async, conf.format.blacklist)
 end
 
+local DIAGNOSTICS_CFG = {
+	{
+		virtual_lines = false,
+		virtual_text = false,
+		diagflow = true,
+	},
+	{
+		virtual_lines = true,
+		virtual_text = false,
+		diagflow = false,
+	},
+	{
+		virtual_lines = false,
+		virtual_text = {
+			-- Show only errors
+			severity = vim.diagnostic.severity.ERROR,
+			prefix = require('KoalaVim.utils.icons').diagnostics.error,
+		},
+		signs = {
+			priority = 8,
+		},
+		diagflow = false,
+	},
+}
+
+function M.set_diagnostics_mode(index)
+	local cfg = DIAGNOSTICS_CFG[index]
+	cfg.update_in_insert = false
+
+	vim.diagnostic.config(cfg)
+	if cfg.diagflow then
+		require('diagflow').enable()
+	else
+		require('diagflow').disable()
+	end
+end
+
+local CURR_DIAGNOSTICS_CFG = 1
+
+function M.cycle_lsp_diagnostics()
+	CURR_DIAGNOSTICS_CFG = CURR_DIAGNOSTICS_CFG + 1
+	if CURR_DIAGNOSTICS_CFG > #DIAGNOSTICS_CFG then
+		CURR_DIAGNOSTICS_CFG = 1
+	end
+
+	M.set_diagnostics_mode(CURR_DIAGNOSTICS_CFG)
+end
+
 return M

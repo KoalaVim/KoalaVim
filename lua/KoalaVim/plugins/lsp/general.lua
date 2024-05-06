@@ -4,12 +4,6 @@ local usercmd = require('KoalaVim.utils.cmd')
 
 local api = vim.api
 
--- diagnostics_icons.Error, '', '', '', '', '',
-local diagnostics_virt_text_settings = {
-	severity = vim.diagnostic.severity.ERROR,
-	prefix = '',
-}
-
 LSP_ON_INIT = function(client)
 	-- Disable semantic tokens (breaks highlighting)
 	client.server_capabilities.semanticTokensProvider = nil
@@ -54,17 +48,6 @@ table.insert(M, {
 		},
 	},
 	config = function(_, _)
-		-- Config diagnostics behavior
-		vim.diagnostic.config({
-			update_in_insert = false, -- disable updates
-			-- Start virtual text and lines disabled
-			virtual_lines = false,
-			virtual_text = diagnostics_virt_text_settings,
-			signs = {
-				priority = 8,
-			},
-		})
-
 		-- hrsh7th/cmp-nvim-lsp
 		-- TODO: [VimAnavim] config LspCaps
 		LSP_CAPS = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -114,6 +97,9 @@ table.insert(M, {
 			name = 'DiagnosticSign' .. name
 			vim.fn.sign_define(name, { text = icon, texthl = name, numhl = '' })
 		end
+
+		-- Init diagnostics mode
+		require('KoalaVim.utils.lsp').set_diagnostics_mode(1)
 	end,
 	keys = {
 		{
@@ -439,41 +425,6 @@ table.insert(M, {
 	},
 })
 
-local DIAGNOSTICS_CFG = {
-	{
-		virtual_lines = false,
-		virtual_text = false,
-		diagflow = true,
-	},
-	{
-		virtual_lines = false,
-		virtual_text = true,
-		diagflow = false,
-	},
-	{
-		virtual_lines = true,
-		virtual_text = false,
-		diagflow = false,
-	},
-}
-
-local CURR_DIAGNOSTICS_CFG = 1
-
-local function cycle_lsp_diagnostics()
-	CURR_DIAGNOSTICS_CFG = CURR_DIAGNOSTICS_CFG + 1
-	if CURR_DIAGNOSTICS_CFG > #DIAGNOSTICS_CFG then
-		CURR_DIAGNOSTICS_CFG = 1
-	end
-
-	local cfg = DIAGNOSTICS_CFG[CURR_DIAGNOSTICS_CFG]
-	vim.diagnostic.config(cfg)
-	if cfg.diagflow then
-		require('diagflow').enable()
-	else
-		require('diagflow').disable()
-	end
-end
-
 table.insert(M, {
 	'ofirgall/lsp_lines.nvim', -- mirror of https://git.sr.ht/~whynothugo/lsp_lines.nvim
 	config = function()
@@ -482,7 +433,9 @@ table.insert(M, {
 	keys = {
 		{
 			'<leader>l',
-			cycle_lsp_diagnostics,
+			function()
+				require('KoalaVim.utils.lsp').cycle_lsp_diagnostics()
+			end,
 			desc = 'Cycle between lsp diagnostics mode',
 		},
 	},
@@ -501,7 +454,7 @@ table.insert(M, {
 
 		severity_colors = {
 			error = 'CursorDiagnosticFloatingError',
-			warning = 'CursorDiagnosticFloatingWarn',
+			warn = 'CursorDiagnosticFloatingWarn',
 			info = 'CursorDiagnosticFloatingInfo',
 			hint = 'CursorDiagnosticFloatingHint',
 		},
