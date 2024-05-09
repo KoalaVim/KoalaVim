@@ -163,7 +163,7 @@ function M.render(message, error)
 		api.nvim_set_option_value('winhighlight', 'Normal:Normal,FloatBorder:' .. border_hl, { win = WIN })
 
 		local close_pop_up = function()
-			if api.nvim_buf_is_valid(WIN) then
+			if api.nvim_win_is_valid(WIN) then
 				api.nvim_win_close(WIN, true)
 			end
 			if api.nvim_buf_is_valid(BUF) then
