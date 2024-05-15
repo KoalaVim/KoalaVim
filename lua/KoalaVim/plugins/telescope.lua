@@ -206,7 +206,7 @@ table.insert(M, {
 			'<MiddleMouse>',
 			function()
 				vim.api.nvim_input('<LeftMouse>')
-				goto_def()
+				vim.schedule(goto_def)
 			end,
 			desc = 'Go to Definition in split',
 		},
@@ -215,7 +215,7 @@ table.insert(M, {
 			function()
 				vim.api.nvim_input('<LeftMouse>')
 				vim.api.nvim_input('<cmd>vsplit<cr>')
-				goto_def()
+				vim.schedule(goto_def)
 			end,
 			desc = 'Go to Definition',
 		},
