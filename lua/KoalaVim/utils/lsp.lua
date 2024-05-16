@@ -122,14 +122,28 @@ local DIAGNOSTICS_CFG = {
 	},
 }
 
-function M.set_diagnostics_mode(index)
-	local cfg = DIAGNOSTICS_CFG[index]
-	cfg.update_in_insert = false
+local CURR_DIAG_CFG = DIAGNOSTICS_CFG[0]
 
-	vim.diagnostic.config(cfg)
-	if cfg.diagflow then
+function M.set_diagnostics_mode(index)
+	CURR_DIAG_CFG = DIAGNOSTICS_CFG[index]
+	CURR_DIAG_CFG.update_in_insert = false
+
+	vim.diagnostic.config(CURR_DIAG_CFG)
+	if CURR_DIAG_CFG.diagflow then
 		require('diagflow').enable()
 	else
+		require('diagflow').disable()
+	end
+end
+
+function M.enable_diagflow()
+	if CURR_DIAG_CFG.diagflow then
+		require('diagflow').enable()
+	end
+end
+
+function M.disable_diagflow()
+	if CURR_DIAG_CFG.diagflow then
 		require('diagflow').disable()
 	end
 end

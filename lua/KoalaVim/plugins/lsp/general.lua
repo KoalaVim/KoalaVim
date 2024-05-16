@@ -450,8 +450,6 @@ table.insert(M, {
 		inline_padding_left = 4,
 		show_sign = true,
 
-		toggle_event = { 'InsertEnter', 'InsertLeave' },
-
 		severity_colors = {
 			error = 'CursorDiagnosticFloatingError',
 			warn = 'CursorDiagnosticFloatingWarn',
@@ -461,6 +459,13 @@ table.insert(M, {
 	},
 	config = function(_, opts)
 		require('diagflow').setup(opts)
+		vim.api.nvim_create_autocmd('InsertEnter', {
+			callback = require('KoalaVim.utils.lsp').disable_diagflow,
+		})
+
+		vim.api.nvim_create_autocmd('InsertLeave', {
+			callback = require('KoalaVim.utils.lsp').enable_diagflow,
+		})
 	end,
 })
 
