@@ -108,6 +108,7 @@
   "possession.nvim": { "branch": "master", "commit": "dc6223d7f6b21d0f77ac8259cddd1e47610d6f20" },
   "rust-tools.nvim": { "branch": "master", "commit": "71d2cf67b5ed120a0e31b2c8adb210dd2834242f" },
   "scope.nvim": { "branch": "main", "commit": "2db6d31de8e3a98d2b41c0f0d1f5dc299ee76875" },
+  "scrollofffraction.nvim": { "branch": "master", "commit": "0618a3e3e1a4e13a04edf6fd35bfcee4bd5afe38" },
   "sibling-swap.nvim": { "branch": "main", "commit": "5b1ea919939dae0d202115a4d7e638fc60992562" },
   "statuscol.nvim": { "branch": "main", "commit": "73328024a05fe2550c0ec9c349d9e08477246161" },
   "substitute.nvim": { "branch": "main", "commit": "46a78e02b5b009d22df7566cbc25f4ef565c5731" },

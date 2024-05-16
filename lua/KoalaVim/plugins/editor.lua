@@ -647,4 +647,17 @@ table.insert(M, {
 	},
 })
 
+table.insert(M, {
+	'nkakouros-original/scrollofffraction.nvim',
+	event = { 'BufEnter', 'WinEnter', 'WinNew', 'VimResized' },
+	opts = {
+		scrolloff_fraction = 0.1,
+		scrolloff_absolute_filetypes = { 'qf' },
+		scrolloff_absolute_value = 0,
+	},
+	config = function(_, opts)
+		require('scrollofffraction').setup(opts)
+	end,
+})
+
 return M
