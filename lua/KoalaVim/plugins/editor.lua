@@ -660,4 +660,16 @@ table.insert(M, {
 	end,
 })
 
+-- Keep show visual after inserting command mode (:)
+table.insert(M, {
+	'moyiz/command-and-cursor.nvim',
+	event = 'VeryLazy',
+	opts = {
+		hl_group = 'Visual',
+	},
+	config = function(_, opts)
+		require('command_and_cursor').setup(opts)
+	end,
+})
+
 return M
