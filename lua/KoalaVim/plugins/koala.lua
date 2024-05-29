@@ -18,7 +18,7 @@ table.insert(M, {
 			vim.api.nvim_create_autocmd('VimEnter', {
 				callback = function()
 					vim.schedule(function()
-						require('KoalaVim.utils.modes').load(vim.env.KOALA_MODE)
+						require('KoalaVim.utils.modes').load(vim.env.KOALA_MODE, vim.env.KOALA_ARGS or '')
 					end)
 				end,
 			})
