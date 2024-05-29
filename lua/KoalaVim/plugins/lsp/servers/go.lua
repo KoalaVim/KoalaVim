@@ -2,7 +2,7 @@ local M = {}
 
 LSP_SERVERS['gopls'] = {}
 
-CONFORM_FORMATTERS['gofmt'] = { 'go' }
+CONFORM_FORMATTERS['gofmt'] = { 'go', mason = false }
 
 table.insert(M, {
 	'ray-x/go.nvim',

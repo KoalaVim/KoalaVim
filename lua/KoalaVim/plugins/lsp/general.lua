@@ -139,8 +139,14 @@ table.insert(M, {
 		end
 
 		-- Add to ensure_installed from conform formatters
-		for formatter, _ in pairs(CONFORM_FORMATTERS) do
-			ensure_installed[formatter] = true
+		for formatter, info in pairs(CONFORM_FORMATTERS) do
+			if info.mason == nil then
+				ensure_installed[formatter] = true
+			else
+				if info.mason then
+					ensure_installed[info.mason] = true
+				end
+			end
 		end
 
 		for null_ls_src, _ in pairs(NONE_LS_SRCS) do
