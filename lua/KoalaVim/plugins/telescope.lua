@@ -92,12 +92,8 @@ end
 
 local M = {}
 
-local layout = 'horizontal'
 local cycle_layout_list = { 'vertical', 'horizontal' }
-if NVLOG then
-	layout = 'vertical'
-	cycle_layout_list = { 'horizontal', 'vertical' }
-end
+local layout = cycle_layout_list[2]
 table.insert(M, {
 	'nvim-telescope/telescope.nvim',
 	cmd = { 'Telescope', 'CmdHistory' },
@@ -149,9 +145,12 @@ table.insert(M, {
 						height = 0.90,
 					},
 					vertical = {
-						width = 0.95,
-						preview_height = 0.75,
-						height = 0.90,
+						-- stylua: ignore
+						height = function(_, _, l) return l end,
+						width = 0.90,
+						preview_height = 0.48,
+						prompt_position = 'bottom',
+						mirror = true,
 					},
 				},
 				prompt_prefix = ' ',
