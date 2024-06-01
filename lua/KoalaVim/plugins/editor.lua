@@ -617,6 +617,8 @@ table.insert(M, {
 		usercmd.create('FindAndReplace', 'Find and replace text', function()
 			require('spectre').toggle(opts)
 		end, {})
+
+		HELPERS['spectre_panel'] = '?'
 	end,
 })
 
