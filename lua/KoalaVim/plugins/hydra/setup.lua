@@ -35,22 +35,33 @@ table.insert(M, {
 		for _, conf in pairs(HYDRAS) do
 			local curr_hydra = Hydra(conf)
 
-			-- Setup user cmd if needed
+			-- Setup user cmd
 			if conf.cmd then
 				usercmd.create(conf.cmd.name, conf.cmd.desc, function()
 					curr_hydra:activate()
 				end, {})
 			end
 
-			-- Setup filetype autocmd if needed
+			-- Setup autocmd
 			if conf.ft then
 				vim.api.nvim_create_autocmd('FileType', {
 					group = hydra_autocmds,
 					pattern = conf.ft,
-					callback = function()
-						curr_hydra:activate()
+					callback = function(events)
+						if conf.helper then
+							require('KoalaVim.utils.map').map_buffer(events.buffer, 'n', 'g?', function()
+								curr_hydra:activate()
+							end)
+						else
+							curr_hydra:activate()
+						end
 					end,
 				})
+
+				-- register helper
+				if conf.helper then
+					HELEPER_FTS[conf.ft] = true
+				end
 			end
 
 			-- Setup custom bodies if needed

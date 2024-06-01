@@ -2,8 +2,6 @@ local M = {}
 
 M.lualine_opts = {}
 
-local uv = vim.loop
-
 local function get_current_lsp_server_name()
 	local msg = 'n/a'
 	local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')

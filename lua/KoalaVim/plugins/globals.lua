@@ -5,6 +5,7 @@ LSP_SERVERS = {}
 NONE_LS_SRCS = {}
 HYDRAS = {}
 CONFORM_FORMATTERS = {}
+HELEPER_FTS = {}
 --TODO: some help files are ghost files
 GHOST_FILETYPES = { 'fugitive', 'NvimTree' }
 
