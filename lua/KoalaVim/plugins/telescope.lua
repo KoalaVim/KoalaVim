@@ -169,6 +169,8 @@ table.insert(M, {
 			},
 		})
 
+		HELEPER_FTS['TelescopePrompt'] = '?'
+
 		-- User Commands
 		usercmd.create('CmdHistory', 'Show commands history', function()
 			require('telescope.builtin').command_history()

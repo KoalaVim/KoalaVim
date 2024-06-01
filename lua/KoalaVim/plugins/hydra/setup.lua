@@ -60,7 +60,7 @@ table.insert(M, {
 
 				-- register helper
 				if conf.helper then
-					HELEPER_FTS[conf.ft] = true
+					HELEPER_FTS[conf.ft] = 'g?'
 				end
 			end
 

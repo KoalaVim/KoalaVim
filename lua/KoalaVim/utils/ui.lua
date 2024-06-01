@@ -276,6 +276,17 @@ function M.setup_lualine(is_half, opts)
 			lualine_x = {
 				{
 					function()
+						if HELEPER_FTS[vim.bo.ft] then
+							return HELEPER_FTS[vim.bo.ft]
+						end
+
+						return ''
+					end,
+					separator = info_seperator,
+					padding = 0,
+				},
+				{
+					function()
 						return gen_info_string('', 'RECORDING', icons_only) .. ' ' .. vim.fn.reg_recording()
 					end,
 					cond = function()
