@@ -104,7 +104,6 @@ table.insert(M, {
 	cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
 	keys = {
 		{ '<leader>gd', '<cmd>DiffviewOpen<CR>', desc = 'Git show diff' },
-		{ '<leader>gS', '<cmd>DiffviewOpen HEAD^..HEAD<CR>', desc = 'Git Show' },
 		{ '<leader>gh', '<cmd>DiffviewFileHistory %<CR>', desc = 'Git History' },
 		{ '<leader>gH', '<cmd>DiffviewFileHistory .<CR>', desc = 'Git workspace History' },
 	},
@@ -292,6 +291,30 @@ table.insert(M, {
 	cmd = 'Octo',
 	config = function(_, opts)
 		require('octo').setup(opts)
+	end,
+})
+
+table.insert(M, {
+	'SuperBo/fugit2.nvim',
+	dependencies = {
+		'MunifTanjim/nui.nvim',
+		'nvim-tree/nvim-web-devicons',
+		'nvim-lua/plenary.nvim',
+		{
+			'chrisgrieser/nvim-tinygit', -- optional: for Github PR view
+			dependencies = { 'stevearc/dressing.nvim' },
+		},
+	},
+	cmd = { 'Fugit2', 'Fugit2Diff', 'Fugit2Graph', 'Fugit2Blame' },
+	keys = {
+		{ '<leader>gS', mode = 'n', '<cmd>Fugit2<cr>' },
+	},
+	opts = {
+		width = '90%',
+		height = '90%',
+	},
+	config = function(_, opts)
+		require('fugit2').setup(opts)
 	end,
 })
 
