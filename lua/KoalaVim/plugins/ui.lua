@@ -199,7 +199,7 @@ table.insert(M, {
 			},
 		})
 
-		HELEPER_FTS['NvimTree'] = 'g?'
+		HELPERS['NvimTree'] = 'g?'
 	end,
 })
 

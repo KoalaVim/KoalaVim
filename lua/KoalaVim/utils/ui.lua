@@ -276,8 +276,8 @@ function M.setup_lualine(is_half, opts)
 			lualine_x = {
 				{
 					function()
-						if HELEPER_FTS[vim.bo.ft] then
-							return HELEPER_FTS[vim.bo.ft]
+						if HELPERS[vim.bo.ft] then
+							return HELPERS[vim.bo.ft]
 						end
 
 						return ''
