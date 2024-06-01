@@ -198,6 +198,8 @@ table.insert(M, {
 				},
 			},
 		})
+
+		HELEPER_FTS['NvimTree'] = 'g?'
 	end,
 })
 
