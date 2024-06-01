@@ -227,7 +227,8 @@ table.insert(M, {
 	},
 	cmd = { 'Flog', 'Flogsplit', 'Floggit' },
 	keys = {
-		{ '<leader>gt', '<cmd>vert Flogsplit<CR>', desc = 'Git Tree' },
+		{ '<leader>gt', '<cmd>vert Flogsplit<CR>', desc = 'Git Tree (vsplit)' },
+		{ '<leader>gT', '<cmd>Flog<CR>', desc = 'Git Tree (tabnew)' },
 		{ '<leader>got', '<cmd>Flogsplit<CR>', desc = 'Git Tree (split)' },
 	},
 	config = function()
@@ -277,10 +278,13 @@ table.insert(M, {
 			callback = function(events)
 				-- stylua: ignore start
 				map_buffer(events.buf, 'n', '<C-d>', flog_diff_current, 'Floggraph: show diff from head to current')
-				map_buffer( events.buf, 'x', '<C-d>', '<Esc><cmd>lua flog_diff_current_visual()<cr>', 'Floggraph: show diff of selection')
-				map_buffer( events.buf, 'x', '<C-s>', '<Esc><cmd>lua flog_diff_current_visual()<cr>', 'Floggraph: show diff of selection')
+				map_buffer(events.buf, 'x', '<C-d>', '<Esc><cmd>lua flog_diff_current_visual()<cr>', 'Floggraph: show diff of selection')
+				map_buffer(events.buf, 'x', '<C-s>', '<Esc><cmd>lua flog_diff_current_visual()<cr>', 'Floggraph: show diff of selection')
 				map_buffer(events.buf, 'n', '<C-s>', flog_show_current, 'Floggraph: show current in diffview')
 				-- stylua: ignore end
+
+				-- Delete flog's gq
+				vim.keymap.del('n', 'gq', { buffer = events.buf })
 			end,
 		})
 	end,
