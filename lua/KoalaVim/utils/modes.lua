@@ -3,6 +3,7 @@ local M = {}
 local health = require('KoalaVim.health')
 
 function M.load(mode, args)
+	args = args or ''
 	if not M._modes[mode] then
 		health.error(string.format("Failed to load `%s` mode (doesn't exists)", mode))
 		return
