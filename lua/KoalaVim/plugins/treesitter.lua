@@ -148,8 +148,8 @@ table.insert(M, {
 	dependencies = {
 		'nvim-treesitter/nvim-treesitter',
 	},
-	config = function()
-		require('treesitter-context').setup()
+	config = function(_, opts)
+		require('treesitter-context').setup(opts)
 	end,
 })
 
