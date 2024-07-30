@@ -127,6 +127,7 @@ table.insert(M, {
 			['prev'] = 'next',
 			['above'] = 'below',
 			['start'] = 'end',
+			['vertical'] = 'horizontal',
 		},
 		remove_default_keybinds = true,
 	},
