@@ -16,7 +16,6 @@
   "cmp-calc": { "branch": "main", "commit": "ce91d14d2e7a8b3f6ad86d85e34d41c1ae6268d9" },
   "cmp-cmdline": { "branch": "main", "commit": "af88e700417c6449719fc77f6f3745f88e42d5da" },
   "cmp-git": { "branch": "main", "commit": "a798a25b21e7204597f56029af2e8a17d65e2518" },
-  "cmp-go-pkgs": { "branch": "main", "commit": "7a76e1f9c8d5f40fe27b8d6fcac04de4456875bb" },
   "cmp-look": { "branch": "master", "commit": "b39c50bcdf6199dddda56adc466c2bd9c951a960" },
   "cmp-lspkind-priority": { "branch": "master", "commit": "fd46ca4182f938fec8153ba0a187cd9fe9fdc9bd" },
   "cmp-nvim-lsp": { "branch": "main", "commit": "0e6b2ed705ddcff9738ec4ea838141654f12eeef" },

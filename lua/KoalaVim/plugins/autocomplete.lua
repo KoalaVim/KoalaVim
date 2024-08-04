@@ -40,7 +40,6 @@ table.insert(M, {
 		'windwp/nvim-autopairs',
 		'octaltree/cmp-look', -- TODO: maybe replace with https://github.com/uga-rosa/cmp-dictionary to support non linux users
 		'hrsh7th/cmp-calc',
-		'Snikimonkd/cmp-go-pkgs',
 	},
 	config = function(_, opts)
 		-- onsails/lspkind-nvim
@@ -134,9 +133,6 @@ table.insert(M, {
 					symbol_map = require('ofirkai.plugins.nvim-cmp').kind_icons,
 					maxwidth = 50,
 					mode = 'symbol',
-					menu = {
-						go_pkgs = '[pkg]',
-					},
 				}),
 			},
 			window = require('ofirkai.plugins.nvim-cmp').window,
@@ -155,7 +151,6 @@ table.insert(M, {
 						return true
 					end,
 				},
-				{ name = 'go_pkgs', priority = 600 },
 				{ name = 'path', option = { trailing_slash = true }, priority = 500 },
 				{ name = 'snippy', priority = 200 },
 				-- { name = 'buffer', priority = 100, max_item_count = 5 },
