@@ -35,3 +35,5 @@ end, {})
 usercmd.create('KoalaUpdate', 'Update KoalaVim', function()
 	require('KoalaVim.utils.update_checker').update()
 end)
+
+usercmd.create('DeleteBlankLines', 'Delete all the blank lines in the buffer', ':g/^$/d', {})
