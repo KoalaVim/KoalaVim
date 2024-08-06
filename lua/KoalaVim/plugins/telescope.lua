@@ -32,7 +32,6 @@ function find_files(mode, cwd)
 	require('telescope.builtin').find_files({
 		cwd = cwd,
 		default_text = telescope_default_text(mode),
-		file_ignore_patterns = { '.git' },
 	})
 end
 
@@ -156,6 +155,7 @@ table.insert(M, {
 				prompt_prefix = ' ',
 				layout_strategy = layout,
 				cycle_layout_list = cycle_layout_list,
+				file_ignore_patterns = { '.git', 'build/' },
 			},
 			extensions = {
 				['ui-select'] = {},
