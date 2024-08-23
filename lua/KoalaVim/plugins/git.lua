@@ -63,25 +63,9 @@ table.insert(M, {
 		{ '<leader>gs', '<cmd>:G<CR>', desc = 'Open fugitive.vim (git status)' },
 		{ '<leader>gp', '<cmd>Git push<CR>', desc = 'Git push' },
 		{ '<leader>gP', '<cmd>Git push --force<CR>', desc = 'Git push force' },
-		{
-			'gh',
-			':set opfunc=GitHistoryOperator<CR>g@',
-			desc = 'show Git History with operator, e.g: gh3<cr> shows the history of the 3 lines below',
-		},
-		{
-			'gh',
-			'<Esc><cmd>lua require("KoalaVim.utils.git").show_history("v")<cr>',
-			mode = 'v',
-			desc = 'show Git History with visual mode',
-		},
 	},
 	cmd = { 'Git', 'G' },
 	config = function()
-		-- callback for `gh`
-		vim.cmd(
-			"function! GitHistoryOperator(...) \n lua require('KoalaVim.utils.git').show_history('n') \n endfunction"
-		)
-
 		-- Jump to first group of files
 		api.nvim_create_autocmd('BufWinEnter', {
 			callback = function(events)
@@ -104,8 +88,14 @@ table.insert(M, {
 	cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
 	keys = {
 		{ '<leader>gd', '<cmd>DiffviewOpen<CR>', desc = 'Git show diff' },
-		{ '<leader>gh', '<cmd>DiffviewFileHistory %<CR>', desc = 'Git History' },
+		{ '<leader>gh', '<cmd>DiffviewFileHistory %<CR>', desc = 'Git file History' },
 		{ '<leader>gH', '<cmd>DiffviewFileHistory .<CR>', desc = 'Git workspace History' },
+		{
+			'gh',
+			'<Esc><cmd>lua require("KoalaVim.utils.git").show_history("v")<cr>',
+			mode = 'v',
+			desc = 'Show Git History of the visual selection',
+		},
 	},
 	config = function()
 		local cb = require('diffview.config').diffview_callback

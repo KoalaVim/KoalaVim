@@ -17,7 +17,7 @@ function M.show_history(mode)
 	local start_line = start_pos[1]
 	local end_line = end_pos[1]
 
-	api.nvim_command('Git log -L' .. start_line .. ',' .. end_line .. ':' .. vim.fn.expand('%'))
+	api.nvim_command('DiffviewFileHistory -L' .. start_line .. ',' .. end_line .. ':' .. vim.fn.expand('%') .. ' %')
 end
 
 return M
