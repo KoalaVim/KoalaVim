@@ -155,7 +155,7 @@ table.insert(M, {
 				prompt_prefix = ' ',
 				layout_strategy = layout,
 				cycle_layout_list = cycle_layout_list,
-				file_ignore_patterns = { '.git', 'build/' },
+				file_ignore_patterns = { '.git/', 'build/' },
 			},
 			extensions = {
 				['ui-select'] = {},
