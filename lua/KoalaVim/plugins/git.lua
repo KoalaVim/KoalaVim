@@ -128,6 +128,8 @@ table.insert(M, {
 					end,
 				},
 				file_panel = {
+					-- TODO: description for binds
+					-- TODO: unbind unnecessary
 					['s'] = cb('toggle_stage_entry'),
 					['q'] = cb('close'),
 					['gf'] = cb('goto_file_edit'),
@@ -135,13 +137,25 @@ table.insert(M, {
 					['<M-m>'] = actions.toggle_files,
 				},
 				file_history_panel = {
-					['q'] = cb('close'),
-					['gf'] = cb('goto_file_edit'),
-					['<M-n>'] = cb('focus_files'),
-					['<M-m>'] = cb('toggle_files'),
-					['s'] = cb('open_in_diffview'),
-					['S'] = cb('open_commit_log'),
+					{ 'n', 's', cb('open_in_diffview'), { desc = 'Show full commit diff in diffview' } },
+					{ 'n', 'S', cb('open_commit_log'), { desc = 'Show commit details' } },
+					{ 'n', 'q', cb('close'), { desc = 'Close' } },
+					{ 'n', 'gf', cb('goto_file_edit'), { desc = 'Open the file in the previous tabpage' } },
+					{ 'n', '<M-n>', cb('focus_files'), { desc = 'Focus on file panel' } },
+					{ 'n', '<M-m>', cb('toggle_files'), { desc = 'Toggle file panel' } },
+					-- disable binds
+					['zo'] = false,
+					['zM'] = false,
+					['h'] = false,
+					['zc'] = false,
+					['zR'] = false,
+					['za'] = false,
+					['g<C-x>'] = false,
+					['<C-A-d>'] = false,
+					['X'] = false,
+					['<leader>b'] = false,
 				},
+				-- TODO: close commit_log_panel with 'q'
 			},
 			view = {
 				default = {
