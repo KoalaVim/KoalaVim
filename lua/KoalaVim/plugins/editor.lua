@@ -674,4 +674,12 @@ table.insert(M, {
 	end,
 })
 
+table.insert(M, {
+	'ofirgall/bracket-repeat',
+	priority = 99999999999, -- load last
+	config = function(_, opts)
+		require('bracket-repeat').setup(opts)
+	end,
+})
+
 return M
