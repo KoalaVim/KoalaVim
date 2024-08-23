@@ -140,6 +140,7 @@ table.insert(M, {
 					['<M-n>'] = cb('focus_files'),
 					['<M-m>'] = cb('toggle_files'),
 					['s'] = cb('open_in_diffview'),
+					['S'] = cb('open_commit_log'),
 				},
 			},
 			view = {
@@ -152,6 +153,11 @@ table.insert(M, {
 				},
 				file_history = {
 					layout = 'diff2_horizontal',
+				},
+			},
+			commit_log_panel = {
+				win_config = {
+					height = 30
 				},
 			},
 		})
