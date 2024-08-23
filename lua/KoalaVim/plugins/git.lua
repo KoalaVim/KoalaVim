@@ -149,6 +149,7 @@ table.insert(M, {
 					['gf'] = cb('goto_file_edit'),
 					['<M-n>'] = cb('focus_files'),
 					['<M-m>'] = cb('toggle_files'),
+					['s'] = cb('open_in_diffview'),
 				},
 			},
 			view = {
