@@ -7,10 +7,18 @@
 #
 # To enable this hook, rename this file to "pre-commit".
 
-#### Run koala cli tools ####
+set -e
 
-# Update lock file
-koala lockfile set-koalavim --yes
+### Update lock file ###
+# Stash dirty before generating lockfile
+git stash --keep-index -m "for generating lazy-lock" > /dev/null
+
+cleanup() {
+	git stash pop > /dev/null
+}
+trap cleanup EXIT
+
+KOALA_LOCKFILE_DST=lazy-lock.json kv -l ./dev/gen_lockfile_init.lua > /dev/null
 git add lazy-lock.json
 
 #############################
@@ -24,7 +32,7 @@ else
 fi
 
 # If you want to allow non-ASCII filenames set this variable to true.
-allownonascii=$(git config --type=bool hooks.allownonascii)
+allownonascii=$(git config --type=bool hooks.allownonascii || true)
 
 # Redirect output to stderr.
 exec 1>&2
@@ -54,4 +62,4 @@ EOF
 fi
 
 # If there are whitespace errors, print the offending file names and fail.
-exec git diff-index --check --cached $against --
+git diff-index --check --cached $against --
