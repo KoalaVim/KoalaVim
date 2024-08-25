@@ -30,6 +30,12 @@ Extendable preconfigured configuration for Neovim powered by [lazy.nvim](https:/
 
 Note: currently KoalaVim install all treesitter's parsers so the first launch might be laggy. It's highly recommended to restart nvim after treesitter's finish installs all the parsers.
 
+### For Devs
+Run the following command in KoalaVim repo to enable pre-commit hook:
+```bash
+git config --local include.path ../.gitconfig
+```
+
 ---
 
 Requirements:
