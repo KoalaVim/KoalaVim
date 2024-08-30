@@ -1,5 +1,10 @@
 -- This file generate clean lazy-lockfile
 
+if vim.env['KOALA_LOCKFILE_DST'] == nil then
+	print('missing env var: `KOALA_LOCKFILE_DST`')
+	os.exit(1)
+end
+
 local lazy_path = vim.fn.stdpath('data') .. '/lazy/lazy.nvim/'
 vim.opt.rtp:prepend(lazy_path)
 vim.opt.rtp:prepend(vim.fn.stdpath('data') .. '/lazy/KoalaVim/')
@@ -41,5 +46,4 @@ end
 -- Write lockfile
 require('lazy.manage.lock').update()
 
--- quit
-vim.api.nvim_feedkeys(':qa\n', 'n', false)
+print('1')

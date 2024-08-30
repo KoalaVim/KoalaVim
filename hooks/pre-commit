@@ -18,7 +18,14 @@ cleanup() {
 }
 trap cleanup EXIT
 
-KOALA_LOCKFILE_DST=lazy-lock.json kv -l ./dev/gen_lockfile_init.lua > /dev/null
+res="$(KOALA_LOCKFILE_DST=lazy-lock.json kv -l ./dev/gen_lockfile_init.lua -- --headless +qa 2>&1)"
+if [ "$res" != "1" ]; then
+	echo "pre-commit: failed to generate 'lazy-lock.json' with './dev/gen_lockfile_init'"
+	echo
+	echo "---- Error ----"
+	echo "$res"
+	exit 1
+fi
 git add lazy-lock.json
 
 #############################
