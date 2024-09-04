@@ -320,11 +320,11 @@ table.insert(M, {
 			desc = 'Go Symbols',
 		},
 		{
-			'gS',
+			'<leader>fs',
 			function()
 				require('telescope.builtin').lsp_dynamic_workspace_symbols()
 			end,
-			'Go workspace Symbols',
+			'Find Symbol in workspace',
 		},
 
 		-- Go to problem
