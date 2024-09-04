@@ -105,6 +105,7 @@
   "open.nvim": { "branch": "master", "commit": "178015f7b78a650b36b73567aba00ba00b6feab0" },
   "output-panel.nvim": { "branch": "main", "commit": "3f199ff9e7d56fa30e39edfb07a883ef4142cd98" },
   "peek.nvim": { "branch": "master", "commit": "67752e7581f88da6899838985a05705b008e4185" },
+  "plantuml.nvim": { "branch": "master", "commit": "81e3367c9f913aaf8f62ee3c6d0d40debc8ab69b" },
   "playground": { "branch": "master", "commit": "2b81a018a49f8e476341dfcb228b7b808baba68b" },
   "plenary.nvim": { "branch": "master", "commit": "9ac3e9541bbabd9d73663d757e4fe48a675bb054" },
   "possession.nvim": { "branch": "master", "commit": "dc6223d7f6b21d0f77ac8259cddd1e47610d6f20" },

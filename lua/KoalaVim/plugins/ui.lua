@@ -518,7 +518,7 @@ table.insert(M, {
 				require('KoalaVim.utils.session').load_cwd_session()
 			end),
 			dashboard.button('sl', '  Session List', ':SessionList <CR>'),
-			dashboard.button('t', '  File Tree', function()
+			dashboard.button('m', '  File Tree', function()
 				CLOSE_KOALA_DASHBOARD(true)
 				require('nvim-tree.api').tree.open()
 			end),
