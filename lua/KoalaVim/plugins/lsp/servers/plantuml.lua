@@ -5,7 +5,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'ofirgall/plantuml.nvim', -- fork
+	'weirongxu/plantuml-previewer.vim',
 	ft = {
 		'iuml',
 		'plantuml',
@@ -13,22 +13,18 @@ table.insert(M, {
 		'puml',
 		'wsd',
 	},
-	opts = {
-		image_renderer = { -- for KoalaVim
-			type = 'image',
-			options = {
-				prog = 'feh',
-				dark_mode = false,
-			},
-		},
-	},
-	config = function(_, opts)
-		require('plantuml').setup(opts)
-
-		local image_renderer = require('plantuml').create_renderer(opts.image_renderer)
-		require('KoalaVim.utils.cmd').create('UML', 'Render plantuml as image', function()
-			require('plantuml').render_file(image_renderer, vim.api.nvim_buf_get_name(0))
-		end)
+	config = function()
+		-- create OpenBrowser vim func instead of 'tyru/open-browser.vim'
+		_G.open_browser = function(url)
+			require('open.system_open').open(url)
+		end
+		-- stylua: ignore start
+		vim.api.nvim_exec2([[
+		function! OpenBrowser(cmd)
+			call v:lua.open_browser(a:cmd)
+		endfunction
+		]], {})
+		-- stylua: ignore end
 	end,
 })
 
