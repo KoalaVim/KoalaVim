@@ -175,6 +175,9 @@ table.insert(M, {
 				},
 			},
 		})
+
+		HELPERS['DiffviewFileHistory'] = 'g?'
+		HELPERS['DiffviewFiles'] = 'g?'
 	end,
 })
 
