@@ -39,7 +39,7 @@ function live_grep(opts, mode)
 	opts = opts or {}
 	opts.prompt_title = 'Live Grep Raw (-t[ty] include, -T exclude -g"[!] [glob]")'
 	if not opts.default_text then
-		opts.default_text = '-F "' .. telescope_default_text(mode)
+		opts.default_text = '--hidden -F "' .. telescope_default_text(mode)
 	end
 
 	require('telescope').extensions.live_grep_args.live_grep_args(opts)
