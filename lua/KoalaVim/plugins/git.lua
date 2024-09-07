@@ -45,8 +45,17 @@ table.insert(M, {
 				map_buffer(bufnr, 'n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>', 'Reset Buffer')
 				map_buffer(bufnr, 'n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>', 'Preview Hunk')
 				map_buffer(bufnr, 'n', '<leader>hb', function()
+					-- invalidate cache
+					require('gitsigns.cache').cache[api.nvim_get_current_buf()].blame = nil
+
 					require('gitsigns').blame_line({ full = true })
 				end, 'Blame Line')
+				map_buffer(bufnr, 'n', '<leader>hB', function()
+					-- invalidate cache
+					require('gitsigns.cache').cache[api.nvim_get_current_buf()].blame = nil
+
+					require('gitsigns').blame_line({ full = true, extra_opts = { '-C' } })
+				end, 'Blame Line with detect copied (moved) code. adds `-C` for git blame')
 				map_buffer(bufnr, 'n', '<leader>hd', '<cmd>Gitsigns toggle_deleted<CR>', 'Toggle Deleted Virtual Text')
 				-- Text object
 				map_buffer(bufnr, { 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', 'Select Hunk')
