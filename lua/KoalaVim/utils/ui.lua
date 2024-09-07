@@ -276,6 +276,16 @@ function M.setup_lualine(is_half, opts)
 			lualine_x = {
 				{
 					function()
+						return package.loaded['bracket-repeat'] and require('bracket-repeat').get_active_bind()
+					end,
+					cond = function()
+						return package.loaded['bracket-repeat'] and require('bracket-repeat').is_active()
+					end,
+					separator = info_seperator,
+					padding = 0,
+				},
+				{
+					function()
 						if HELPERS[vim.bo.ft] then
 							return HELPERS[vim.bo.ft]
 						end
