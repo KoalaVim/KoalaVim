@@ -7,11 +7,7 @@ table.insert(M, {
 table.insert(M, {
 	'weirongxu/plantuml-previewer.vim',
 	ft = {
-		'iuml',
 		'plantuml',
-		'pu',
-		'puml',
-		'wsd',
 	},
 	config = function()
 		-- create OpenBrowser vim func instead of 'tyru/open-browser.vim'
