@@ -682,4 +682,13 @@ table.insert(M, {
 	end,
 })
 
+table.insert(M, {
+	'ofirgall/marks.nvim', -- fork
+	keys = { 'm' },
+	opts = {},
+	config = function(_, opts)
+		require('marks').setup(opts)
+	end,
+})
+
 return M
