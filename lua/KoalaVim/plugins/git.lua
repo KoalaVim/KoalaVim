@@ -20,6 +20,7 @@ table.insert(M, {
 				end
 			end
 		end
+		opts.add_fg_factor = nil -- remove koala param
 
 		local gs = require('gitsigns')
 		if opts.on_attach == nil then
