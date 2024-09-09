@@ -7,10 +7,20 @@ table.insert(M, {
 	event = { 'BufReadPost', 'BufNewFile' },
 	cmd = 'Gitsigns',
 	opts = {
+		add_fg_factor = 0.65,
 		sign_priority = 9,
 		signcolumn = true,
 	},
 	config = function(_, opts)
+		-- override fg_factor
+		for _, highlight in ipairs(require('gitsigns.highlight').hls) do
+			for _, info in pairs(highlight) do
+				if info.fg_factor then
+					info.fg_factor = opts.add_fg_factor
+				end
+			end
+		end
+
 		local gs = require('gitsigns')
 		if opts.on_attach == nil then
 			opts.on_attach = function(bufnr)
