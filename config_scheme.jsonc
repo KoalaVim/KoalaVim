@@ -86,6 +86,19 @@
                             ]
                         }
                     }
+                },
+                "telescope": {
+                    "description": "Telescope options",
+                    "type": "object",
+                    "properties": {
+                        "additional_file_ignore_patterns": {
+                            "description": "Extends KoalaVim's default file ignore patterns",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
                 }
             }
         },
