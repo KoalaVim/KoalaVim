@@ -30,6 +30,7 @@ table.insert(M, {
 				capabilities = LSP_CAPS,
 				settings = {
 					gopls = {
+						buildFlags = { '-tags', 'dev' },
 						analyses = {
 							ST1003 = false, -- Disable variables format https://staticcheck.io/docs/checks#ST1003
 							ST1005 = false, -- Disable error string format https://staticcheck.io/docs/checks#ST1005
