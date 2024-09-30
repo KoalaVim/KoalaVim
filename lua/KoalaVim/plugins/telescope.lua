@@ -87,6 +87,17 @@ local function open_with_trouble(prompt_bufnr, _mode)
 	require('trouble.providers.telescope').smart_open_with_trouble(prompt_bufnr, _mode)
 end
 
+local default_file_ignore_patterns = { '.git/', 'build/' }
+local function get_merged_file_ignore_options()
+	local user_file_ignore_patterns = require('KoalaVim').conf.plugins.telescope.additional_file_ignore_patterns
+	local file_ignore_patterns = default_file_ignore_patterns
+
+	for _, pattern in ipairs(user_file_ignore_patterns) do
+		table.insert(file_ignore_patterns, pattern)
+	end
+
+	return file_ignore_patterns
+end
 ---------------------------------------------------------------------
 
 local M = {}
@@ -155,7 +166,7 @@ table.insert(M, {
 				prompt_prefix = ' ',
 				layout_strategy = layout,
 				cycle_layout_list = cycle_layout_list,
-				file_ignore_patterns = { '.git/', 'build/' },
+				file_ignore_patterns = get_merged_file_ignore_options(),
 			},
 			extensions = {
 				['ui-select'] = {},
