@@ -22,6 +22,7 @@ LSP_SERVERS['pyright'] = {
 
 -- Linter and diagnostics
 LSP_SERVERS['ruff_lsp'] = {
+	dont_format = true, -- Format through 'ruff' cli. async formatting with this lsp is broken. (deletes code)
 	on_attach = function(client, buffer)
 		LSP_ON_ATTACH_NO_HOVER(client, buffer)
 	end,
@@ -53,6 +54,7 @@ NONE_LS_SRCS['mypy'] = {
 }
 
 CONFORM_FORMATTERS['black'] = { 'python' }
+CONFORM_FORMATTERS['ruff_format'] = { 'python', mason = 'ruff' }
 
 -- TODO: upgrade tools
 -- New tools:
