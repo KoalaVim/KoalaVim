@@ -11,7 +11,7 @@ set -e
 
 ### Update lock file ###
 # Stash dirty before generating lockfile
-git stash --keep-index -m "for generating lazy-lock" > /dev/null
+git stash --keep-index --include-untracked -m "for generating lazy-lock" > /dev/null
 
 cleanup() {
 	git stash pop > /dev/null
