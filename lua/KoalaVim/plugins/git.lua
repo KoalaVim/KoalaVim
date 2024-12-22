@@ -191,7 +191,7 @@ table.insert(M, {
 			},
 			commit_log_panel = {
 				win_config = {
-					height = 30
+					height = 30,
 				},
 			},
 		})
