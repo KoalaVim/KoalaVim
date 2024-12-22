@@ -23,13 +23,4 @@ table.insert(M, {
 	end,
 })
 
-table.insert(M, {
-	'dpayne/CodeGPT.nvim',
-	cmd = 'Chat',
-	dependencies = {
-		'nvim-lua/plenary.nvim',
-		'MunifTanjim/nui.nvim',
-	},
-})
-
 return M
