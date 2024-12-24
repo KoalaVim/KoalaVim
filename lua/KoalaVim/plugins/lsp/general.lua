@@ -50,7 +50,7 @@ table.insert(M, {
 	config = function(_, _)
 		-- hrsh7th/cmp-nvim-lsp
 		-- TODO: [VimAnavim] config LspCaps
-		LSP_CAPS = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+		LSP_CAPS = require('blink.cmp').get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities())
 		LSP_CAPS.textDocument.completion.completionItem.labelDetailsSupport = nil -- Overriding with false doesn't work for some reason
 
 		local function setup_server(server)
