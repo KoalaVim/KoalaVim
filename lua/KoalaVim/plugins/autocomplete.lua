@@ -26,6 +26,7 @@ end
 -- Auto complete engine
 table.insert(M, {
 	'hrsh7th/nvim-cmp',
+	enabled = false,
 	version = false, -- last release is way too old
 	event = { 'InsertEnter', 'CmdLineEnter' },
 	dependencies = {
@@ -219,7 +220,64 @@ table.insert(M, {
 })
 
 -- Lazy load cmp_nvim_lsp for capabilities
-table.insert(M, { 'hrsh7th/cmp-nvim-lsp', lazy = true })
+table.insert(M, { 'hrsh7th/cmp-nvim-lsp', lazy = true, enabled = false })
+
+table.insert(M, {
+	"saghen/blink.cmp",
+	lazy = false, -- lazy loading handled internally
+	dependencies = { "rafamadriz/friendly-snippets" },
+	version = "*",
+	opts = {
+		appearance = {
+			use_nvim_cmp_as_default = false,
+		},
+		keymap = {
+			["<CR>"] = { "accept", "fallback" },
+			["<Tab>"] = {
+				function(cmp)
+					if cmp.snippet_active() then
+						return cmp.accept()
+					else
+						return cmp.select_next()
+					end
+				end,
+				"snippet_forward",
+				"fallback",
+			},
+			["<S-Tab>"] = {
+				function(cmp)
+					if cmp.snippet_active() then
+						return cmp.accept()
+					else
+						return cmp.select_prev()
+					end
+				end,
+				"snippet_backward",
+				"fallback",
+			},
+			["<Down>"] = { "select_next" },
+			["<Up>"] = { "select_prev" },
+		},
+		completion = {
+			list = {
+				selection = "manual",
+			},
+			documentation = {
+				auto_show = true,
+			},
+			menu = {
+				draw = {
+					columns = { { "kind_icon" }, { "label" } },
+				},
+			},
+		},
+	},
+	config = function(_, opts)
+		opts.appearance.kind_icons = require("ofirkai.plugins.nvim-cmp").kind_icons
+
+		require("blink-cmp").setup(opts)
+	end,
+})
 
 -- Github cmp source
 table.insert(M, {
