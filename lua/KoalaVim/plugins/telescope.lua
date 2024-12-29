@@ -15,11 +15,16 @@ local function telescope_default_text(mode)
 	end
 end
 
-local function find_current_file()
-	local current_file = vim.fn.expand('%:t:r')
+local function find_current_file(find_in_curr_dir)
+	local current_file = ''
+	if find_in_curr_dir then
+		current_file = vim.fn.expand('%:~:.:r')
+	else
+		current_file = vim.fn.expand('%:t:r')
 
-	-- replace -/_ with spaces to allow fzf find more files
-	current_file = current_file:gsub('[-_]', ' ')
+		-- replace -/_ with spaces to allow fzf find more files
+		current_file = current_file:gsub('[-_]', ' ')
+	end
 
 	require('telescope.builtin').find_files({
 		default_text = current_file,
@@ -206,7 +211,20 @@ table.insert(M, {
 			end,
 			desc = 'Find files with current word',
 		},
-		{ '<leader>o', find_current_file, desc = 'find files with the current file (use to find _test fast)' },
+		{
+			'<leader>o',
+			function()
+				find_current_file(false)
+			end,
+			desc = 'find files with the current file (use to find _test fast)',
+		},
+		{
+			'<leader>O',
+			function()
+				find_current_file(true)
+			end,
+			desc = 'find files with the current file in the file directory',
+		},
 		-- Find buffer
 		{ '<leader>fb', '<cmd>Telescope buffers<CR>', desc = 'Browse open buffers' },
 
