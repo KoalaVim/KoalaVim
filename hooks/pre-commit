@@ -11,16 +11,21 @@ set -e
 
 ### Update lock file ###
 # Stash dirty before generating lockfile
-git stash --keep-index --include-untracked -m "for generating lazy-lock" > /dev/null
-
-cleanup() {
+cleanup_stash() {
 	git stash pop > /dev/null
 }
-trap cleanup EXIT
 
-res=$(sh -c "KOALA_LOCKFILE_DST=lazy-lock.json kv -l ./dev/gen_lockfile_init.lua" 2>&1)
+res="$(git stash --keep-index --include-untracked -m 'for generating lazy-lock')"
+
+if [ "$res" != "No local changes to save" ]; then
+	# Cleanup if stash was successful
+	trap cleanup_stash EXIT
+fi
+
+res="$(sh -c "KOALA_LOCKFILE_DST=lazy-lock.json kv -l ./dev/gen_lockfile_init.lua" 2>&1 | tr -d '\r')"
+
 if [ "$res" != "1" ]; then
-	echo "pre-commit: failed to generate 'lazy-lock.json' with './dev/gen_lockfile_init'"
+	echo "pre-commit: failed to generate 'lazy-lock.json' with './dev/gen_lockfile_init.lua'"
 	echo "---- Error ----"
 	echo "$res"
 	exit 1
