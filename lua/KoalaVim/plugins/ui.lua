@@ -52,6 +52,7 @@ table.insert(M, {
 table.insert(M, {
 	'lukas-reineke/indent-blankline.nvim',
 	event = { 'BufReadPost', 'BufNewFile' },
+	version = 'v2.20.8', -- TODO: upgrade to v3
 	opts = {
 		use_treesitter = true,
 		show_trailing_blankline_indent = false,
