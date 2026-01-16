@@ -3,6 +3,7 @@ local M = {}
 table.insert(M, {
 	'nvim-treesitter/nvim-treesitter',
 	version = false, -- last release is way too old
+	lazy = false,
 	build = ':TSUpdate',
 	event = { 'BufReadPost', 'BufNewFile' },
 	keys = {
@@ -125,10 +126,14 @@ table.insert(M, {
 				query = '; %s',
 			},
 		},
+		-- RRethy/nvim-treesitter-endwise
+		rainbow = {
+			enable = true,
+		}
 	},
 	---@param opts TSConfig
 	config = function(_, opts)
-		require('nvim-treesitter.configs').setup(opts)
+		require('nvim-treesitter').setup(opts)
 	end,
 })
 
@@ -194,5 +199,13 @@ table.insert(M, {
 		})
 	end,
 })
+
+table.insert(M, {
+	'RRethy/nvim-treesitter-endwise',
+	dependencies = {
+		'nvim-treesitter/nvim-treesitter',
+	},
+})
+
 
 return M

@@ -623,18 +623,6 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'RRethy/nvim-treesitter-endwise',
-	opts = {
-		endwise = {
-			enable = true,
-		},
-	},
-	config = function(_, opts)
-		require('nvim-treesitter.configs').setup(opts)
-	end,
-})
-
-table.insert(M, {
 	'chrisgrieser/nvim-puppeteer',
 	-- Supported languages
 	ft = {
