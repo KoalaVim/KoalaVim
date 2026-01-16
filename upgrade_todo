@@ -4,3 +4,4 @@
 [ ] enable colorful-winsep.nvim
 [ ] take updates from the 0.10 branch
 [ ] test RRethy/nvim-treesitter-endwise
+[ ] fix bracket-repeat.nvim
