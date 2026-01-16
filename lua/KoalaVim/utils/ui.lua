@@ -313,7 +313,9 @@ function M.setup_lualine(is_half, opts)
 				{
 					'searchcount',
 					cond = function()
-						return vim.fn.searchcount({ max_count = 1 }).total > 0
+						local search_count = vim.fn.searchcount({ max_count = 1 }).total
+
+						return search_count ~= nil and search_count > 0
 					end,
 					fmt = function(str)
 						return str:gsub('[%[%]]', '')
