@@ -63,7 +63,7 @@ table.insert(M, {
 		})
 
 		-- setup lspconfig
-		require('lspconfig').gopls.setup(require('go.lsp').config())
+		vim.lsp.config.gopls.setup(require('go.lsp').config())
 
 		local map_buffer = require('KoalaVim.utils.map').map_buffer
 		local add_new_line = 'i\\n<Esc>'

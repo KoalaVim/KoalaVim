@@ -16,7 +16,7 @@ table.insert(M, {
 		local json_schemes = require('schemastore').json.schemas()
 		table.insert(json_schemes, require('KoalaVim.conf').get_scheme())
 
-		require('lspconfig').jsonls.setup({
+		vim.lsp.config.jsonls.setup({
 			capabilities = LSP_CAPS,
 			on_attach = LSP_ON_ATTACH,
 			on_init = LSP_ON_INIT,
@@ -28,7 +28,7 @@ table.insert(M, {
 			},
 		})
 
-		require('lspconfig').yamlls.setup({
+		vim.lsp.config.yamlls.setup({
 			capabilities = LSP_CAPS,
 			on_attach = LSP_ON_ATTACH,
 			on_init = LSP_ON_INIT,

@@ -63,7 +63,7 @@ table.insert(M, {
 			if server_opts_merged.lazy then
 				return -- Server is lazy initialized
 			end
-			require('lspconfig')[server].setup(server_opts_merged)
+			vim.lsp.config[server].setup(server_opts_merged)
 		end
 
 		local function setup_server_filtered(server)
