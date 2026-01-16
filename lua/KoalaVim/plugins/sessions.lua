@@ -43,7 +43,7 @@ function KoalaDeleteCurrentSession()
 end
 
 table.insert(M, {
-	'amittamari/possession.nvim',
+	'jedrzejboczar/possession.nvim',
 	dependencies = {
 		'nvim-lua/plenary.nvim',
 	},
