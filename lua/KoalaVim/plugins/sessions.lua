@@ -89,7 +89,7 @@ table.insert(M, {
 					'before_load',
 				},
 			},
-			fugitive = true,
+			-- fugitive = true,
 		},
 	},
 	config = function(_, opts)
