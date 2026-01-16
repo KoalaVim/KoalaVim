@@ -5,3 +5,4 @@
 [ ] take updates from the 0.10 branch
 [ ] test RRethy/nvim-treesitter-endwise
 [ ] fix bracket-repeat.nvim
+[ ] fix mhanberg/output-panel.nvim

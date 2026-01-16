@@ -41,6 +41,7 @@ table.insert(M, {
 		'williamboman/mason-lspconfig.nvim',
 		{
 			'mhanberg/output-panel.nvim',
+			enabled = false,
 			config = function()
 				require('output_panel').setup()
 				usercmd.create('LspOutput', 'LSP: show servers output panel', ':OutputPanel', {})
