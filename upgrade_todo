@@ -6,3 +6,5 @@
 [ ] test RRethy/nvim-treesitter-endwise
 [ ] fix bracket-repeat.nvim
 [ ] fix mhanberg/output-panel.nvim
+[ ] go over LazyVim and see what is new
+[ ] Try to run everything without lazy loading to find all the errors
