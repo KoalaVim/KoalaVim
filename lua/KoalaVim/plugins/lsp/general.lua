@@ -114,7 +114,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'amittamari/mason.nvim', -- fork
+	'mason-org/mason.nvim',
 	cmd = {
 		'Mason',
 		'MasonInstall',
