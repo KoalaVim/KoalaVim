@@ -8,3 +8,5 @@
 [ ] fix mhanberg/output-panel.nvim
 [ ] go over LazyVim and see what is new
 [ ] Try to run everything without lazy loading to find all the errors
+[ ] migrate mason changes from amittamari fork
+[ ] upgrade ofir's forks
