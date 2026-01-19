@@ -1,11 +1,10 @@
 local M = {}
 
+-- FIXME: vim.lsp: jsonls and yamlls used to be lazy setup. needs to see if requires migration to new api
 LSP_SERVERS['jsonls'] = {
-	lazy = true, -- For SchemaStore.nvim
 }
 
 LSP_SERVERS['yamlls'] = {
-	lazy = true, -- For SchemaStore.nvim
 }
 
 table.insert(M, {
@@ -16,7 +15,7 @@ table.insert(M, {
 		local json_schemes = require('schemastore').json.schemas()
 		table.insert(json_schemes, require('KoalaVim.conf').get_scheme())
 
-		vim.lsp.config.jsonls.setup({
+		vim.lsp.config.jsonls = {
 			capabilities = LSP_CAPS,
 			on_attach = LSP_ON_ATTACH,
 			on_init = LSP_ON_INIT,
@@ -26,9 +25,10 @@ table.insert(M, {
 					validate = { enable = true },
 				},
 			},
-		})
+		}
+		vim.lsp.enable('jsonls')
 
-		vim.lsp.config.yamlls.setup({
+		vim.lsp.config.yamlls = {
 			capabilities = LSP_CAPS,
 			on_attach = LSP_ON_ATTACH,
 			on_init = LSP_ON_INIT,
@@ -44,7 +44,8 @@ table.insert(M, {
 					schemas = require('schemastore').yaml.schemas(),
 				},
 			},
-		})
+		}
+		vim.lsp.enable('yamlls')
 	end,
 })
 
