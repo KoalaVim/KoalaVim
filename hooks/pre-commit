@@ -22,7 +22,7 @@ if [ "$res" != "No local changes to save" ]; then
 	trap cleanup_stash EXIT
 fi
 
-res="$(sh -c "unset NVIM_LISTEN_ADDRESS && KOALA_LOCKFILE_DST=lazy-lock.json kv -l ./dev/gen_lockfile_init.lua" 2>&1 | tr -d '\r')"
+res="$(sh -c "unset NVIM_LISTEN_ADDRESS && KOALA_LOCKFILE_DST=lazy-lock.json kv -l ./dev/gen_lockfile_init.lua -- --headless" 2>&1 | tr -d '\r')"
 
 if [ "$res" != "1" ]; then
 	echo "pre-commit: failed to generate 'lazy-lock.json' with './dev/gen_lockfile_init.lua'"
