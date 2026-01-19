@@ -28,16 +28,6 @@ table.insert(M, {
 	dependencies = {
 		'hrsh7th/cmp-nvim-lsp',
 		'mason.nvim',
-		{
-			'folke/neodev.nvim', -- Must be loaded before setting up lua_ls
-			config = function()
-				require('neodev').setup({
-					library = {
-						plugins = { 'nvim-treesitter', 'plenary.nvim', 'ofirkai.nvim', 'lazy.nvim' },
-					},
-				})
-			end,
-		},
 		'williamboman/mason-lspconfig.nvim',
 		{
 			'mhanberg/output-panel.nvim',
