@@ -11,3 +11,4 @@
 [ ] migrate mason changes from amittamari fork
 [ ] upgrade ofir's forks
 [ ] enable format-on-leave
+[ ] ensure pre-commit has ran
