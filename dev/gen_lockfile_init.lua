@@ -36,12 +36,7 @@ lazy_cfg.me = lazy_path -- Set .me for lazy
 require('lazy.core.plugin').load()
 
 -- Remove KoalaVim from lockfile
-for key, _ in pairs(lazy_cfg.plugins) do
-	if key == 'KoalaVim' then
-		lazy_cfg.plugins['KoalaVim']._.is_local = true
-		break
-	end
-end
+lazy_cfg.plugins['KoalaVim']._.is_local = true
 
 -- Write lockfile
 require('lazy.manage.lock').update()
