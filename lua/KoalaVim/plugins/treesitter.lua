@@ -139,6 +139,7 @@ table.insert(M, {
 
 table.insert(M, {
 	'nvim-treesitter/nvim-treesitter-textobjects',
+	branch = 'main', -- The future default branch
 	event = { 'BufReadPre', 'BufNewFile' },
 	dependencies = {
 		'nvim-treesitter/nvim-treesitter',
