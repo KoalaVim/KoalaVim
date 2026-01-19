@@ -422,11 +422,6 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'famiu/bufdelete.nvim',
-	lazy = true,
-})
-
-table.insert(M, {
 	'lambdalisue/suda.vim',
 	cmd = { 'SudaRead', 'SudaWrite' },
 })
@@ -678,6 +673,31 @@ table.insert(M, {
 	config = function(_, opts)
 		require('marks').setup(opts)
 	end,
+})
+
+-- FIXME: go over snacks.nvim and replace/add stuff
+table.insert(M, {
+	'folke/snacks.nvim',
+	priority = 1000,
+	lazy = false,
+	---@type snacks.Config
+	opts = {
+		-- your configuration comes here
+		-- or leave it empty to use the default settings
+		-- refer to the configuration section below
+		bigfile = { enabled = false },
+		dashboard = { enabled = false },
+		explorer = { enabled = false },
+		indent = { enabled = false },
+		input = { enabled = false },
+		picker = { enabled = false },
+		notifier = { enabled = false },
+		quickfile = { enabled = false },
+		scope = { enabled = false },
+		scroll = { enabled = false },
+		statuscolumn = { enabled = false },
+		words = { enabled = false },
+	},
 })
 
 return M

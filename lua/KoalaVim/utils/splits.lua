@@ -20,7 +20,7 @@ function M.close_all_but_current()
 		if not buf_utils.is_visible(bufnr) and buf_utils.is_valid(bufnr) then
 			try({
 				function()
-					require('bufdelete').bufwipeout(bufnr, true)
+					Snacks.bufdelete.delete({buf = bufnr, wipe = true})
 				end,
 				catch({
 					function()
@@ -41,7 +41,7 @@ function M.close()
 	api.nvim_win_close(0, true)
 	if not require('KoalaVim.utils.buf').is_visible(bufnr) then
 		if api.nvim_buf_is_loaded(bufnr) then
-			require('bufdelete').bufdelete(bufnr, true)
+			Snacks.bufdelete.delete({buf = bufnr, wipe = true})
 		end
 	end
 end
