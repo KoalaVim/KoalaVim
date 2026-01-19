@@ -2,7 +2,7 @@ local map = require('KoalaVim.utils.map').map
 
 -- stylua: ignore start
 -- Tabline binds
-map('n', '<C-q>', function() require('bufdelete').bufdelete(0, true) end, 'Close current tab')
+map('n', '<C-q>', function() Snacks.bufdelete.delete() end, 'Close current tab')
 map('n', '<leader>1', function() require('bufferline').go_to_buffer(1, true) end, 'Go to tab #1')
 map('n', '<leader>2', function() require('bufferline').go_to_buffer(2, true) end, 'Go to tab #2')
 map('n', '<leader>3', function() require('bufferline').go_to_buffer(3, true) end, 'Go to tab #3')
