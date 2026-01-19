@@ -30,6 +30,9 @@ if [ "$res" != "1" ]; then
 	echo "$res"
 	exit 1
 fi
+if ! git diff --quiet -- lazy-lock.json; then
+	echo "!! pre-commit: lazy-lock.json has been CHANGED !!"
+fi
 git add lazy-lock.json
 
 #############################
