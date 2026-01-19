@@ -138,6 +138,11 @@ table.insert(M, {
 			window = require('ofirkai.plugins.nvim-cmp').window,
 			sources = cmp.config.sources({
 				{
+					-- source for layzdev.nvim require statements and module annotations
+					name = 'lazydev',
+					group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+				},
+				{
 					name = 'nvim_lsp',
 					priority = 1000,
 					max_item_count = opts.lsp_max_item_count or 10,
