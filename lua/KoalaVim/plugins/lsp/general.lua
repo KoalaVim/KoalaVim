@@ -55,22 +55,15 @@ table.insert(M, {
 		LSP_CAPS.textDocument.completion.completionItem.labelDetailsSupport = nil -- Overriding with false doesn't work for some reason
 
 		local function setup_server(server)
+			-- FIXME: vim.lsp: re-visit capabilities, on_attach and on_init
 			local server_opts_merged = vim.tbl_deep_extend('force', {
 				capabilities = LSP_CAPS,
 				on_attach = LSP_ON_ATTACH,
 				on_init = LSP_ON_INIT,
 			}, LSP_SERVERS[server] or {})
 
-			if server_opts_merged.lazy then
-				return -- Server is lazy initialized
-			end
 			vim.lsp.config[server] = server_opts_merged
-		end
-
-		local function setup_server_filtered(server)
-			if LSP_SERVERS[server] then
-				return setup_server(server)
-			end
+			vim.lsp.enable(server)
 		end
 
 		local mason_ensure_installed = {}
@@ -78,18 +71,16 @@ table.insert(M, {
 		local mason_available_servers = mlsp.get_available_servers()
 
 		for server, server_opts in pairs(LSP_SERVERS) do
-			if server_opts.mason == false or not vim.tbl_contains(mason_available_servers, server) then
-				setup_server(server)
-			else
+			if server_opts.mason ~= false and vim.tbl_contains(mason_available_servers, server) then
 				table.insert(mason_ensure_installed, server)
 			end
+			setup_server(server)
 		end
+		DEBUG(mason_ensure_installed, 'mason_ensure_installed')
 
 		require('mason-lspconfig').setup({
 			ensure_installed = mason_ensure_installed,
-		})
-		require('mason-lspconfig').setup_handlers({
-			setup_server_filtered,
+			automatic_enable = false,
 		})
 
 		-- Icons
