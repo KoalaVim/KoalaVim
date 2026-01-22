@@ -23,7 +23,7 @@ for name, conf in pairs(HYDRAS) do
 end
 
 table.insert(M, {
-	'anuvyklack/hydra.nvim',
+	'qrsforever/hydra.nvim', -- Fork fixed nvim 0.11 issues
 	keys = hydra_keys,
 	cmd = hydra_cmds,
 	ft = hydra_fts,
