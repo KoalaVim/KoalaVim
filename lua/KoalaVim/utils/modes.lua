@@ -16,12 +16,10 @@ end
 local function git_mode(args)
 	vim.cmd('Flog -- ' .. args)
 	vim.cmd('G')
-	vim.cmd('1tabclose')
 end
 
 local function git_tree_mode(args)
 	vim.cmd('Flog -- ' .. args)
-	vim.cmd('1tabclose')
 end
 
 M._modes = {
