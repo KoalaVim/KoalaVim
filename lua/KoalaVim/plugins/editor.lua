@@ -660,7 +660,6 @@ table.insert(M, {
 table.insert(M, {
 	'ofirgall/bracket-repeat.nvim',
 	priority = 99999999999, -- load last
-	enabled = false,
 	config = function(_, opts)
 		require('bracket-repeat').setup(opts)
 	end,
