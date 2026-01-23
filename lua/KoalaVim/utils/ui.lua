@@ -4,14 +4,13 @@ M.lualine_opts = {}
 
 local function get_current_lsp_server_name()
 	local msg = 'n/a'
-	local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
-	local clients = vim.lsp.get_active_clients()
+	local clients = vim.lsp.get_clients()
+	local buf_nr = vim.api.nvim_get_current_buf()
 	if next(clients) == nil then
 		return msg
 	end
 	for _, client in ipairs(clients) do
-		local filetypes = client.config.filetypes
-		if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+		if client.attached_buffers[buf_nr] then
 			return client.name
 		end
 	end
