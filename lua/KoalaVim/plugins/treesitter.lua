@@ -221,17 +221,17 @@ table.insert(M, {
 	end,
 })
 
--- table.insert(M, {
--- 	'phelipetls/jsonpath.nvim',
--- 	ft = { 'json', 'jsonc' },
--- 	dependencies = {
--- 		'nvim-treesitter/nvim-treesitter',
--- 	},
--- 	config = function()
--- 		require('jsonpath')
--- 	end,
--- })
---
+table.insert(M, {
+	'phelipetls/jsonpath.nvim',
+	ft = { 'json', 'jsonc' },
+	dependencies = {
+		'nvim-treesitter/nvim-treesitter',
+	},
+	config = function()
+		require('jsonpath')
+	end,
+})
+
 -- table.insert(M, {
 -- 	'andymass/vim-matchup',
 -- 	event = { 'BufReadPre', 'BufNewFile' },
