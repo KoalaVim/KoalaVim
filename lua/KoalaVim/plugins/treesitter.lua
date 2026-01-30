@@ -248,12 +248,12 @@ table.insert(M, {
 		})
 	end,
 })
---
--- table.insert(M, {
--- 	'RRethy/nvim-treesitter-endwise',
--- 	dependencies = {
--- 		'nvim-treesitter/nvim-treesitter',
--- 	},
--- })
+
+table.insert(M, {
+	'RRethy/nvim-treesitter-endwise',
+	dependencies = {
+		'nvim-treesitter/nvim-treesitter',
+	},
+})
 
 return M
