@@ -71,7 +71,7 @@ table.insert(M, {
 	},
 	config = function(_, _)
 		local enabled = {}
-		local available_langs = require'nvim-treesitter'.get_available()
+		local available_langs = require('nvim-treesitter').get_available()
 
 		local usercmd = require('KoalaVim.utils.cmd')
 		local function _enable_ts(ft)
@@ -79,7 +79,7 @@ table.insert(M, {
 				enabled[ft] = true
 
 				-- install if not exist
-				require'nvim-treesitter'.install(ft):await(function ()
+				require('nvim-treesitter').install(ft):await(function()
 					-- syntax highlighting, provided by Neovim
 					vim.treesitter.start()
 					-- folds, provided by Neovim
@@ -263,6 +263,5 @@ table.insert(M, {
 -- 		'nvim-treesitter/nvim-treesitter',
 -- 	},
 -- })
-
 
 return M
