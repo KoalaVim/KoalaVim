@@ -140,16 +140,15 @@ table.insert(M, {
 				enabled[ft] = true
 
 				-- install if not exist
-				require'nvim-treesitter'.install(ft)
-
-				-- syntax highlighting, provided by Neovim
-				vim.treesitter.start()
-				-- folds, provided by Neovim
-				vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-				vim.wo.foldmethod = 'expr'
-				-- indentation, provided by nvim-treesitter
-				vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-
+				require'nvim-treesitter'.install(ft):await(function ()
+					-- syntax highlighting, provided by Neovim
+					vim.treesitter.start()
+					-- folds, provided by Neovim
+					vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+					vim.wo.foldmethod = 'expr'
+					-- indentation, provided by nvim-treesitter
+					vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+				end)
 			end
 		end
 
