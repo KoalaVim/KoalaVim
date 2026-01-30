@@ -212,14 +212,23 @@ table.insert(M, {
 	end,
 })
 
--- table.insert(M, {
--- 	'JoosepAlviste/nvim-ts-context-commentstring',
--- 	event = { 'BufReadPre', 'BufNewFile' },
--- 	dependencies = {
--- 		'nvim-treesitter/nvim-treesitter',
--- 	},
--- })
---
+table.insert(M, {
+	'JoosepAlviste/nvim-ts-context-commentstring',
+	event = { 'BufReadPre', 'BufNewFile' },
+	dependencies = {
+		'nvim-treesitter/nvim-treesitter',
+	},
+	opts = {
+		enable_autocmd = false,
+		-- config = {
+		-- 	query = '; %s',
+		-- }
+	},
+	config = function(_, opts)
+		require('ts_context_commentstring').setup(opts)
+	end,
+})
+
 -- table.insert(M, {
 -- 	'nvim-treesitter/playground',
 -- 	cmd = 'TSPlaygroundToggle',
