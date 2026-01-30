@@ -18,28 +18,28 @@ HYDRAS['Goto funcs'] = {
 		{
 			'j',
 			function()
-				require('nvim-treesitter.textobjects.move').goto_next_start('@function.name')
+				require('nvim-treesitter-textobjects.move').goto_next_start('@function.name')
 				require('KoalaVim.utils.misc').center_screen()
 			end,
 		},
 		{
 			'J',
 			function()
-				require('nvim-treesitter.textobjects.move').goto_next_end('@function.outer')
+				require('nvim-treesitter-textobjects.move').goto_next_end('@function.outer')
 				require('KoalaVim.utils.misc').center_screen()
 			end,
 		},
 		{
 			'k',
 			function()
-				require('nvim-treesitter.textobjects.move').goto_previous_start('@function.name')
+				require('nvim-treesitter-textobjects.move').goto_previous_start('@function.name')
 				require('KoalaVim.utils.misc').center_screen()
 			end,
 		},
 		{
 			'K',
 			function()
-				require('nvim-treesitter.textobjects.move').goto_previous_end('@function.outer')
+				require('nvim-treesitter-textobjects.move').goto_previous_end('@function.outer')
 				require('KoalaVim.utils.misc').center_screen()
 			end,
 		},
@@ -52,7 +52,7 @@ HYDRAS['Goto funcs'] = {
 			mode = { 'n', 'x' },
 			desc = 'Go down a function',
 			callback = function(hydra)
-				require('nvim-treesitter.textobjects.move').goto_next_start('@function.name')
+				require('nvim-treesitter-textobjects.move').goto_next_start('@function.name')
 				require('KoalaVim.utils.misc').center_screen()
 				hydra:activate()
 			end,
@@ -62,7 +62,7 @@ HYDRAS['Goto funcs'] = {
 			mode = { 'n', 'x' },
 			desc = 'Go up a function',
 			callback = function(hydra)
-				require('nvim-treesitter.textobjects.move').goto_previous_start('@function.name')
+				require('nvim-treesitter-textobjects.move').goto_previous_start('@function.name')
 				require('KoalaVim.utils.misc').center_screen()
 				hydra:activate()
 			end,
@@ -72,7 +72,7 @@ HYDRAS['Goto funcs'] = {
 			mode = { 'n', 'x' },
 			desc = 'Go down to an end of a function',
 			callback = function(hydra)
-				require('nvim-treesitter.textobjects.move').goto_next_end('@function.outer')
+				require('nvim-treesitter-textobjects.move').goto_next_end('@function.outer')
 				require('KoalaVim.utils.misc').center_screen()
 				hydra:activate()
 			end,
@@ -82,7 +82,7 @@ HYDRAS['Goto funcs'] = {
 			mode = { 'n', 'x' },
 			desc = 'Go up to an end of a function',
 			callback = function(hydra)
-				require('nvim-treesitter.textobjects.move').goto_previous_end('@function.outer')
+				require('nvim-treesitter-textobjects.move').goto_previous_end('@function.outer')
 				require('KoalaVim.utils.misc').center_screen()
 				hydra:activate()
 			end,

@@ -33,67 +33,6 @@ table.insert(M, {
 			},
 		},
 		-- yati = { enable = true },
-		-- nvim-treesitter/nvim-treesitter-textobjects
-		textobjects = {
-			move = {
-				enable = true,
-				set_jumps = true, -- whether to set jumps in the jumplist
-				goto_next_start = {
-					[']f'] = '@function.outer',
-					[']]'] = '@class.outer',
-					[']b'] = '@block.outer',
-					[']a'] = '@parameter.inner',
-					[']k'] = '@call.outer',
-				},
-				goto_next_end = {
-					[']F'] = '@function.outer',
-					[']B'] = '@block.outer',
-					[']A'] = '@parameter.inner',
-					[']K'] = '@call.outer',
-				},
-				goto_previous_start = {
-					['[f'] = '@function.outer',
-					['[['] = '@class.outer',
-					['[b'] = '@block.outer',
-					['[a'] = '@parameter.inner',
-					['[k'] = '@call.inner',
-				},
-				goto_previous_end = {
-					['[F'] = '@function.outer',
-					['[B'] = '@block.outer',
-					['[A'] = '@parameter.inner',
-					['[K'] = '@call.inner',
-				},
-			},
-			select = {
-				enable = true,
-				lookahead = true,
-				lookbehind = true,
-				-- include_surrounding_whitespace = true,
-				keymaps = {
-					['af'] = '@function.outer',
-					['if'] = '@function.inner',
-					['aC'] = '@class.outer',
-					['iC'] = '@class.inner',
-					['ab'] = '@block.outer',
-					['ib'] = '@block.inner',
-					['aL'] = '@loop.outer', -- `al` is already in used by `a line`
-					['iL'] = '@loop.inner', -- same as `al`
-					['a/'] = '@comment.outer',
-					['i/'] = '@comment.outer', -- no inner for comment
-					-- Handled by `mini.ai`
-					-- ['aa'] = '@parameter.outer', -- parameter -> argument
-					-- ['ia'] = '@parameter.inner',
-					['ac'] = '@call.outer',
-					['ic'] = '@call.inner',
-					['ai'] = '@conditional.outer', -- i as if
-					['ii'] = '@conditional.inner',
-					-- Custom captures
-					['ie'] = '@binary_expression.inner',
-					['aF'] = '@function.name',
-				},
-			},
-		},
 		-- andymass/vim-matchup
 		matchup = {
 			enable = true,
@@ -156,26 +95,112 @@ table.insert(M, {
 			_enable_ts(vim.bo.ft)
 		end, {})
 
-		vim.api.nvim_create_autocmd("FileType", {
-			group = vim.api.nvim_create_augroup("lazy_treesitter", { clear = true }),
+		vim.api.nvim_create_autocmd('FileType', {
+			group = vim.api.nvim_create_augroup('lazy_treesitter', { clear = true }),
 			callback = function(ev)
 				if not enabled[ev.match] then
 					_enable_ts(ev.match)
 				end
 			end,
 		})
-
 	end,
 })
 
--- table.insert(M, {
--- 	'nvim-treesitter/nvim-treesitter-textobjects',
--- 	branch = 'main', -- The future default branch
--- 	event = { 'BufReadPre', 'BufNewFile' },
--- 	dependencies = {
--- 		'nvim-treesitter/nvim-treesitter',
--- 	},
--- })
+table.insert(M, {
+	'nvim-treesitter/nvim-treesitter-textobjects',
+	branch = 'main', -- The future default branch
+	event = { 'BufReadPre', 'BufNewFile' },
+	dependencies = {
+		'nvim-treesitter/nvim-treesitter',
+	},
+	opts = {
+		move = {
+			enable = true,
+			set_jumps = true, -- whether to set jumps in the jumplist
+			keys = {
+				goto_next_start = {
+					[']f'] = '@function.outer',
+					[']]'] = '@class.outer',
+					[']b'] = '@block.outer',
+					[']a'] = '@parameter.inner',
+					[']k'] = '@call.outer',
+				},
+				goto_next_end = {
+					[']F'] = '@function.outer',
+					[']B'] = '@block.outer',
+					[']A'] = '@parameter.inner',
+					[']K'] = '@call.outer',
+				},
+				goto_previous_start = {
+					['[f'] = '@function.outer',
+					['[['] = '@class.outer',
+					['[b'] = '@block.outer',
+					['[a'] = '@parameter.inner',
+					['[k'] = '@call.inner',
+				},
+				goto_previous_end = {
+					['[F'] = '@function.outer',
+					['[B'] = '@block.outer',
+					['[A'] = '@parameter.inner',
+					['[K'] = '@call.inner',
+				},
+			},
+		},
+		select = {
+			enable = true,
+			lookahead = true,
+			lookbehind = true,
+			-- include_surrounding_whitespace = true,
+			keymaps = {
+				['af'] = '@function.outer',
+				['if'] = '@function.inner',
+				['aC'] = '@class.outer',
+				['iC'] = '@class.inner',
+				['ab'] = '@block.outer',
+				['ib'] = '@block.inner',
+				['aL'] = '@loop.outer', -- `al` is already in used by `a line`
+				['iL'] = '@loop.inner', -- same as `al`
+				['a/'] = '@comment.outer',
+				['i/'] = '@comment.outer', -- no inner for comment
+				-- Handled by `mini.ai`
+				-- ['aa'] = '@parameter.outer', -- parameter -> argument
+				-- ['ia'] = '@parameter.inner',
+				['ac'] = '@call.outer',
+				['ic'] = '@call.inner',
+				['ai'] = '@conditional.outer', -- i as if
+				['ii'] = '@conditional.inner',
+				-- Custom captures
+				['ie'] = '@binary_expression.inner',
+				['aF'] = '@function.name',
+			},
+		},
+	},
+	-- init = function()
+	-- 	-- Disable entire built-in ftplugin mappings to avoid conflicts.
+	-- 	-- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
+	-- 	vim.g.no_plugin_maps = true
+	-- end,
+	config = function(_, opts)
+		local map = require('KoalaVim.utils.map').map
+		require('nvim-treesitter-textobjects').setup(opts)
+
+		-- Set move cmds
+		for goto_cmd, keys in pairs(opts.move.keys) do
+			for lhs, obj in pairs(keys) do
+				map({ 'n', 'x', 'o' }, lhs, function()
+					require('nvim-treesitter-textobjects.move')[goto_cmd](obj, 'textobjects')
+				end, goto_cmd .. ' ' .. obj)
+			end
+		end
+
+		-- Set select cmds
+		for lhs, obj in pairs(opts.select.keymaps) do
+			map({ 'x', 'o' }, lhs, function()
+				require('nvim-treesitter-textobjects.select').select_textobject(obj, 'textobjects')
+			end,  'Select ' .. obj)
+		end
+	end,
+})
 --
 -- table.insert(M, {
 -- 	'nvim-treesitter/nvim-treesitter-context',
