@@ -65,6 +65,9 @@ table.insert(M, {
 			highlight = 'IndentContext',
 			-- FIXME: show scopes of dicts like this scope
 			-- include = {}
+		},
+		whitespace = {
+			remove_blankline_trail = false,
 		}
 	},
 	config = function(_, opts)
