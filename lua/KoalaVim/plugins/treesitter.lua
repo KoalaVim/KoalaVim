@@ -10,8 +10,7 @@ table.insert(M, {
 		{ '<CR>', desc = 'Increment selection' },
 		{ '<BS>', desc = 'Decrement selection', mode = 'x' },
 	},
-	---@type TSConfig
-	opts = {
+	opts_old = {
 		-- TODO: configure ensure_installed by default not 'all'
 		-- TODO: install treesitter on demand?
 		ensure_installed = 'all',
@@ -127,86 +126,119 @@ table.insert(M, {
 			},
 		},
 		-- RRethy/nvim-treesitter-endwise
-		rainbow = {
-			enable = true,
-		}
+		-- rainbow = {
+		-- 	enable = true,
+		-- }
 	},
-	---@param opts TSConfig
-	config = function(_, opts)
-		require('nvim-treesitter').setup(opts)
-	end,
-})
+	config = function(_, _)
+		local enabled = {}
+		local available_langs = require'nvim-treesitter'.get_available()
 
-table.insert(M, {
-	'nvim-treesitter/nvim-treesitter-textobjects',
-	branch = 'main', -- The future default branch
-	event = { 'BufReadPre', 'BufNewFile' },
-	dependencies = {
-		'nvim-treesitter/nvim-treesitter',
-	},
-})
+		local usercmd = require('KoalaVim.utils.cmd')
+		local function _enable_ts(ft)
+			if vim.tbl_contains(available_langs, ft) then
+				enabled[ft] = true
 
-table.insert(M, {
-	'nvim-treesitter/nvim-treesitter-context',
-	event = { 'BufReadPre', 'BufNewFile' },
-	dependencies = {
-		'nvim-treesitter/nvim-treesitter',
-	},
-	config = function(_, opts)
-		require('treesitter-context').setup(opts)
-	end,
-})
+				-- install if not exist
+				require'nvim-treesitter'.install(ft)
 
-table.insert(M, {
-	'JoosepAlviste/nvim-ts-context-commentstring',
-	event = { 'BufReadPre', 'BufNewFile' },
-	dependencies = {
-		'nvim-treesitter/nvim-treesitter',
-	},
-})
+				-- syntax highlighting, provided by Neovim
+				vim.treesitter.start()
+				-- folds, provided by Neovim
+				vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+				vim.wo.foldmethod = 'expr'
+				-- indentation, provided by nvim-treesitter
+				vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 
-table.insert(M, {
-	'nvim-treesitter/playground',
-	cmd = 'TSPlaygroundToggle',
-	dependencies = {
-		'nvim-treesitter/nvim-treesitter',
-	},
-})
+			end
+		end
 
-table.insert(M, {
-	'phelipetls/jsonpath.nvim',
-	ft = { 'json', 'jsonc' },
-	dependencies = {
-		'nvim-treesitter/nvim-treesitter',
-	},
-	config = function()
-		require('jsonpath')
-	end,
-})
+		usercmd.create('TSKoala', 'Tree sitter enable via koala', function()
+			_enable_ts(vim.bo.ft)
+		end, {})
 
-table.insert(M, {
-	'andymass/vim-matchup',
-	event = { 'BufReadPre', 'BufNewFile' },
-	dependencies = {
-		'nvim-treesitter/nvim-treesitter',
-	},
-	init = function()
-		-- Disable matchup higlights, use the default of vim
-		vim.api.nvim_create_autocmd('FileType', {
-			pattern = '*',
-			callback = function()
-				vim.b.matchup_matchparen_enabled = 0
+		vim.api.nvim_create_autocmd("FileType", {
+			group = vim.api.nvim_create_augroup("lazy_treesitter", { clear = true }),
+			callback = function(ev)
+				if not enabled[ev.match] then
+					_enable_ts(ev.match)
+				end
 			end,
 		})
+
 	end,
 })
 
-table.insert(M, {
-	'RRethy/nvim-treesitter-endwise',
-	dependencies = {
-		'nvim-treesitter/nvim-treesitter',
-	},
-})
+-- table.insert(M, {
+-- 	'nvim-treesitter/nvim-treesitter-textobjects',
+-- 	branch = 'main', -- The future default branch
+-- 	event = { 'BufReadPre', 'BufNewFile' },
+-- 	dependencies = {
+-- 		'nvim-treesitter/nvim-treesitter',
+-- 	},
+-- })
+--
+-- table.insert(M, {
+-- 	'nvim-treesitter/nvim-treesitter-context',
+-- 	event = { 'BufReadPre', 'BufNewFile' },
+-- 	dependencies = {
+-- 		'nvim-treesitter/nvim-treesitter',
+-- 	},
+-- 	config = function(_, opts)
+-- 		require('treesitter-context').setup(opts)
+-- 	end,
+-- })
+--
+-- table.insert(M, {
+-- 	'JoosepAlviste/nvim-ts-context-commentstring',
+-- 	event = { 'BufReadPre', 'BufNewFile' },
+-- 	dependencies = {
+-- 		'nvim-treesitter/nvim-treesitter',
+-- 	},
+-- })
+--
+-- table.insert(M, {
+-- 	'nvim-treesitter/playground',
+-- 	cmd = 'TSPlaygroundToggle',
+-- 	dependencies = {
+-- 		'nvim-treesitter/nvim-treesitter',
+-- 	},
+-- })
+--
+-- table.insert(M, {
+-- 	'phelipetls/jsonpath.nvim',
+-- 	ft = { 'json', 'jsonc' },
+-- 	dependencies = {
+-- 		'nvim-treesitter/nvim-treesitter',
+-- 	},
+-- 	config = function()
+-- 		require('jsonpath')
+-- 	end,
+-- })
+--
+-- table.insert(M, {
+-- 	'andymass/vim-matchup',
+-- 	event = { 'BufReadPre', 'BufNewFile' },
+-- 	dependencies = {
+-- 		'nvim-treesitter/nvim-treesitter',
+-- 	},
+-- 	init = function()
+-- 		-- Disable matchup higlights, use the default of vim
+-- 		vim.api.nvim_create_autocmd('FileType', {
+-- 			pattern = '*',
+-- 			callback = function()
+-- 				vim.b.matchup_matchparen_enabled = 0
+-- 			end,
+-- 		})
+-- 	end,
+-- })
+--
+-- table.insert(M, {
+-- 	'RRethy/nvim-treesitter-endwise',
+-- 	dependencies = {
+-- 		'nvim-treesitter/nvim-treesitter',
+-- 	},
+-- })
 
 
 return M
