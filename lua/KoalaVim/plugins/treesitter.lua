@@ -10,57 +10,6 @@ table.insert(M, {
 		{ '<CR>', desc = 'Increment selection' },
 		{ '<BS>', desc = 'Decrement selection', mode = 'x' },
 	},
-	opts_old = {
-		-- TODO: configure ensure_installed by default not 'all'
-		-- TODO: install treesitter on demand?
-		ensure_installed = 'all',
-		sync_install = false,
-		-- TODO: configure ignore_install + doc why those are ignored
-		ignore_install = { 'help', 'git_rebase', 'gitcommit', 'comment' },
-		highlight = {
-			enable = true,
-		},
-		indent = {
-			enable = true,
-		},
-		incremental_selection = {
-			enable = true,
-			keymaps = {
-				init_selection = '<CR>',
-				node_incremental = '<CR>',
-				scope_incremental = '<S-CR>',
-				node_decremental = '<BS>',
-			},
-		},
-		-- yati = { enable = true },
-		-- andymass/vim-matchup
-		matchup = {
-			enable = true,
-		},
-		-- mrjones2014/nvim-ts-rainbow
-		rainbow = {
-			enable = true,
-			-- disable = { "jsx", "cpp" },
-			extended_mode = false,
-			max_file_lines = nil,
-			colors = {
-				-- '#ff3429',
-				'#ff647e',
-				'#ff57d5',
-				'#ffd121',
-				'#68dd6a',
-				'#ff880e',
-				'#41a2ac',
-				'#26cca0',
-			},
-			-- colors = {}, -- table of hex strings
-			-- termcolors = {} -- table of colour name strings
-		},
-		-- RRethy/nvim-treesitter-endwise
-		-- rainbow = {
-		-- 	enable = true,
-		-- }
-	},
 	config = function(_, _)
 		local enabled = {}
 		local available_langs = require('nvim-treesitter').get_available()
