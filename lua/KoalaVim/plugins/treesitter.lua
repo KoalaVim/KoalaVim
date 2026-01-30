@@ -56,14 +56,6 @@ table.insert(M, {
 			-- colors = {}, -- table of hex strings
 			-- termcolors = {} -- table of colour name strings
 		},
-		-- JoosepAlviste/nvim-ts-context-commentstring
-		context_commentstring = {
-			enable = true,
-			enable_autocmd = false,
-			config = {
-				query = '; %s',
-			},
-		},
 		-- RRethy/nvim-treesitter-endwise
 		-- rainbow = {
 		-- 	enable = true,
@@ -229,14 +221,6 @@ table.insert(M, {
 	end,
 })
 
--- table.insert(M, {
--- 	'nvim-treesitter/playground',
--- 	cmd = 'TSPlaygroundToggle',
--- 	dependencies = {
--- 		'nvim-treesitter/nvim-treesitter',
--- 	},
--- })
---
 -- table.insert(M, {
 -- 	'phelipetls/jsonpath.nvim',
 -- 	ft = { 'json', 'jsonc' },
