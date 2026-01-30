@@ -51,20 +51,24 @@ table.insert(M, {
 -- Indent guides
 table.insert(M, {
 	'lukas-reineke/indent-blankline.nvim',
+	main = "ibl",
 	event = { 'BufReadPost', 'BufNewFile' },
-	version = 'v2.20.8', -- TODO: upgrade to v3
+	---@module "ibl"
+	---@type ibl.config
 	opts = {
-		use_treesitter = true,
-		show_trailing_blankline_indent = false,
-		space_char_blankline = ' ',
-		show_current_context = true,
-		show_current_context_start = false,
-		context_highlight_list = { 'IndentContext' },
+		indent = {
+			char = '│'
+		},
+		scope = {
+			show_start = false,
+			show_end = false,
+			highlight = 'IndentContext',
+			-- FIXME: show scopes of dicts like this scope
+			-- include = {}
+		}
 	},
-	init = function()
-		-- dots to indicate spaces
-		vim.opt.list = true
-		vim.opt.listchars:append('lead:⋅')
+	config = function(_, opts)
+		require("ibl").setup(opts)
 	end,
 })
 
