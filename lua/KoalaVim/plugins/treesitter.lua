@@ -175,12 +175,11 @@ table.insert(M, {
 			},
 		},
 	},
-	-- init = function()
-	-- 	-- Disable entire built-in ftplugin mappings to avoid conflicts.
-	-- 	-- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
-	-- 	vim.g.no_plugin_maps = true
-	-- end,
 	config = function(_, opts)
+		-- Disable entire built-in ftplugin mappings to avoid conflicts.
+		-- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
+		vim.g.no_plugin_maps = true
+
 		local map = require('KoalaVim.utils.map').map
 		require('nvim-treesitter-textobjects').setup(opts)
 
