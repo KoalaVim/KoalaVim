@@ -196,7 +196,7 @@ table.insert(M, {
 		for lhs, obj in pairs(opts.select.keymaps) do
 			map({ 'x', 'o' }, lhs, function()
 				require('nvim-treesitter-textobjects.select').select_textobject(obj, 'textobjects')
-			end,  'Select ' .. obj)
+			end, 'Select ' .. obj)
 		end
 	end,
 })
