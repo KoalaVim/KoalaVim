@@ -26,13 +26,14 @@ table.insert(M, {
 	ft = FTS,
 })
 
+-- FIXME: enable eslint_d none ls src
 -- Linter
-NONE_LS_SRCS['eslint_d'] = {
-	builtins_sources = {
-		'code_actions',
-		'diagnostics',
-	},
-}
+-- NONE_LS_SRCS['eslint_d'] = {
+-- 	builtins_sources = {
+-- 		'code_actions',
+-- 		'diagnostics',
+-- 	},
+-- }
 
 CONFORM_FORMATTERS['eslint_d'] = FTS
 CONFORM_FORMATTERS['prettierd'] = FTS
