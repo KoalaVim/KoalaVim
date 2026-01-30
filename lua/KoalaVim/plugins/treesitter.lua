@@ -200,18 +200,18 @@ table.insert(M, {
 		end
 	end,
 })
---
--- table.insert(M, {
--- 	'nvim-treesitter/nvim-treesitter-context',
--- 	event = { 'BufReadPre', 'BufNewFile' },
--- 	dependencies = {
--- 		'nvim-treesitter/nvim-treesitter',
--- 	},
--- 	config = function(_, opts)
--- 		require('treesitter-context').setup(opts)
--- 	end,
--- })
---
+
+table.insert(M, {
+	'nvim-treesitter/nvim-treesitter-context',
+	event = { 'BufReadPre', 'BufNewFile' },
+	dependencies = {
+		'nvim-treesitter/nvim-treesitter',
+	},
+	config = function(_, opts)
+		require('treesitter-context').setup(opts)
+	end,
+})
+
 -- table.insert(M, {
 -- 	'JoosepAlviste/nvim-ts-context-commentstring',
 -- 	event = { 'BufReadPre', 'BufNewFile' },
