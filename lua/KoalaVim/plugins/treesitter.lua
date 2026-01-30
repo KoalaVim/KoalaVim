@@ -232,22 +232,22 @@ table.insert(M, {
 	end,
 })
 
--- table.insert(M, {
--- 	'andymass/vim-matchup',
--- 	event = { 'BufReadPre', 'BufNewFile' },
--- 	dependencies = {
--- 		'nvim-treesitter/nvim-treesitter',
--- 	},
--- 	init = function()
--- 		-- Disable matchup higlights, use the default of vim
--- 		vim.api.nvim_create_autocmd('FileType', {
--- 			pattern = '*',
--- 			callback = function()
--- 				vim.b.matchup_matchparen_enabled = 0
--- 			end,
--- 		})
--- 	end,
--- })
+table.insert(M, {
+	'andymass/vim-matchup',
+	event = { 'BufReadPre', 'BufNewFile' },
+	dependencies = {
+		'nvim-treesitter/nvim-treesitter',
+	},
+	init = function()
+		-- Disable matchup higlights, use the default of vim
+		vim.api.nvim_create_autocmd('FileType', {
+			pattern = '*',
+			callback = function()
+				vim.b.matchup_matchparen_enabled = 0
+			end,
+		})
+	end,
+})
 --
 -- table.insert(M, {
 -- 	'RRethy/nvim-treesitter-endwise',
