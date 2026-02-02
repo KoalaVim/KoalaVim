@@ -59,12 +59,19 @@ table.insert(M, {
 		local mason_ensure_installed = {}
 		local mlsp = require('mason-lspconfig')
 		local mason_available_servers = mlsp.get_available_servers()
+		-- DEBUG(mason_available_servers, 'mason_available_servers')
 
 		for server, server_opts in pairs(LSP_SERVERS) do
-			if server_opts.mason ~= false and vim.tbl_contains(mason_available_servers, server) then
-				table.insert(mason_ensure_installed, server)
+			-- Use mason name instead of server name if .mason set to string
+			local mason_server_name = server_opts.mason or server
+
+			if server_opts.mason ~= false and vim.tbl_contains(mason_available_servers, mason_server_name) then
+				table.insert(mason_ensure_installed, mason_server_name)
 			end
-			setup_server(server)
+
+			if server_opts.dont_setup ~= true then
+				setup_server(server)
+			end
 		end
 		DEBUG(mason_ensure_installed, 'mason_ensure_installed')
 
