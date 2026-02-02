@@ -373,7 +373,6 @@ table.insert(M, {
 
 table.insert(M, {
 	'ofirgall/format-on-leave.nvim',
-	enabled = false,
 	event = 'LspAttach',
 	branch = 'conform', -- FIXME: remove this after merging to master
 	config = function()

@@ -12,7 +12,7 @@
 [ ] Try to run everything without lazy loading to find all the errors
 [ ] migrate mason changes from amittamari fork
 [ ] upgrade ofir's forks
-[ ] enable format-on-leave
+[V] enable format-on-leave
 [ ] ensure pre-commit has ran
 [ ] revisit snacks.nvim
 [ ] test mix of tabs/spaces
