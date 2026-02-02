@@ -16,3 +16,4 @@
 [ ] ensure pre-commit has ran
 [ ] revisit snacks.nvim
 [ ] test mix of tabs/spaces
+[ ] enable dap
