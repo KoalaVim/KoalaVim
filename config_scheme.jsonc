@@ -15,12 +15,12 @@
                     "properties": {
                         "tab_size": {
                             "description": "Control tab sizing (not spaces)",
-                            "type": "object"
+                            "type": "object",
                             "properties": {
                                 "min": {
                                     "description": "Minimum tab size",
                                     "type": "integer"
-                                }
+                                },
                                 "max": {
                                     "description": "Maximum tab size",
                                     "type": "integer"
