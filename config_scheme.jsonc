@@ -117,6 +117,13 @@
                                 "type": "string"
                                 // TODO: can we autocomplete lsp server names?
                             }
+                        },
+                        "blacklist_ft": {
+                            "description": "List of file types to not apply auto format on ",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     }
                 },
@@ -130,6 +137,13 @@
                             "items": {
                                 "type": "string"
                                 // TODO: can we autocomplete lsp server names?
+                            }
+                        },
+                        "blacklist_ft": {
+                            "description": "List of file types to not apply format on ",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
                             }
                         }
                     }

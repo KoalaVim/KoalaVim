@@ -41,7 +41,11 @@ function M.late_attach(on_attach_func)
 	end
 end
 
-local function _format(buf, win, async, blacklist)
+local function _format(buf, win, async, blacklist, blacklist_ft)
+	if vim.tbl_contains(blacklist_ft, vim.bo[buf].filetype) then
+		return
+	end
+
 	local conform = require('conform')
 
 	local formatters = conform.list_formatters(buf)
@@ -87,14 +91,24 @@ local function _format(buf, win, async, blacklist)
 end
 
 AUTO_FORMAT_BLACKLIST = nil
+AUTO_FORMAT_FT_BLACKLIST = nil
 function M.auto_format(async, buf, win)
 	-- Lazy load and cache auto format blacklist
 	AUTO_FORMAT_BLACKLIST = AUTO_FORMAT_BLACKLIST or vim.list_extend(conf.autoformat.blacklist, conf.format.blacklist)
-	_format(buf, win, async, AUTO_FORMAT_BLACKLIST)
+	AUTO_FORMAT_FT_BLACKLIST = AUTO_FORMAT_FT_BLACKLIST
+		or vim.list_extend(conf.autoformat.blacklist_ft, conf.format.blacklist_ft)
+	_format(buf, win, async, AUTO_FORMAT_BLACKLIST, AUTO_FORMAT_FT_BLACKLIST)
 end
 
 function M.format(async)
-	_format(api.nvim_get_current_buf(), api.nvim_get_current_win(), async, conf.format.blacklist)
+	-- FIXME: support disabling all formatters from config
+	_format(
+		api.nvim_get_current_buf(),
+		api.nvim_get_current_win(),
+		async,
+		conf.format.blacklist,
+		conf.format.blacklist_ft
+	)
 end
 
 local DIAGNOSTICS_CFG = {
