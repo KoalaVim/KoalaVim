@@ -305,6 +305,12 @@ table.insert(M, {
 -- Nice ui for notify, :messages, and better cmdline
 table.insert(M, {
 	'folke/noice.nvim',
+	enabled = function()
+		if vim.env['KOALA_NO_NOICE'] then
+			return false
+		end
+		return true
+	end,
 	event = 'VeryLazy',
 	config = function()
 		require('noice').setup({
