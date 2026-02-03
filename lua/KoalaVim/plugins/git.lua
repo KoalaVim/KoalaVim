@@ -34,7 +34,7 @@ table.insert(M, {
 						return ']c'
 					end
 					vim.schedule(function()
-						gs.nav_hunk('next', { navigation_message = false })
+						gs.nav_hunk('next', { navigation_message = false, target = 'all' })
 					end)
 					return '<Ignore>'
 				end, 'Jump to next git hunk', { expr = false })
@@ -44,7 +44,7 @@ table.insert(M, {
 						return '[c'
 					end
 					vim.schedule(function()
-						gs.nav_hunk('prev', { navigation_message = false })
+						gs.nav_hunk('prev', { navigation_message = false, target = 'all' })
 					end)
 					return '<Ignore>'
 				end, 'Jump to previous git hunk', { expr = false })
