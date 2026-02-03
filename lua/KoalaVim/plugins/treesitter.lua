@@ -15,14 +15,14 @@ table.insert(M, {
 		local available_langs = require('nvim-treesitter').get_available()
 
 		local usercmd = require('KoalaVim.utils.cmd')
-		local function _enable_ts(ft)
+		local function _enable_ts(ft, bufid)
 			if vim.tbl_contains(available_langs, ft) then
-				enabled[ft] = true
+				enabled[bufid] = true
 
 				-- install if not exist
 				require('nvim-treesitter').install(ft):await(function()
 					-- syntax highlighting, provided by Neovim
-					vim.treesitter.start()
+					vim.treesitter.start(bufid)
 					-- folds, provided by Neovim
 					vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 					vim.wo.foldmethod = 'expr'
@@ -39,8 +39,8 @@ table.insert(M, {
 		vim.api.nvim_create_autocmd('FileType', {
 			group = vim.api.nvim_create_augroup('lazy_treesitter', { clear = true }),
 			callback = function(ev)
-				if not enabled[ev.match] then
-					_enable_ts(ev.match)
+				if not enabled[ev.buf] then
+					_enable_ts(ev.match, ev.buf)
 				end
 			end,
 		})
