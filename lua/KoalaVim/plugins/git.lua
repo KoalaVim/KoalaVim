@@ -4,6 +4,7 @@ local api = vim.api
 
 table.insert(M, {
 	'lewis6991/gitsigns.nvim',
+	branch = 'main',
 	event = { 'BufReadPost', 'BufNewFile' },
 	cmd = 'Gitsigns',
 	opts = {
@@ -22,7 +23,22 @@ table.insert(M, {
 		end
 		opts.add_fg_factor = nil -- remove koala param
 
-		local gs = require('gitsigns')
+		local gs = require('gitsigns.actions')
+
+		local function nav(direction)
+			local current_line = api.nvim_get_current_line()
+
+			vim.schedule(function()
+				gs.nav_hunk(direction, { navigation_message = false, target = 'all', wrap = false })
+
+				vim.defer_fn(function()
+					if api.nvim_get_current_line() == current_line then
+						require('KoalaVim.utils.git').jump_to_git_dirty_file(direction)
+					end
+				end, 100)
+			end)
+		end
+
 		if opts.on_attach == nil then
 			opts.on_attach = function(bufnr)
 				local map_buffer = require('KoalaVim.utils.map').map_buffer
@@ -33,9 +49,7 @@ table.insert(M, {
 					if vim.wo.diff then
 						return ']c'
 					end
-					vim.schedule(function()
-						gs.nav_hunk('next', { navigation_message = false, target = 'all' })
-					end)
+					nav('next')
 					return '<Ignore>'
 				end, 'Jump to next git hunk', { expr = false })
 
@@ -43,9 +57,7 @@ table.insert(M, {
 					if vim.wo.diff then
 						return '[c'
 					end
-					vim.schedule(function()
-						gs.nav_hunk('prev', { navigation_message = false, target = 'all' })
-					end)
+					nav('prev')
 					return '<Ignore>'
 				end, 'Jump to previous git hunk', { expr = false })
 				-- Actions
@@ -73,7 +85,7 @@ table.insert(M, {
 			end
 		end
 
-		gs.setup(opts)
+		require('gitsigns').setup(opts)
 	end,
 })
 
