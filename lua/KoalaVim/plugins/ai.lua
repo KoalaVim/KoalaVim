@@ -25,6 +25,17 @@ table.insert(M, {
 
 table.insert(M, {
 	'folke/sidekick.nvim',
+	opts = {
+		cli = {
+			---@class sidekick.win.Opts
+			win = {
+				split = {
+					width = 0,
+					height = 0,
+				},
+			},
+		},
+	},
 	keys = {
 		{
 			'<leader>uN',
