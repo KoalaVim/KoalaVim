@@ -122,6 +122,7 @@ table.insert(M, {
 		local actions = require('diffview.actions')
 		require('diffview').setup({
 			watch_index = false,
+			enhanced_diff_hl = true,
 			file_history_panel = {
 				log_options = {
 					git = {
@@ -191,7 +192,7 @@ table.insert(M, {
 			},
 			commit_log_panel = {
 				win_config = {
-					height = 30
+					height = 30,
 				},
 			},
 		})

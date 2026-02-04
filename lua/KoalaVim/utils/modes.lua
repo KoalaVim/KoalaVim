@@ -22,9 +22,18 @@ local function git_tree_mode(args)
 	vim.cmd('Flog -- ' .. args)
 end
 
+local function git_diff_mode(args)
+	vim.cmd('DiffviewOpen')
+
+	vim.schedule(function ()
+		vim.cmd('tabonly') -- Close other tab pages
+	end)
+end
+
 M._modes = {
 	git = git_mode,
 	git_tree = git_tree_mode,
+	git_diff = git_diff_mode,
 }
 
 return M

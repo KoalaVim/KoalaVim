@@ -51,13 +51,13 @@ table.insert(M, {
 -- Indent guides
 table.insert(M, {
 	'lukas-reineke/indent-blankline.nvim',
-	main = "ibl",
+	main = 'ibl',
 	event = { 'BufReadPost', 'BufNewFile' },
 	---@module "ibl"
 	---@type ibl.config
 	opts = {
 		indent = {
-			char = '│'
+			char = '│',
 		},
 		scope = {
 			show_start = false,
@@ -68,10 +68,10 @@ table.insert(M, {
 		},
 		whitespace = {
 			remove_blankline_trail = false,
-		}
+		},
 	},
 	config = function(_, opts)
-		require("ibl").setup(opts)
+		require('ibl').setup(opts)
 	end,
 })
 
@@ -554,11 +554,18 @@ table.insert(M, {
 				require('telescope.builtin').oldfiles()
 			end),
 
-			dashboard.button('g', '  Git Tree & Status', function()
+			dashboard.button('gs', '  Git Tree & Status', function()
 				CLOSE_KOALA_DASHBOARD()
 				KoalaDisableSession()
 
 				require('KoalaVim.utils.modes').load('git')
+			end),
+
+			dashboard.button('gd', '𝝙  Git Diff', function()
+				CLOSE_KOALA_DASHBOARD()
+				KoalaDisableSession()
+
+				require('KoalaVim.utils.modes').load('git_diff')
 			end),
 
 			dashboard.button('kc', ' ' .. ' Koala Config', function()
