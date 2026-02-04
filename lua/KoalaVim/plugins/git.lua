@@ -51,7 +51,7 @@ table.insert(M, {
 					end
 					nav('next')
 					return '<Ignore>'
-				end, 'Jump to next git hunk', { expr = false })
+				end, 'Jump to next git hunk', { expr = true })
 
 				map_buffer(bufnr, 'n', '[c', function()
 					if vim.wo.diff then
@@ -59,7 +59,7 @@ table.insert(M, {
 					end
 					nav('prev')
 					return '<Ignore>'
-				end, 'Jump to previous git hunk', { expr = false })
+				end, 'Jump to previous git hunk', { expr = true })
 				-- Actions
 				map_buffer(bufnr, { 'n', 'v' }, '<leader>hs', ':Gitsigns stage_hunk<CR>', 'Stage Hunk')
 				map_buffer(bufnr, { 'n', 'v' }, '<leader>hr', ':Gitsigns reset_hunk<CR>', 'Reset Hunk')
