@@ -118,7 +118,6 @@ table.insert(M, {
 		},
 	},
 	config = function()
-		local cb = require('diffview.config').diffview_callback
 		local actions = require('diffview.actions')
 		local function next_file()
 			actions.select_next_entry()
@@ -145,8 +144,8 @@ table.insert(M, {
 			key_bindings = {
 				view = {
 					{ 'n', 'q', '<cmd>:DiffviewClose<cr>', { desc = 'Close Diffview' } },
-					{ 'n', '<M-n>', cb('focus_files'), { desc = 'Focus files panel' } },
-					{ 'n', '<M-m>', cb('toggle_files'), { desc = 'Toggle files panel' } },
+					{ 'n', '<M-n>', actions.focus_files, { desc = 'Focus files panel' } },
+					{ 'n', '<M-m>', actions.toggle_files, { desc = 'Toggle files panel' } },
 					{ 'n', '<leader>ck', actions.conflict_choose('ours'), { desc = 'Choose OURS (up) conflict' } },
 					{ 'n', '<leader>cj', actions.conflict_choose('theirs'), { desc = 'Choose OURS (down) conflict' } },
 					{ 'n', '<tab>', next_file, { desc = 'Select next file' } },
@@ -157,24 +156,24 @@ table.insert(M, {
 				file_panel = {
 					-- TODO: description for binds
 					-- TODO: unbind unnecessary
-					{ 'n', 's', cb('toggle_stage_entry'), { desc = 'Stage file' } },
-					{ 'n', '=', cb('toggle_stage_entry'), { desc = 'Stage file' } },
-					{ 'n', 'q', cb('close'), { desc = 'Close' } },
-					{ 'n', 'gf', cb('goto_file_edit'), { desc = 'Close' } },
-					{ 'n', '<M-n>', cb('focus_files'), { desc = 'Focus files panel' } },
-					{ 'n', '<M-m>', cb('toggle_files'), { desc = 'Toggle files panel' } },
+					{ 'n', 's', actions.toggle_stage_entry, { desc = 'Stage file' } },
+					{ 'n', '=', actions.toggle_stage_entry, { desc = 'Stage file' } },
+					{ 'n', 'q', actions.close, { desc = 'Close' } },
+					{ 'n', 'gf', actions.goto_file_edit, { desc = 'Close' } },
+					{ 'n', '<M-n>', actions.focus_files, { desc = 'Focus files panel' } },
+					{ 'n', '<M-m>', actions.toggle_files, { desc = 'Toggle files panel' } },
 					{ 'n', '<tab>', next_file, { desc = 'Select next file' } },
 					{ 'n', '<s-tab>', prev_file, { desc = 'Select prev file' } },
 					{ 'n', '<C-n>', next_file, { desc = 'Select next file' } },
 					{ 'n', '<C-p>', prev_file, { desc = 'Select prev file' } },
 				},
 				file_history_panel = {
-					{ 'n', 's', cb('open_in_diffview'), { desc = 'Show full commit diff in diffview' } },
-					{ 'n', 'S', cb('open_commit_log'), { desc = 'Show commit details' } },
-					{ 'n', 'q', cb('close'), { desc = 'Close' } },
-					{ 'n', 'gf', cb('goto_file_edit'), { desc = 'Open the file in the previous tabpage' } },
-					{ 'n', '<M-n>', cb('focus_files'), { desc = 'Focus on file panel' } },
-					{ 'n', '<M-m>', cb('toggle_files'), { desc = 'Toggle file panel' } },
+					{ 'n', 's', actions.open_in_diffview, { desc = 'Show full commit diff in diffview' } },
+					{ 'n', 'S', actions.open_commit_log, { desc = 'Show commit details' } },
+					{ 'n', 'q', actions.close, { desc = 'Close' } },
+					{ 'n', 'gf', actions.goto_file_edit, { desc = 'Open the file in the previous tabpage' } },
+					{ 'n', '<M-n>', actions.focus_files, { desc = 'Focus on file panel' } },
+					{ 'n', '<M-m>', actions.toggle_files, { desc = 'Toggle file panel' } },
 					-- disable binds
 					['zo'] = false,
 					['zM'] = false,
