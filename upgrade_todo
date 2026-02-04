@@ -1,20 +1,14 @@
-[ ] fix yanky
 [ ] fix ]c in diffview
-[V] fix ]c
-[V] fix treesitter modules
 [ ] migrate possession changes from amittamari fork
 [ ] run :checkhealth
 [ ] run :checkhealth deperacated
 [ ] enable colorful-winsep.nvim
 [ ] take updates from the 0.10 branch
-[V] test RRethy/nvim-treesitter-endwise
-[V] fix bracket-repeat.nvim
 [ ] fix mhanberg/output-panel.nvim
 [ ] go over LazyVim and see what is new
 [ ] Try to run everything without lazy loading to find all the errors
 [ ] migrate mason changes from amittamari fork
 [ ] upgrade ofir's forks
-[V] enable format-on-leave
 [ ] ensure pre-commit has ran
 [ ] revisit snacks.nvim
 [ ] test mix of tabs/spaces

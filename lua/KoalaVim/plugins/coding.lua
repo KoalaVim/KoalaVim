@@ -209,7 +209,21 @@ table.insert(M, {
 			desc = 'Cycle yank history backward',
 		},
 		{
+			'<M-]>',
+			function()
+				require('yanky').cycle(-1)
+			end,
+			desc = 'Cycle yank history backward',
+		},
+		{
 			'[y',
+			function()
+				require('yanky').cycle(1)
+			end,
+			desc = 'Cycle yank history forward',
+		},
+		{
+			'<M-[>',
 			function()
 				require('yanky').cycle(1)
 			end,
