@@ -195,6 +195,12 @@ table.insert(M, {
 					height = 30,
 				},
 			},
+			file_panel = {
+				win_config = {
+					position = 'bottom',
+					height = 15,
+				},
+			},
 		})
 
 		HELPERS['DiffviewFileHistory'] = 'g?'
