@@ -90,7 +90,56 @@ table.insert(M, {
 })
 
 table.insert(M, {
+	'NeogitOrg/neogit',
+	-- FIXME: figure out why the pre-commit stash logic fucks up this plugin on commit
+	enabled = false,
+	lazy = true,
+	dependencies = {
+		'nvim-lua/plenary.nvim', -- required
+		'sindrets/diffview.nvim', -- optional - Diff integration
+	},
+	cmd = 'Neogit',
+	keys = {
+		{
+			'<leader>gs',
+			function()
+				require('neogit').open({ kind = 'floating' })
+			end,
+			desc = 'Open Neogit (git status)',
+		},
+	},
+	opts = {
+		floating = {
+			relative = 'editor',
+			width = 0.65,
+			height = 0.6,
+			-- style = 'minimal',
+			border = 'rounded',
+		},
+		commit_editor = {
+			kind = 'floating',
+		},
+		mappings = {
+			popup = {
+				['p'] = 'PushPopup',
+				['P'] = 'PullPopup',
+			},
+			status = {
+				['='] = 'Toggle',
+				['<Esc>'] = 'Close',
+				['J'] = 'NextSection',
+				['K'] = 'PreviousSection',
+			},
+		},
+	},
+	config = function(_, opts)
+		require('neogit').setup(opts)
+	end,
+})
+
+table.insert(M, {
 	'tpope/vim-fugitive',
+	enabled = true,
 	keys = {
 		{ '<leader>gs', '<cmd>:G<CR>', desc = 'Open fugitive.vim (git status)' },
 		{ '<leader>gp', '<cmd>Git push<CR>', desc = 'Git push' },
