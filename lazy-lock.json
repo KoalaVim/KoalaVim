@@ -2,7 +2,7 @@
   "AutoSave.nvim": { "branch": "main", "commit": "7d4ffcd8ff41e46099a405c9833ca8ab93a03659" },
   "ChatGPT.nvim": { "branch": "main", "commit": "5c54a7e9de67e2f8f8c3ed60f872f4a34a3e65ff" },
   "Comment.nvim": { "branch": "master", "commit": "e30b7f2008e52442154b66f7c519bfd2f1e32acb" },
-  "Navigator.nvim": { "branch": "master", "commit": "631898141d639acd79f12432be9ac91af3cbc71f" },
+  "Navigator.nvim": { "branch": "master", "commit": "91d86506ac2a039504d5205d32a1d4bc7aa57072" },
   "NeoZoom.lua": { "branch": "main", "commit": "17f4f5cd6994bcc4f22c0ce54c6a3fe1ae271992" },
   "SchemaStore.nvim": { "branch": "main", "commit": "fb7b9034285a5658c746faa12eff8c1c9d9b11b1" },
   "ai.vim": { "branch": "main", "commit": "489d2c1b1e5373d7da7e50ba189b289a375c2034" },
