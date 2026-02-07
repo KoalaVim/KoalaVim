@@ -15,6 +15,8 @@ map('i', '<F1>', '<C-O>:set spell!<cr>', 'Toggle spell check')
 
 map('n', '<M-r>', '<cmd>echo "Current File Reloaded!"<cr><cmd>luafile %<cr>', 'Reload current luafile')
 
+map('t', '<Esc>', '<C-\\><C-n>', 'Escape from terminal with escape key')
+
 -- deploy
 map('n', '<leader>b', function()
 	require('KoalaVim.utils.build').deploy()
