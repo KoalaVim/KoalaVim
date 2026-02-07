@@ -494,7 +494,7 @@ table.insert(M, {
 	end,
 })
 
-function CLOSE_KOALA_DASHBOARD(clear_messages)
+function CLOSE_KOALA_DASHBOARD(clear_messages, close_buffer)
 	KOALA_DASHBOARD_CLOSED = true
 	if clear_messages then
 		vim.api.nvim_exec_autocmds('User', { pattern = 'AlphaClosed' })
@@ -533,6 +533,12 @@ table.insert(M, {
 				require('KoalaVim.utils.session').load_cwd_session()
 			end),
 			dashboard.button('sl', '  Session List', ':SessionList <CR>'),
+			dashboard.button('a', '🤖 AI Sidekick', function()
+				KoalaDisableAutoSession()
+				CLOSE_KOALA_DASHBOARD(true)
+
+				require('sidekick.cli').show()
+			end),
 			dashboard.button('m', '  File Tree', function()
 				CLOSE_KOALA_DASHBOARD(true)
 				require('nvim-tree.api').tree.open()
