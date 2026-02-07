@@ -137,6 +137,40 @@ table.insert(M, {
 	end,
 })
 
+local function is_floating(win)
+	win = win or vim.api.nvim_get_current_win()
+	local config = vim.api.nvim_win_get_config(win)
+	return config.relative ~= ''
+end
+
+local function to_floating_window(buf)
+	local orig_win = vim.api.nvim_get_current_win()
+	if is_floating(orig_win) then
+		return
+	end
+
+	local width = math.floor(vim.o.columns * 0.65)
+	local height = math.floor(vim.o.lines * 0.6)
+	local row = math.floor((vim.o.lines - height) / 2)
+	local col = math.floor((vim.o.columns - width) / 2)
+
+	local new_win = vim.api.nvim_open_win(buf, true, {
+		relative = 'editor',
+		width = width,
+		height = height,
+		row = row,
+		col = col,
+		style = 'minimal',
+		border = 'rounded',
+	})
+
+	vim.keymap.set('n', 'q', ':q<CR>', { buffer = buf })
+	vim.schedule(function()
+		vim.api.nvim_set_current_win(new_win)
+		vim.api.nvim_win_close(orig_win, false)
+	end)
+end
+
 table.insert(M, {
 	'tpope/vim-fugitive',
 	enabled = true,
@@ -159,6 +193,13 @@ table.insert(M, {
 				if first_line:match('Head: ') then
 					api.nvim_feedkeys('}j', 'n', false)
 				end
+			end,
+		})
+
+		api.nvim_create_autocmd('FileType', {
+			pattern = { 'fugitive', 'gitcommit' },
+			callback = function(events)
+				to_floating_window(events.buf)
 			end,
 		})
 	end,
