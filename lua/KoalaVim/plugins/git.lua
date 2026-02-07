@@ -367,28 +367,4 @@ table.insert(M, {
 	end,
 })
 
-table.insert(M, {
-	'SuperBo/fugit2.nvim',
-	dependencies = {
-		'MunifTanjim/nui.nvim',
-		'nvim-tree/nvim-web-devicons',
-		'nvim-lua/plenary.nvim',
-		{
-			'chrisgrieser/nvim-tinygit', -- optional: for Github PR view
-			dependencies = { 'stevearc/dressing.nvim' },
-		},
-	},
-	cmd = { 'Fugit2', 'Fugit2Diff', 'Fugit2Graph', 'Fugit2Blame' },
-	keys = {
-		{ '<leader>gS', mode = 'n', '<cmd>Fugit2<cr>' },
-	},
-	opts = {
-		width = '90%',
-		height = '90%',
-	},
-	config = function(_, opts)
-		require('fugit2').setup(opts)
-	end,
-})
-
 return M
