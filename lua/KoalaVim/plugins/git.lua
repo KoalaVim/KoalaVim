@@ -184,8 +184,7 @@ table.insert(M, {
 		-- Jump to first group of files
 		api.nvim_create_autocmd('BufWinEnter', {
 			callback = function(events)
-				local ft = api.nvim_buf_get_option(events.buf, 'filetype')
-				if ft ~= 'fugitive' then
+				if vim.bo[events.buf].ft ~= 'fugitive' then
 					return
 				end
 
@@ -200,6 +199,17 @@ table.insert(M, {
 			pattern = { 'fugitive', 'gitcommit' },
 			callback = function(events)
 				to_floating_window(events.buf)
+
+				-- Focus back to fugitive on finishing commiting
+				if vim.bo[events.buf].ft == 'gitcommit' then
+					api.nvim_create_autocmd({ 'BufDelete', 'BufWipeout' }, {
+						once = true,
+						buffer = events.buf,
+						callback = function()
+							vim.cmd(':G') -- focus fugitive back
+						end,
+					})
+				end
 			end,
 		})
 	end,
