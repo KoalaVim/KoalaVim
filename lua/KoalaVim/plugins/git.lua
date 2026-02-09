@@ -143,7 +143,7 @@ local function is_floating(win)
 	return config.relative ~= ''
 end
 
-local function to_floating_window(buf)
+local function git_to_floating_window(buf)
 	local orig_win = vim.api.nvim_get_current_win()
 	if is_floating(orig_win) then
 		return
@@ -168,6 +168,8 @@ local function to_floating_window(buf)
 	vim.schedule(function()
 		vim.api.nvim_set_current_win(new_win)
 		vim.api.nvim_win_close(orig_win, false)
+		-- FIXME: support not ofirkai themes
+		require('KoalaVim.utils.windows').set_option(new_win, 'winhighlight', 'FloatBorder:FloatBorderNotHidden')
 	end)
 end
 
@@ -195,10 +197,12 @@ table.insert(M, {
 			end,
 		})
 
+		local fugitive_window_is_active = false
+
 		api.nvim_create_autocmd('FileType', {
 			pattern = { 'fugitive', 'gitcommit' },
 			callback = function(events)
-				to_floating_window(events.buf)
+				git_to_floating_window(events.buf)
 
 				-- Focus back to fugitive on finishing commiting
 				if vim.bo[events.buf].ft == 'gitcommit' then
@@ -206,7 +210,18 @@ table.insert(M, {
 						once = true,
 						buffer = events.buf,
 						callback = function()
-							vim.cmd(':G') -- focus fugitive back
+							if fugitive_window_is_active then
+								vim.cmd(':G') -- focus fugitive back
+							end
+						end,
+					})
+				elseif vim.bo[events.buf].ft == 'fugitive' then
+					fugitive_window_is_active = true
+					api.nvim_create_autocmd({ 'BufDelete', 'BufWipeout' }, {
+						once = true,
+						buffer = events.buf,
+						callback = function()
+							fugitive_window_is_active = false
 						end,
 					})
 				end

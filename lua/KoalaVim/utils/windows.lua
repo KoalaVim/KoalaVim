@@ -34,4 +34,12 @@ function M.find_win_by_ft(ft)
 	return nil
 end
 
+function M.set_option(win, k, v)
+	if vim.api.nvim_set_option_value then
+		vim.api.nvim_set_option_value(k, v, { scope = 'local', win = win })
+	else
+		vim.wo[win][k] = v
+	end
+end
+
 return M
