@@ -31,13 +31,11 @@ api.nvim_create_autocmd('FileType', {
 	end,
 })
 
--- Auto set .tmux filetype
-api.nvim_create_autocmd('BufEnter', {
-	group = koala_autocmds,
-	pattern = '*.tmux',
-	callback = function(events)
-		api.nvim_buf_set_option(events.buf, 'filetype', 'tmux')
-	end,
+vim.filetype.add({
+	extension = {
+		mdc = 'markdown',
+		tmux = 'tmux',
+	},
 })
 
 -- Vertical help/man
