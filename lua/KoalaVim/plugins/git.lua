@@ -287,6 +287,7 @@ table.insert(M, {
 					{ 'n', '<M-r>', '<cmd>Gitsigns reset_hunk<CR>', { desc = 'Reset change' } },
 				},
 				file_panel = {
+					{ 'n', 'cc', '<cmd>:Git commit<cr>', { desc = 'Stage file' } },
 					{ 'n', 's', actions.toggle_stage_entry, { desc = 'Stage file' } },
 					{ 'n', '=', actions.toggle_stage_entry, { desc = 'Stage file' } },
 					{ 'n', 'q', actions.close, { desc = 'Close' } },
