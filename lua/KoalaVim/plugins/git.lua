@@ -383,6 +383,15 @@ table.insert(M, {
 					height = 15,
 				},
 			},
+			hooks = {
+				view_opened = function(view)
+					-- Auto focus on right side panel
+					vim.defer_fn(function()
+						vim.api.nvim_command('wincmd k')
+						vim.api.nvim_command('wincmd l')
+					end, 100)
+				end,
+			},
 		})
 
 		HELPERS['DiffviewFileHistory'] = 'g?'
