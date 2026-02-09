@@ -198,6 +198,8 @@ table.insert(M, {
 	enabled = true,
 	keys = {
 		{ '<leader>gs', '<cmd>:G<CR>', desc = 'Open fugitive.vim (git status)' },
+		{ '<leader>gc', '<cmd>Git commit<CR>', desc = 'Git commit' },
+		{ '<leader>gac', '<cmd>Git commit --amend<CR>', desc = 'Git commit --amend' },
 		{ '<leader>gp', '<cmd>Git push<CR>', desc = 'Git push' },
 		{ '<leader>gP', '<cmd>Git push --force<CR>', desc = 'Git push force' },
 	},
