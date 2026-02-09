@@ -299,6 +299,10 @@ table.insert(M, {
 		local jumped = {}
 		vim.api.nvim_create_autocmd('BufEnter', {
 			callback = vim.schedule_wrap(function(ev)
+				if not vim.api.nvim_buf_is_valid(ev.buf) then
+					return
+				end
+
 				local name = vim.api.nvim_buf_get_name(ev.buf)
 				if not vim.wo[vim.api.nvim_get_current_win()].diff then
 					-- ignore not diff files
