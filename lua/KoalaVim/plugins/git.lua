@@ -294,6 +294,33 @@ table.insert(M, {
 			actions.refresh_files()
 		end
 
+		-- Auto execute ]c when entering a new diff buffer
+		local jumped = {}
+		vim.api.nvim_create_autocmd('BufEnter', {
+			callback = vim.schedule_wrap(function(ev)
+				local name = vim.api.nvim_buf_get_name(ev.buf)
+				if not vim.wo[vim.api.nvim_get_current_win()].diff then
+					-- ignore not diff files
+					return
+				end
+
+				-- Don't jump again if buffer already being jumped
+				if jumped[ev.buf] then
+					return
+				end
+
+				if name:match('^diffview://') ~= nil then
+					-- Don't send ]c to diffview files (compared old files)
+					return
+				end
+
+				jumped[ev.buf] = true
+				vim.schedule(function()
+					api.nvim_feedkeys(']c', 'n', false)
+				end)
+			end),
+		})
+
 		require('diffview').setup({
 			watch_index = false,
 			enhanced_diff_hl = true,
@@ -389,7 +416,7 @@ table.insert(M, {
 					vim.defer_fn(function()
 						vim.api.nvim_command('wincmd k')
 						vim.api.nvim_command('wincmd l')
-					end, 100)
+					end, 300)
 				end,
 			},
 		})
