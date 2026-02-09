@@ -24,18 +24,38 @@ table.insert(M, {
 		opts.add_fg_factor = nil -- remove koala param
 
 		local gs = require('gitsigns.actions')
+		local DEFER_VAL = 30
 
+		--- Navigate to the next/prev git hunk across files.
+		--- First attempts to jump to the next hunk in the current buffer. If the cursor
+		--- didn't move (no more hunks in this direction), it jumps to the next dirty file
+		--- and navigates to its first/last hunk depending on direction.
+		---@param direction 'next'|'prev'
 		local function nav(direction)
 			local current_line = api.nvim_get_current_line()
 
+			-- Schedule to avoid running during a textlock (e.g. triggered from an expr mapping)
 			vim.schedule(function()
 				gs.nav_hunk(direction, { navigation_message = false, target = 'all', wrap = false })
 
+				-- Defer to let gitsigns finish the hunk navigation before checking the result
 				vim.defer_fn(function()
+					-- If the cursor didn't move, there are no more hunks in this file
 					if api.nvim_get_current_line() == current_line then
-						require('KoalaVim.utils.git').jump_to_git_dirty_file(direction)
+						-- Jump to the next dirty file and navigate to its first/last hunk
+						if require('KoalaVim.utils.git').jump_to_git_dirty_file(direction) then
+							-- Defer to let the new buffer load before navigating
+							vim.defer_fn(function()
+								api.nvim_feedkeys(direction == 'next' and 'gg' or 'G', 'n', false)
+
+								-- Schedule to run after feedkeys positions the cursor at gg/G
+								vim.schedule(function()
+									gs.nav_hunk(direction, { navigation_message = false, target = 'all', wrap = false })
+								end)
+							end, DEFER_VAL)
+						end
 					end
-				end, 100)
+				end, DEFER_VAL)
 			end)
 		end
 
