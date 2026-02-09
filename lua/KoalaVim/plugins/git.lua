@@ -200,7 +200,7 @@ local function git_to_floating_window(buf)
 		end,
 	})
 
-	vim.keymap.set('n', 'q', ':q<CR>', { buffer = buf })
+	vim.keymap.set('n', 'q', '<cmd>q<CR>', { buffer = buf })
 	vim.schedule(function()
 		vim.api.nvim_set_current_win(new_win)
 		vim.api.nvim_win_close(orig_win, false)
