@@ -42,13 +42,13 @@ function M.jump_to_git_dirty_file(direction)
 	local repo = get_repo_root()
 	if not repo then
 		vim.notify('Not in a git repo', vim.log.levels.WARN)
-		return
+		return false
 	end
 
 	local files = M.git_dirty_files(repo)
 	if #files == 0 then
 		vim.notify('No git-dirty files', vim.log.levels.INFO)
-		return
+		return false
 	end
 
 	local current = vim.fn.expand('%:.') -- path relative to repo
@@ -61,7 +61,6 @@ function M.jump_to_git_dirty_file(direction)
 		end
 	end
 
-	-- next file, wrap around
 	local target
 	if direction == 'next' then
 		target = files[(idx % #files) + 1]
@@ -73,7 +72,9 @@ function M.jump_to_git_dirty_file(direction)
 
 		target = files[prev_idx]
 	end
+
 	vim.cmd('edit ' .. vim.fn.fnameescape(repo .. '/' .. target))
+	return true
 end
 
 return M
