@@ -258,6 +258,7 @@ function M.setup_lualine(is_half, opts)
 					'quickfix',
 					'alpha',
 					'Trouble',
+					'DiffviewFiles',
 				},
 			},
 			globalstatus = true,

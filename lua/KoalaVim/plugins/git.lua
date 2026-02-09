@@ -294,6 +294,7 @@ table.insert(M, {
 			actions.refresh_files()
 		end
 
+		-- FIXME: hook to diffview create/close to clear the autocmd
 		-- Auto execute ]c when entering a new diff buffer
 		local jumped = {}
 		vim.api.nvim_create_autocmd('BufEnter', {
@@ -407,7 +408,7 @@ table.insert(M, {
 			file_panel = {
 				win_config = {
 					position = 'bottom',
-					height = 15,
+					height = 10,
 				},
 			},
 			hooks = {
