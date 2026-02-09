@@ -184,6 +184,22 @@ local function git_to_floating_window(buf)
 		border = 'rounded',
 	})
 
+	-- Autoclose the floating window.
+	-- TODO: delete buffer?
+	api.nvim_create_autocmd('WinLeave', {
+		once = true,
+		callback = function()
+			if vim.api.nvim_get_current_win() ~= new_win then
+				return
+			end
+			vim.schedule(function()
+				if vim.api.nvim_win_is_valid(new_win) then
+					vim.api.nvim_win_close(new_win, false)
+				end
+			end)
+		end,
+	})
+
 	vim.keymap.set('n', 'q', ':q<CR>', { buffer = buf })
 	vim.schedule(function()
 		vim.api.nvim_set_current_win(new_win)
