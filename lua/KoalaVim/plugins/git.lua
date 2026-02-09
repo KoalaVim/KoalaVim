@@ -213,7 +213,7 @@ table.insert(M, {
 	'tpope/vim-fugitive',
 	enabled = true,
 	keys = {
-		{ '<leader>gs', '<cmd>:G<CR>', desc = 'Open fugitive.vim (git status)' },
+		{ '<leader>gs', '<cmd>G<CR>', desc = 'Open fugitive.vim (git status)' },
 		{ '<leader>gc', '<cmd>Git commit<CR>', desc = 'Git commit' },
 		{ '<leader>gac', '<cmd>Git commit --amend<CR>', desc = 'Git commit --amend' },
 		{ '<leader>gp', '<cmd>Git push<CR>', desc = 'Git push' },
@@ -308,7 +308,7 @@ table.insert(M, {
 			},
 			key_bindings = {
 				view = {
-					{ 'n', 'q', '<cmd>:DiffviewClose<cr>', { desc = 'Close Diffview' } },
+					{ 'n', 'q', '<cmd>DiffviewClose<cr>', { desc = 'Close Diffview' } },
 					{ 'n', '<M-n>', actions.focus_files, { desc = 'Focus files panel' } },
 					{ 'n', '<M-m>', actions.toggle_files, { desc = 'Toggle files panel' } },
 					{ 'n', '<leader>ck', actions.conflict_choose('ours'), { desc = 'Choose OURS (up) conflict' } },
@@ -325,7 +325,7 @@ table.insert(M, {
 					{ 'n', '<M-r>', '<cmd>Gitsigns reset_hunk<CR>', { desc = 'Reset change' } },
 				},
 				file_panel = {
-					{ 'n', 'cc', '<cmd>:Git commit<cr>', { desc = 'Stage file' } },
+					{ 'n', 'cc', '<cmd>Git commit<cr>', { desc = 'Stage file' } },
 					{ 'n', 's', actions.toggle_stage_entry, { desc = 'Stage file' } },
 					{ 'n', '=', actions.toggle_stage_entry, { desc = 'Stage file' } },
 					{ 'n', 'q', actions.close, { desc = 'Close' } },
