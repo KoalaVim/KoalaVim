@@ -13,7 +13,8 @@ end
 
 local function search_in_path()
 	local opts = {}
-	opts.default_text = '-g"' .. node_relative_path() .. '/**" "'
+	opts.default_text = '-F "'
+	opts.cwd = node_relative_path()
 	require('nvim-tree.api').tree.close() -- Close tree before jumping to file
 	require('telescope').extensions.live_grep_args.live_grep_args(opts)
 end
