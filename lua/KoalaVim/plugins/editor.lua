@@ -239,7 +239,7 @@ local femaco_margin = {
 	top = 2,
 }
 table.insert(M, {
-	'AckslD/nvim-FeMaco.lua',
+	'gen4438/nvim-FeMaco.lua',
 	cmd = 'FeMaco',
 	keys = {
 		{
@@ -254,14 +254,18 @@ table.insert(M, {
 		post_open_float = function(winnr)
 			api.nvim_win_set_hl_ns(winnr, floating_code_ns)
 		end,
-		float_opts = function(code_block)
-			_ = code_block
+		float_opts = function(_)
+			local width = math.floor(vim.o.columns * 0.65)
+			local height = math.floor(vim.o.lines * 0.6)
+			local row = math.floor((vim.o.lines - height) / 2)
+			local col = math.floor((vim.o.columns - width) / 2)
+
 			return {
-				relative = 'win',
-				width = vim.api.nvim_win_get_width(0) - femaco_margin.width,
-				height = vim.api.nvim_win_get_height(0) - femaco_margin.height,
-				col = femaco_margin.width / 2,
-				row = femaco_margin.height / 2 - femaco_margin.top,
+				relative = 'editor',
+				width = width,
+				height = height,
+				col = col,
+				row = row,
 				border = 'rounded',
 				zindex = 1,
 			}
