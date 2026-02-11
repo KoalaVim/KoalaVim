@@ -30,12 +30,33 @@ local cmd = require('KoalaVim.utils.cmd')
 
 table.insert(M, {
 	'toppair/peek.nvim',
+	enabled = false,
 	cmd = 'MarkdownPreviewOpen',
 	build = 'deno task --quiet build:fast',
 	config = function()
 		require('peek').setup({})
 		cmd.create('MarkdownPreviewOpen', 'Open markdown preview', require('peek').open, {})
 		cmd.create('MarkdownPreviewClose', 'Close markdown preview', require('peek').close, {})
+	end,
+})
+
+table.insert(M, {
+	'iamcco/markdown-preview.nvim',
+	cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+	build = function()
+		require('lazy').load({ plugins = { 'markdown-preview.nvim' } })
+		vim.fn['mkdp#util#install']()
+	end,
+	keys = {
+		{
+			'<leader>up',
+			ft = 'markdown',
+			'<cmd>MarkdownPreviewToggle<cr>',
+			desc = 'Markdown Preview',
+		},
+	},
+	config = function()
+		vim.cmd([[do FileType]])
 	end,
 })
 
