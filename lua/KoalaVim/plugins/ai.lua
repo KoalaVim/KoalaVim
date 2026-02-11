@@ -38,6 +38,13 @@ table.insert(M, {
 	},
 	keys = {
 		{
+			'<C-g>',
+			'<cmd>DiffviewOpen<cr>',
+			ft = 'sidekick_terminal',
+			desc = 'Open Diff',
+			mode = { 'n', 't' },
+		},
+		{
 			'<leader>uN',
 			function()
 				require('sidekick.nes').toggle()
