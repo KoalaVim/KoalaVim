@@ -325,6 +325,17 @@ function M.setup_lualine(is_half, opts)
 					padding = 0,
 				},
 				{
+					function()
+						return package.loaded['octo'] and vim.g.octo_viewer
+					end,
+					cond = function()
+						return package.loaded['octo'] and vim.g.octo_viewer ~= nil
+					end,
+					icon = '',
+					separator = info_seperator,
+					padding = 0,
+				},
+				{
 					-- TODO: add more info (shift width and such)
 					function()
 						if vim.b.Koala_tabs then
