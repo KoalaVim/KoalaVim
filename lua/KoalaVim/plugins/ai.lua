@@ -105,6 +105,13 @@ table.insert(M, {
 			mode = { 'n', 't', 'i', 'x' },
 		},
 		{
+			'<leader>ai',
+			function()
+				require('sidekick.cli').show()
+			end,
+			desc = 'Open/Focus AI',
+		},
+		{
 			'<leader>aa',
 			function()
 				require('sidekick.cli').toggle()
