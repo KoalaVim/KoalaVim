@@ -23,6 +23,19 @@ table.insert(M, {
 	end,
 })
 
+local function nav_to_prompt(search_char)
+	local f = function()
+		vim.fn.setreg('/', ' ┌─')
+		vim.cmd('normal! ' .. search_char)
+	end
+
+	if vim.fn.mode() == 't' then
+		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-\\><C-n>', true, false, true), 'n', false)
+		f = vim.schedule_wrap(f)
+	end
+	f()
+end
+
 table.insert(M, {
 	'folke/sidekick.nvim',
 	opts = {
@@ -42,6 +55,34 @@ table.insert(M, {
 			'<cmd>DiffviewOpen<cr>',
 			ft = 'sidekick_terminal',
 			desc = 'Open Diff',
+			mode = { 'n', 't' },
+		},
+		{
+			-- FIXME: apply only in cursor
+			'<C-.>',
+			'<S-tab>',
+			ft = 'sidekick_terminal',
+			desc = 'Switch cursor modes',
+			mode = { 'n', 't' },
+		},
+		{
+			-- FIXME: apply only in cursor
+			']p',
+			function()
+				nav_to_prompt('n')
+			end,
+			ft = 'sidekick_terminal',
+			desc = 'go to next prompt',
+			mode = { 'n', 't' },
+		},
+		{
+			-- FIXME: apply only in cursor
+			'[p',
+			function()
+				nav_to_prompt('N')
+			end,
+			ft = 'sidekick_terminal',
+			desc = 'go to next prompt',
 			mode = { 'n', 't' },
 		},
 		{
