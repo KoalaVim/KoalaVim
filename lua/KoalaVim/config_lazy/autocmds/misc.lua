@@ -31,13 +31,6 @@ api.nvim_create_autocmd('FileType', {
 	end,
 })
 
-vim.filetype.add({
-	extension = {
-		mdc = 'markdown',
-		tmux = 'tmux',
-	},
-})
-
 -- Vertical help/man
 api.nvim_create_autocmd('FileType', {
 	group = koala_autocmds,

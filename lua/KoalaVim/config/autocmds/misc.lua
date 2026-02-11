@@ -10,3 +10,10 @@ api.nvim_create_autocmd('FileType', {
 		vim.opt_local.wrapscan = false
 	end,
 })
+
+vim.filetype.add({
+	extension = {
+		mdc = 'markdown',
+		tmux = 'tmux',
+	},
+})
