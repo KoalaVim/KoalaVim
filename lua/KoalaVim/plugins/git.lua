@@ -560,7 +560,8 @@ table.insert(M, {
 	event = { { event = 'BufReadCmd', pattern = 'octo://*' } },
 	opts = {
 		enable_builtin = true,
-		default_to_projects_v2 = false,
+		-- FIXME: add `gh auth refresh -s read:project` to README.md
+		default_to_projects_v2 = true,
 		default_merge_method = 'squash',
 		picker = 'telescope',
 	},
