@@ -49,7 +49,7 @@ table.insert(M, {
 	end,
 	keys = {
 		{
-			'<leader>up',
+			'<leader>uP',
 			ft = 'markdown',
 			'<cmd>MarkdownPreviewToggle<cr>',
 			desc = 'Markdown Preview',
@@ -57,6 +57,31 @@ table.insert(M, {
 	},
 	config = function()
 		vim.cmd([[do FileType]])
+	end,
+})
+
+table.insert(M, {
+	'MeanderingProgrammer/render-markdown.nvim',
+	opts = {
+		code = {
+			sign = false,
+			width = 'block',
+			right_pad = 1,
+		},
+	},
+	ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
+	keys = {
+		{
+			'<leader>up',
+			ft = 'markdown',
+			function()
+				require('render-markdown').toggle()
+			end,
+			desc = 'Markdown Render Preview',
+		},
+	},
+	config = function(_, opts)
+		require('render-markdown').setup(opts)
 	end,
 })
 
