@@ -1,3 +1,4 @@
+[ ] fix gopls
 [ ] migrate possession changes from amittamari fork
 [ ] run :checkhealth
 [ ] run :checkhealth deperacated
@@ -15,3 +16,4 @@
 [ ] go over the FIXMES
 [ ] ai sessions
 [ ] diffview: auto open folds when jumping to change
+[ ] autocommit + squash later for agents iterations
