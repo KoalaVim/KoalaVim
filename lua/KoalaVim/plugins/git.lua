@@ -130,10 +130,19 @@ table.insert(M, {
 		},
 	},
 	opts = {
+		-- TODO: try kitty style
+		-- graph_style = 'unicode',
+		-- TODO: config
+		signs = {
+			-- { CLOSED, OPENED }
+			hunk = { '', '' },
+			item = { '>', 'v' },
+			section = { '>', 'v' },
+		},
 		floating = {
 			relative = 'editor',
-			width = 0.65,
-			height = 0.6,
+			width = 0.8,
+			height = 0.8,
 			-- style = 'minimal',
 			border = 'rounded',
 		},
@@ -144,9 +153,14 @@ table.insert(M, {
 			popup = {
 				['p'] = 'PushPopup',
 				['P'] = 'PullPopup',
+				['l'] = false,
+				['t'] = 'LogPopup', -- tree
+				['T'] = 'TagPopup',
 			},
 			status = {
 				['='] = 'Toggle',
+				['l'] = 'Toggle',
+				['h'] = 'Toggle',
 				['<Esc>'] = 'Close',
 				['J'] = 'NextSection',
 				['K'] = 'PreviousSection',
