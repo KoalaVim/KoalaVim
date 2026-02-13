@@ -110,8 +110,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'NeogitOrg/neogit',
-	-- FIXME: figure out why the pre-commit stash logic fucks up this plugin on commit
+	'ofirgall/neogit',
 	enabled = false,
 	lazy = true,
 	dependencies = {
