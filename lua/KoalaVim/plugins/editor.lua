@@ -365,6 +365,7 @@ table.insert(M, {
 	config = function(_, opts)
 		require('Navigator').setup(opts)
 	end,
+	cmd = { 'NavigatorLeft', 'NavigatorRight', 'NavigatorDown', 'NavigatorUp' },
 	keys = {
 		{ '<C-h>', '<cmd>NavigatorLeft<cr>', mode = { 'n', 't' }, desc = 'Navigate left' },
 		{ '<C-j>', '<cmd>NavigatorDown<cr>', mode = { 'n', 't' }, desc = 'Navigate down' },

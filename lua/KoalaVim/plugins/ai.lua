@@ -46,6 +46,33 @@ table.insert(M, {
 					width = 0,
 					height = 0,
 				},
+				keys = {
+					-- Using Navigator.nvim to navigate
+					nav_left = {
+						'<c-h>',
+						'<cmd>NavigatorLeft<cr>',
+						expr = false,
+						desc = 'navigate to the left window',
+					},
+					nav_down = {
+						'<c-j>',
+						'<cmd>NavigatorDown<cr>',
+						expr = false,
+						desc = 'navigate to the below window',
+					},
+					nav_up = {
+						'<c-k>',
+						'<cmd>NavigatorUp<cr>',
+						expr = false,
+						desc = 'navigate to the above window',
+					},
+					nav_right = {
+						'<c-l>',
+						'<cmd>NavigatorRight<cr>',
+						expr = false,
+						desc = 'navigate to the right window',
+					},
+				},
 			},
 		},
 	},
