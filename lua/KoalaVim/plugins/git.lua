@@ -111,7 +111,9 @@ table.insert(M, {
 
 table.insert(M, {
 	'ofirgall/neogit',
-	enabled = false,
+	enabled = function()
+		return vim.env.NEOGIT
+	end,
 	lazy = true,
 	dependencies = {
 		'nvim-lua/plenary.nvim', -- required
@@ -210,7 +212,9 @@ end
 
 table.insert(M, {
 	'tpope/vim-fugitive',
-	enabled = true,
+	enabled = function()
+		return not vim.env.NEOGIT
+	end,
 	keys = {
 		{ '<leader>gs', '<cmd>G<CR>', desc = 'Open fugitive.vim (git status)' },
 		{ '<leader>gc', '<cmd>Git commit<CR>', desc = 'Git commit' },
