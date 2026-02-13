@@ -429,10 +429,37 @@ table.insert(M, {
 	end,
 })
 
+local _left = ''
+local _right = ''
+local _up = ''
+local _down = ''
+
 -- Highlight current window seperator
 table.insert(M, {
 	'nvim-zh/colorful-winsep.nvim',
-	opts = {},
+	opts = {
+		animate = {
+			enabled = 'shift',
+			shift = {
+				delta_time = 0.08,
+				smooth_speed = 1,
+				delay = 3,
+			},
+		},
+		indicator_for_2wins = {
+			position = 'center',
+			symbols = {
+				start_left = _right,
+				end_left = _right,
+				start_down = _up,
+				end_down = _up,
+				start_up = _down,
+				end_up = _down,
+				start_right = _left,
+				end_right = _left,
+			},
+		},
+	},
 	config = function(_, opts)
 		require('colorful-winsep').setup(opts)
 	end,
