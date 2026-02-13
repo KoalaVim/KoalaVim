@@ -16,3 +16,7 @@
 [ ] ai sessions
 [ ] diffview: auto open folds when jumping to change
 [ ] autocommit + squash later for agents iterations
+https://github.com/Zeioth/garbage-day.nvim
+https://github.com/jrop/tuis.nvim
+https://github.com/y3owk1n/time-machine.nvim
+https://github.com/folke/twilight.nvim vs https://github.com/folke/snacks.nvim/blob/main/docs/dim.md
