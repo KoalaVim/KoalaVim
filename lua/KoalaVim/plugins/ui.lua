@@ -432,7 +432,6 @@ table.insert(M, {
 -- Highlight current window seperator
 table.insert(M, {
 	'nvim-zh/colorful-winsep.nvim',
-	enabled = false,
 	config = function()
 		local scheme = require('ofirkai.design').scheme
 		require('colorful-winsep').setup({

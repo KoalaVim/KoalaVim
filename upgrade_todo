@@ -2,7 +2,6 @@
 [ ] migrate possession changes from amittamari fork
 [ ] run :checkhealth
 [ ] run :checkhealth deperacated
-[ ] enable colorful-winsep.nvim
 [ ] take updates from the 0.10 branch
 [ ] fix mhanberg/output-panel.nvim
 [ ] go over LazyVim and see what is new
