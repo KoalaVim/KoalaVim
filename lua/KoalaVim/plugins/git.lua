@@ -184,8 +184,8 @@ local function git_to_floating_window(buf)
 		return
 	end
 
-	local width = math.floor(vim.o.columns * 0.65)
-	local height = math.floor(vim.o.lines * 0.6)
+	local width = math.floor(vim.o.columns * 0.8)
+	local height = math.floor(vim.o.lines * 0.75)
 	local row = math.floor((vim.o.lines - height) / 2)
 	local col = math.floor((vim.o.columns - width) / 2)
 
