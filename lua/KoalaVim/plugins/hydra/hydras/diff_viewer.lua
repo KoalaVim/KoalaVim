@@ -10,7 +10,7 @@ local hint = [[
  ^ ^                 Conflicts
  _<C-k>_: take upper _<C-j>_: take lower _<C-a>_: take both
  ^
-		  _<Enter>_: Fugitive  _<Esc>_: exit
+		  _<Enter>_: Status  _<Esc>_: exit
 ]]
 
 HYDRAS['diff_viewer'] = {
@@ -121,7 +121,13 @@ HYDRAS['diff_viewer'] = {
 				require('diffview.actions').conflict_choose('all')
 			end,
 		},
-		{ '<Enter>', '<cmd>Git<CR>', { exit = true } },
+		{
+			'<Enter>',
+			function()
+				require('KoalaVim.utils.git').show_status()
+			end,
+			{ exit = true },
+		},
 		-- { 'q', nil, { exit = true, nowait = true } },
 		{ '<Esc>', nil, { exit = true, nowait = true } },
 	},
