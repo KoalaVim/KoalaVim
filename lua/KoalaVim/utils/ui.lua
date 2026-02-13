@@ -176,6 +176,7 @@ function M.setup_lualine(is_half, opts)
 		command = { a = { fg = colors.black, bg = '#A669A8' } },
 		visual = { a = { fg = colors.black, bg = '#4CA86F' } },
 		replace = { a = { fg = colors.black, bg = '#60A8A4' } },
+		terminal = { a = { fg = colors.black, bg = '#b35477' } },
 
 		inactive = {
 			a = { fg = colors.black, bg = colors.black },
