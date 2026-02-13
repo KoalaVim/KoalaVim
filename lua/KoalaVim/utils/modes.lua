@@ -14,12 +14,12 @@ function M.load(mode, args)
 end
 
 local function git_mode(args)
-	vim.cmd('Flog -- ' .. args)
-	vim.cmd('G')
+	require('KoalaVim.utils.git').show_tree(args)
+	require('KoalaVim.utils.git').show_status()
 end
 
 local function git_tree_mode(args)
-	vim.cmd('Flog -- ' .. args)
+	require('KoalaVim.utils.git').show_tree(args)
 end
 
 local function git_diff_mode(args)

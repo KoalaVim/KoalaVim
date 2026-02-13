@@ -2,6 +2,18 @@ local M = {}
 
 local api = vim.api
 
+function M.show_status()
+	if vim.env.NEOGIT then
+		require('neogit').open({ kind = 'floating' })
+	else
+		vim.cmd('G')
+	end
+end
+
+function M.show_tree(args)
+	vim.cmd('Flog -- ' .. args)
+end
+
 function M.show_history(mode)
 	local start_pos = nil
 	local end_pos = nil

@@ -210,18 +210,20 @@ local function git_to_floating_window(buf)
 	end)
 end
 
+local _fugitive_keys = {
+	{ '<leader>gc', '<cmd>Git commit<CR>', desc = 'Git commit' },
+	{ '<leader>gac', '<cmd>Git commit --amend<CR>', desc = 'Git commit --amend' },
+	{ '<leader>gp', '<cmd>Git push<CR>', desc = 'Git push' },
+	{ '<leader>gP', '<cmd>Git push --force<CR>', desc = 'Git push force' },
+}
+
+if not vim.env.NEOGIT then
+	table.insert(_fugitive_keys, { '<leader>gs', '<cmd>G<CR>', desc = 'Open fugitive.vim (git status)' })
+end
+
 table.insert(M, {
 	'tpope/vim-fugitive',
-	enabled = function()
-		return not vim.env.NEOGIT
-	end,
-	keys = {
-		{ '<leader>gs', '<cmd>G<CR>', desc = 'Open fugitive.vim (git status)' },
-		{ '<leader>gc', '<cmd>Git commit<CR>', desc = 'Git commit' },
-		{ '<leader>gac', '<cmd>Git commit --amend<CR>', desc = 'Git commit --amend' },
-		{ '<leader>gp', '<cmd>Git push<CR>', desc = 'Git push' },
-		{ '<leader>gP', '<cmd>Git push --force<CR>', desc = 'Git push force' },
-	},
+	keys = _fugitive_keys,
 	cmd = { 'Git', 'G' },
 	config = function()
 		-- Jump to first group of files
