@@ -564,6 +564,7 @@ table.insert(M, {
 				map_buffer(events.buf, 'x', '<C-d>', '<Esc><cmd>lua flog_diff_current_visual()<cr>', 'Floggraph: show diff of selection')
 				map_buffer(events.buf, 'x', '<C-s>', '<Esc><cmd>lua flog_diff_current_visual()<cr>', 'Floggraph: show diff of selection')
 				map_buffer(events.buf, 'n', '<C-s>', flog_show_current, 'Floggraph: show current in diffview')
+				map_buffer(events.buf, 'n', 'q', '<cmd>q<CR>', 'close Floggraph')
 				-- stylua: ignore end
 
 				-- Delete flog's gq
