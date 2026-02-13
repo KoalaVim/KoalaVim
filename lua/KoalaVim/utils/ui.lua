@@ -260,6 +260,7 @@ function M.setup_lualine(is_half, opts)
 					'alpha',
 					'Trouble',
 					'DiffviewFiles',
+					'sidekick_terminal',
 				},
 			},
 			globalstatus = true,
