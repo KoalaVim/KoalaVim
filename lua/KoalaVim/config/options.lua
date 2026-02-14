@@ -17,6 +17,7 @@ opt.swapfile = false
 opt.wrap = true
 opt.undofile = true -- enable persistent undo
 opt.scrolloff = 4 -- minimal number of screen lines to keep above and below the cursor.
+opt.smoothscroll = true
 opt.updatetime = 100 -- mainly for trld.nvim which utilize CursorHold autocmd
 opt.formatoptions:append('cro/j') -- continue comments when going down a line
 opt.sessionoptions:remove('options') -- don't save keymaps and local options
