@@ -261,6 +261,7 @@ function M.setup_lualine(is_half, opts)
 					'Trouble',
 					'DiffviewFiles',
 					'sidekick_terminal',
+					'sidekick_koala_prompt',
 				},
 			},
 			globalstatus = true,

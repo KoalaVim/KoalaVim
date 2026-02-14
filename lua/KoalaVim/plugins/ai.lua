@@ -23,6 +23,41 @@ table.insert(M, {
 	end,
 })
 
+--- Opens a split with a temporary buffer for editing a prompt.
+--- On closing the buffer, sends its content to sidekick CLI.
+local function edit_prompt()
+	-- FIXME: get prompt
+	local bufid = vim.api.nvim_create_buf(false, true)
+
+	-- Enter insert mode when focusing the buffer
+	vim.api.nvim_create_autocmd('BufEnter', {
+		buffer = bufid,
+		once = true,
+		callback = vim.schedule_wrap(function()
+			vim.cmd('startinsert')
+		end),
+	})
+
+	-- Send content to sidekick CLI when closing the buffer
+	vim.api.nvim_create_autocmd('BufWinLeave', {
+		buffer = bufid,
+		once = true,
+		callback = function()
+			local lines = vim.api.nvim_buf_get_lines(bufid, 0, -1, false)
+			local content = table.concat(lines, '\n')
+			if content ~= '' then
+				require('sidekick.cli').send({ msg = content })
+			end
+		end,
+	})
+
+	vim.cmd('split')
+	vim.api.nvim_win_set_buf(0, bufid)
+	vim.api.nvim_win_set_height(0, math.ceil(vim.o.lines * 0.3))
+	vim.keymap.set('n', 'q', '<cmd>q<CR>', { buffer = bufid })
+	vim.bo[bufid].filetype = 'sidekick_koala_prompt'
+end
+
 local function nav_to_prompt(search_char)
 	local f = function()
 		vim.fn.setreg('/', ' ┌─')
@@ -94,6 +129,16 @@ table.insert(M, {
 		},
 		{
 			-- FIXME: apply only in cursor
+			'<C-e>',
+			function()
+				edit_prompt()
+			end,
+			ft = 'sidekick_terminal',
+			desc = 'edit prompt in neovim buffer',
+			mode = { 'n', 't' },
+		},
+		{
+			-- FIXME: apply only in cursor
 			']p',
 			function()
 				nav_to_prompt('n')
@@ -111,6 +156,26 @@ table.insert(M, {
 			ft = 'sidekick_terminal',
 			desc = 'go to next prompt',
 			mode = { 'n', 't' },
+		},
+		{
+			-- FIXME: apply only in cursor
+			'gj',
+			function()
+				nav_to_prompt('n')
+			end,
+			ft = 'sidekick_terminal',
+			desc = 'go to next prompt',
+			mode = 'n',
+		},
+		{
+			-- FIXME: apply only in cursor
+			'gk',
+			function()
+				nav_to_prompt('N')
+			end,
+			ft = 'sidekick_terminal',
+			desc = 'go to next prompt',
+			mode = 'n',
 		},
 		{
 			'<leader>uN',
@@ -134,7 +199,8 @@ table.insert(M, {
 		{
 			'<leader>ai',
 			function()
-				require('sidekick.cli').show()
+				-- FIXME: default agent from koalaconfig
+				require('sidekick.cli').show({ name = 'cursor' })
 			end,
 			desc = 'Open/Focus AI',
 		},
