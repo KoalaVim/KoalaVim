@@ -52,10 +52,46 @@ local function edit_prompt()
 	})
 
 	vim.cmd('split')
+	local win_id = vim.api.nvim_get_current_win()
 	vim.api.nvim_win_set_buf(0, bufid)
 	vim.api.nvim_win_set_height(0, math.ceil(vim.o.lines * 0.3))
-	vim.keymap.set('n', 'q', '<cmd>q<CR>', { buffer = bufid })
 	vim.bo[bufid].filetype = 'sidekick_koala_prompt'
+
+	---@param items sidekick.context.Loc[]
+	paste_to_buffer_cb = function(items)
+		local Loc = require('sidekick.cli.context.location')
+		local ret = { { ' ' } } ---@type sidekick.Text
+		for _, item in ipairs(items) do
+			local file = Loc.get(item, { kind = 'file' })[1]
+			if file then
+				vim.list_extend(ret, file)
+				ret[#ret + 1] = { ' ' }
+			end
+		end
+		vim.schedule(function()
+			-- ret = { { " " }, { "@", "SidekickLocDelim" }, { "docs/loadbalancing-architecture.md", "SidekickLocFile" }, { " " } }
+			local text = table.concat(
+				vim.tbl_map(function(c)
+					-- c[2] is highlight (if exist)
+					return c[1]
+				end, ret),
+				''
+			)
+			vim.api.nvim_set_current_win(win_id)
+			vim.api.nvim_put({ text }, '', true, true)
+		end)
+	end
+
+	local picker = require('sidekick.cli.picker').get()
+	vim.keymap.set('n', 'q', '<cmd>q<CR>', { buffer = bufid })
+
+	vim.keymap.set({ 'n', 'i' }, '<C-f>', function()
+		picker.open('files', paste_to_buffer_cb, {})
+	end, { buffer = bufid })
+
+	vim.keymap.set({ 'n', 'i' }, '<C-b>', function()
+		picker.open('buffers', paste_to_buffer_cb, {})
+	end, { buffer = bufid })
 end
 
 local function nav_to_prompt(search_char)
