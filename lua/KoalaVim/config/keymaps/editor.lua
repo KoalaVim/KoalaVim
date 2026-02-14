@@ -1,6 +1,6 @@
 local map = require('KoalaVim.utils.map').map
 
-map('n', '<F8>', function()
+map({'n', 't'}, '<F8>', function()
 	require('KoalaVim.utils.misc').restart_nvim()
 end, 'Restart nvim')
 
