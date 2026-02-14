@@ -141,9 +141,29 @@ local DIAGNOSTICS_CFG = {
 
 local CURR_DIAG_CFG = DIAGNOSTICS_CFG[0]
 
+local _signs = nil
+
 function M.set_diagnostics_mode(index)
+	if _signs == nil then
+		_signs = {
+			text = {},
+			linehl = {},
+			numhl = {},
+		}
+
+		-- Icons
+		local icons = require('KoalaVim.utils.icons').diagnostics
+		for severity, name in pairs(require('KoalaVim.utils.icons').severity_to_name) do
+			local hlname = name:gsub('^%l', string.upper) -- Captial first letter
+			hlname = 'DiagnosticSign' .. hlname
+			_signs.text[severity] = icons[name]
+			_signs.linehl[severity] = name
+			_signs.numhl[severity] = ''
+		end
+	end
 	CURR_DIAG_CFG = DIAGNOSTICS_CFG[index]
 	CURR_DIAG_CFG.update_in_insert = false
+	CURR_DIAG_CFG.signs = _signs
 
 	vim.diagnostic.config(CURR_DIAG_CFG)
 	if CURR_DIAG_CFG.diagflow then

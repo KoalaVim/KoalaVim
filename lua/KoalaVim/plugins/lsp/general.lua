@@ -80,13 +80,6 @@ table.insert(M, {
 			automatic_enable = false,
 		})
 
-		-- Icons
-		for name, icon in pairs(require('KoalaVim.utils.icons').diagnostics) do
-			name = name:gsub('^%l', string.upper) -- Captial first letter
-			name = 'DiagnosticSign' .. name
-			vim.fn.sign_define(name, { text = icon, texthl = name, numhl = '' })
-		end
-
 		-- Init diagnostics mode
 		require('KoalaVim.utils.lsp').set_diagnostics_mode(1)
 	end,

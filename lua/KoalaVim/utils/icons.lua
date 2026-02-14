@@ -1,5 +1,12 @@
 local M = {}
 
+M.severity_to_name = {
+	[vim.diagnostic.severity.ERROR] = 'error',
+	[vim.diagnostic.severity.WARN] = 'warn',
+	[vim.diagnostic.severity.HINT] = 'hint',
+	[vim.diagnostic.severity.INFO] = 'info',
+}
+
 M.diagnostics = {
 	error = '',
 	warn = '⚠ ',
