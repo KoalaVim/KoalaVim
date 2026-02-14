@@ -25,15 +25,20 @@ end
 local function git_diff_mode(args)
 	vim.cmd('DiffviewOpen')
 
-	vim.schedule(function ()
+	vim.schedule(function()
 		vim.cmd('tabonly') -- Close other tab pages
 	end)
+end
+
+local function ai_mode()
+	require('sidekick.cli').show()
 end
 
 M._modes = {
 	git = git_mode,
 	git_tree = git_tree_mode,
 	git_diff = git_diff_mode,
+	ai = ai_mode,
 }
 
 return M

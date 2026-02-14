@@ -559,7 +559,7 @@ table.insert(M, {
 				KoalaDisableAutoSession()
 				CLOSE_KOALA_DASHBOARD(true)
 
-				require('sidekick.cli').show()
+				require('KoalaVim.utils.modes').load('ai')
 			end),
 			dashboard.button('m', '  File Tree', function()
 				CLOSE_KOALA_DASHBOARD(true)
