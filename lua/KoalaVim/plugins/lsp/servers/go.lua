@@ -6,6 +6,8 @@ CONFORM_FORMATTERS['gofmt'] = { 'go', mason = false }
 
 table.insert(M, {
 	'ray-x/go.nvim',
+	-- FIXME: enable
+	enabled = false,
 	dependencies = {
 		'ray-x/guihua.lua',
 		'neovim/nvim-lspconfig',

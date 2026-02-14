@@ -706,8 +706,7 @@ table.insert(M, {
 		legacy_computing_symbols_support = true,
 		smear_insert_mode = false, -- no effect?
 	},
-	specs = {
-	},
+	specs = {},
 })
 
 return M
