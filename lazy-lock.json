@@ -8,7 +8,7 @@
   "ai.vim": { "branch": "main", "commit": "489d2c1b1e5373d7da7e50ba189b289a375c2034" },
   "alpha-nvim": { "branch": "main", "commit": "907326b3cd9d80608736866367961982a1566bde" },
   "based.nvim": { "branch": "main", "commit": "886e63bab99714bada17d2a0e300841250d2daa6" },
-  "bracket-repeat.nvim": { "branch": "master", "commit": "cf4839cedb20bab00d992fba4ec846538af78e6e" },
+  "bracket-repeat.nvim": { "branch": "master", "commit": "89cfdffb3dc38408907ab43c8e76d6ffdfc40b85" },
   "bufferline.nvim": { "branch": "main", "commit": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3" },
   "cargo-limit": { "branch": "master", "commit": "fd9bd2ed7f0399b148fcd425c1e3e142c8b2b82b" },
   "cmp-buffer": { "branch": "main", "commit": "b74fab3656eea9de20a9b8116afa3cfc4ec09657" },

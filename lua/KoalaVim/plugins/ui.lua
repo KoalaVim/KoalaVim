@@ -439,7 +439,8 @@ table.insert(M, {
 	'nvim-zh/colorful-winsep.nvim',
 	opts = {
 		animate = {
-			enabled = 'shift',
+			enabled = false,
+			-- enabled = 'shift',
 			shift = {
 				delta_time = 0.08,
 				smooth_speed = 1,
