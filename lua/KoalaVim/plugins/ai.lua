@@ -80,6 +80,11 @@ local function edit_prompt()
 			if content ~= '' then
 				-- Using internal sidekick cli to not parse "{}" variables
 				require('sidekick.cli.state').with(function(state)
+					-- FIXME: cursor only?
+					-- Clear current prompt content: Sends C+c
+					local termbufid = state.terminal.buf
+					vim.api.nvim_chan_send(vim.bo[termbufid].channel, '\x03')
+
 					state.session:send(content)
 				end, {
 					attach = true,
