@@ -174,6 +174,7 @@ table.insert(M, {
 			},
 			status = {
 				['='] = 'Toggle',
+				['-'] = 'Toggle',
 				['l'] = 'Toggle',
 				['h'] = 'Toggle',
 				['<Esc>'] = 'Close',
