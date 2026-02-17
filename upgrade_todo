@@ -1,9 +1,6 @@
 sidekick/cursor bugs:
- [ ] alt+i doesn't work
- [ ] edit prompt - escape string "{blabla}" is an issue
  [ ] edit prompt (get prompt)
- [ ] doesn't detect exit to vim mode sometimes
- [ ] when exiting doesn't clear status
+ [ ] don't change focus after <leader>at on selection
 
 [ ] fix gopls
 [ ] migrate possession changes from amittamari fork

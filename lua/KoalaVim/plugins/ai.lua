@@ -46,7 +46,15 @@ local function edit_prompt()
 			local lines = vim.api.nvim_buf_get_lines(bufid, 0, -1, false)
 			local content = table.concat(lines, '\n')
 			if content ~= '' then
-				require('sidekick.cli').send({ msg = content })
+				-- Using internal sidekick cli to not parse "{}" variables
+				require('sidekick.cli.state').with(function(state)
+					state.session:send(content)
+				end, {
+					attach = true,
+					filter = {},
+					focus = true,
+					show = true,
+				})
 			end
 		end,
 	})
@@ -58,7 +66,7 @@ local function edit_prompt()
 	vim.bo[bufid].filetype = 'sidekick_koala_prompt'
 
 	---@param items sidekick.context.Loc[]
-	paste_to_buffer_cb = function(items)
+	local paste_to_buffer_cb = function(items)
 		local Loc = require('sidekick.cli.context.location')
 		local ret = { { ' ' } } ---@type sidekick.Text
 		for _, item in ipairs(items) do
