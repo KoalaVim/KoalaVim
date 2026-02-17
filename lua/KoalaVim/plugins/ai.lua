@@ -23,10 +23,42 @@ table.insert(M, {
 	end,
 })
 
+-- FIXME: only for cursor
+local function get_prompt()
+	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+
+	-- Find the last box (bottom-up search)
+	local box_start, box_end
+	for i = #lines, 1, -1 do
+		if not box_end and lines[i]:match('└─') then
+			box_end = i
+		elseif box_end and lines[i]:match('┌─') then
+			box_start = i
+			break
+		end
+	end
+
+	if not box_start or not box_end then
+		return ''
+	end
+
+	local prompt_lines = {}
+
+	for i = box_start + 1, box_end - 1 do
+		local content = lines[i]:match('│(.*)│%s*$')
+		if content then
+			content = content:gsub('→%s?', '')
+			table.insert(prompt_lines, vim.trim(content))
+		end
+	end
+
+	return prompt_lines
+end
+
 --- Opens a split with a temporary buffer for editing a prompt.
 --- On closing the buffer, sends its content to sidekick CLI.
 local function edit_prompt()
-	-- FIXME: get prompt
+	local current_prompt_lines = get_prompt()
 	local bufid = vim.api.nvim_create_buf(false, true)
 
 	-- Enter insert mode when focusing the buffer
@@ -64,6 +96,7 @@ local function edit_prompt()
 	vim.api.nvim_win_set_buf(0, bufid)
 	vim.api.nvim_win_set_height(0, math.ceil(vim.o.lines * 0.3))
 	vim.bo[bufid].filetype = 'sidekick_koala_prompt'
+	vim.api.nvim_buf_set_lines(bufid, 0, -1, false, current_prompt_lines)
 
 	---@param items sidekick.context.Loc[]
 	local paste_to_buffer_cb = function(items)
