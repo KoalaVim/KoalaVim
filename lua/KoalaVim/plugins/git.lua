@@ -128,6 +128,21 @@ table.insert(M, {
 			end,
 			desc = 'Open Neogit (git status)',
 		},
+		{
+			'<leader>gp',
+			'<cmd>Neogit push<cr>',
+			desc = 'Git push',
+		},
+		{
+			'<leader>gP',
+			'<cmd>Neogit push<cr>',
+			desc = 'Git push',
+		},
+		{
+			'<leader>gc',
+			'<cmd>Neogit commit<cr>',
+			desc = 'Git commit',
+		},
 	},
 	opts = {
 		-- TODO: try kitty style
@@ -224,15 +239,16 @@ local function git_to_floating_window(buf)
 	end)
 end
 
-local _fugitive_keys = {
-	{ '<leader>gc', '<cmd>Git commit<CR>', desc = 'Git commit' },
-	{ '<leader>gac', '<cmd>Git commit --amend<CR>', desc = 'Git commit --amend' },
-	{ '<leader>gp', '<cmd>Git push<CR>', desc = 'Git push' },
-	{ '<leader>gP', '<cmd>Git push --force<CR>', desc = 'Git push force' },
-}
+local _fugitive_keys = {}
 
 if not vim.env.NEOGIT then
-	table.insert(_fugitive_keys, { '<leader>gs', '<cmd>G<CR>', desc = 'Open fugitive.vim (git status)' })
+	_fugitive_keys = {
+		{ '<leader>gc', '<cmd>Git commit<CR>', desc = 'Git commit' },
+		{ '<leader>gac', '<cmd>Git commit --amend<CR>', desc = 'Git commit --amend' },
+		{ '<leader>gs', '<cmd>G<CR>', desc = 'Open fugitive.vim (git status)' },
+		{ '<leader>gp', '<cmd>Git push<CR>', desc = 'Git push' },
+		{ '<leader>gP', '<cmd>Git push --force<CR>', desc = 'Git push force' },
+	}
 end
 
 table.insert(M, {
