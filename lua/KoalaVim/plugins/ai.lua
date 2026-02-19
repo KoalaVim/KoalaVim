@@ -130,7 +130,6 @@ local function edit_prompt()
 	end
 
 	local picker = require('sidekick.cli.picker').get()
-	vim.keymap.set('n', 'q', '<cmd>q<CR>', { buffer = bufid })
 
 	vim.keymap.set({ 'n', 'i' }, '<C-f>', function()
 		picker.open('files', paste_to_buffer_cb, {})
