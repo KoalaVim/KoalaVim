@@ -66,7 +66,8 @@ local function edit_prompt()
 		buffer = bufid,
 		once = true,
 		callback = vim.schedule_wrap(function()
-			vim.cmd('startinsert')
+			-- Go to end and start in insert mode
+			vim.api.nvim_feedkeys('G$a', 'n', false)
 		end),
 	})
 
