@@ -1,6 +1,12 @@
 sidekick/cursor bugs:
- [ ] edit prompt (get prompt)
- [ ] don't change focus after <leader>at on selection
+ [V] edit prompt (get prompt)
+ [ ] edit prompt - support at, af..
+ [ ] get_prompt with sends C+c when the input is clear (ruins plan building)
+ [ ] edit_prompt - paste the content is not good i want to type it maybe to avoid [Pasted lines #]
+ [ ] edit_prompt buffer - ctrl+f doesn't put the file under the cursor
+ [ ] don't change focus after <leader>at on selection (opts.focus?)
+ [ ] <leader>ai for selection (most intotative?)
+ [ ] <leader>at in normal selecting with movement or <leader>am
 
 [ ] fix gopls
 [ ] migrate possession changes from amittamari fork
