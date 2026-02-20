@@ -288,21 +288,6 @@ table.insert(M, {
 	end,
 })
 
--- Better `vim.notify()`
-table.insert(M, {
-	'rcarriga/nvim-notify',
-	config = function()
-		require('notify').setup({
-			background_colour = require('ofirkai.design').scheme.ui_bg,
-			fps = 60,
-			stages = 'slide',
-			timeout = 1000,
-			max_width = 50,
-			max_height = 20,
-		})
-	end,
-})
-
 -- Nice ui for notify, :messages, and better cmdline
 table.insert(M, {
 	'folke/noice.nvim',

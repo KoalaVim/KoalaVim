@@ -694,12 +694,43 @@ table.insert(M, {
 		indent = { enabled = false },
 		input = { enabled = false },
 		picker = { enabled = false },
-		notifier = { enabled = false },
+		notifier = {
+			enabled = true,
+			style = 'fancy',
+		},
 		quickfile = { enabled = false },
 		scope = { enabled = false },
 		scroll = { enabled = false },
 		statuscolumn = { enabled = false },
 		words = { enabled = false },
+
+		styles = {
+			notification_history = {
+				width = 0.8,
+				height = 0.8,
+				border = 'rounded',
+			},
+		},
+	},
+	keys = {
+		{
+			'<leader>n',
+			function()
+				if Snacks.config.picker and Snacks.config.picker.enabled then
+					Snacks.picker.notifications()
+				else
+					Snacks.notifier.show_history()
+				end
+			end,
+			desc = 'Notification History',
+		},
+		{
+			'<leader>un',
+			function()
+				Snacks.notifier.hide()
+			end,
+			desc = 'Dismiss All Notifications',
+		},
 	},
 })
 

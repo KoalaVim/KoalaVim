@@ -1,8 +1,8 @@
 local map = require('KoalaVim.utils.map').map
 
 -- Add text
-local add_new_line = 'i\\n<Esc>'
-map('n', '<leader>n', add_new_line, 'Add newline')
+-- local add_new_line = 'i\\n<Esc>'
+-- map('n', '<leader>n', add_new_line, 'Add newline')
 map('n', '&', 'i&<Esc>', 'Add ampersand')
 map('i', '<C-k>', '<C-O>o', 'Insert new line in insert mode')
 
