@@ -89,4 +89,39 @@ function M.jump_to_git_dirty_file(direction)
 	return true
 end
 
+--- XXX: not used for now
+--- Navigate to the next/prev git hunk across files.
+--- First attempts to jump to the next hunk in the current buffer. If the cursor
+--- didn't move (no more hunks in this direction), it jumps to the next dirty file
+--- and navigates to its first/last hunk depending on direction.
+---@param direction 'next'|'prev'
+function M.nav_to_next_hunk_or_file(direction)
+	local DEFER_VAL = 30
+	local current_line = api.nvim_get_current_line()
+
+	-- Schedule to avoid running during a textlock (e.g. triggered from an expr mapping)
+	vim.schedule(function()
+		require('gitsigns.actions').nav_hunk(direction, { navigation_message = false, target = 'all', wrap = false })
+
+		-- Defer to let gitsigns finish the hunk navigation before checking the result
+		vim.defer_fn(function()
+			-- If the cursor didn't move, there are no more hunks in this file
+			if api.nvim_get_current_line() == current_line then
+				-- Jump to the next dirty file and navigate to its first/last hunk
+				if require('KoalaVim.utils.git').jump_to_git_dirty_file(direction) then
+					-- Defer to let the new buffer load before navigating
+					vim.defer_fn(function()
+						api.nvim_feedkeys(direction == 'next' and 'gg' or 'G', 'n', false)
+
+						-- Schedule to run after feedkeys positions the cursor at gg/G
+						vim.schedule(function()
+							gs.nav_hunk(direction, { navigation_message = false, target = 'all', wrap = false })
+						end)
+					end, DEFER_VAL)
+				end
+			end
+		end, DEFER_VAL)
+	end)
+end
+
 return M
