@@ -25,17 +25,13 @@ HYDRAS['diff_viewer'] = {
 		on_enter = function()
 			local diff = api.nvim_get_option_value('diff', {})
 			if not diff then
-				require('gitsigns').toggle_linehl(true)
-				require('gitsigns').toggle_deleted(true)
-				vim.cmd('echo')
+				require('inlinediff').enable()
 			end
 		end,
 		on_exit = function()
 			local diff = api.nvim_get_option_value('diff', {})
 			if not diff then
-				require('gitsigns').toggle_linehl(false)
-				require('gitsigns').toggle_deleted(false)
-				vim.cmd('echo')
+				require('inlinediff').disable()
 			end
 		end,
 	},

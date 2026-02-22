@@ -99,7 +99,6 @@ table.insert(M, {
 
 					require('gitsigns').blame_line({ full = true, extra_opts = { '-C' } })
 				end, 'Blame Line with detect copied (moved) code. adds `-C` for git blame')
-				map_buffer(bufnr, 'n', '<leader>hd', '<cmd>Gitsigns toggle_deleted<CR>', 'Toggle Deleted Virtual Text')
 				-- Text object
 				map_buffer(bufnr, { 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', 'Select Hunk')
 			end
@@ -107,6 +106,22 @@ table.insert(M, {
 
 		require('gitsigns').setup(opts)
 	end,
+})
+
+table.insert(M, {
+	'YouSame2/inlinediff-nvim',
+	lazy = true, -- disable loading plugin until called with cmd or keys
+	cmd = 'InlineDiff',
+	keys = {
+		{
+			'<leader>hd',
+			function()
+				require('inlinediff').toggle()
+			end,
+			desc = 'Toggle inline diff',
+		},
+	},
+	opts = {},
 })
 
 table.insert(M, {

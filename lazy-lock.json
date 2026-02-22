@@ -46,6 +46,7 @@
   "hydra.nvim": { "branch": "master", "commit": "a05bc58c616ec7bf5d32f5f49a163c3d57865fab" },
   "indent-blankline.nvim": { "branch": "master", "commit": "005b56001b2cb30bfa61b7986bc50657816ba4ba" },
   "inlay-hints.nvim": { "branch": "main", "commit": "efaf1c8b1ee801a1dadb322b5dfbd1f31f669937" },
+  "inlinediff-nvim": { "branch": "main", "commit": "98d1adbe0113dc46654a37be6bc2437b7a23222f" },
   "interestingwords.nvim": { "branch": "master", "commit": "2876dae26a51de62f2389857d0858dd8b7146836" },
   "iron.nvim": { "branch": "master", "commit": "0e07ace465edff6c4ed6db9f3b7bf919c40aeffb" },
   "iswap.nvim": { "branch": "master", "commit": "e02cc91f2a8feb5c5a595767d208c54b6e3258ec" },
