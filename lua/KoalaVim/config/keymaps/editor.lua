@@ -1,7 +1,16 @@
 local map = require('KoalaVim.utils.map').map
 
-map({'n', 't'}, '<F8>', function()
+map({ 'n', 't' }, '<F8>', function()
 	require('KoalaVim.utils.misc').restart_nvim()
+end, 'Restart nvim')
+
+-- Git
+map('n', ']C', function()
+	require('KoalaVim.utils.git').jump_to_git_dirty_file('next')
+end, 'Restart nvim')
+
+map('n', '[C', function()
+	require('KoalaVim.utils.git').jump_to_git_dirty_file('prev')
 end, 'Restart nvim')
 
 -- Scroll with arrows

@@ -85,7 +85,29 @@ function M.jump_to_git_dirty_file(direction)
 		target = files[prev_idx]
 	end
 
-	vim.cmd('edit ' .. vim.fn.fnameescape(repo .. '/' .. target))
+	local file_path = vim.fn.fnameescape(repo .. '/' .. target)
+
+	-- Go to next/prev hunk after jump
+	vim.api.nvim_create_autocmd('BufEnter', {
+		pattern = file_path,
+		once = true,
+		callback = vim.schedule_wrap(function()
+			print('heyyyyyyyy')
+			-- Go to end/start and navigate to first hunk
+			api.nvim_feedkeys(direction == 'next' and 'gg' or 'G', 'n', false)
+
+			-- Schedule to run after feedkeys positions the cursor at gg/G
+			vim.defer_fn(function()
+				require('gitsigns.actions').nav_hunk(
+					direction,
+					{ navigation_message = false, target = 'all', wrap = false }
+				)
+			end, 30)
+		end),
+	})
+
+	vim.cmd('edit ' .. file_path)
+
 	return true
 end
 
@@ -108,17 +130,7 @@ function M.nav_to_next_hunk_or_file(direction)
 			-- If the cursor didn't move, there are no more hunks in this file
 			if api.nvim_get_current_line() == current_line then
 				-- Jump to the next dirty file and navigate to its first/last hunk
-				if require('KoalaVim.utils.git').jump_to_git_dirty_file(direction) then
-					-- Defer to let the new buffer load before navigating
-					vim.defer_fn(function()
-						api.nvim_feedkeys(direction == 'next' and 'gg' or 'G', 'n', false)
-
-						-- Schedule to run after feedkeys positions the cursor at gg/G
-						vim.schedule(function()
-							gs.nav_hunk(direction, { navigation_message = false, target = 'all', wrap = false })
-						end)
-					end, DEFER_VAL)
-				end
+				require('KoalaVim.utils.git').jump_to_git_dirty_file(direction)
 			end
 		end, DEFER_VAL)
 	end)
