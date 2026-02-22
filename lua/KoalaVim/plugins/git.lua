@@ -303,9 +303,9 @@ table.insert(M, {
 		},
 		conflict = {
 			-- FIXME: test
-			accept_incoming = "<leader>ck",
-			accept_current = "<leader>cj",
-		}
+			accept_incoming = '<leader>ck',
+			accept_current = '<leader>cj',
+		},
 	},
 	config = function(_, opts)
 		local lifecycle = require('codediff.ui.lifecycle')
@@ -337,13 +337,33 @@ table.insert(M, {
 				lifecycle.set_tab_keymap(tabpage, 'n', '<M-j>', nav.next_hunk, { desc = 'Next change' })
 				lifecycle.set_tab_keymap(tabpage, 'n', '<M-k>', nav.next_hunk, { desc = 'Prev change' })
 
-				lifecycle.set_tab_keymap(tabpage, 'n', '<M-s>', '<cmd>Gitsigns stage_buffer<CR>', { desc = 'Stage change' })
-				lifecycle.set_tab_keymap(tabpage, 'n', '<M-u>', '<cmd>Gitsigns undo_stage_hunk<CR>', { desc = 'Undo Stage change' })
-				lifecycle.set_tab_keymap(tabpage, 'n', '<M-r>', '<cmd>Gitsigns reset_hunk<CR>', { desc = 'Reset change' })
+				lifecycle.set_tab_keymap(
+					tabpage,
+					'n',
+					'<M-s>',
+					'<cmd>Gitsigns stage_hunk<CR>',
+					{ desc = 'Stage change' }
+				)
+				lifecycle.set_tab_keymap(
+					tabpage,
+					'n',
+					'<M-u>',
+					'<cmd>Gitsigns undo_stage_hunk<CR>',
+					{ desc = 'Undo Stage change' }
+				)
+				lifecycle.set_tab_keymap(
+					tabpage,
+					'n',
+					'<M-r>',
+					'<cmd>Gitsigns reset_hunk<CR>',
+					{ desc = 'Reset change' }
+				)
 			end
 
 			if is_explorer_mode then
-				lifecycle.set_tab_keymap(tabpage, 'n', '<M-m>', function() toggle_explorer(tabpage) end, { desc = 'Prev change' })
+				lifecycle.set_tab_keymap(tabpage, 'n', '<M-m>', function()
+					toggle_explorer(tabpage)
+				end, { desc = 'Prev change' })
 			end
 		end
 
@@ -469,7 +489,7 @@ table.insert(M, {
 					{ 'n', '<M-j>', ']c', { desc = 'Next change' } },
 					{ 'n', '<M-k>', '[c', { desc = 'Next change' } },
 					{ 'n', '<C-g>', actions.cycle_layout, { desc = 'Cycle layout' } },
-					{ 'n', '<M-s>', '<cmd>Gitsigns stage_buffer<CR>', { desc = 'Stage change' } },
+					{ 'n', '<M-s>', '<cmd>Gitsigns stage_hunk<CR>', { desc = 'Stage change' } },
 					{ 'n', '<M-u>', '<cmd>Gitsigns undo_stage_hunk<CR>', { desc = 'Undo Stage change' } },
 					{ 'n', '<M-r>', '<cmd>Gitsigns reset_hunk<CR>', { desc = 'Reset change' } },
 				},
