@@ -388,10 +388,17 @@ table.insert(M, {
 table.insert(M, {
 	'RRethy/vim-illuminate',
 	event = 'LspAttach',
-	config = function()
-		require('illuminate').configure({
-			modes_denylist = { 'i' },
-		})
+	opts = {
+		modes_denylist = { 'i' },
+		filetypes_denylist = {
+			'fugitive',
+			'NeogitStatus',
+			'codediff-explorer',
+			'NvimTree',
+		},
+	},
+	config = function(_, opts)
+		require('illuminate').configure(opts)
 	end,
 	keys = {
 		{
