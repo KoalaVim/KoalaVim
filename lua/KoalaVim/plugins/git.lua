@@ -298,9 +298,55 @@ table.insert(M, {
 	opts = {
 		explorer = {
 			position = 'bottom',
-			height = 10,
+			height = 10, -- Doesn't work
 		},
 	},
+	config = function(_, opts)
+		local lifecycle = require('codediff.ui.lifecycle')
+		local nav = require('codediff.ui.view.navigation')
+		local function set_custom_keymaps(tabpage)
+			lifecycle.set_tab_keymap(tabpage, 'n', '<tab>', nav.next_file, { desc = 'Next file' })
+			lifecycle.set_tab_keymap(tabpage, 'n', '<s-tab>', nav.prev_file, { desc = 'Prev file' })
+			lifecycle.set_tab_keymap(tabpage, 'n', '<M-n>', nav.next_file, { desc = 'Next file' })
+			lifecycle.set_tab_keymap(tabpage, 'n', '<M-p>', nav.prev_file, { desc = 'Prev file' })
+
+			lifecycle.set_tab_keymap(tabpage, 'n', '<M-j>', nav.next_hunk, { desc = 'Next change' })
+			lifecycle.set_tab_keymap(tabpage, 'n', '<M-k>', nav.next_hunk, { desc = 'Prev change' })
+
+			-- TODO:
+			-- { 'n', '<M-n>', actions.focus_files, { desc = 'Focus files panel' } },
+			-- { 'n', '<M-m>', actions.toggle_files, { desc = 'Toggle files panel' } },
+			-- { 'n', '<leader>ck', actions.conflict_choose('ours'), { desc = 'Choose OURS (up) conflict' } },
+			-- { 'n', '<leader>cj', actions.conflict_choose('theirs'), { desc = 'Choose OURS (down) conflict' } },
+
+			-- FIXME: can we use gitsigns?
+			-- { 'n', '<M-s>', '<cmd>Gitsigns stage_buffer<CR>', { desc = 'Stage change' } },
+			-- { 'n', '<M-u>', '<cmd>Gitsigns undo_stage_hunk<CR>', { desc = 'Undo Stage change' } },
+			-- { 'n', '<M-r>', '<cmd>Gitsigns reset_hunk<CR>', { desc = 'Reset change' } },
+		end
+
+		-- Set explorer height
+		local adjusted_explorers = {}
+		api.nvim_create_autocmd('BufWinEnter', {
+			callback = function(events)
+				if vim.bo[events.buf].ft ~= 'codediff-explorer' then
+					return
+				end
+
+				if adjusted_explorers[events.buf] then
+					return
+				end
+
+				adjusted_explorers[events.buf] = true
+				vim.schedule(function()
+					vim.api.nvim_win_set_height(0, 10)
+					set_custom_keymaps(vim.api.nvim_get_current_tabpage())
+				end)
+			end,
+		})
+
+		require('codediff').setup(opts)
+	end,
 })
 
 table.insert(M, {
