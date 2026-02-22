@@ -3,9 +3,9 @@ local M = {}
 local api = vim.api
 
 local hint = [[
- _j_: next hunk   _<C-s>_: stage hunk    _r_: reset hunk
- _k_: prev hunk   _u_: undo stage hunk   _R_: reset buffer
- ^ ^              _S_: stage buffer
+ _j_: next hunk   _J_: next dirty file   _s_: stage hunk
+ _k_: prev hunk   _K_: prev dirty file   _r_: reset hunk
+ _S_: stage file  _R_: reset file        _u_: undo stage hunk
 
  ^ ^                 Conflicts
  _<C-k>_: take upper _<C-j>_: take lower _<C-a>_: take both
@@ -85,7 +85,7 @@ HYDRAS['diff_viewer'] = {
 			{ expr = true },
 		},
 		{
-			'<C-s>',
+			's',
 			function()
 				require('gitsigns').stage_hunk(nil)
 				require('gitsigns').next_hunk({ navigation_message = false })
