@@ -79,7 +79,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'YouSame2/inlinediff-nvim',
+	'ofirgall/inlinediff-nvim', -- Fork for enable/disable
 	lazy = true, -- disable loading plugin until called with cmd or keys
 	cmd = 'InlineDiff',
 	keys = {
