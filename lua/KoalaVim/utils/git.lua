@@ -92,17 +92,16 @@ function M.jump_to_git_dirty_file(direction)
 		pattern = file_path,
 		once = true,
 		callback = vim.schedule_wrap(function()
-			print('heyyyyyyyy')
 			-- Go to end/start and navigate to first hunk
 			api.nvim_feedkeys(direction == 'next' and 'gg' or 'G', 'n', false)
 
-			-- Schedule to run after feedkeys positions the cursor at gg/G
-			vim.defer_fn(function()
+			-- Defer + Schedule to run after feedkeys positions the cursor at gg/G
+			vim.defer_fn(vim.schedule_wrap(function()
 				require('gitsigns.actions').nav_hunk(
 					direction,
 					{ navigation_message = false, target = 'all', wrap = false }
 				)
-			end, 30)
+			end), 30)
 		end),
 	})
 

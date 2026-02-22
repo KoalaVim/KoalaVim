@@ -67,6 +67,24 @@ HYDRAS['diff_viewer'] = {
 			{ expr = true },
 		},
 		{
+			'J',
+			function()
+				require('KoalaVim.utils.git').jump_to_git_dirty_file('next')
+				-- require('KoalaVim.utils.misc').center_screen()
+				return '<Ignore>'
+			end,
+			{ expr = true },
+		},
+		{
+			'K',
+			function()
+				require('KoalaVim.utils.git').jump_to_git_dirty_file('prev')
+				-- require('KoalaVim.utils.misc').center_screen()
+				return '<Ignore>'
+			end,
+			{ expr = true },
+		},
+		{
 			'<C-s>',
 			function()
 				require('gitsigns').stage_hunk(nil)
