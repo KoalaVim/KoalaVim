@@ -12,6 +12,7 @@ end
 
 function M.show_diff()
 	if vim.env.KOALA_CODE_DIFF then
+		require('format-on-leave').disable()
 		vim.cmd('CodeDiff')
 	else
 		vim.cmd('DiffviewOpen')

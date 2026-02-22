@@ -307,6 +307,15 @@ table.insert(M, {
 			accept_current = '<leader>cj',
 		},
 	},
+	keys = {
+		{
+			'<leader>gd',
+			function()
+				require('KoalaVim.utils.git').show_diff()
+			end,
+			desc = 'Git show diff',
+		},
+	},
 	config = function(_, opts)
 		local lifecycle = require('codediff.ui.lifecycle')
 		local nav = require('codediff.ui.view.navigation')
