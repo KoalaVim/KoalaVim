@@ -33,6 +33,7 @@ local function find_and_replace_in_path()
 end
 
 local function git_hist_path()
+	-- FIXME: support Codediff
 	vim.fn.execute('DiffviewFileHistory ' .. node_relative_path())
 end
 

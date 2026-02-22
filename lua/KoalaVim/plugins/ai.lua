@@ -196,7 +196,9 @@ table.insert(M, {
 	keys = {
 		{
 			'<C-g>',
-			'<cmd>DiffviewOpen<cr>',
+			function()
+				require('KoalaVim.utils.git').show_diff()
+			end,
 			ft = 'sidekick_terminal',
 			desc = 'Open Diff',
 			mode = { 'n', 't' },

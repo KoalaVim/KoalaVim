@@ -10,6 +10,14 @@ function M.show_status()
 	end
 end
 
+function M.show_diff()
+	if vim.env.KOALA_CODE_DIFF then
+		vim.cmd('CodeDiff')
+	else
+		vim.cmd('DiffviewOpen')
+	end
+end
+
 function M.show_tree(args)
 	vim.cmd('Flog -- ' .. args)
 end
@@ -29,6 +37,7 @@ function M.show_history(mode)
 	local start_line = start_pos[1]
 	local end_line = end_pos[1]
 
+	-- FIXME: support Codediff
 	api.nvim_command('DiffviewFileHistory -L' .. start_line .. ',' .. end_line .. ':' .. vim.fn.expand('%') .. ' %')
 end
 
@@ -96,12 +105,15 @@ function M.jump_to_git_dirty_file(direction)
 			api.nvim_feedkeys(direction == 'next' and 'gg' or 'G', 'n', false)
 
 			-- Defer + Schedule to run after feedkeys positions the cursor at gg/G
-			vim.defer_fn(vim.schedule_wrap(function()
-				require('gitsigns.actions').nav_hunk(
-					direction,
-					{ navigation_message = false, target = 'all', wrap = false }
-				)
-			end), 30)
+			vim.defer_fn(
+				vim.schedule_wrap(function()
+					require('gitsigns.actions').nav_hunk(
+						direction,
+						{ navigation_message = false, target = 'all', wrap = false }
+					)
+				end),
+				30
+			)
 		end),
 	})
 

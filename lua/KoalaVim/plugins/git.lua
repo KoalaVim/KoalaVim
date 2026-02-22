@@ -290,7 +290,24 @@ table.insert(M, {
 })
 
 table.insert(M, {
+	'esmuellert/codediff.nvim',
+	enabled = function()
+		return vim.env.KOALA_CODE_DIFF
+	end,
+	cmd = 'CodeDiff',
+	opts = {
+		explorer = {
+			position = 'bottom',
+			height = 10,
+		},
+	},
+})
+
+table.insert(M, {
 	'sindrets/diffview.nvim',
+	enabled = function()
+		return not vim.env.KOALA_CODE_DIFF
+	end,
 	cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
 	keys = {
 		{ '<leader>gd', '<cmd>DiffviewOpen<CR>', desc = 'Git show diff' },
@@ -544,15 +561,18 @@ table.insert(M, {
 		end
 
 		local function flog_diff_current()
+			-- FIXME: support Codediff
 			vim.cmd('DiffviewOpen ' .. flog_current_commit() .. '^')
 		end
 
 		function flog_diff_current_visual()
+			-- FIXME: support Codediff
 			local commits = flog_commit_range_visual()
 			vim.cmd('DiffviewOpen ' .. commits[2] .. '^..' .. commits[1])
 		end
 
 		local function flog_show_current()
+			-- FIXME: support Codediff
 			vim.cmd('DiffviewOpen ' .. flog_current_commit() .. '^..' .. flog_current_commit())
 		end
 

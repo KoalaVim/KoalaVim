@@ -262,6 +262,7 @@ function M.setup_lualine(is_half, opts)
 					'DiffviewFiles',
 					'sidekick_terminal',
 					'sidekick_koala_prompt',
+					'codediff-explorer',
 				},
 			},
 			globalstatus = true,
