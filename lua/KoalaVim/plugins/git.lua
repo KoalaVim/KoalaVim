@@ -290,7 +290,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'esmuellert/codediff.nvim',
+	'ofirgall/codediff.nvim', -- For custom key maps monkey patch...
 	enabled = function()
 		return vim.env.KOALA_CODE_DIFF
 	end,
@@ -325,6 +325,18 @@ table.insert(M, {
 			-- { 'n', '<M-r>', '<cmd>Gitsigns reset_hunk<CR>', { desc = 'Reset change' } },
 		end
 
+		-- Monkey patch codediff keymap set func
+		local orig_set_keymaps = require('codediff.ui.view.keymaps').setup_all_keymaps
+		require('codediff.ui.view.keymaps').setup_all_keymaps = function(
+			tabpage,
+			original_bufnr,
+			modified_bufnr,
+			is_explorer_mode
+		)
+			orig_set_keymaps(tabpage, original_bufnr, modified_bufnr, is_explorer_mode)
+			set_custom_keymaps(tabpage)
+		end
+
 		-- Set explorer height
 		local adjusted_explorers = {}
 		api.nvim_create_autocmd('BufWinEnter', {
@@ -340,7 +352,6 @@ table.insert(M, {
 				adjusted_explorers[events.buf] = true
 				vim.schedule(function()
 					vim.api.nvim_win_set_height(0, 10)
-					set_custom_keymaps(vim.api.nvim_get_current_tabpage())
 				end)
 			end,
 		})
