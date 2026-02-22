@@ -315,6 +315,8 @@ table.insert(M, {
 			end,
 			desc = 'Git show diff',
 		},
+		{ '<leader>gh', '<cmd>CodeDiff history %<CR>', desc = 'Git file History' },
+		{ '<leader>gH', '<cmd>CodeDiff history<CR>', desc = 'Git workspace History' },
 	},
 	config = function(_, opts)
 		local lifecycle = require('codediff.ui.lifecycle')
