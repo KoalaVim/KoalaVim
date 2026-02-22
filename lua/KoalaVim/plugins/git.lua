@@ -335,7 +335,7 @@ table.insert(M, {
 				lifecycle.set_tab_keymap(tabpage, 'n', '<M-p>', nav.prev_file, { desc = 'Prev file' })
 
 				lifecycle.set_tab_keymap(tabpage, 'n', '<M-j>', nav.next_hunk, { desc = 'Next change' })
-				lifecycle.set_tab_keymap(tabpage, 'n', '<M-k>', nav.next_hunk, { desc = 'Prev change' })
+				lifecycle.set_tab_keymap(tabpage, 'n', '<M-k>', nav.prev_hunk, { desc = 'Prev change' })
 
 				lifecycle.set_tab_keymap(
 					tabpage,
