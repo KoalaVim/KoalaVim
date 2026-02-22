@@ -317,6 +317,14 @@ table.insert(M, {
 		},
 		{ '<leader>gh', '<cmd>CodeDiff history %<CR>', desc = 'Git file History' },
 		{ '<leader>gH', '<cmd>CodeDiff history<CR>', desc = 'Git workspace History' },
+
+		-- FIXME: migrate
+		-- {
+		-- 	'gh',
+		-- 	'<Esc><cmd>lua require("KoalaVim.utils.git").show_history("v")<cr>',
+		-- 	mode = 'v',
+		-- 	desc = 'Show Git History of the visual selection',
+		-- },
 	},
 	config = function(_, opts)
 		local lifecycle = require('codediff.ui.lifecycle')
@@ -376,6 +384,20 @@ table.insert(M, {
 					toggle_explorer(tabpage)
 				end, { desc = 'Prev change' })
 			end
+
+			-- FIXME: migrate
+			-- file_panel = {
+			-- 	{ 'n', 'cc', '<cmd>Git commit<cr>', { desc = 'Stage file' } },
+			-- 	{ 'n', 's', actions.toggle_stage_entry, { desc = 'Stage file' } },
+			-- 	{ 'n', '=', actions.toggle_stage_entry, { desc = 'Stage file' } },
+			-- 	{ 'n', 'gf', actions.goto_file_edit, { desc = 'Close' } },
+			-- }
+			--
+			-- file_history_panel = {
+			-- 	{ 'n', 's', actions.open_in_diffview, { desc = 'Show full commit diff in diffview' } },
+			-- 	{ 'n', 'S', actions.open_commit_log, { desc = 'Show commit details' } },
+			-- 	{ 'n', 'gf', actions.goto_file_edit, { desc = 'Open the file in the previous tabpage' } },
+			-- }
 		end
 
 		-- Monkey patch codediff keymap set func
