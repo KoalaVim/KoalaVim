@@ -336,16 +336,15 @@ table.insert(M, {
 
 				lifecycle.set_tab_keymap(tabpage, 'n', '<M-j>', nav.next_hunk, { desc = 'Next change' })
 				lifecycle.set_tab_keymap(tabpage, 'n', '<M-k>', nav.next_hunk, { desc = 'Prev change' })
+
+				lifecycle.set_tab_keymap(tabpage, 'n', '<M-s>', '<cmd>Gitsigns stage_buffer<CR>', { desc = 'Stage change' })
+				lifecycle.set_tab_keymap(tabpage, 'n', '<M-u>', '<cmd>Gitsigns undo_stage_hunk<CR>', { desc = 'Undo Stage change' })
+				lifecycle.set_tab_keymap(tabpage, 'n', '<M-r>', '<cmd>Gitsigns reset_hunk<CR>', { desc = 'Reset change' })
 			end
 
 			if is_explorer_mode then
 				lifecycle.set_tab_keymap(tabpage, 'n', '<M-m>', function() toggle_explorer(tabpage) end, { desc = 'Prev change' })
 			end
-
-			-- FIXME: can we use gitsigns?
-			-- { 'n', '<M-s>', '<cmd>Gitsigns stage_buffer<CR>', { desc = 'Stage change' } },
-			-- { 'n', '<M-u>', '<cmd>Gitsigns undo_stage_hunk<CR>', { desc = 'Undo Stage change' } },
-			-- { 'n', '<M-r>', '<cmd>Gitsigns reset_hunk<CR>', { desc = 'Reset change' } },
 		end
 
 		-- Monkey patch codediff keymap set func
