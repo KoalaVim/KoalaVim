@@ -301,24 +301,46 @@ table.insert(M, {
 			position = 'bottom',
 			height = 10, -- Doesn't work
 		},
+		conflict = {
+			-- FIXME: test
+			accept_incoming = "<leader>ck",
+			accept_current = "<leader>cj",
+		}
 	},
 	config = function(_, opts)
 		local lifecycle = require('codediff.ui.lifecycle')
 		local nav = require('codediff.ui.view.navigation')
-		local function set_custom_keymaps(tabpage)
-			lifecycle.set_tab_keymap(tabpage, 'n', '<tab>', nav.next_file, { desc = 'Next file' })
-			lifecycle.set_tab_keymap(tabpage, 'n', '<s-tab>', nav.prev_file, { desc = 'Prev file' })
-			lifecycle.set_tab_keymap(tabpage, 'n', '<M-n>', nav.next_file, { desc = 'Next file' })
-			lifecycle.set_tab_keymap(tabpage, 'n', '<M-p>', nav.prev_file, { desc = 'Prev file' })
 
-			lifecycle.set_tab_keymap(tabpage, 'n', '<M-j>', nav.next_hunk, { desc = 'Next change' })
-			lifecycle.set_tab_keymap(tabpage, 'n', '<M-k>', nav.next_hunk, { desc = 'Prev change' })
+		-- FIXME: support custom keymaps in codediff to get rid of this shit code
+		-- Helper: Toggle explorer visibility (explorer mode only)
+		local function toggle_explorer(tabpage)
+			local explorer_obj = lifecycle.get_explorer(tabpage)
+			if not explorer_obj then
+				vim.notify('No explorer found for this tab', vim.log.levels.WARN)
+				return
+			end
+			local explorer = require('codediff.ui.explorer')
+			explorer.toggle_visibility(explorer_obj)
+		end
 
-			-- TODO:
-			-- { 'n', '<M-n>', actions.focus_files, { desc = 'Focus files panel' } },
-			-- { 'n', '<M-m>', actions.toggle_files, { desc = 'Toggle files panel' } },
-			-- { 'n', '<leader>ck', actions.conflict_choose('ours'), { desc = 'Choose OURS (up) conflict' } },
-			-- { 'n', '<leader>cj', actions.conflict_choose('theirs'), { desc = 'Choose OURS (down) conflict' } },
+		local function set_custom_keymaps(tabpage, is_explorer_mode)
+			-- Check if this is history mode
+			local session = lifecycle.get_session(tabpage)
+			local is_history_mode = session and session.mode == 'history'
+
+			if is_explorer_mode or is_history_mode then
+				lifecycle.set_tab_keymap(tabpage, 'n', '<tab>', nav.next_file, { desc = 'Next file' })
+				lifecycle.set_tab_keymap(tabpage, 'n', '<s-tab>', nav.prev_file, { desc = 'Prev file' })
+				lifecycle.set_tab_keymap(tabpage, 'n', '<M-n>', nav.next_file, { desc = 'Next file' })
+				lifecycle.set_tab_keymap(tabpage, 'n', '<M-p>', nav.prev_file, { desc = 'Prev file' })
+
+				lifecycle.set_tab_keymap(tabpage, 'n', '<M-j>', nav.next_hunk, { desc = 'Next change' })
+				lifecycle.set_tab_keymap(tabpage, 'n', '<M-k>', nav.next_hunk, { desc = 'Prev change' })
+			end
+
+			if is_explorer_mode then
+				lifecycle.set_tab_keymap(tabpage, 'n', '<M-m>', function() toggle_explorer(tabpage) end, { desc = 'Prev change' })
+			end
 
 			-- FIXME: can we use gitsigns?
 			-- { 'n', '<M-s>', '<cmd>Gitsigns stage_buffer<CR>', { desc = 'Stage change' } },
@@ -335,7 +357,7 @@ table.insert(M, {
 			is_explorer_mode
 		)
 			orig_set_keymaps(tabpage, original_bufnr, modified_bufnr, is_explorer_mode)
-			set_custom_keymaps(tabpage)
+			set_custom_keymaps(tabpage, is_explorer_mode)
 		end
 
 		-- Set explorer height
