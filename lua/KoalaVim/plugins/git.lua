@@ -152,6 +152,7 @@ table.insert(M, {
 		mappings = {
 			popup = {
 				['p'] = 'PushPopup',
+				['gp'] = 'PushPopup',
 				['P'] = 'PullPopup',
 				['l'] = false,
 				['t'] = 'LogPopup', -- tree
