@@ -702,6 +702,7 @@ table.insert(M, {
 		recipe = { 'default', { animate = false } },
 		ncmode = 'windows',
 		fadelevel = 0.4,
+		enablefocusfading = true,
 	},
 })
 return M
