@@ -648,6 +648,7 @@ table.insert(M, {
 
 table.insert(M, {
 	'ofirgall/commit-prefix.nvim',
+	enabled = false, -- Solve prefixes with commit-msg hooks are much better approach
 	ft = 'gitcommit',
 	config = function()
 		require('commit-prefix').setup()
