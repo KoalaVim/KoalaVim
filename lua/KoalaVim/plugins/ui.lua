@@ -696,4 +696,12 @@ table.insert(M, {
 	specs = {},
 })
 
+table.insert(M, {
+	'tadaa/vimade', -- Dims inactive windows
+	opts = {
+		recipe = { 'default', { animate = false } },
+		ncmode = 'windows',
+		fadelevel = 0.4,
+	},
+})
 return M
