@@ -706,7 +706,12 @@ table.insert(M, {
 		blocklist = {
 			default = {
 				buf_opts = {
-					ft = { 'git', 'floggraph' },
+					ft = {
+						'git',
+						'floggraph',
+						-- FIXME: fix tinting fucks up coloring
+						'NeogitStatus', -- to avoid coloring issues
+					},
 				},
 			},
 		},
