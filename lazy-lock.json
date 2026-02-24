@@ -20,6 +20,7 @@
   "cmp-nvim-lsp": { "branch": "main", "commit": "cbc7b02bb99fae35cb42f514762b89b5126651ef" },
   "cmp-path": { "branch": "main", "commit": "c642487086dbd9a93160e1679a1327be111cbc25" },
   "cmp-snippy": { "branch": "master", "commit": "6e39210aa3a74e2bf6462f492eaf0d436cd2b7d3" },
+  "codediff.nvim": { "branch": "main", "commit": "253d31a162b992a0c28109626f6e992a312bcf3d" },
   "color-picker.nvim": { "branch": "master", "commit": "06cb5f853535dea529a523e9a0e8884cdf9eba4d" },
   "colorful-winsep.nvim": { "branch": "main", "commit": "cc514e64dd9b33f56d28fbd977ebd8397892e349" },
   "command-and-cursor.nvim": { "branch": "master", "commit": "a3c47385483d7360e85a86c67b485b0f562dce32" },
@@ -145,5 +146,6 @@
   "vim-snippets": { "branch": "master", "commit": "9ffe6dccaed68a0f86a1b16700c7926de891cdb6" },
   "vim-spellsync": { "branch": "master", "commit": "ea9f431483ceb40ede8bd5b126a03eccd49b1bc0" },
   "vim-visual-multi": { "branch": "master", "commit": "a6975e7c1ee157615bbc80fc25e4392f71c344d4" },
+  "which-key.nvim": { "branch": "main", "commit": "3aab2147e74890957785941f0c1ad87d0a44c15a" },
   "yanky.nvim": { "branch": "main", "commit": "04fc42b94305d94948c9c197f679336668af3292" }
 }

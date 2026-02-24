@@ -3,7 +3,7 @@ local M = {}
 local api = vim.api
 
 function M.show_status()
-	if vim.env.NEOGIT then
+	if vim.env.NEOGIT == 'true' then
 		require('neogit').open({ kind = 'floating' })
 	else
 		vim.cmd('G')
@@ -11,7 +11,7 @@ function M.show_status()
 end
 
 function M.show_diff()
-	if vim.env.KOALA_CODE_DIFF then
+	if vim.env.KOALA_CODE_DIFF == 'true' then
 		require('format-on-leave').disable()
 		vim.cmd('CodeDiff')
 	else

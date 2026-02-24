@@ -97,7 +97,7 @@ table.insert(M, {
 table.insert(M, {
 	'ofirgall/neogit',
 	enabled = function()
-		return vim.env.NEOGIT
+		return vim.env.NEOGIT == 'true'
 	end,
 	lazy = true,
 	dependencies = {
@@ -228,7 +228,7 @@ end
 
 local _fugitive_keys = {}
 
-if not vim.env.NEOGIT then
+if vim.env.NEOGIT ~= 'true' then
 	_fugitive_keys = {
 		{ '<leader>gc', '<cmd>Git commit<CR>', desc = 'Git commit' },
 		{ '<leader>gac', '<cmd>Git commit --amend<CR>', desc = 'Git commit --amend' },
@@ -293,7 +293,7 @@ table.insert(M, {
 table.insert(M, {
 	'ofirgall/codediff.nvim', -- For custom key maps monkey patch...
 	enabled = function()
-		return vim.env.KOALA_CODE_DIFF
+		return vim.env.KOALA_CODE_DIFF == 'true'
 	end,
 	cmd = 'CodeDiff',
 	opts = {
@@ -438,7 +438,7 @@ table.insert(M, {
 table.insert(M, {
 	'sindrets/diffview.nvim',
 	enabled = function()
-		return not vim.env.KOALA_CODE_DIFF
+		return vim.env.KOALA_CODE_DIFF ~= 'true'
 	end,
 	cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
 	keys = {
