@@ -703,6 +703,13 @@ table.insert(M, {
 		ncmode = 'windows',
 		fadelevel = 0.4,
 		enablefocusfading = true,
+		blocklist = {
+			default = {
+				buf_opts = {
+					ft = { 'git', 'floggraph' },
+				},
+			},
+		},
 	},
 })
 return M
