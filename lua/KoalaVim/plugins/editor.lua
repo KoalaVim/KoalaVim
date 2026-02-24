@@ -695,6 +695,7 @@ table.insert(M, {
 		input = { enabled = false },
 		picker = { enabled = false },
 		notifier = {
+			timeout = 1800,
 			enabled = true,
 			style = 'fancy',
 		},
