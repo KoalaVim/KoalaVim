@@ -15,6 +15,7 @@ if fd then
 end
 
 LSP_SERVERS['ltex'] = {
+	dont_setup = true, -- Disable for now
 	filetypes = { 'bib', 'markdown', 'org', 'plaintex', 'rst', 'rnoweb', 'tex' },
 	autostart = false,
 	settings = {
