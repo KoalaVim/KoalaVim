@@ -24,14 +24,26 @@ HYDRAS['diff_viewer'] = {
 		},
 		on_enter = function()
 			local diff = api.nvim_get_option_value('diff', {})
-			if not diff then
-				require('inlinediff').enable()
+			if diff then
+				return
 			end
+
+			local win_id = api.nvim_get_current_win()
+			if vim.w[win_id].code_diff_win then
+				return
+			end
+
+			require('inlinediff').enable()
 		end,
 		on_exit = function()
 			local diff = api.nvim_get_option_value('diff', {})
 			if not diff then
 				require('inlinediff').disable()
+			end
+
+			local win_id = api.nvim_get_current_win()
+			if vim.w[win_id].code_diff_win then
+				return
 			end
 		end,
 	},

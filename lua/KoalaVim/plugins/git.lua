@@ -412,7 +412,7 @@ table.insert(M, {
 			set_custom_keymaps(tabpage, is_explorer_mode)
 		end
 
-		-- Disable vimmade on code diff
+		-- Disable vimmade on code diff and mark windows as codediff
 		local View = require('codediff.ui.view')
 		local orignal_view_create = View.create
 		function View.create(...)
@@ -420,6 +420,7 @@ table.insert(M, {
 			local tabpage = vim.api.nvim_get_current_tabpage()
 			for _, win_id in ipairs(vim.api.nvim_tabpage_list_wins(tabpage)) do
 				vim.w[win_id].vimade_disabled = 1
+				vim.w[win_id].code_diff_win = true
 			end
 		end
 
