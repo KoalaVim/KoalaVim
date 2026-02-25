@@ -412,6 +412,17 @@ table.insert(M, {
 			set_custom_keymaps(tabpage, is_explorer_mode)
 		end
 
+		-- Disable vimmade on code diff
+		local View = require('codediff.ui.view')
+		local orignal_view_create = View.create
+		function View.create(...)
+			orignal_view_create(...)
+			local tabpage = vim.api.nvim_get_current_tabpage()
+			for _, win_id in ipairs(vim.api.nvim_tabpage_list_wins(tabpage)) do
+				vim.w[win_id].vimade_disabled = 1
+			end
+		end
+
 		-- Set explorer height
 		local adjusted_explorers = {}
 		api.nvim_create_autocmd('BufWinEnter', {
