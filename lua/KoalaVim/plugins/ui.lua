@@ -709,6 +709,7 @@ table.insert(M, {
 					ft = {
 						'git',
 						'floggraph',
+						'sidekick_terminal',
 						-- FIXME: fix tinting fucks up coloring
 						'NeogitStatus', -- to avoid coloring issues
 					},
