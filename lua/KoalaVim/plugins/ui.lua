@@ -701,7 +701,7 @@ table.insert(M, {
 	opts = {
 		recipe = { 'default', { animate = false } },
 		ncmode = 'windows',
-		fadelevel = 0.4,
+		fadelevel = 0.55,
 		enablefocusfading = true,
 		blocklist = {
 			default = {
