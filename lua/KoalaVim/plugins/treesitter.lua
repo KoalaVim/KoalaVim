@@ -16,11 +16,12 @@ table.insert(M, {
 
 		local usercmd = require('KoalaVim.utils.cmd')
 		local function _enable_ts(ft, bufid)
-			if vim.tbl_contains(available_langs, ft) then
+			local lang = vim.treesitter.language.get_lang(ft)
+			if vim.tbl_contains(available_langs, lang) then
 				enabled[bufid] = true
 
 				-- install if not exist
-				require('nvim-treesitter').install(ft):await(function()
+				require('nvim-treesitter').install(lang):await(function()
 					-- syntax highlighting, provided by Neovim
 					vim.treesitter.start(bufid)
 					-- folds, provided by Neovim
