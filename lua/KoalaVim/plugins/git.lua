@@ -706,8 +706,11 @@ table.insert(M, {
 		end
 
 		local function flog_diff_current()
-			-- FIXME: support Codediff
-			vim.cmd('DiffviewOpen ' .. flog_current_commit() .. '^')
+			if vim.env.KOALA_CODE_DIFF == 'true' then
+				vim.cmd('CodeDiff ' .. flog_current_commit())
+			else
+				vim.cmd('DiffviewOpen ' .. flog_current_commit())
+			end
 		end
 
 		function flog_diff_current_visual()
