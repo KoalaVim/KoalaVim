@@ -480,26 +480,28 @@ table.insert(M, {
 		local wk = require('which-key')
 		wk.setup(opts)
 
+		-- FIXME: migrate to new format
 		-- TODO: <leader>fm as operator
-		local keymaps = {
-			mode = { 'n' },
-			['<leader>f'] = { name = '+search' },
-			['<leader>g'] = { name = '+git' },
-			['<leader>h'] = { name = '+git hunks' },
-			['<leader>q'] = { name = '+quit' },
-			['g'] = { name = '+goto' },
-			[']'] = { name = '+next' },
-			['['] = { name = '+prev' },
-			['s'] = { name = '+surround/split args' },
-		}
+		-- local keymaps = {
+		-- 	mode = { 'n' },
+		-- 	['<leader>f'] = { name = '+search' },
+		-- 	['<leader>g'] = { name = '+git' },
+		-- 	['<leader>h'] = { name = '+git hunks' },
+		-- 	['<leader>q'] = { name = '+quit' },
+		-- 	['g'] = { name = '+goto' },
+		-- 	[']'] = { name = '+next' },
+		-- 	['['] = { name = '+prev' },
+		-- 	['s'] = { name = '+surround/split args' },
+		-- }
 
+		-- FIXME: migrate to new format
 		-- Hack to show surround and split args
-		local map = require('KoalaVim.utils.map').map
+		-- local map = require('KoalaVim.utils.map').map
 		-- stylua: ignore
-		map('n', 's', function() wk.show_command('s') end, '', {})
-		map('', '<leader><leader>', '<cmd>WhichKey<cr>', '', {})
+		-- map('n', 's', function() wk.show_command('s') end, '', {})
+		-- map('', '<leader><leader>', '<cmd>WhichKey<cr>', '', {})
 
-		wk.register(keymaps)
+		-- wk.register(keymaps)
 	end,
 })
 
@@ -710,6 +712,7 @@ table.insert(M, {
 						'git',
 						'floggraph',
 						'sidekick_terminal',
+						'DiffviewFiles',
 						-- FIXME: fix tinting fucks up coloring
 						'NeogitStatus', -- to avoid coloring issues
 					},
