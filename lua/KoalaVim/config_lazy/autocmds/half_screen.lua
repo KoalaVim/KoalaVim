@@ -102,7 +102,10 @@ local function set_full_layout()
 end
 
 local function is_half()
-	return api.nvim_get_option_value('columns', {}) <= conf.full_screen_width / 2
+	if conf.full_screen_width == vim.NIL then
+		return false
+	end
+	return conf.full_screen_width and api.nvim_get_option_value('columns', {}) <= conf.full_screen_width / 2
 end
 
 local function set_layout()
