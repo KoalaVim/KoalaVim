@@ -318,13 +318,12 @@ table.insert(M, {
 		{ '<leader>gh', '<cmd>CodeDiff history %<CR>', desc = 'Git file History' },
 		{ '<leader>gH', '<cmd>CodeDiff history<CR>', desc = 'Git workspace History' },
 
-		-- FIXME: migrate
-		-- {
-		-- 	'gh',
-		-- 	'<Esc><cmd>lua require("KoalaVim.utils.git").show_history("v")<cr>',
-		-- 	mode = 'v',
-		-- 	desc = 'Show Git History of the visual selection',
-		-- },
+		{
+			'gh',
+			"<Esc><cmd>'<,'>CodeDiff history<cr>",
+			mode = 'v',
+			desc = 'Show Git History of the visual selection',
+		},
 	},
 	config = function(_, opts)
 		local lifecycle = require('codediff.ui.lifecycle')
