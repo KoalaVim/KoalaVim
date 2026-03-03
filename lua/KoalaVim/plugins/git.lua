@@ -306,6 +306,9 @@ table.insert(M, {
 			accept_incoming = '<leader>ck',
 			accept_current = '<leader>cj',
 		},
+		diff = {
+			conflict_ours_position = 'left',
+		},
 	},
 	keys = {
 		{
