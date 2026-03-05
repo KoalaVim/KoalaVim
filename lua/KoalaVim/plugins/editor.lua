@@ -24,6 +24,8 @@ table.insert(M, {
 				return
 			end
 
+			-- FIXME: disable autosave on codediff (for conflicts)
+
 			local mode = vim.api.nvim_get_mode()
 			-- Don't save while we in insert/select mode (triggered with autopair and such)
 			if mode.mode ~= 'n' then
@@ -704,6 +706,19 @@ table.insert(M, {
 		scroll = { enabled = false },
 		statuscolumn = { enabled = false },
 		words = { enabled = false },
+		dim = {
+			scope = {
+				min_size = 2,
+				max_size = 20,
+				siblings = true,
+			},
+			-- animate scopes. Enabled by default for Neovim >= 0.10
+			-- Works on older versions but has to trigger redraws during animation.
+			---@type snacks.animate.Config|{enabled?: boolean}
+			animate = {
+				enabled = false,
+			},
+		},
 
 		styles = {
 			notification_history = {
@@ -731,6 +746,13 @@ table.insert(M, {
 				Snacks.notifier.hide()
 			end,
 			desc = 'Dismiss All Notifications',
+		},
+		{
+			'<leader>ud',
+			function()
+				Snacks.toggle.get('dim'):toggle()
+			end,
+			desc = 'Toggle dim',
 		},
 	},
 })
