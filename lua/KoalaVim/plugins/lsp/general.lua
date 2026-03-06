@@ -454,6 +454,8 @@ table.insert(M, {
 	},
 	config = function(_, opts)
 		require('diagflow').setup(opts)
+		-- diagflow uses vim.fn.sign_getdefined to get diagnostic icons
+		require('KoalaVim.utils.lsp').setup_diagnostic_signs()
 		vim.api.nvim_create_autocmd('InsertEnter', {
 			callback = require('KoalaVim.utils.lsp').disable_diagflow,
 		})
