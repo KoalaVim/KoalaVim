@@ -1,11 +1,9 @@
 local M = {}
 
 -- FIXME: vim.lsp: jsonls and yamlls used to be lazy setup. needs to see if requires migration to new api
-LSP_SERVERS['jsonls'] = {
-}
+LSP_SERVERS['jsonls'] = {}
 
-LSP_SERVERS['yamlls'] = {
-}
+LSP_SERVERS['yamlls'] = {}
 
 table.insert(M, {
 	'b0o/SchemaStore.nvim',
