@@ -437,7 +437,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'ofirgall/diagflow.nvim', -- fork
+	'KoalaVim/diagflow.nvim', -- fork
 	event = 'LspAttach',
 	opts = {
 		scope = 'line',
