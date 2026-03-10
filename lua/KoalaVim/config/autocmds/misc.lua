@@ -15,5 +15,6 @@ vim.filetype.add({
 	extension = {
 		mdc = 'markdown',
 		tmux = 'tmux',
+		tofu = 'terraform',
 	},
 })
