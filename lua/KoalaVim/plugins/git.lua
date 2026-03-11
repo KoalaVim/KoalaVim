@@ -684,6 +684,7 @@ table.insert(M, {
 		vim.g.flog_default_opts = {
 			max_count = 512,
 			date = 'short',
+			auto_update = true,
 		}
 
 		local function get_flog_commit(line)
