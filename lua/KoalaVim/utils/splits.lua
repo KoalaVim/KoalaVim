@@ -32,9 +32,19 @@ function M.close_all_but_current()
 	end
 end
 
+local function count_normal_wins()
+	local count = 0
+	for _, win in ipairs(api.nvim_list_wins()) do
+		if api.nvim_win_get_config(win).relative == '' then
+			count = count + 1
+		end
+	end
+	return count
+end
+
 function M.close()
 	local bufnr = api.nvim_get_current_buf()
-	if #api.nvim_list_wins() == 1 then -- Sometimes its reports 2 instead of 1
+	if count_normal_wins() <= 1 then
 		api.nvim_feedkeys(':q\n', 'n', false)
 		return
 	end
