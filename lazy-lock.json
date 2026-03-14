@@ -133,7 +133,7 @@
   "toggleterm.nvim": { "branch": "main", "commit": "9a88eae817ef395952e08650b3283726786fb5fb" },
   "treesj": { "branch": "main", "commit": "186084dee5e9c8eec40f6e39481c723dd567cb05" },
   "trouble.nvim": { "branch": "main", "commit": "14ea233434172e9f626b78373ff959bf6018c23e" },
-  "undotree": { "branch": "master", "commit": "178d19e00a643f825ea11d581b1684745d0c4eda" },
+  "undotree": { "branch": "master", "commit": "1b55f0406b816ecaf9cb221d83b2a70b4f4192fd" },
   "venn.nvim": { "branch": "main", "commit": "b09c2f36ddf70b498281845109bedcf08a7e0de0" },
   "vim-be-good": { "branch": "master", "commit": "0ae3de14eb8efc6effe7704b5e46495e91931cc5" },
   "vim-buffest": { "branch": "master", "commit": "6ed80444d687cbcb11dcbe83dd94ec9888329f1b" },

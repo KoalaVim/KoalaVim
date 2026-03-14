@@ -507,10 +507,19 @@ table.insert(M, {
 table.insert(M, {
 	'mbbill/undotree',
 	cmd = 'UndotreeToggle',
+	keys = {
+		{
+			'<leader>uu',
+			'<cmd>UndotreeToggle<cr>',
+			mode = { 'n', 't' },
+		},
+	},
 	config = function()
-		vim.g.undotree_WindowLayout = 3
+		vim.g.undotree_WindowLayout = 4
 		vim.g.undotree_SplitWidth = 50
 		vim.g.undotree_SetFocusWhenToggle = 1
+		vim.g.undotree_DiffDisplayCommand = 'delta'
+		vim.g.undotree_DiffpanelHeight = 20
 	end,
 })
 
