@@ -135,6 +135,7 @@ function M.setup_lualine(is_half, opts)
 		lualine_z = {
 			{ 'filetype', icon_only = true, separator = '', padding = 0 },
 			{ 'location', padding = 0 },
+			{ 'progress', padding = { left = 0, right = 1 }  },
 		}
 	else
 		lualine_a = { { 'mode', separator = { left = '' } } }
@@ -142,7 +143,8 @@ function M.setup_lualine(is_half, opts)
 		lualine_y = y_section
 		lualine_z = {
 			{ 'filetype', padding = 0, separator = ' ' },
-			{ 'location', padding = { left = 0, right = 1 } },
+			{ 'location', padding = 0, separator = ' ' },
+			{ 'progress', padding = { left = 0, right = 1 }  },
 		}
 	end
 
