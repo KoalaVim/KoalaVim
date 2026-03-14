@@ -135,7 +135,7 @@ function M.setup_lualine(is_half, opts)
 		lualine_z = {
 			{ 'filetype', icon_only = true, separator = '', padding = 0 },
 			{ 'location', padding = 0 },
-			{ 'progress', padding = { left = 0, right = 1 }  },
+			{ 'progress', padding = { left = 0, right = 1 } },
 		}
 	else
 		lualine_a = { { 'mode', separator = { left = '' } } }
@@ -144,7 +144,7 @@ function M.setup_lualine(is_half, opts)
 		lualine_z = {
 			{ 'filetype', padding = 0, separator = ' ' },
 			{ 'location', padding = 0, separator = ' ' },
-			{ 'progress', padding = { left = 0, right = 1 }  },
+			{ 'progress', padding = { left = 0, right = 1 } },
 		}
 	end
 
@@ -265,6 +265,8 @@ function M.setup_lualine(is_half, opts)
 					'sidekick_terminal',
 					'sidekick_koala_prompt',
 					'codediff-explorer',
+					'undo-diff',
+					'undo-tree',
 				},
 			},
 			globalstatus = true,
