@@ -23,8 +23,27 @@ table.insert(M, {
 	end,
 })
 
--- FIXME: only for cursor
+local function is_cursor()
+	local ok, State = pcall(require, 'sidekick.cli.state')
+	if not ok then
+		return false
+	end
+	local states = State.get({ attached = true })
+	for _, state in ipairs(states) do
+		if state.tool and state.tool.name == 'cursor' then
+			return true
+		end
+	end
+	return false
+end
+
+--- Extracts the prompt text from cursor's box-drawing UI.
+--- Only works with cursor CLI.
 local function get_prompt()
+	if not is_cursor() then
+		return {}
+	end
+
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
 
 	-- Find the last box (bottom-up search)
@@ -39,7 +58,7 @@ local function get_prompt()
 	end
 
 	if not box_start or not box_end then
-		return ''
+		return {}
 	end
 
 	local prompt_lines = {}
@@ -81,10 +100,11 @@ local function edit_prompt()
 			if content ~= '' then
 				-- Using internal sidekick cli to not parse "{}" variables
 				require('sidekick.cli.state').with(function(state)
-					-- FIXME: cursor only?
-					-- Clear current prompt content: Sends C+c
-					local termbufid = state.terminal.buf
-					vim.api.nvim_chan_send(vim.bo[termbufid].channel, '\x03')
+					if is_cursor() then
+						-- Clear current prompt content in cursor: Sends C+c
+						local termbufid = state.terminal.buf
+						vim.api.nvim_chan_send(vim.bo[termbufid].channel, '\x03')
+					end
 
 					state.session:send(content)
 				end, {
@@ -205,58 +225,67 @@ table.insert(M, {
 			mode = { 'n', 't' },
 		},
 		{
-			-- FIXME: apply only in cursor
 			'<C-.>',
-			'<S-tab>',
+			function()
+				if is_cursor() then
+					local key = vim.api.nvim_replace_termcodes('<S-tab>', true, false, true)
+					vim.api.nvim_feedkeys(key, 't', false)
+				end
+			end,
 			ft = 'sidekick_terminal',
 			desc = 'Switch cursor modes',
 			mode = { 'n', 't' },
 		},
 		{
-			-- FIXME: apply only in cursor
 			'<C-e>',
 			function()
-				edit_prompt()
+				if is_cursor() then
+					edit_prompt()
+				end
 			end,
 			ft = 'sidekick_terminal',
 			desc = 'edit prompt in neovim buffer',
 			mode = { 'n', 't' },
 		},
 		{
-			-- FIXME: apply only in cursor
 			']p',
 			function()
-				nav_to_prompt('n')
+				if is_cursor() then
+					nav_to_prompt('n')
+				end
 			end,
 			ft = 'sidekick_terminal',
 			desc = 'go to next prompt',
 			mode = { 'n', 't' },
 		},
 		{
-			-- FIXME: apply only in cursor
 			'[p',
 			function()
-				nav_to_prompt('N')
+				if is_cursor() then
+					nav_to_prompt('N')
+				end
 			end,
 			ft = 'sidekick_terminal',
 			desc = 'go to next prompt',
 			mode = { 'n', 't' },
 		},
 		{
-			-- FIXME: apply only in cursor
 			'gj',
 			function()
-				nav_to_prompt('n')
+				if is_cursor() then
+					nav_to_prompt('n')
+				end
 			end,
 			ft = 'sidekick_terminal',
 			desc = 'go to next prompt',
 			mode = 'n',
 		},
 		{
-			-- FIXME: apply only in cursor
 			'gk',
 			function()
-				nav_to_prompt('N')
+				if is_cursor() then
+					nav_to_prompt('N')
+				end
 			end,
 			ft = 'sidekick_terminal',
 			desc = 'go to next prompt',
