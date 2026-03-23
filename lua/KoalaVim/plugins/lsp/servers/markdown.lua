@@ -64,6 +64,7 @@ table.insert(M, {
 table.insert(M, {
 	'MeanderingProgrammer/render-markdown.nvim',
 	opts = {
+		enabled = false,
 		code = {
 			sign = false,
 			width = 'block',
@@ -74,7 +75,7 @@ table.insert(M, {
 			icons = {},
 		},
 	},
-	ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
+	-- ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
 	keys = {
 		{
 			'<leader>up',
