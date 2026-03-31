@@ -4,6 +4,7 @@
 
 
 Extendable preconfigured configuration for Neovim powered by [lazy.nvim](https://github.com/folke/lazy.nvim).
+NVIM version: v0.11.5
 
 <br><br><br><br><br><br>
 
