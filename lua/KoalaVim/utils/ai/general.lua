@@ -99,4 +99,25 @@ function M.nav_to_prompt(search_char)
 	f()
 end
 
+local HALF_RATIO = 0.5
+local MAX_RATIO = 0.95
+
+function M.toggle_max()
+	if vim.bo.filetype ~= 'sidekick_terminal' then
+		return
+	end
+
+	local cols = vim.o.columns
+	local win_width = vim.api.nvim_win_get_width(0)
+	local half_width = math.floor(cols * HALF_RATIO)
+	local max_width = math.floor(cols * MAX_RATIO)
+
+	-- vim.print({ cols = cols, win_width = win_width, half_width = half_width, max_width = max_width })
+	if win_width < half_width or win_width >= max_width then
+		vim.api.nvim_win_set_width(0, half_width)
+	else
+		vim.api.nvim_win_set_width(0, max_width)
+	end
+end
+
 return M

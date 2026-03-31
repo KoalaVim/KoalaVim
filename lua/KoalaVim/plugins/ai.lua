@@ -134,6 +134,15 @@ table.insert(M, {
 			mode = 'n',
 		},
 		{
+			'<C-m>',
+			function()
+				ai.toggle_max()
+			end,
+			ft = 'sidekick_terminal',
+			desc = 'Toggle max/half size of sidekick terminal',
+			mode = { 'n', 't' },
+		},
+		{
 			'<leader>uN',
 			function()
 				require('sidekick.nes').toggle()
