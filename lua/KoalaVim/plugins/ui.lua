@@ -703,6 +703,7 @@ table.insert(M, {
 
 table.insert(M, {
 	'tadaa/vimade', -- Dims inactive windows
+	enabled = false,
 	opts = {
 		recipe = { 'default', { animate = false } },
 		ncmode = 'windows',
