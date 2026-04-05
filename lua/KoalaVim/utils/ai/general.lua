@@ -87,6 +87,7 @@ function M.edit_prompt()
 end
 
 function M.nav_to_prompt(search_char)
+	-- in claude: ❯
 	local f = function()
 		vim.fn.setreg('/', ' ┌─')
 		vim.cmd('normal! ' .. search_char)
@@ -97,6 +98,11 @@ function M.nav_to_prompt(search_char)
 		f = vim.schedule_wrap(f)
 	end
 	f()
+end
+
+function M.get_attached_agent()
+	-- FIXME: detect which agent sidekick runs
+	-- require("sidekick.cli.state").get({attached = true})[1]['tool']['name'])
 end
 
 local HALF_RATIO = 0.5
