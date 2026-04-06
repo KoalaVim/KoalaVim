@@ -9,6 +9,12 @@
 
 set -e
 
+# Resolve env name from hook location
+# Path: ~/.local/share/kvim-envs/<env>/lazy/KoalaVim/hook/pre-commit
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+KV_ENV="$(basename "$(dirname "$(dirname "$(dirname "$HOOK_DIR")")")")"
+
+
 ### Update lock file ###
 # Stash dirty before generating lockfile
 cleanup_stash() {
@@ -22,7 +28,7 @@ if [ "$res" != "No local changes to save" ]; then
 	trap cleanup_stash EXIT
 fi
 
-res="$(sh -c "unset NVIM_LISTEN_ADDRESS && KOALA_LOCKFILE_DST=lazy-lock.json kv -l ./dev/gen_lockfile_init.lua -- --headless" 2>&1 | tr -d '\r')"
+res="$(sh -c "unset NVIM_LISTEN_ADDRESS && KOALA_LOCKFILE_DST=lazy-lock.json kv --env $KV_ENV -l ./dev/gen_lockfile_init.lua -- --headless" 2>&1 | tr -d '\r')"
 
 if [ "$res" != "1" ]; then
 	echo "pre-commit: failed to generate 'lazy-lock.json' with './dev/gen_lockfile_init.lua'"
