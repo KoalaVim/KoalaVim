@@ -307,6 +307,7 @@ table.insert(M, {
 			accept_current = '<leader>cj',
 		},
 		diff = {
+			layout = 'inline',
 			conflict_ours_position = 'left',
 		},
 	},
