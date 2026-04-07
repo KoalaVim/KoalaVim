@@ -48,7 +48,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'ofirgall/guess-indent.nvim', -- fork
+	'KoalaVim/guess-indent.nvim', -- fork
 	priority = 200, -- Load before auto-session
 	opts = {
 		post_guess_hook = function(is_tabs)
