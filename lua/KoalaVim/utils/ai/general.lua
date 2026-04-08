@@ -1,9 +1,31 @@
 local M = {}
 
+local SUPPORTED_AGENTS = { cursor = true, claude = true }
+
+local function check_agent()
+	local agent = M.get_attached_agent()
+	if not agent then
+		vim.notify('No AI agent attached', vim.log.levels.WARN)
+		return nil
+	end
+	if not SUPPORTED_AGENTS[agent] then
+		vim.notify('Unsupported AI agent: ' .. agent, vim.log.levels.WARN)
+		return nil
+	end
+	return agent
+end
+
 --- Opens a split with a temporary buffer for editing a prompt.
 --- On closing the buffer, sends its content to sidekick CLI.
 function M.edit_prompt()
-	local current_prompt_lines = require('KoalaVim.utils.ai.cursor').get_prompt()
+	local agent = check_agent()
+	if not agent then
+		return
+	end
+
+	local get_prompt = agent == 'claude' and require('KoalaVim.utils.ai.claude').get_prompt
+		or require('KoalaVim.utils.ai.cursor').get_prompt
+	local current_prompt_lines = get_prompt()
 	local bufid = vim.api.nvim_create_buf(false, true)
 
 	-- Enter insert mode when focusing the buffer
@@ -26,10 +48,10 @@ function M.edit_prompt()
 			if content ~= '' then
 				-- Using internal sidekick cli to not parse "{}" variables
 				require('sidekick.cli.state').with(function(state)
-					-- FIXME: cursor only?
-					-- Clear current prompt content: Sends C+c
+					-- Clear current prompt content
 					local termbufid = state.terminal.buf
-					vim.api.nvim_chan_send(vim.bo[termbufid].channel, '\x03')
+					local clear_key = state.tool.name == 'claude' and '\x0c' or '\x03'
+					vim.api.nvim_chan_send(vim.bo[termbufid].channel, clear_key)
 
 					state.session:send(content)
 				end, {
@@ -87,7 +109,11 @@ function M.edit_prompt()
 end
 
 function M.nav_to_prompt(search_char)
-	local agent = M.get_attached_agent()
+	local agent = check_agent()
+	if not agent then
+		return
+	end
+
 	local pattern = agent == 'claude' and '❯' or ' ┌─'
 
 	local f = function()
