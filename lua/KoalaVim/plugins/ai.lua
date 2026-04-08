@@ -26,7 +26,7 @@ table.insert(M, {
 local ai = require('KoalaVim.utils.ai.general')
 
 table.insert(M, {
-	'folke/sidekick.nvim',
+	'ofirgall/sidekick.nvim', --fork
 	opts = {
 		cli = {
 			---@class sidekick.win.Opts
