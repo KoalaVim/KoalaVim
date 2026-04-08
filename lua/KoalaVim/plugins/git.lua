@@ -827,7 +827,7 @@ table.insert(M, {
 				map_buffer(events.buf, 'x', '<C-s>', '<Esc><cmd>lua flog_diff_current_visual()<cr>', 'Floggraph: show diff of selection')
 				map_buffer(events.buf, 'n', '<C-s>', flog_show_current, 'Floggraph: show current in diffview')
 				map_buffer(events.buf, 'n', 'q', '<cmd>q<CR>', 'close Floggraph')
-				map_buffer(events.buf, 'n', 'yc', function()
+				map_buffer(events.buf, 'n', 'yy', function()
 					local hash = flog_current_commit()
 					vim.fn.setreg('+', hash)
 					vim.notify('Copied: ' .. hash)
