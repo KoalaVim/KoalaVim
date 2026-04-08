@@ -299,7 +299,7 @@ table.insert(M, {
 	opts = {
 		explorer = {
 			position = 'bottom',
-			height = 10, -- Doesn't work
+			height = 10,
 		},
 		conflict = {
 			-- FIXME: test
@@ -426,25 +426,6 @@ table.insert(M, {
 				vim.w[win_id].code_diff_win = true
 			end
 		end
-
-		-- Set explorer height
-		local adjusted_explorers = {}
-		api.nvim_create_autocmd('BufWinEnter', {
-			callback = function(events)
-				if vim.bo[events.buf].ft ~= 'codediff-explorer' then
-					return
-				end
-
-				if adjusted_explorers[events.buf] then
-					return
-				end
-
-				adjusted_explorers[events.buf] = true
-				vim.schedule(function()
-					vim.api.nvim_win_set_height(0, 10)
-				end)
-			end,
-		})
 
 		require('codediff').setup(opts)
 	end,
