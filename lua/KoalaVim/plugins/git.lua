@@ -429,6 +429,9 @@ table.insert(M, {
 		end
 
 		require('codediff').setup(opts)
+
+		HELPERS['codediff-explorer'] = 'g?'
+		HELPERS['codediff-history'] = 'g?'
 	end,
 })
 

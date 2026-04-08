@@ -394,6 +394,7 @@ table.insert(M, {
 			'fugitive',
 			'NeogitStatus',
 			'codediff-explorer',
+			'codediff-history',
 			'NvimTree',
 		},
 	},
