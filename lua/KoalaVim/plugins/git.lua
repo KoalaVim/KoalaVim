@@ -388,20 +388,6 @@ table.insert(M, {
 					toggle_explorer(tabpage)
 				end, { desc = 'Prev change' })
 			end
-
-			-- FIXME: migrate
-			-- file_panel = {
-			-- 	{ 'n', 'cc', '<cmd>Git commit<cr>', { desc = 'Stage file' } },
-			-- 	{ 'n', 's', actions.toggle_stage_entry, { desc = 'Stage file' } },
-			-- 	{ 'n', '=', actions.toggle_stage_entry, { desc = 'Stage file' } },
-			-- 	{ 'n', 'gf', actions.goto_file_edit, { desc = 'Close' } },
-			-- }
-			--
-			-- file_history_panel = {
-			-- 	{ 'n', 's', actions.open_in_diffview, { desc = 'Show full commit diff in diffview' } },
-			-- 	{ 'n', 'S', actions.open_commit_log, { desc = 'Show commit details' } },
-			-- 	{ 'n', 'gf', actions.goto_file_edit, { desc = 'Open the file in the previous tabpage' } },
-			-- }
 		end
 
 		-- Monkey patch codediff keymap set func
@@ -429,6 +415,113 @@ table.insert(M, {
 		end
 
 		require('codediff').setup(opts)
+
+		local map_buffer = require('KoalaVim.utils.map').map_buffer
+
+		local function goto_file_in_prev_tab(file_path)
+			local tabs = vim.api.nvim_list_tabpages()
+			local current_tab = vim.api.nvim_get_current_tabpage()
+			local current_index
+			for i, tab in ipairs(tabs) do
+				if tab == current_tab then
+					current_index = i
+					break
+				end
+			end
+			if current_index and current_index > 1 then
+				vim.api.nvim_set_current_tabpage(tabs[current_index - 1])
+			end
+			vim.cmd('edit ' .. vim.fn.fnameescape(file_path))
+		end
+
+		vim.api.nvim_create_autocmd('FileType', {
+			pattern = 'codediff-explorer',
+			callback = function(ev)
+				vim.schedule(function()
+					if not vim.api.nvim_buf_is_valid(ev.buf) then
+						return
+					end
+
+					map_buffer(ev.buf, 'n', 'cc', '<cmd>Git commit<cr>', 'Git commit')
+					map_buffer(
+						ev.buf,
+						'n',
+						'ce',
+						'<cmd>Git commit --amend --no-edit<cr>',
+						'Amend commit (keep message)'
+					)
+					map_buffer(ev.buf, 'n', 'ca', '<cmd>Git commit --amend<cr>', 'Amend commit (edit message)')
+
+					local function toggle_stage()
+						local tabpage = vim.api.nvim_get_current_tabpage()
+						local explorer = lifecycle.get_explorer(tabpage)
+						if explorer then
+							require('codediff.ui.explorer.actions').toggle_stage_entry(explorer, explorer.tree)
+						end
+					end
+					map_buffer(ev.buf, 'n', 's', toggle_stage, 'Stage file')
+					map_buffer(ev.buf, 'n', '=', toggle_stage, 'Stage file')
+
+					map_buffer(ev.buf, 'n', 'gf', function()
+						local tabpage = vim.api.nvim_get_current_tabpage()
+						local explorer = lifecycle.get_explorer(tabpage)
+						if not explorer then
+							return
+						end
+						local node = explorer.tree:get_node()
+						if not node or not node.data or not node.data.path then
+							return
+						end
+						goto_file_in_prev_tab((explorer.git_root or '') .. '/' .. node.data.path)
+					end, 'Go to file')
+				end)
+			end,
+		})
+
+		vim.api.nvim_create_autocmd('FileType', {
+			pattern = 'codediff-history',
+			callback = function(ev)
+				vim.schedule(function()
+					if not vim.api.nvim_buf_is_valid(ev.buf) then
+						return
+					end
+
+					map_buffer(ev.buf, 'n', 's', function()
+						local tabpage = vim.api.nvim_get_current_tabpage()
+						local panel = lifecycle.get_explorer(tabpage)
+						if not panel then
+							return
+						end
+						local node = panel.tree:get_node()
+						if not node or not node.data then
+							return
+						end
+						if node.data.type == 'commit' and node.data.hash then
+							local hash = node.data.hash
+							vim.cmd('tabclose')
+							vim.schedule(function()
+								vim.cmd('CodeDiff ' .. hash .. '~1 ' .. hash)
+							end)
+						end
+					end, 'Show full commit diff')
+
+					map_buffer(ev.buf, 'n', 'S', function()
+						local tabpage = vim.api.nvim_get_current_tabpage()
+						local panel = lifecycle.get_explorer(tabpage)
+						if not panel then
+							return
+						end
+						local node = panel.tree:get_node()
+						if not node or not node.data then
+							return
+						end
+						if node.data.type == 'commit' and node.data.hash then
+							vim.cmd('Git log -1 ' .. node.data.hash)
+						end
+					end, 'Show commit details')
+				end)
+			end,
+		})
 
 		HELPERS['codediff-explorer'] = 'g?'
 		HELPERS['codediff-history'] = 'g?'
