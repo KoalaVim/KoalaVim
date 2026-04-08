@@ -206,7 +206,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'norcalli/nvim-colorizer.lua',
+	'KoalaVim/nvim-colorizer.lua',
 	event = { 'BufReadPost', 'BufNewFile' },
 	opts = {
 		'*',
