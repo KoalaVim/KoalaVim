@@ -324,7 +324,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'ofirgall/inlay-hints.nvim', -- fork
+	'KoalaVim/inlay-hints.nvim', -- fork
 	keys = {
 		{
 			'<leader>T',
