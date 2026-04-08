@@ -300,6 +300,7 @@ table.insert(M, {
 		explorer = {
 			position = 'bottom',
 			height = 10,
+			initial_focus = 'modified',
 		},
 		conflict = {
 			-- FIXME: test
