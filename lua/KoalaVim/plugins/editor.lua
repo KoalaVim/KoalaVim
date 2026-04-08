@@ -98,13 +98,24 @@ table.insert(M, {
 		winopts = {
 			offset = {
 				width = 1.0,
-				height = 0.95,
+				height = 1.0,
 			},
 			border = '',
 		},
 		callbacks = {
 			function()
 				api.nvim_set_hl_ns(floating_code_ns)
+				require('lualine').hide()
+				vim.o.laststatus = 0
+				vim.wo.winbar = ''
+				vim.o.showtabline = 0
+			end,
+		},
+		close_callbacks = {
+			function()
+				vim.o.laststatus = 3
+				vim.o.showtabline = 2
+				require('lualine').hide({ unhide = true })
 			end,
 		},
 	},
