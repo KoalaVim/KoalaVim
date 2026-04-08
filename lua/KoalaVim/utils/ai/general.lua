@@ -101,8 +101,25 @@ function M.nav_to_prompt(search_char)
 end
 
 function M.get_attached_agent()
-	-- FIXME: detect which agent sidekick runs
-	-- require("sidekick.cli.state").get({attached = true})[1]['tool']['name'])
+	-- Check if the current buffer is a sidekick terminal
+	local tool = vim.b.sidekick_cli
+	if tool then
+		return tool.name
+	end
+
+	-- Check if any window in the current tabpage is a sidekick terminal
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		tool = vim.w[win].sidekick_cli
+		if tool then
+			return tool.name
+		end
+	end
+
+	-- Fallback: first attached session
+	local states = require('sidekick.cli.state').get({ attached = true })
+	if #states > 0 then
+		return states[1].tool.name
+	end
 end
 
 local HALF_RATIO = 0.5
