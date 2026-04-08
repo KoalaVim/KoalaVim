@@ -98,7 +98,7 @@ table.insert(M, {
 		winopts = {
 			offset = {
 				width = 1.0,
-				height = 1.0,
+				height = 0.95,
 			},
 			border = '',
 		},
