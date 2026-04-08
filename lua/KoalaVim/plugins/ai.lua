@@ -94,7 +94,6 @@ table.insert(M, {
 			mode = { 'n', 't' },
 		},
 		{
-			-- FIXME: apply only in cursor
 			']p',
 			function()
 				ai.nav_to_prompt('n')
@@ -104,7 +103,6 @@ table.insert(M, {
 			mode = { 'n', 't' },
 		},
 		{
-			-- FIXME: apply only in cursor
 			'[p',
 			function()
 				ai.nav_to_prompt('N')
@@ -114,7 +112,6 @@ table.insert(M, {
 			mode = { 'n', 't' },
 		},
 		{
-			-- FIXME: apply only in cursor
 			'gj',
 			function()
 				ai.nav_to_prompt('n')
@@ -124,7 +121,6 @@ table.insert(M, {
 			mode = 'n',
 		},
 		{
-			-- FIXME: apply only in cursor
 			'gk',
 			function()
 				ai.nav_to_prompt('N')

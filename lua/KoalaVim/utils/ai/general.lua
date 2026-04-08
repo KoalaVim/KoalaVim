@@ -87,9 +87,11 @@ function M.edit_prompt()
 end
 
 function M.nav_to_prompt(search_char)
-	-- in claude: ❯
+	local agent = M.get_attached_agent()
+	local pattern = agent == 'claude' and '❯' or ' ┌─'
+
 	local f = function()
-		vim.fn.setreg('/', ' ┌─')
+		vim.fn.setreg('/', pattern)
 		vim.cmd('normal! ' .. search_char)
 	end
 
