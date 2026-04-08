@@ -516,7 +516,7 @@ function CLOSE_KOALA_DASHBOARD(clear_messages, close_buffer)
 end
 
 table.insert(M, {
-	'ofirgall/alpha-nvim', -- fork
+	'KoalaVim/alpha-nvim', -- fork
 	event = 'VimEnter',
 	opts = function()
 		local dashboard = require('alpha.themes.dashboard')
