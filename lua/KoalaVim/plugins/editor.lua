@@ -121,6 +121,29 @@ table.insert(M, {
 	},
 	config = function(_, opts)
 		require('neo-zoom').setup(opts)
+
+		-- Protect UnZoom when accidentally trying to leave the zoomed window
+		-- unless it's a floating window e.g: telescope
+		vim.api.nvim_create_autocmd('WinLeave', {
+			group = vim.api.nvim_create_augroup('NeoZoomAutoClose', { clear = true }),
+			callback = function()
+				local neo_zoom = require('neo-zoom')
+				if not neo_zoom.is_neo_zoom_float() then
+					return
+				end
+				vim.schedule(function()
+					-- Don't unzoom if we entered a floating window (e.g. NeoGit)
+					local win_config = vim.api.nvim_win_get_config(0)
+					if win_config.relative ~= '' then
+						return
+					end
+					-- Only unzoom if the zoom is still active (not already closed by NeoZoomToggle)
+					if neo_zoom.did_zoom()[1] then
+						vim.cmd('NeoZoomToggle')
+					end
+				end)
+			end,
+		})
 	end,
 	cmd = 'NeoZoomToggle',
 	keys = {
