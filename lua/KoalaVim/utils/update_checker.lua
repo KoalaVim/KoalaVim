@@ -202,8 +202,14 @@ function M.update()
 		percentage = 0,
 	})
 
+	local args = { 'update', '--no-restore' }
+	local env_name = vim.env.KOALA_ENV
+	if env_name then
+		args = { '--env', env_name, 'update', '--no-restore' }
+	end
+
 	Process.spawn('kv', {
-		args = { 'update', '--no-restore' },
+		args = args,
 		on_exit = function(ok, output)
 			if not ok then
 				progress:cancel()
