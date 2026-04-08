@@ -335,6 +335,22 @@ table.insert(M, {
 		local nav = require('codediff.ui.view.navigation')
 
 		-- FIXME: support custom keymaps in codediff to get rid of this shit code
+		local function goto_file_in_prev_tab(file_path)
+			local tabs = vim.api.nvim_list_tabpages()
+			local current_tab = vim.api.nvim_get_current_tabpage()
+			local current_index
+			for i, tab in ipairs(tabs) do
+				if tab == current_tab then
+					current_index = i
+					break
+				end
+			end
+			if current_index and current_index > 1 then
+				vim.api.nvim_set_current_tabpage(tabs[current_index - 1])
+			end
+			vim.cmd('edit ' .. vim.fn.fnameescape(file_path))
+		end
+
 		-- Helper: Toggle explorer visibility (explorer mode only)
 		local function toggle_explorer(tabpage)
 			local explorer_obj = lifecycle.get_explorer(tabpage)
@@ -387,6 +403,22 @@ table.insert(M, {
 				lifecycle.set_tab_keymap(tabpage, 'n', '<M-m>', function()
 					toggle_explorer(tabpage)
 				end, { desc = 'Prev change' })
+
+				local explorer = lifecycle.get_explorer(tabpage)
+				if explorer and explorer.bufnr and vim.api.nvim_buf_is_valid(explorer.bufnr) then
+					vim.keymap.set('n', 'gf', function()
+						local tp = vim.api.nvim_get_current_tabpage()
+						local expl = lifecycle.get_explorer(tp)
+						if not expl then
+							return
+						end
+						local node = expl.tree:get_node()
+						if not node or not node.data or not node.data.path then
+							return
+						end
+						goto_file_in_prev_tab((expl.git_root or '') .. '/' .. node.data.path)
+					end, { buffer = explorer.bufnr, desc = 'Go to file', noremap = true, silent = true })
+				end
 			end
 		end
 
@@ -418,22 +450,6 @@ table.insert(M, {
 
 		local map_buffer = require('KoalaVim.utils.map').map_buffer
 
-		local function goto_file_in_prev_tab(file_path)
-			local tabs = vim.api.nvim_list_tabpages()
-			local current_tab = vim.api.nvim_get_current_tabpage()
-			local current_index
-			for i, tab in ipairs(tabs) do
-				if tab == current_tab then
-					current_index = i
-					break
-				end
-			end
-			if current_index and current_index > 1 then
-				vim.api.nvim_set_current_tabpage(tabs[current_index - 1])
-			end
-			vim.cmd('edit ' .. vim.fn.fnameescape(file_path))
-		end
-
 		vim.api.nvim_create_autocmd('FileType', {
 			pattern = 'codediff-explorer',
 			callback = function(ev)
@@ -461,19 +477,6 @@ table.insert(M, {
 					end
 					map_buffer(ev.buf, 'n', 's', toggle_stage, 'Stage file')
 					map_buffer(ev.buf, 'n', '=', toggle_stage, 'Stage file')
-
-					map_buffer(ev.buf, 'n', 'gf', function()
-						local tabpage = vim.api.nvim_get_current_tabpage()
-						local explorer = lifecycle.get_explorer(tabpage)
-						if not explorer then
-							return
-						end
-						local node = explorer.tree:get_node()
-						if not node or not node.data or not node.data.path then
-							return
-						end
-						goto_file_in_prev_tab((explorer.git_root or '') .. '/' .. node.data.path)
-					end, 'Go to file')
 				end)
 			end,
 		})
