@@ -97,11 +97,10 @@ table.insert(M, {
 	opts = {
 		winopts = {
 			offset = {
-				top = 0.1,
-				left = 0.1,
-				width = 0.8,
-				height = 0.8,
+				width = 1.0,
+				height = 1.0,
 			},
+			border = '',
 		},
 		callbacks = {
 			function()
@@ -115,11 +114,11 @@ table.insert(M, {
 	cmd = 'NeoZoomToggle',
 	keys = {
 		{
-			'<leader>z',
+			'<M-z>',
 			function()
 				vim.cmd('NeoZoomToggle')
 			end,
-			mode = { 'n', 'v' },
+			mode = { 'n', 'v', 't' },
 			desc = 'Zoom split',
 			nowait = true,
 		},
