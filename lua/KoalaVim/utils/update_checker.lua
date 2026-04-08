@@ -202,7 +202,7 @@ function M.update()
 		percentage = 0,
 	})
 
-	Process.spawn('koala', {
+	Process.spawn('kv', {
 		args = { 'update', '--no-restore' },
 		on_exit = function(ok, output)
 			if not ok then
