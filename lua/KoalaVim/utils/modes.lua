@@ -31,6 +31,15 @@ local function git_diff_mode(args)
 end
 
 local function ai_mode()
+	vim.api.nvim_create_autocmd('FileType', {
+		pattern = 'sidekick_terminal',
+		once = true,
+		callback = function()
+			vim.defer_fn(function()
+				vim.cmd('NeoZoomToggle')
+			end, 200)
+		end,
+	})
 	require('sidekick.cli').show()
 end
 

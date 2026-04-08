@@ -547,7 +547,7 @@ table.insert(M, {
 				require('KoalaVim.utils.session').load_cwd_session()
 			end),
 			dashboard.button('sl', '  Session List', ':SessionList <CR>'),
-			dashboard.button('a', '🤖 AI Sidekick', function()
+			dashboard.button('a', '󰚩  AI Sidekick', function()
 				KoalaDisableAutoSession()
 				CLOSE_KOALA_DASHBOARD(true)
 
