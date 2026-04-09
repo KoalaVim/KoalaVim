@@ -109,7 +109,7 @@ table.insert(M, {
 		{
 			'<leader>gs',
 			function()
-				require('neogit').open({ kind = 'floating' })
+				require('KoalaVim.utils.git').show_status()
 			end,
 			desc = 'Open Neogit (git status)',
 		},

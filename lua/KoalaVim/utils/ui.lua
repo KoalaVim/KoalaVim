@@ -268,6 +268,7 @@ function M.setup_lualine(is_half, opts)
 					'codediff-history',
 					'undo-diff',
 					'undo-tree',
+					'NeogitStatus',
 				},
 			},
 			globalstatus = true,
