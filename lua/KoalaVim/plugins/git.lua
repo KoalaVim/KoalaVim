@@ -147,7 +147,7 @@ table.insert(M, {
 			border = 'rounded',
 		},
 		commit_editor = {
-			kind = 'floating',
+			kind = 'vsplit',
 		},
 		mappings = {
 			popup = {
@@ -257,36 +257,36 @@ table.insert(M, {
 			end,
 		})
 
-		local fugitive_window_is_active = false
-
-		api.nvim_create_autocmd('FileType', {
-			pattern = { 'fugitive', 'gitcommit' },
-			callback = function(events)
-				git_to_floating_window(events.buf)
-
-				-- Focus back to fugitive on finishing commiting
-				if vim.bo[events.buf].ft == 'gitcommit' then
-					api.nvim_create_autocmd({ 'BufDelete', 'BufWipeout' }, {
-						once = true,
-						buffer = events.buf,
-						callback = function()
-							if fugitive_window_is_active then
-								vim.cmd(':G') -- focus fugitive back
-							end
-						end,
-					})
-				elseif vim.bo[events.buf].ft == 'fugitive' then
-					fugitive_window_is_active = true
-					api.nvim_create_autocmd({ 'BufDelete', 'BufWipeout' }, {
-						once = true,
-						buffer = events.buf,
-						callback = function()
-							fugitive_window_is_active = false
-						end,
-					})
-				end
-			end,
-		})
+		-- local fugitive_window_is_active = false
+		--
+		-- api.nvim_create_autocmd('FileType', {
+		-- 	pattern = { 'fugitive', 'gitcommit' },
+		-- 	callback = function(events)
+		-- 		git_to_floating_window(events.buf)
+		--
+		-- 		-- Focus back to fugitive on finishing commiting
+		-- 		if vim.bo[events.buf].ft == 'gitcommit' then
+		-- 			api.nvim_create_autocmd({ 'BufDelete', 'BufWipeout' }, {
+		-- 				once = true,
+		-- 				buffer = events.buf,
+		-- 				callback = function()
+		-- 					if fugitive_window_is_active then
+		-- 						vim.cmd(':G') -- focus fugitive back
+		-- 					end
+		-- 				end,
+		-- 			})
+		-- 		elseif vim.bo[events.buf].ft == 'fugitive' then
+		-- 			fugitive_window_is_active = true
+		-- 			api.nvim_create_autocmd({ 'BufDelete', 'BufWipeout' }, {
+		-- 				once = true,
+		-- 				buffer = events.buf,
+		-- 				callback = function()
+		-- 					fugitive_window_is_active = false
+		-- 				end,
+		-- 			})
+		-- 		end
+		-- 	end,
+		-- })
 	end,
 })
 
