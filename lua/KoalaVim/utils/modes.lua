@@ -36,7 +36,7 @@ local function ai_mode()
 		once = true,
 		callback = function()
 			vim.defer_fn(function()
-				vim.cmd('NeoZoomToggle')
+				require('KoalaVim.utils.ai.general').zoom_sidekick()
 			end, 200)
 		end,
 	})

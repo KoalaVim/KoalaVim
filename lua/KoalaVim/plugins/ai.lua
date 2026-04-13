@@ -148,6 +148,15 @@ table.insert(M, {
 			mode = { 'n', 't' },
 		},
 		{
+			'<M-z>',
+			function()
+				ai.zoom_sidekick()
+			end,
+			ft = 'sidekick_terminal',
+			desc = 'Zoom sidekick terminal in a new tabpage',
+			mode = { 'n', 't' },
+		},
+		{
 			'<leader>uN',
 			function()
 				require('sidekick.nes').toggle()

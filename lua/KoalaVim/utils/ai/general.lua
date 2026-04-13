@@ -2,6 +2,24 @@ local M = {}
 
 local SUPPORTED_AGENTS = { cursor = true, claude = true }
 
+local COPY_WIN_OPTS = {
+	'winhighlight',
+	'signcolumn',
+	'number',
+	'relativenumber',
+	'wrap',
+	'cursorline',
+	'cursorcolumn',
+	'colorcolumn',
+	'fillchars',
+	'list',
+	'listchars',
+	'sidescrolloff',
+	'statuscolumn',
+	'spell',
+	'winbar',
+}
+
 local function check_agent()
 	local agent = M.get_attached_agent()
 	if not agent then
@@ -26,11 +44,8 @@ function M.edit_prompt()
 	local get_prompt = agent == 'claude' and require('KoalaVim.utils.ai.claude').get_prompt
 		or require('KoalaVim.utils.ai.cursor').get_prompt
 	local current_prompt_lines = get_prompt()
-	local termbuf = vim.api.nvim_get_current_buf()
 	local bufid = vim.api.nvim_create_buf(false, true)
-
-	local is_zoomed = pcall(require, 'neo-zoom') and require('neo-zoom').did_zoom()[1]
-	local zoom_tabpage = nil
+	local term_win = vim.api.nvim_get_current_win()
 
 	-- Enter insert mode when focusing the buffer
 	vim.api.nvim_create_autocmd('BufEnter', {
@@ -66,44 +81,27 @@ function M.edit_prompt()
 				})
 			end
 
-			-- Close the zoom tabpage if we created one
-			if zoom_tabpage and vim.api.nvim_tabpage_is_valid(zoom_tabpage) then
+			-- Re-focus the terminal window so we stay in the same tabpage
+			if vim.api.nvim_win_is_valid(term_win) then
 				vim.schedule(function()
-					if vim.api.nvim_tabpage_is_valid(zoom_tabpage) then
-						vim.api.nvim_set_current_tabpage(zoom_tabpage)
-						vim.cmd('tabclose')
+					if vim.api.nvim_win_is_valid(term_win) then
+						vim.api.nvim_set_current_win(term_win)
 					end
 				end)
 			end
 		end,
 	})
 
-	local win_id
-	if is_zoomed then
-		-- Create a new tabpage with sidekick terminal + edit prompt
-		local orig_win = vim.api.nvim_get_current_win()
-		vim.cmd('tabnew')
-		zoom_tabpage = vim.api.nvim_get_current_tabpage()
-		-- Split first so the edit prompt window gets default options
-		vim.cmd('split')
-		win_id = vim.api.nvim_get_current_win()
-		vim.api.nvim_win_set_buf(win_id, bufid)
-		vim.api.nvim_win_set_height(win_id, math.ceil(vim.o.lines * 0.3))
-		-- Set terminal buffer in the top window and copy its style
-		local term_win = vim.fn.win_getid(vim.fn.winnr('#'))
-		vim.api.nvim_win_set_buf(term_win, termbuf)
-		local copy_opts = { 'winhighlight', 'signcolumn', 'number', 'relativenumber', 'wrap',
-			'cursorline', 'cursorcolumn', 'colorcolumn', 'fillchars', 'list', 'listchars',
-			'sidescrolloff', 'statuscolumn', 'spell', 'winbar' }
-		for _, opt in ipairs(copy_opts) do
-			vim.wo[term_win][opt] = vim.wo[orig_win][opt]
-		end
-	else
-		vim.cmd('split')
-		win_id = vim.api.nvim_get_current_win()
-		vim.api.nvim_win_set_buf(0, bufid)
-		vim.api.nvim_win_set_height(0, math.ceil(vim.o.lines * 0.3))
+	vim.cmd('split')
+	local win_id = vim.api.nvim_get_current_win()
+	vim.api.nvim_win_set_buf(0, bufid)
+	vim.api.nvim_win_set_height(0, math.ceil(vim.o.lines * 0.3))
+
+	-- Reset window options inherited from the sidekick terminal split
+	for _, opt in ipairs(COPY_WIN_OPTS) do
+		vim.wo[win_id][opt] = vim.api.nvim_get_option_value(opt, {})
 	end
+
 	vim.bo[bufid].filetype = 'sidekick_koala_prompt'
 	vim.api.nvim_buf_set_lines(bufid, 0, -1, false, current_prompt_lines)
 
@@ -184,6 +182,41 @@ function M.get_attached_agent()
 	if #states > 0 then
 		return states[1].tool.name
 	end
+end
+
+local zoom_tabpage = nil
+local zoom_orig_win = nil
+
+function M.zoom_sidekick()
+	if zoom_tabpage and vim.api.nvim_tabpage_is_valid(zoom_tabpage) then
+		-- Unzoom: close the tabpage
+		vim.api.nvim_set_current_tabpage(zoom_tabpage)
+		vim.cmd('tabclose')
+		vim.o.showtabline = 2
+		zoom_tabpage = nil
+		if zoom_orig_win and vim.api.nvim_win_is_valid(zoom_orig_win) then
+			vim.api.nvim_set_current_win(zoom_orig_win)
+		end
+		zoom_orig_win = nil
+		return
+	end
+
+	local orig_win = vim.api.nvim_get_current_win()
+	local termbuf = vim.api.nvim_get_current_buf()
+
+	vim.cmd('tabnew')
+	zoom_tabpage = vim.api.nvim_get_current_tabpage()
+	local win = vim.api.nvim_get_current_win()
+	vim.api.nvim_win_set_buf(win, termbuf)
+
+	-- Copy window options from the original sidekick window
+	for _, opt in ipairs(COPY_WIN_OPTS) do
+		vim.wo[win][opt] = vim.wo[orig_win][opt]
+	end
+	vim.wo[win].winbar = ''
+	vim.o.showtabline = 0
+
+	zoom_orig_win = orig_win
 end
 
 local HALF_RATIO = 0.5
