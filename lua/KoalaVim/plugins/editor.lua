@@ -99,7 +99,7 @@ table.insert(M, {
 			offset = {
 				top = 0.0,
 				width = 1.0,
-				height = 0.98,
+				height = 0.99,
 			},
 			border = '',
 		},
