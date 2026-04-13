@@ -2,6 +2,9 @@ local M = {}
 
 local SUPPORTED_AGENTS = { cursor = true, claude = true }
 
+local zoom_tabpage = nil
+local zoom_orig_win = nil
+
 local COPY_WIN_OPTS = {
 	'winhighlight',
 	'signcolumn',
@@ -92,14 +95,28 @@ function M.edit_prompt()
 		end,
 	})
 
-	vim.cmd('split')
-	local win_id = vim.api.nvim_get_current_win()
-	vim.api.nvim_win_set_buf(0, bufid)
-	vim.api.nvim_win_set_height(0, math.ceil(vim.o.lines * 0.3))
+	local win_id = vim.api.nvim_open_win(bufid, true, {
+		split = 'below',
+		height = math.ceil(vim.o.lines * 0.3),
+	})
 
-	-- Reset window options inherited from the sidekick terminal split
-	for _, opt in ipairs(COPY_WIN_OPTS) do
-		vim.wo[win_id][opt] = vim.api.nvim_get_option_value(opt, {})
+	-- Reset window options inherited from the sidekick terminal.
+	-- Global values are polluted by sidekick, so find a normal editor window
+	-- in the original tabpage and copy its options.
+	if zoom_tabpage and zoom_orig_win then
+		local ref_win = nil
+		local orig_tab = vim.api.nvim_win_get_tabpage(zoom_orig_win)
+		for _, w in ipairs(vim.api.nvim_tabpage_list_wins(orig_tab)) do
+			if vim.bo[vim.api.nvim_win_get_buf(w)].filetype ~= 'sidekick_terminal' then
+				ref_win = w
+				break
+			end
+		end
+		if ref_win then
+			for _, opt in ipairs(COPY_WIN_OPTS) do
+				vim.wo[win_id][opt] = vim.wo[ref_win][opt]
+			end
+		end
 	end
 
 	vim.bo[bufid].filetype = 'sidekick_koala_prompt'
@@ -184,15 +201,13 @@ function M.get_attached_agent()
 	end
 end
 
-local zoom_tabpage = nil
-local zoom_orig_win = nil
-
 function M.zoom_sidekick()
 	if zoom_tabpage and vim.api.nvim_tabpage_is_valid(zoom_tabpage) then
 		-- Unzoom: close the tabpage
 		vim.api.nvim_set_current_tabpage(zoom_tabpage)
 		vim.cmd('tabclose')
 		vim.o.showtabline = 2
+		vim.cmd('Winsep enable')
 		zoom_tabpage = nil
 		if zoom_orig_win and vim.api.nvim_win_is_valid(zoom_orig_win) then
 			vim.api.nvim_set_current_win(zoom_orig_win)
@@ -214,7 +229,9 @@ function M.zoom_sidekick()
 		vim.wo[win][opt] = vim.wo[orig_win][opt]
 	end
 	vim.wo[win].winbar = ''
+
 	vim.o.showtabline = 0
+	vim.cmd('Winsep disable')
 
 	zoom_orig_win = orig_win
 end
