@@ -72,6 +72,13 @@ local COPY_WIN_OPTS = {
 	'winbar',
 }
 
+-- Capture user's default option values at module load time (before sidekick pollutes globals)
+local DEFAULT_WIN_OPTS = {}
+for _, opt in ipairs(COPY_WIN_OPTS) do
+	DEFAULT_WIN_OPTS[opt] = vim.api.nvim_get_option_value(opt, { scope = 'global' })
+end
+DEFAULT_WIN_OPTS['winhighlight'] = ''
+
 local function check_agent()
 	local agent = M.get_attached_agent()
 	if not agent then
@@ -270,16 +277,32 @@ function M.zoom_sidekick()
 	local termbuf = vim.api.nvim_get_current_buf()
 
 	-- Capture options from a normal editor window to use as defaults
-	-- for new windows in the zoom tabpage
+	-- for new windows in the zoom tabpage.
+	-- Skip sidekick terminals and special buffers (alpha, etc.) that have
+	-- non-standard options. Fall back to vim.opt values if no suitable window found.
 	zoom_ref_opts = {}
+	local skip_ft = { sidekick_terminal = true, alpha = true }
+	local ref_found = false
 	local orig_tab = vim.api.nvim_get_current_tabpage()
 	for _, w in ipairs(vim.api.nvim_tabpage_list_wins(orig_tab)) do
-		if vim.bo[vim.api.nvim_win_get_buf(w)].filetype ~= 'sidekick_terminal' then
+		-- Skip floating windows (notifications, popups, etc.)
+		local win_config = vim.api.nvim_win_get_config(w)
+		if win_config.relative ~= '' then
+			goto continue
+		end
+		local ft = vim.bo[vim.api.nvim_win_get_buf(w)].filetype
+		if not skip_ft[ft] then
 			for _, opt in ipairs(COPY_WIN_OPTS) do
 				zoom_ref_opts[opt] = vim.wo[w][opt]
 			end
+			ref_found = true
 			break
 		end
+		::continue::
+	end
+	if not ref_found then
+		-- No suitable reference window, use defaults captured at module load time
+		zoom_ref_opts = vim.tbl_extend('force', {}, DEFAULT_WIN_OPTS)
 	end
 
 	vim.cmd('tabnew')
