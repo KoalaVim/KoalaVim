@@ -4,6 +4,7 @@ local SUPPORTED_AGENTS = { cursor = true, claude = true }
 
 local zoom_tabpage = nil
 local zoom_orig_win = nil
+local zoom_ref_opts = nil
 
 local COPY_WIN_OPTS = {
 	'winhighlight',
@@ -100,25 +101,6 @@ function M.edit_prompt()
 		height = math.ceil(vim.o.lines * 0.3),
 	})
 
-	-- Reset window options inherited from the sidekick terminal.
-	-- Global values are polluted by sidekick, so find a normal editor window
-	-- in the original tabpage and copy its options.
-	if zoom_tabpage and zoom_orig_win then
-		local ref_win = nil
-		local orig_tab = vim.api.nvim_win_get_tabpage(zoom_orig_win)
-		for _, w in ipairs(vim.api.nvim_tabpage_list_wins(orig_tab)) do
-			if vim.bo[vim.api.nvim_win_get_buf(w)].filetype ~= 'sidekick_terminal' then
-				ref_win = w
-				break
-			end
-		end
-		if ref_win then
-			for _, opt in ipairs(COPY_WIN_OPTS) do
-				vim.wo[win_id][opt] = vim.wo[ref_win][opt]
-			end
-		end
-	end
-
 	vim.bo[bufid].filetype = 'sidekick_koala_prompt'
 	vim.api.nvim_buf_set_lines(bufid, 0, -1, false, current_prompt_lines)
 
@@ -201,14 +183,34 @@ function M.get_attached_agent()
 	end
 end
 
+--- Zoom a sidekick terminal into a dedicated tabpage.
+---
+--- Problem: when zooming, we create a new tabpage and display the sidekick terminal buffer in it.
+--- Any new window created in this tabpage (edit_prompt, neogit, codediff, :new) inherits the
+--- sidekick terminal's window-local options (winhighlight, signcolumn, number, etc.) because
+--- vim's :split / nvim_open_win always copies window options from the parent window.
+---
+--- Solutions that didn't work:
+--- - nvim_get_option_value(opt, { scope = 'global' }): sidekick pollutes global values
+--- - nvim_get_option_info2(opt, {}).default: returns vim builtin defaults, not user config
+--- - Anchor window (clean scratch buffer kept at 1 row): worked for style but caused layout
+---   issues, dirty buffer visible, and didn't help windows in other tabpages (codediff)
+--- - Opening a temp buffer/window before tabnew to get clean context: same inheritance issue
+--- - style = "minimal" in nvim_open_win: resets too much and appends to winhighlight
+---
+--- Current solution: at zoom time, capture window options from a normal editor window in the
+--- original tabpage. A WinNew autocmd detects new windows that inherited sidekick's winhighlight
+--- (containing 'SidekickChat') and resets their options to the captured reference values.
+--- This works across tabpages (codediff) and lets plugins (neogit) override afterwards.
 function M.zoom_sidekick()
 	if zoom_tabpage and vim.api.nvim_tabpage_is_valid(zoom_tabpage) then
 		-- Unzoom: close the tabpage
+		pcall(vim.api.nvim_del_augroup_by_name, 'ZoomSidekickWinNew')
 		vim.api.nvim_set_current_tabpage(zoom_tabpage)
 		vim.cmd('tabclose')
 		vim.o.showtabline = 2
-		vim.cmd('Winsep enable')
 		zoom_tabpage = nil
+		zoom_ref_opts = nil
 		if zoom_orig_win and vim.api.nvim_win_is_valid(zoom_orig_win) then
 			vim.api.nvim_set_current_win(zoom_orig_win)
 		end
@@ -219,19 +221,52 @@ function M.zoom_sidekick()
 	local orig_win = vim.api.nvim_get_current_win()
 	local termbuf = vim.api.nvim_get_current_buf()
 
+	-- Capture options from a normal editor window to use as defaults
+	-- for new windows in the zoom tabpage
+	zoom_ref_opts = {}
+	local orig_tab = vim.api.nvim_get_current_tabpage()
+	for _, w in ipairs(vim.api.nvim_tabpage_list_wins(orig_tab)) do
+		if vim.bo[vim.api.nvim_win_get_buf(w)].filetype ~= 'sidekick_terminal' then
+			for _, opt in ipairs(COPY_WIN_OPTS) do
+				zoom_ref_opts[opt] = vim.wo[w][opt]
+			end
+			break
+		end
+	end
+
 	vim.cmd('tabnew')
 	zoom_tabpage = vim.api.nvim_get_current_tabpage()
-	local win = vim.api.nvim_get_current_win()
-	vim.api.nvim_win_set_buf(win, termbuf)
+	local zoom_win = vim.api.nvim_get_current_win()
+	vim.api.nvim_win_set_buf(zoom_win, termbuf)
 
 	-- Copy window options from the original sidekick window
 	for _, opt in ipairs(COPY_WIN_OPTS) do
-		vim.wo[win][opt] = vim.wo[orig_win][opt]
+		vim.wo[zoom_win][opt] = vim.wo[orig_win][opt]
 	end
-	vim.wo[win].winbar = ''
+	vim.wo[zoom_win].winbar = ''
+
+	-- Reset inherited sidekick options on any new window in the zoom tabpage
+	local zoom_augroup = vim.api.nvim_create_augroup('ZoomSidekickWinNew', { clear = true })
+	vim.api.nvim_create_autocmd('WinNew', {
+		group = zoom_augroup,
+		callback = function()
+			local new_win = vim.api.nvim_get_current_win()
+			-- Skip the sidekick terminal window itself
+			if new_win == zoom_win then
+				return
+			end
+			-- Only reset windows that inherited sidekick's winhighlight
+			local whl = vim.wo[new_win].winhighlight
+			if whl == '' or not whl:find('SidekickChat') then
+				return
+			end
+			for _, opt in ipairs(COPY_WIN_OPTS) do
+				vim.wo[new_win][opt] = zoom_ref_opts[opt]
+			end
+		end,
+	})
 
 	vim.o.showtabline = 0
-	vim.cmd('Winsep disable')
 
 	zoom_orig_win = orig_win
 end
