@@ -31,6 +31,19 @@
                 }
             }
         },
+        "ai": {
+            "description": "AI assistant settings",
+            "type": "object",
+            "properties": {
+                "default_tool": {
+                    "description": "Default AI CLI tool name (e.g. 'cursor', 'claude')",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            }
+        },
         "ui": {
             "description": "Settings for UI",
             "type": "object",

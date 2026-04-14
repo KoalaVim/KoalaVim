@@ -25,6 +25,8 @@ table.insert(M, {
 
 local ai = require('KoalaVim.utils.ai.general')
 
+local with_default_tool = ai.with_default_tool
+
 table.insert(M, {
 	'ofirgall/sidekick.nvim', --fork
 	opts = {
@@ -93,7 +95,6 @@ table.insert(M, {
 			mode = { 'n', 't' },
 		},
 		{
-			-- FIXME: apply only in cursor
 			'<C-e>',
 			function()
 				ai.edit_prompt()
@@ -170,7 +171,7 @@ table.insert(M, {
 		{
 			'<c-.>',
 			function()
-				require('sidekick.cli').toggle()
+				with_default_tool(require('sidekick.cli').toggle)
 			end,
 			desc = 'Sidekick Toggle',
 			mode = { 'n', 't', 'i', 'x' },
@@ -178,25 +179,30 @@ table.insert(M, {
 		{
 			'<leader>ai',
 			function()
-				-- FIXME: default agent from koalaconfig
-				require('sidekick.cli').show({ name = 'cursor' })
+				with_default_tool(require('sidekick.cli').show)
 			end,
 			desc = 'Open/Focus AI',
 		},
 		{
 			'<leader>aa',
 			function()
-				require('sidekick.cli').toggle()
+				with_default_tool(require('sidekick.cli').toggle)
 			end,
 			desc = 'Sidekick Toggle CLI',
 		},
 		{
 			'<leader>as',
 			function()
-				require('sidekick.cli').select()
+				require('sidekick.cli').select({
+					filter = { installed = true },
+					cb = function(state)
+						if state then
+							ai.set_default_tool(state.tool.name)
+							require('sidekick.cli').show({ name = state.tool.name })
+						end
+					end,
+				})
 			end,
-			-- Or to select only installed tools:
-			-- require("sidekick.cli").select({ filter = { installed = true } })
 			desc = 'Select CLI',
 		},
 		{
@@ -209,7 +215,7 @@ table.insert(M, {
 		{
 			'<leader>at',
 			function()
-				require('sidekick.cli').send({ msg = '{this}' })
+				with_default_tool(require('sidekick.cli').send, { msg = '{this}' })
 			end,
 			mode = { 'x', 'n' },
 			desc = 'Send This',
@@ -217,14 +223,14 @@ table.insert(M, {
 		{
 			'<leader>af',
 			function()
-				require('sidekick.cli').send({ msg = '{file}' })
+				with_default_tool(require('sidekick.cli').send, { msg = '{file}' })
 			end,
 			desc = 'Send File',
 		},
 		{
 			'<leader>av',
 			function()
-				require('sidekick.cli').send({ msg = '{selection}' })
+				with_default_tool(require('sidekick.cli').send, { msg = '{selection}' })
 			end,
 			mode = { 'x' },
 			desc = 'Send Visual Selection',

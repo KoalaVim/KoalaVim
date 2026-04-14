@@ -40,7 +40,8 @@ local function ai_mode()
 			end, 200)
 		end,
 	})
-	require('sidekick.cli').show()
+
+	require('KoalaVim.utils.ai.general').with_default_tool(require('sidekick.cli').show)
 end
 
 M._modes = {

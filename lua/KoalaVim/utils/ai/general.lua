@@ -2,6 +2,54 @@ local M = {}
 
 local SUPPORTED_AGENTS = { cursor = true, claude = true }
 
+-- Session-scoped default tool, initialized from koala config
+local _default_tool = nil
+
+function M.get_default_tool()
+	if _default_tool then
+		return _default_tool
+	end
+	local conf = require('KoalaVim').conf
+	if conf and conf.ai and conf.ai.default_tool and conf.ai.default_tool ~= vim.NIL then
+		return conf.ai.default_tool
+	end
+	return nil
+end
+
+function M.set_default_tool(name)
+	_default_tool = name
+end
+
+--- Runs a sidekick cli function with the default tool.
+--- If a default is set, calls the action directly with that tool name.
+--- Otherwise, prompts an installed-only selection first.
+---@param action fun(opts: table)
+---@param extra? table additional args to merge
+function M.with_default_tool(action, extra)
+	local name = M.get_default_tool()
+	if name then
+		local args = { name = name }
+		if extra then
+			args = vim.tbl_extend('force', args, extra)
+		end
+		action(args)
+	else
+		require('sidekick.cli').select({
+			filter = { installed = true },
+			cb = function(state)
+				if state then
+					_default_tool = state.tool.name
+					local args = { name = state.tool.name }
+					if extra then
+						args = vim.tbl_extend('force', args, extra)
+					end
+					action(args)
+				end
+			end,
+		})
+	end
+end
+
 local zoom_tabpage = nil
 local zoom_orig_win = nil
 local zoom_ref_opts = nil
