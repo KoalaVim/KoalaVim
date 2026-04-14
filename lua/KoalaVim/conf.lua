@@ -4,11 +4,27 @@ local PATTERN = { '.kvim.conf', 'default_kvim.conf' }
 local json_file = require('KoalaVim.utils.json_file')
 
 function M.get_repo_conf()
-	local output = vim.fn.system("git rev-parse --show-toplevel | tr -d '\\n'")
-	if output:find('fatal: ') then
+	local toplevel = vim.fn.system("git rev-parse --show-toplevel | tr -d '\\n'")
+	if toplevel:find('fatal: ') then
 		return nil
 	end
-	return output .. '/.kvim.conf'
+
+	local conf = toplevel .. '/.kvim.conf'
+	if vim.fn.filereadable(conf) == 1 then
+		return conf
+	end
+
+	-- Fallback: check the main worktree root (common dir's parent)
+	local common = vim.fn.system("git rev-parse --git-common-dir | tr -d '\\n'")
+	if not common:find('fatal: ') then
+		local main_root = vim.fn.fnamemodify(common, ':h')
+		local main_conf = main_root .. '/.kvim.conf'
+		if vim.fn.filereadable(main_conf) == 1 then
+			return main_conf
+		end
+	end
+
+	return conf
 end
 
 function M.get_user_conf()
