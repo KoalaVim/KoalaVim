@@ -119,6 +119,16 @@
             "description": "Language server protocol settings (intellisense)",
             "type": "object",
             "properties": {
+                "vtsls": {
+                    "description": "TypeScript/JavaScript language server settings",
+                    "type": "object",
+                    "properties": {
+                        "max_memory": {
+                            "description": "Max memory for tsserver in MB (maps to maxTsServerMemory)",
+                            "type": ["integer", "null"]
+                        }
+                    }
+                },
                 "autoformat": {
                     "description": "Auto formatting options",
                     "type": "object",
