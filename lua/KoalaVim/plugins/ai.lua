@@ -69,7 +69,7 @@ table.insert(M, {
 	},
 	keys = {
 		{
-			'<C-d>',
+			'<C-g>',
 			function()
 				require('KoalaVim.utils.git').show_diff()
 			end,
@@ -78,7 +78,7 @@ table.insert(M, {
 			mode = { 'n', 't' },
 		},
 		{
-			'<C-g>',
+			'<C-s>',
 			function()
 				require('KoalaVim.utils.git').show_status()
 			end,
@@ -140,7 +140,7 @@ table.insert(M, {
 			mode = 'n',
 		},
 		{
-			'<C-s>',
+			'<C-r>',
 			function()
 				ai.toggle_max()
 			end,
