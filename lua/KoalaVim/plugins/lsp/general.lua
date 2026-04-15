@@ -46,7 +46,7 @@ table.insert(M, {
 
 		-- Apply user vtsls config from .kvim.conf
 		local vtsls_conf = require('KoalaVim').conf.lsp.vtsls
-		if vtsls_conf.max_memory then
+		if vtsls_conf.max_memory and vtsls_conf.max_memory ~= vim.NIL then
 			LSP_SERVERS['vtsls'] = vim.tbl_deep_extend('force', LSP_SERVERS['vtsls'] or {}, {
 				settings = {
 					typescript = {
