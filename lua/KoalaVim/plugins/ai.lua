@@ -177,6 +177,15 @@ table.insert(M, {
 			mode = { 'n', 't', 'i', 'x' },
 		},
 		{
+			'<M-a>',
+			function()
+				with_default_tool(require('sidekick.cli').toggle)
+			end,
+			-- ft = 'sidekick_terminal',
+			desc = 'Zoom sidekick terminal in a new tabpage',
+			mode = { 'n', 't' },
+		},
+		{
 			'<leader>ai',
 			function()
 				with_default_tool(require('sidekick.cli').show)
