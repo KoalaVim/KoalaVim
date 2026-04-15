@@ -44,6 +44,19 @@ table.insert(M, {
 		LSP_CAPS = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 		LSP_CAPS.textDocument.completion.completionItem.labelDetailsSupport = nil -- Overriding with false doesn't work for some reason
 
+		-- Apply user vtsls config from .kvim.conf
+		local vtsls_conf = require('KoalaVim').conf.lsp.vtsls
+		if vtsls_conf.max_memory then
+			LSP_SERVERS['vtsls'] = vim.tbl_deep_extend('force', LSP_SERVERS['vtsls'] or {}, {
+				settings = {
+					typescript = {
+						tsserver = {
+							maxTsServerMemory = vtsls_conf.max_memory,
+						},
+					},
+				},
+			})
+		end
 		local function setup_server(server)
 			-- FIXME: vim.lsp: re-visit capabilities, on_attach and on_init
 			local server_opts_merged = vim.tbl_deep_extend('force', {
