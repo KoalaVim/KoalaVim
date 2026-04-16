@@ -8,7 +8,8 @@ map('n', '<leader>p', '"+p', 'paste from os clipboard')
 map('n', '<leader>P', '"+P', 'paste from os clipboard')
 map('x', '<leader>p', '"_d"+P', 'paste from os clipboard')
 map('x', '<leader>P', '"_d"+p', 'paste from os clipboard')
-map({ 'v' }, '<C-c>', '"+y', 'Copy text in visual')
+map({ 'v', 'x' }, '<C-c>', '"+y', 'Copy text in visual to os clipboard')
+map({ 'v', 'x' }, '<Enter>', '"+y', 'Copy text in visual to os clipboard')
 
 -- Deleting text without yanking
 map('n', '<leader>d', '"_d', 'delete without yanking')
