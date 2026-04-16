@@ -102,7 +102,6 @@ table.insert(M, {
 	lazy = true,
 	dependencies = {
 		'nvim-lua/plenary.nvim', -- required
-		'sindrets/diffview.nvim', -- optional - Diff integration
 	},
 	cmd = 'Neogit',
 	keys = {
@@ -532,7 +531,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'sindrets/diffview.nvim',
+	'dlyongemallo/diffview.nvim',
 	enabled = function()
 		return vim.env.KOALA_CODE_DIFF ~= 'true'
 	end,
