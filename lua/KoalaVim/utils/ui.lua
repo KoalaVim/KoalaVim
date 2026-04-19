@@ -98,6 +98,7 @@ function M.setup_lualine(is_half, opts)
 	end
 
 	local info_seperator = ' │ '
+	local hard_info_seperator = ' │ '
 	if icons_only then
 		info_seperator = ' '
 	end
@@ -317,7 +318,7 @@ function M.setup_lualine(is_half, opts)
 				},
 				{
 					get_lsp_count,
-					separator = ' | ',
+					separator = hard_info_seperator,
 					padding = 0,
 				},
 				{
@@ -331,7 +332,27 @@ function M.setup_lualine(is_half, opts)
 						return str:gsub('[%[%]]', '')
 					end,
 					icon = '',
-					separator = ' │ ',
+					separator = hard_info_seperator,
+					padding = 0,
+				},
+				{
+					function()
+						local info = require('codediff').get_hunk_info()
+						local s = string.format(
+							'%s %d/%d',
+							gen_info_string('', 'Hunks', icons_only),
+							info.current,
+							info.total
+						)
+						if info.staged_total then
+							s = s .. string.format('(%d)', info.staged_total)
+						end
+						return s
+					end,
+					cond = function()
+						return package.loaded['codediff'] and require('codediff').get_hunk_info() ~= nil
+					end,
+					separator = hard_info_seperator,
 					padding = 0,
 				},
 				{

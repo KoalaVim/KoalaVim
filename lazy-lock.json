@@ -20,7 +20,7 @@
   "cmp-nvim-lsp": { "branch": "main", "commit": "cbc7b02bb99fae35cb42f514762b89b5126651ef" },
   "cmp-path": { "branch": "main", "commit": "c642487086dbd9a93160e1679a1327be111cbc25" },
   "cmp-snippy": { "branch": "master", "commit": "6e39210aa3a74e2bf6462f492eaf0d436cd2b7d3" },
-  "codediff.nvim": { "branch": "main", "commit": "d08fd3b921be36be360b15369b78ded602ce9b61" },
+  "codediff.nvim": { "branch": "main", "commit": "e36c8fdd8efa1cf86d3ebe5eed19866e2c90d408" },
   "color-picker.nvim": { "branch": "master", "commit": "06cb5f853535dea529a523e9a0e8884cdf9eba4d" },
   "colorful-winsep.nvim": { "branch": "main", "commit": "cc514e64dd9b33f56d28fbd977ebd8397892e349" },
   "command-and-cursor.nvim": { "branch": "master", "commit": "a3c47385483d7360e85a86c67b485b0f562dce32" },
