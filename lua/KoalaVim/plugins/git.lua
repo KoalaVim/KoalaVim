@@ -301,14 +301,16 @@ table.insert(M, {
 			height = 10,
 			initial_focus = 'modified',
 		},
-		conflict = {
-			-- FIXME: test
-			accept_incoming = '<leader>ck',
-			accept_current = '<leader>cj',
-		},
 		diff = {
 			layout = 'inline',
 			conflict_ours_position = 'left',
+		},
+		keymaps = {
+			conflict = {
+				-- FIXME: test
+				accept_incoming = '<leader>ck',
+				accept_current = '<leader>cj',
+			},
 		},
 	},
 	keys = {
@@ -464,16 +466,16 @@ table.insert(M, {
 		end
 
 		-- Disable vimmade on code diff and mark windows as codediff
-		local View = require('codediff.ui.view')
-		local orignal_view_create = View.create
-		function View.create(...)
-			orignal_view_create(...)
-			local tabpage = vim.api.nvim_get_current_tabpage()
-			for _, win_id in ipairs(vim.api.nvim_tabpage_list_wins(tabpage)) do
-				vim.w[win_id].vimade_disabled = 1
-				vim.w[win_id].code_diff_win = true
-			end
-		end
+		api.nvim_create_autocmd('User', {
+			pattern = 'CodeDiffOpen',
+			callback = function(ev)
+				local tabpage = ev.data.tabpage or vim.api.nvim_get_current_tabpage()
+				for _, win_id in ipairs(vim.api.nvim_tabpage_list_wins(tabpage)) do
+					vim.w[win_id].vimade_disabled = 1
+					vim.w[win_id].code_diff_win = true
+				end
+			end,
+		})
 
 		require('codediff').setup(opts)
 
