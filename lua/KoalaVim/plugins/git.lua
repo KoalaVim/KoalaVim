@@ -396,6 +396,36 @@ table.insert(M, {
 					'<cmd>Gitsigns reset_hunk<CR>',
 					{ desc = 'Reset change' }
 				)
+
+				-- Copy the current file path (repo-relative) to the system clipboard.
+				-- Explorer node paths are already repo-relative; view paths are absolute, so strip git_root.
+				lifecycle.set_tab_keymap(tabpage, 'n', '<C-c>', function()
+					local tp = vim.api.nvim_get_current_tabpage()
+					local path
+					local expl = lifecycle.get_explorer(tp)
+					if expl and expl.bufnr == vim.api.nvim_get_current_buf() then
+						local node = expl.tree:get_node()
+						if node and node.data and node.data.path then
+							path = node.data.path
+						end
+					end
+					if not path then
+						local _, modified_path = lifecycle.get_paths(tp)
+						path = modified_path
+						local ctx = lifecycle.get_git_context(tp)
+						if path and ctx and ctx.git_root then
+							local root = ctx.git_root:gsub('/$', '') .. '/'
+							if path:sub(1, #root) == root then
+								path = path:sub(#root + 1)
+							end
+						end
+					end
+					if not path then
+						return
+					end
+					vim.fn.setreg('+', path)
+					vim.notify('Copied: ' .. path)
+				end, { desc = 'Copy file path to clipboard' })
 			end
 
 			if is_explorer_mode then
