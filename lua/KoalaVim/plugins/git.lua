@@ -297,13 +297,25 @@ table.insert(M, {
 	cmd = 'CodeDiff',
 	opts = {
 		explorer = {
-			position = 'bottom',
+		-- position and view_mode are driven by diff.on_layout_change below
+			position = 'left',
+			view_mode = 'tree',
 			height = 10,
+			width = 35,
 			initial_focus = 'modified',
 		},
 		diff = {
 			layout = 'inline',
 			conflict_ours_position = 'left',
+			on_layout_change = function(ctx)
+				local is_inline = ctx.current == 'inline'
+				return {
+					explorer = {
+						position = is_inline and 'left' or 'bottom',
+						view_mode = is_inline and 'tree' or 'list',
+					},
+				}
+			end,
 		},
 		keymaps = {
 			conflict = {
