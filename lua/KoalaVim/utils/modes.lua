@@ -30,7 +30,7 @@ local function git_diff_mode(args)
 	end)
 end
 
-local function ai_mode()
+local function ai_mode(args)
 	vim.api.nvim_create_autocmd('FileType', {
 		pattern = 'sidekick_terminal',
 		once = true,
@@ -40,6 +40,11 @@ local function ai_mode()
 			end, 200)
 		end,
 	})
+
+	local tool = vim.trim(args or '')
+	if tool ~= '' then
+		require('KoalaVim.utils.ai.general').set_default_tool(tool)
+	end
 
 	require('KoalaVim.utils.ai.general').with_default_tool(require('sidekick.cli').show)
 end
