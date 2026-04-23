@@ -12,6 +12,7 @@ map('n', '<M-o>', function() require('KoalaVim.utils.splits').smart_split('horiz
 map('n', '<M-q>', function() require('KoalaVim.utils.splits').close() end, 'Close split')
 map('n', '<M-w>', function() require('KoalaVim.utils.splits').close() end, 'Close split')
 map('t', '<M-q>', '<cmd>bd!<CR>', 'Close terminal')
+map('t', '<M-w>', '<cmd>bd!<CR>', 'Close terminal')
 
 map('n', '<C-w>h', '<C-w>H', 'Move up left')
 map('n', '<C-w>j', '<C-w>J', 'Move split up')
