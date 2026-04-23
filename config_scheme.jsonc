@@ -41,6 +41,28 @@
                         "string",
                         "null"
                     ]
+                },
+                "auto_edit_prompt": {
+                    "description": "Auto-open edit_prompt buffer when typing fast in a sidekick terminal",
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "description": "Enable fast-typing detection that auto-opens edit_prompt",
+                            "type": "boolean"
+                        },
+                        "count": {
+                            "description": "Printable keystrokes within window_ms required to trigger",
+                            "type": "number"
+                        },
+                        "window_ms": {
+                            "description": "Sliding window in ms for counting keystrokes",
+                            "type": "number"
+                        },
+                        "render_delay_ms": {
+                            "description": "Grace period in ms after the last keystroke before reading the terminal buffer",
+                            "type": "number"
+                        }
+                    }
                 }
             }
         },

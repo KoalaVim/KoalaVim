@@ -363,4 +363,65 @@ function M.toggle_max()
 	end
 end
 
+-- Fast-typing detection: trigger edit_prompt when `count` printable keystrokes
+-- land inside a sliding `window_ms` window (i.e. typing speed >= count chars
+-- per window_ms). Lower window_ms or higher count = stricter (fewer false
+-- triggers on stray key mashing); higher window_ms or lower count = more eager
+-- switch. `render_delay_ms` is unrelated to sensitivity — it's the grace
+-- period after the last keystroke before we read the terminal buffer, so the
+-- CLI has time to render the typed chars into the buffer for get_prompt() to
+-- pick up.
+local typing_times = {}
+local fast_typing_armed = true
+
+function M.setup_fast_typing_detection()
+	local conf = require('KoalaVim').conf
+	local auto = conf and conf.ai and conf.ai.auto_edit_prompt or {}
+	if auto.enabled ~= true then
+		return
+	end
+
+	local count = auto.count or 8
+	local window_ms = auto.window_ms or 650
+	local render_delay_ms = auto.render_delay_ms or 80
+
+	vim.on_key(function(_, typed)
+		if not fast_typing_armed then
+			return
+		end
+		if vim.bo.filetype ~= 'sidekick_terminal' or vim.fn.mode() ~= 't' then
+			if #typing_times > 0 then
+				typing_times = {}
+			end
+			return
+		end
+		if type(typed) ~= 'string' or #typed ~= 1 then
+			typing_times = {}
+			return
+		end
+		local b = typed:byte()
+		if b < 32 or b > 126 then
+			typing_times = {}
+			return
+		end
+
+		local now = vim.uv.hrtime() / 1e6
+		table.insert(typing_times, now)
+		while typing_times[1] and now - typing_times[1] > window_ms do
+			table.remove(typing_times, 1)
+		end
+
+		if #typing_times >= count then
+			typing_times = {}
+			fast_typing_armed = false
+			vim.defer_fn(function()
+				if vim.bo.filetype == 'sidekick_terminal' then
+					M.edit_prompt()
+				end
+				fast_typing_armed = true
+			end, render_delay_ms)
+		end
+	end)
+end
+
 return M

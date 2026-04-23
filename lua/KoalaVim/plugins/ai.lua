@@ -29,6 +29,10 @@ local with_default_tool = ai.with_default_tool
 
 table.insert(M, {
 	'ofirgall/sidekick.nvim', --fork
+	config = function(_, opts)
+		require('sidekick').setup(opts)
+		ai.setup_fast_typing_detection()
+	end,
 	opts = {
 		cli = {
 			---@class sidekick.win.Opts
