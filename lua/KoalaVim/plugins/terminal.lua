@@ -66,6 +66,11 @@ table.insert(M, {
 				-- TODO: this should open in the same dir as the term but it doesn't work
 				dir = string.gsub(string.gsub(vim.fn.expand('%:h:h:h'), 'term://', ''), '//.+', '')
 			end
+			-- Fallback to cwd when the buffer's dir isn't a real directory
+			-- (e.g. sidekick terminal buffers have scheme-like names).
+			if vim.fn.isdirectory(dir) == 0 then
+				dir = vim.fn.getcwd()
+			end
 
 			local term = terms.Terminal:new({ id = #terms.get_all() + 1, dir = dir, direction = direction })
 			term:open(nil, direction, true)
