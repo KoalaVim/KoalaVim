@@ -514,7 +514,7 @@ table.insert(M, {
 	end,
 	keys = {
 		{
-			'<C-g>s',
+			'<C-n>',
 			function()
 				require('nvim-navbuddy').open()
 			end,

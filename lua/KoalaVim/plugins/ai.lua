@@ -69,24 +69,6 @@ table.insert(M, {
 	},
 	keys = {
 		{
-			'<C-g>',
-			function()
-				require('KoalaVim.utils.git').show_diff()
-			end,
-			ft = 'sidekick_terminal',
-			desc = 'Open Diff',
-			mode = { 'n', 't' },
-		},
-		{
-			'<C-s>',
-			function()
-				require('KoalaVim.utils.git').show_status()
-			end,
-			ft = 'sidekick_terminal',
-			desc = 'Open Git Status',
-			mode = { 'n', 't' },
-		},
-		{
 			-- FIXME: apply only in cursor
 			'<C-.>',
 			'<S-tab>',

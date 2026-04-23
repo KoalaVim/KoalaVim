@@ -24,7 +24,7 @@ HYDRAS['spell fixer'] = {
 		end,
 	},
 	mode = 'n',
-	body = '<C-s>',
+	body = '<leader>s',
 	heads = {
 		{
 			'j',

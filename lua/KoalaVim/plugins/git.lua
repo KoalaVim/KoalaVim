@@ -113,6 +113,22 @@ table.insert(M, {
 			desc = 'Open Neogit (git status)',
 		},
 		{
+			'<C-s>',
+			function()
+				require('KoalaVim.utils.git').show_status()
+			end,
+			desc = 'Open Git Status',
+			mode = { 'n', 't' },
+		},
+		{
+			'<C-g>',
+			function()
+				require('KoalaVim.utils.git').show_diff()
+			end,
+			desc = 'Open Diff',
+			mode = { 'n', 't' },
+		},
+		{
 			'<leader>gp',
 			'<cmd>Neogit push<cr>',
 			desc = 'Git push',
@@ -234,6 +250,22 @@ if vim.env.NEOGIT ~= 'true' then
 		{ '<leader>gs', '<cmd>G<CR>', desc = 'Open fugitive.vim (git status)' },
 		{ '<leader>gp', '<cmd>Git push<CR>', desc = 'Git push' },
 		{ '<leader>gP', '<cmd>Git push --force<CR>', desc = 'Git push force' },
+		{
+			'<C-s>',
+			function()
+				require('KoalaVim.utils.git').show_status()
+			end,
+			desc = 'Open Git Status',
+			mode = { 'n', 't' },
+		},
+		{
+			'<C-g>',
+			function()
+				require('KoalaVim.utils.git').show_diff()
+			end,
+			desc = 'Open Diff',
+			mode = { 'n', 't' },
+		},
 	}
 end
 
@@ -297,7 +329,7 @@ table.insert(M, {
 	cmd = 'CodeDiff',
 	opts = {
 		explorer = {
-		-- position and view_mode are driven by diff.on_layout_change below
+			-- position and view_mode are driven by diff.on_layout_change below
 			position = 'left',
 			view_mode = 'tree',
 			height = 10,

@@ -85,10 +85,6 @@ table.insert(M, {
 	config = function(_, opts)
 		require('leap').setup(opts)
 	end,
-	keys = {
-		{ '<leader>s', '<Plug>(leap-forward)', mode = { 'n', 'x' }, desc = 'Leap forward' },
-		{ '<leader>S', '<Plug>(leap-backward)', mode = { 'n', 'x' }, desc = 'Leap backard' },
-	},
 })
 
 table.insert(M, {
