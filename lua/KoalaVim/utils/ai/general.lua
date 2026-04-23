@@ -414,9 +414,34 @@ function M.setup_fast_typing_detection()
 		if #typing_times >= count then
 			typing_times = {}
 			fast_typing_armed = false
+
+			-- Block terminal input during the render grace period so in-flight
+			-- keystrokes aren't lost between snapshotting the prompt and
+			-- opening the edit buffer. Printable chars typed in the meantime
+			-- are captured and later inserted into the edit buffer.
+			local term_buf = vim.api.nvim_get_current_buf()
+			local captured = {}
+			local printable = {}
+			for bb = 32, 126 do
+				printable[#printable + 1] = string.char(bb)
+			end
+			for _, ch in ipairs(printable) do
+				pcall(vim.keymap.set, 't', ch, function()
+					captured[#captured + 1] = ch
+				end, { buffer = term_buf, silent = true })
+			end
+
 			vim.defer_fn(function()
+				for _, ch in ipairs(printable) do
+					pcall(vim.keymap.del, 't', ch, { buffer = term_buf })
+				end
 				if vim.bo.filetype == 'sidekick_terminal' then
 					M.edit_prompt()
+					if #captured > 0 then
+						vim.schedule(function()
+							vim.api.nvim_put({ table.concat(captured) }, 'c', true, true)
+						end)
+					end
 				end
 				fast_typing_armed = true
 			end, render_delay_ms)
