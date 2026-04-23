@@ -545,7 +545,7 @@ table.insert(M, {
 		{
 			'<leader>uu',
 			'<cmd>UndotreeToggle<cr>',
-			mode = { 'n', 't' },
+			mode = 'n',
 		},
 	},
 	config = function()

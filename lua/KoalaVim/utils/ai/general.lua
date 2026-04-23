@@ -2,6 +2,57 @@ local M = {}
 
 local SUPPORTED_AGENTS = { cursor = true, claude = true }
 
+--- Debug why a key (default: space) feels slow in the current terminal buffer.
+--- Call from the sidekick terminal buffer (after `<C-\><C-n>` to exit term mode):
+---   :lua require('KoalaVim.utils.ai.general').debug_slow_key()
+---   :lua require('KoalaVim.utils.ai.general').debug_slow_key('<Tab>')
+---@param key? string  lhs to inspect (default ' ')
+function M.debug_slow_key(key)
+	key = key or ' '
+	local norm_key = vim.api.nvim_replace_termcodes(key, true, true, true)
+	local out = {}
+
+	out.buffer = vim.api.nvim_get_current_buf()
+	out.filetype = vim.bo.filetype
+	out.timeout = vim.o.timeout
+	out.timeoutlen = vim.o.timeoutlen
+	out.ttimeout = vim.o.ttimeout
+	out.ttimeoutlen = vim.o.ttimeoutlen
+
+	-- Direct lookups
+	out.maparg_t = vim.fn.maparg(norm_key, 't', false, true)
+	out.mapcheck_t = vim.fn.mapcheck(norm_key, 't')
+
+	-- Every t-mode mapping whose lhs starts with (or equals) this key
+	local function matches(lhs)
+		local lhs_norm = vim.api.nvim_replace_termcodes(lhs, true, true, true)
+		return lhs_norm:sub(1, #norm_key) == norm_key
+	end
+
+	out.global_t_prefix = {}
+	for _, m in ipairs(vim.api.nvim_get_keymap('t')) do
+		if matches(m.lhs) then
+			table.insert(out.global_t_prefix, { lhs = m.lhs, rhs = m.rhs, desc = m.desc, sid = m.sid })
+		end
+	end
+
+	out.buffer_t_prefix = {}
+	for _, m in ipairs(vim.api.nvim_buf_get_keymap(0, 't')) do
+		if matches(m.lhs) then
+			table.insert(out.buffer_t_prefix, { lhs = m.lhs, rhs = m.rhs, desc = m.desc, sid = m.sid })
+		end
+	end
+
+	-- Active on_key handlers (can also impose per-keystroke cost)
+	out.on_key_ns_count = 0
+	for _ in pairs(vim.api.nvim_get_namespaces()) do
+		out.on_key_ns_count = out.on_key_ns_count + 1
+	end
+
+	vim.print(out)
+	return out
+end
+
 -- Session-scoped default tool, initialized from koala config
 local _default_tool = nil
 
