@@ -344,8 +344,8 @@ function M.setup_lualine(is_half, opts)
 							info.current,
 							info.total
 						)
-						if info.staged_total then
-							s = s .. string.format('(%d)', info.staged_total)
+						if info.current_length > 10 then
+							s = s .. string.format('[%d lines]', info.current_length)
 						end
 						return s
 					end,
