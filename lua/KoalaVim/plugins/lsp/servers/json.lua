@@ -5,6 +5,7 @@ LSP_SERVERS['jsonls'] = {}
 
 LSP_SERVERS['yamlls'] = {}
 
+-- Catalog of JSON/YAML schemas from SchemaStore.org for jsonls/yamlls
 table.insert(M, {
 	'b0o/SchemaStore.nvim',
 	ft = { 'yaml', 'yaml.docker-compose', 'json', 'jsonc' },

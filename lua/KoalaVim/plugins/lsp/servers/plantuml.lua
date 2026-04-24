@@ -1,9 +1,11 @@
 local M = {}
 
+-- Syntax highlighting for PlantUML diagram files
 table.insert(M, {
 	'aklt/plantuml-syntax',
 })
 
+-- Live-preview PlantUML diagrams in the browser
 table.insert(M, {
 	'weirongxu/plantuml-previewer.vim',
 	ft = {

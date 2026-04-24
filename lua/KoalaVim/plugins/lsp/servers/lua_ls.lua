@@ -1,5 +1,6 @@
 local M = {}
 
+-- Lua-LS workspace config tuned for Neovim plugin development
 table.insert(M, {
 	'folke/lazydev.nvim',
 	-- FIXME: for some reason lazy loading this doesn't work sometimes

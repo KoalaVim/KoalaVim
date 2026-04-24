@@ -42,6 +42,7 @@ function KoalaDeleteCurrentSession()
 	KOALA_AUTOSAVE_SESSION = false
 end
 
+-- Session manager — save/restore workspace per cwd with auto-save hooks
 table.insert(M, {
 	'jedrzejboczar/possession.nvim',
 	dependencies = {

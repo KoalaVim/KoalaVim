@@ -22,6 +22,7 @@ for name, conf in pairs(HYDRAS) do
 	end
 end
 
+-- Build modal "sub-modes" that stay active until explicitly exited
 table.insert(M, {
 	'qrsforever/hydra.nvim', -- Fork fixed nvim 0.11 issues
 	keys = hydra_keys,

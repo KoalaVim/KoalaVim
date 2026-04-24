@@ -4,6 +4,7 @@ local api = vim.api
 
 local usercmd = require('KoalaVim.utils.cmd')
 
+-- Auto-save files on leaving insert/changes (skips hex buffers, insert mode)
 table.insert(M, {
 	'ofirgall/AutoSave.nvim', -- fork
 	event = 'VeryLazy',
@@ -36,6 +37,7 @@ table.insert(M, {
 	end,
 })
 
+-- Peek at the contents of Vim registers in a floating window
 table.insert(M, {
 	'gennaro-tedesco/nvim-peekup',
 	keys = { '""' },
@@ -47,6 +49,7 @@ table.insert(M, {
 	end,
 })
 
+-- Auto-detect indentation style (tabs vs spaces, width) per file
 table.insert(M, {
 	'KoalaVim/guess-indent.nvim', -- fork
 	priority = 200, -- Load before auto-session
@@ -92,6 +95,7 @@ table.insert(M, {
 local floating_code_ns = api.nvim_create_namespace('Floating Window for Code')
 api.nvim_set_hl(floating_code_ns, 'NormalFloat', { link = 'Normal' })
 
+-- Zoom the current split into a full-screen floating window
 table.insert(M, {
 	'ofirgall/NeoZoom.lua', -- fork
 	opts = {
@@ -160,6 +164,7 @@ table.insert(M, {
 	},
 })
 
+-- Highlight and navigate TODO/FIXME/HACK/NOTE comments
 table.insert(M, {
 	'folke/todo-comments.nvim',
 	event = { 'BufReadPost', 'BufNewFile' },
@@ -199,6 +204,7 @@ table.insert(M, {
 	},
 })
 
+-- Interactive REPL integration for running code snippets (IPython/Lua/shell)
 table.insert(M, {
 	'Vigemus/iron.nvim',
 	cmd = { 'IPython', 'Lua' },
@@ -239,6 +245,7 @@ table.insert(M, {
 	end,
 })
 
+-- Highlight color codes (#RRGGBB, rgb(), named colors) inline
 table.insert(M, {
 	'KoalaVim/nvim-colorizer.lua',
 	event = { 'BufReadPost', 'BufNewFile' },
@@ -250,6 +257,7 @@ table.insert(M, {
 	end,
 })
 
+-- Interactive color picker with sliders (hue/saturation/value)
 table.insert(M, {
 	'ziontee113/color-picker.nvim',
 	keys = {
@@ -261,6 +269,7 @@ table.insert(M, {
 	end,
 })
 
+-- Scope buffers to their tab (tab-local buffer lists)
 table.insert(M, {
 	'tiagovla/scope.nvim',
 	opts = {},
@@ -274,6 +283,7 @@ local femaco_margin = {
 	height = 6,
 	top = 2,
 }
+-- Edit markdown code fences in a floating window with proper LSP/formatting
 table.insert(M, {
 	'gen4438/nvim-FeMaco.lua',
 	cmd = 'FeMaco',
@@ -315,6 +325,7 @@ table.insert(M, {
 	end,
 })
 
+-- Open URL/file/issue-ref under the cursor in the right external app
 table.insert(M, {
 	'ofirgall/open.nvim',
 	keys = {
@@ -349,6 +360,7 @@ table.insert(M, {
 	},
 })
 
+-- Highlight and trim trailing whitespace/blank lines at end of file
 table.insert(M, {
 	'zakharykaplan/nvim-retrail',
 	event = { 'BufReadPost', 'BufNewFile' },
@@ -393,6 +405,7 @@ table.insert(M, {
 	end,
 })
 
+-- Unified window navigation between Neovim splits and tmux/wezterm panes
 table.insert(M, {
 	'numToStr/Navigator.nvim',
 	opts = {
@@ -410,6 +423,7 @@ table.insert(M, {
 	},
 })
 
+-- Convert numbers between hex and decimal bases
 table.insert(M, {
 	'trmckay/based.nvim',
 	opts = {
@@ -430,6 +444,7 @@ table.insert(M, {
 	},
 })
 
+-- Swap the content between two splits
 table.insert(M, {
 	'riddlew/swap-split.nvim',
 	cmd = 'SwapSplit',
@@ -443,6 +458,7 @@ table.insert(M, {
 	end,
 })
 
+-- Toggle current buffer between text and hexdump view
 table.insert(M, {
 	'RaafatTurki/hex.nvim',
 	cmd = { 'HexDump', 'HexAssemble', 'HexToggle' },
@@ -452,6 +468,7 @@ table.insert(M, {
 	end,
 })
 
+-- Sync spellfile additions across machines (via git)
 table.insert(M, {
 	'micarmst/vim-spellsync',
 	event = 'VeryLazy',
@@ -461,16 +478,19 @@ table.insert(M, {
 	end,
 })
 
+-- Read/write files requiring sudo from inside Neovim
 table.insert(M, {
 	'lambdalisue/suda.vim',
 	cmd = { 'SudaRead', 'SudaWrite' },
 })
 
+-- Interactive swap of function arguments / list items via picker
 table.insert(M, {
 	'mizlan/iswap.nvim',
 	cmd = 'ISwap',
 })
 
+-- Edit quickfix, location list and registers as regular buffers
 table.insert(M, {
 	'rbong/vim-buffest',
 	cmd = {
@@ -490,11 +510,13 @@ table.insert(M, {
 	},
 })
 
+-- Syntax highlighting for generic log files
 table.insert(M, {
 	'ofirgall/vim-log-highlighting',
 	ft = 'log',
 })
 
+-- File operations inside Neovim (rename, trash, move, duplicate, chmod)
 table.insert(M, {
 	'ofirgall/nvim-genghis', -- fork
 	cmd = {
@@ -516,6 +538,7 @@ table.insert(M, {
 	end,
 })
 
+-- Flash-highlight regions affected by undo/redo operations
 table.insert(M, {
 	'tzachar/highlight-undo.nvim',
 	keys = { 'u', '<C-r>' },
@@ -524,6 +547,7 @@ table.insert(M, {
 	end,
 })
 
+-- Multiple-replace UI — run several search/replaces together with preview
 table.insert(M, {
 	'AckslD/muren.nvim',
 	cmd = {
@@ -538,6 +562,7 @@ table.insert(M, {
 	end,
 })
 
+-- Visual tree browser of the full undo history
 table.insert(M, {
 	'mbbill/undotree',
 	cmd = 'UndotreeToggle',
@@ -557,6 +582,7 @@ table.insert(M, {
 	end,
 })
 
+-- Persistently highlight arbitrary words in multiple colors for tracking
 table.insert(M, {
 	'ofirgall/interestingwords.nvim', -- fork
 	keys = {
@@ -576,6 +602,7 @@ table.insert(M, {
 	end,
 })
 
+-- Pretty panel for diagnostics, quickfix, loclist, references, todo comments
 table.insert(M, {
 	'ofirgall/trouble.nvim', -- fork
 	lazy = true,
@@ -618,6 +645,7 @@ table.insert(M, {
 	end,
 })
 
+-- Generate permalinks to the current line on the git host (GitHub/GitLab)
 table.insert(M, {
 	'linrongbin16/gitlinker.nvim',
 	cmd = 'GitLink',
@@ -626,6 +654,7 @@ table.insert(M, {
 	end,
 })
 
+-- Project-wide find and replace with live preview
 table.insert(M, {
 	'nvim-pack/nvim-spectre',
 	lazy = true, -- Used by nvim-tree
@@ -666,6 +695,7 @@ table.insert(M, {
 	end,
 })
 
+-- Auto-convert strings to/from f-strings/template literals when needed
 table.insert(M, {
 	'chrisgrieser/nvim-puppeteer',
 	-- Supported languages
@@ -681,6 +711,7 @@ table.insert(M, {
 	},
 })
 
+-- Dynamic scrolloff based on a fraction of the window height
 table.insert(M, {
 	'nkakouros-original/scrollofffraction.nvim',
 	event = { 'BufEnter', 'WinEnter', 'WinNew', 'VimResized' },
@@ -694,7 +725,7 @@ table.insert(M, {
 	end,
 })
 
--- Keep show visual after inserting command mode (:)
+-- Keep visual selection highlighted while in command-line mode (:)
 table.insert(M, {
 	'moyiz/command-and-cursor.nvim',
 	event = 'VeryLazy',
@@ -706,6 +737,7 @@ table.insert(M, {
 	end,
 })
 
+-- Repeat last ]x/[x bracket motion with ] / [
 table.insert(M, {
 	'ofirgall/bracket-repeat.nvim',
 	priority = 99999999999, -- load last
@@ -714,6 +746,7 @@ table.insert(M, {
 	end,
 })
 
+-- Visual sign column for Vim marks + better mark bindings
 table.insert(M, {
 	'ofirgall/marks.nvim', -- fork
 	keys = { 'm' },
@@ -723,6 +756,7 @@ table.insert(M, {
 	end,
 })
 
+-- folke QoL grab-bag: notifier, dim, scroll, input, picker, dashboard, etc.
 -- FIXME: go over snacks.nvim and replace/add stuff
 table.insert(M, {
 	'folke/snacks.nvim',
@@ -800,6 +834,7 @@ table.insert(M, {
 	},
 })
 
+-- Browse and insert Nerd Font icons from a picker
 table.insert(M, {
 	'2kabhishek/nerdy.nvim',
 	dependencies = {

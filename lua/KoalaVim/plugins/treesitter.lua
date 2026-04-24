@@ -1,5 +1,6 @@
 local M = {}
 
+-- Treesitter parser manager — syntax, folds, indent powered by TS grammars
 table.insert(M, {
 	'nvim-treesitter/nvim-treesitter',
 	version = false, -- last release is way too old
@@ -48,6 +49,7 @@ table.insert(M, {
 	end,
 })
 
+-- Treesitter-powered text-objects: @function, @class, @block, @call, ...
 table.insert(M, {
 	'nvim-treesitter/nvim-treesitter-textobjects',
 	branch = 'main', -- The future default branch
@@ -143,6 +145,7 @@ table.insert(M, {
 	end,
 })
 
+-- Sticky header showing the enclosing function/class/block as you scroll
 table.insert(M, {
 	'nvim-treesitter/nvim-treesitter-context',
 	event = { 'BufReadPre', 'BufNewFile' },
@@ -154,6 +157,7 @@ table.insert(M, {
 	end,
 })
 
+-- Context-aware commentstring (e.g. JSX inside TSX) for Comment.nvim
 table.insert(M, {
 	'JoosepAlviste/nvim-ts-context-commentstring',
 	event = { 'BufReadPre', 'BufNewFile' },
@@ -171,6 +175,7 @@ table.insert(M, {
 	end,
 })
 
+-- Show/yank JSONPath to the node under cursor in .json files
 table.insert(M, {
 	'phelipetls/jsonpath.nvim',
 	ft = { 'json', 'jsonc' },
@@ -182,6 +187,7 @@ table.insert(M, {
 	end,
 })
 
+-- Enhanced % matching for language constructs (if/end, open/close tags)
 table.insert(M, {
 	'andymass/vim-matchup',
 	event = { 'BufReadPre', 'BufNewFile' },
@@ -199,6 +205,7 @@ table.insert(M, {
 	end,
 })
 
+-- Auto-insert matching `end` for blocks in Ruby/Lua/Bash/etc.
 table.insert(M, {
 	'RRethy/nvim-treesitter-endwise',
 	dependencies = {

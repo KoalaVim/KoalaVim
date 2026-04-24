@@ -371,6 +371,7 @@ table.insert(M, {
 	},
 })
 
+-- Floating progress indicator for LSP and background tasks
 table.insert(M, {
 	'j-hui/fidget.nvim',
 	event = 'VeryLazy',
@@ -476,6 +477,7 @@ table.insert(M, {
 	lazy = true,
 })
 
+-- Popup showing possible keybinding continuations after a timeout
 table.insert(M, {
 	'folke/which-key.nvim',
 	event = 'VeryLazy',
@@ -515,6 +517,7 @@ function CLOSE_KOALA_DASHBOARD(clear_messages, close_buffer)
 	end
 end
 
+-- Greeter/dashboard shown on startup with KoalaVim shortcuts
 table.insert(M, {
 	'KoalaVim/alpha-nvim', -- fork
 	event = 'VimEnter',
@@ -675,6 +678,7 @@ table.insert(M, {
 	end,
 })
 
+-- Smooth animated cursor trail rendered inside the terminal
 table.insert(M, {
 	'sphamba/smear-cursor.nvim',
 	event = 'VeryLazy',
@@ -701,6 +705,7 @@ table.insert(M, {
 	specs = {},
 })
 
+-- Dim inactive windows and buffers for better focus
 table.insert(M, {
 	'tadaa/vimade', -- Dims inactive windows
 	enabled = false,

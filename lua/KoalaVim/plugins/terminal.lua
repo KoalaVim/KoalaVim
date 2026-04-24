@@ -5,6 +5,8 @@ local M = {}
 --					2. Split it (M-e) twice
 --					3. Close all (M-q) * 3
 --					4. Reopen terminal, will show term2 instead of 1 and continue to create term2
+-- Toggleable floating/split terminals with multi-instance support.
+-- Bundles term-edit.nvim for vim-style editing at the shell prompt.
 table.insert(M, {
 	'akinsho/toggleterm.nvim',
 	keys = {

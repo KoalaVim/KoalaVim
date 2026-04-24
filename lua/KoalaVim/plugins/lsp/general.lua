@@ -21,7 +21,7 @@ LSP_ON_ATTACH_NO_HOVER = function(client, buffer)
 	client.server_capabilities.hoverProvider = false
 end
 
--- Setup actual servers + generic lsp stuff
+-- Collection of quickstart LSP server configurations for Neovim's LSP client
 table.insert(M, {
 	'neovim/nvim-lspconfig',
 	event = { 'BufReadPre', 'BufNewFile' },
@@ -107,6 +107,7 @@ table.insert(M, {
 	},
 })
 
+-- Package manager for LSP servers, DAP adapters, linters and formatters
 table.insert(M, {
 	'mason-org/mason.nvim',
 	cmd = {
@@ -171,8 +172,8 @@ table.insert(M, {
 	end,
 })
 
+-- Bridge external formatters/linters/code actions to Neovim's LSP as sources
 table.insert(M, {
-	-- Formatters/linters
 	'nvimtools/none-ls.nvim',
 	event = { 'BufReadPre', 'BufNewFile' },
 	dependencies = { 'mason.nvim' },
@@ -254,6 +255,7 @@ table.insert(M, {
 	end,
 })
 
+-- Lightweight async formatter runner with format-on-save support
 table.insert(M, {
 	'stevearc/conform.nvim',
 	module = true, -- loaded as module by format-on-leave
@@ -289,6 +291,7 @@ table.insert(M, {
 	end,
 })
 
+-- Enhanced LSP UI: code actions, rename, lightbulb, diagnostics popups
 -- TODO: if I want code action to be always active I need to add event = 'LspAttach'
 table.insert(M, {
 	'glepnir/lspsaga.nvim',
@@ -336,6 +339,7 @@ table.insert(M, {
 	},
 })
 
+-- Render LSP inlay hints as virtual text (parameter names, types)
 table.insert(M, {
 	'KoalaVim/inlay-hints.nvim', -- fork
 	keys = {
@@ -384,6 +388,7 @@ table.insert(M, {
 	end,
 })
 
+-- Format the buffer when leaving insert/normal mode instead of on save
 table.insert(M, {
 	'ofirgall/format-on-leave.nvim',
 	event = 'LspAttach',
@@ -398,6 +403,7 @@ table.insert(M, {
 	end,
 })
 
+-- Highlight other occurrences of the word/symbol under the cursor
 table.insert(M, {
 	'RRethy/vim-illuminate',
 	event = 'LspAttach',
@@ -434,6 +440,7 @@ table.insert(M, {
 	},
 })
 
+-- Render LSP diagnostics as multi-line virtual text under the offending line
 table.insert(M, {
 	'ofirgall/lsp_lines.nvim', -- mirror of https://git.sr.ht/~whynothugo/lsp_lines.nvim
 	config = function()
@@ -450,6 +457,7 @@ table.insert(M, {
 	},
 })
 
+-- Show LSP diagnostics as a floating widget next to the cursor/corner
 table.insert(M, {
 	'KoalaVim/diagflow.nvim', -- fork
 	event = 'LspAttach',
@@ -480,6 +488,7 @@ table.insert(M, {
 	end,
 })
 
+-- Interactive tree navigator for LSP document symbols
 table.insert(M, {
 	'SmiteshP/nvim-navbuddy',
 	cmd = 'Navbuddy',
@@ -523,8 +532,8 @@ table.insert(M, {
 	},
 })
 
+-- Count of LSP definitions and references for the symbol under cursor
 table.insert(M, {
-	-- Adds definition and references to statusline
 	'ofirgall/nvim-dr-lsp', -- fork
 	lazy = true,
 })

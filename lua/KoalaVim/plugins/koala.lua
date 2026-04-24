@@ -1,6 +1,6 @@
 local M = {}
 
--- Setup KoalaVim with lazy.nvim
+-- KoalaVim meta-plugin itself: loads config, autocmds, state, koala modes
 table.insert(M, {
 	'KoalaVim/KoalaVim',
 	priority = 9999999, -- Load KoalaVim first

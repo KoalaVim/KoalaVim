@@ -109,6 +109,7 @@ local M = {}
 
 local cycle_layout_list = { 'vertical', 'horizontal' }
 local layout = cycle_layout_list[2]
+-- Fuzzy finder framework — files, buffers, LSP symbols, diagnostics, etc.
 table.insert(M, {
 	'nvim-telescope/telescope.nvim',
 	cmd = { 'Telescope', 'CmdHistory' },
@@ -374,8 +375,8 @@ table.insert(M, {
 	},
 })
 
+-- Native fzf sorter for telescope — much faster filtering on large lists
 table.insert(M, {
-	-- fzf integration for telescope
 	'nvim-telescope/telescope-fzf-native.nvim',
 	lazy = true,
 	build = 'make',
@@ -384,8 +385,8 @@ table.insert(M, {
 	end,
 })
 
+-- Route vim.ui.select() through telescope (code actions, refactor menus, etc.)
 table.insert(M, {
-	-- native nvim ui select with telescope
 	'nvim-telescope/telescope-ui-select.nvim',
 	lazy = true,
 	config = function()
@@ -393,8 +394,8 @@ table.insert(M, {
 	end,
 })
 
+-- Live grep with raw rg args (globs, -t/-T filters) from the prompt
 table.insert(M, {
-	-- Better live grep
 	'nvim-telescope/telescope-live-grep-args.nvim',
 	keys = {
 		-- Find word
@@ -433,8 +434,8 @@ table.insert(M, {
 	dependencies = 'nvim-telescope/telescope.nvim',
 })
 
+-- Dictionary/synonyms/spell suggestions picker via telescope
 table.insert(M, {
-	-- Dictionary with telescope
 	'https://code.sitosis.com/rudism/telescope-dict.nvim',
 	dependencies = 'nvim-telescope/telescope.nvim',
 	keys = {
@@ -471,6 +472,7 @@ table.insert(M, {
 	},
 })
 
+-- Build custom telescope pickers from shell commands (used for dirty files)
 table.insert(M, {
 	'axkirillov/easypick.nvim',
 	dependencies = {

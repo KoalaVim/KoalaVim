@@ -20,6 +20,7 @@ LSP_SERVERS['vtsls'] = {
 	},
 }
 
+-- Wrapper for the vtsls TypeScript LSP with extra commands and features
 table.insert(M, {
 	'yioneko/nvim-vtsls',
 	dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },

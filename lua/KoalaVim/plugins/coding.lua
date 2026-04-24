@@ -3,6 +3,7 @@ local M = {}
 
 local usercmd = require('KoalaVim.utils.cmd')
 
+-- Smart commenting with gcc/gc mappings and treesitter-aware commentstring
 table.insert(M, {
 	'numToStr/Comment.nvim',
 	event = { 'BufReadPre', 'BufNewFile' },
@@ -18,6 +19,7 @@ table.insert(M, {
 	},
 })
 
+-- Operators to exchange and substitute text regions
 table.insert(M, {
 	'gbprod/substitute.nvim',
 	keys = {
@@ -49,6 +51,7 @@ table.insert(M, {
 	end,
 })
 
+-- Auto-insert matching pairs (brackets, quotes) with treesitter awareness
 table.insert(M, {
 	'windwp/nvim-autopairs',
 	event = { 'InsertEnter' },
@@ -65,6 +68,7 @@ table.insert(M, {
 	},
 })
 
+-- Peek at line jumps (`:N`) without leaving current position
 table.insert(M, {
 	'nacro90/numb.nvim',
 	event = 'CmdLineEnter',
@@ -76,6 +80,7 @@ table.insert(M, {
 	end,
 })
 
+-- General-purpose motion plugin — jump anywhere visible with two chars
 table.insert(M, {
 	'ggandor/leap.nvim',
 	opts = {
@@ -87,6 +92,7 @@ table.insert(M, {
 	end,
 })
 
+-- Enhances f/F/t/T with leap-style labels for multi-line jumps
 table.insert(M, {
 	'ggandor/flit.nvim',
 	dependencies = {
@@ -101,6 +107,7 @@ table.insert(M, {
 	keys = { 'f', 'F', 't', 'T' },
 })
 
+-- Generate language-aware debug print statements with one keystroke
 table.insert(M, {
 	'andrewferrier/debugprint.nvim',
 	opts = {
@@ -113,6 +120,7 @@ table.insert(M, {
 	cmd = 'DeleteDebugPrints',
 })
 
+-- Toggle opposite words under the cursor (true↔false, prev↔next, etc.)
 table.insert(M, {
 	'nguyenvukhang/nvim-toggler',
 	opts = {
@@ -162,6 +170,7 @@ for key, _ in pairs(text_case_cmd_table) do
 	table.insert(text_case_cmds, key)
 end
 
+-- Convert identifiers between case styles (snake, camel, pascal, etc.)
 table.insert(M, {
 	'johmsalas/text-case.nvim',
 	cmd = text_case_cmds,
@@ -177,6 +186,7 @@ table.insert(M, {
 	end,
 })
 
+-- Yank history ring — cycle through past yanks when pasting
 table.insert(M, {
 	'gbprod/yanky.nvim',
 	opts = {
@@ -228,6 +238,7 @@ table.insert(M, {
 	},
 })
 
+-- Add/change/delete surrounding pairs (brackets, quotes, tags) via operators
 table.insert(M, {
 	'kylechui/nvim-surround',
 	keys = {
@@ -289,6 +300,7 @@ table.insert(M, {
 	end,
 })
 
+-- Split/join blocks of code (treesitter-based) across lines
 table.insert(M, {
 	'Wansmer/treesj',
 	dependencies = {
@@ -306,6 +318,7 @@ table.insert(M, {
 	},
 })
 
+-- Swap treesitter siblings (function args, list items) left/right
 table.insert(M, {
 	'Wansmer/sibling-swap.nvim',
 	dependencies = {
@@ -345,6 +358,7 @@ table.insert(M, {
 	},
 })
 
+-- Extra text-objects (subwords, indent, shell pipe, URL, etc.)
 table.insert(M, {
 	'chrisgrieser/nvim-various-textobjs',
 	opts = {
@@ -363,6 +377,7 @@ table.insert(M, {
 	end,
 })
 
+-- Enhanced a/i text-objects (arguments, balanced pairs, etc.) from mini.nvim
 table.insert(M, {
 	'echasnovski/mini.ai',
 	config = function(_, opts)
@@ -370,6 +385,7 @@ table.insert(M, {
 	end,
 })
 
+-- Multi-cursor / multi-selection editing (VSCode/Sublime-style Ctrl-D)
 table.insert(M, {
 	'mg979/vim-visual-multi',
 	keys = {
@@ -425,6 +441,7 @@ let g:VM_maps['Add Cursor Up'] = '<C-Up>'
 -- 	end,
 -- })
 
+-- Move lines and blocks up/down/left/right with arrow keys in visual mode
 table.insert(M, {
 	'fedepujol/move.nvim',
 	keys = {

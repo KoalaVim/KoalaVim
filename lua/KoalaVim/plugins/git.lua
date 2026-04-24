@@ -2,6 +2,7 @@ local M = {}
 
 local api = vim.api
 
+-- Git hunks in the sign column: stage, reset, preview, blame, navigate
 table.insert(M, {
 	'lewis6991/gitsigns.nvim',
 	branch = 'main',
@@ -78,6 +79,7 @@ table.insert(M, {
 	end,
 })
 
+-- Inline word-level diff highlighting within a hunk
 table.insert(M, {
 	'ofirgall/inlinediff-nvim', -- Fork for enable/disable
 	lazy = true, -- disable loading plugin until called with cmd or keys
@@ -94,6 +96,7 @@ table.insert(M, {
 	opts = {},
 })
 
+-- Magit-like git interface for staging, committing, pushing, and more
 table.insert(M, {
 	'ofirgall/neogit',
 	enabled = function()
@@ -269,6 +272,7 @@ if vim.env.NEOGIT ~= 'true' then
 	}
 end
 
+-- Vim's classic git wrapper — commits, blame, logs, merges, index editing
 table.insert(M, {
 	'tpope/vim-fugitive',
 	keys = _fugitive_keys,
@@ -321,6 +325,7 @@ table.insert(M, {
 	end,
 })
 
+-- Tab-based git diff viewer with file explorer, staging and commit history
 table.insert(M, {
 	'ofirgall/codediff.nvim', -- For custom key maps monkey patch...
 	enabled = function()
@@ -606,6 +611,7 @@ table.insert(M, {
 	end,
 })
 
+-- Classic side-by-side diff viewer with file history and conflict resolution
 table.insert(M, {
 	'dlyongemallo/diffview.nvim',
 	enabled = function()
@@ -772,6 +778,7 @@ table.insert(M, {
 	end,
 })
 
+-- Show the git commit responsible for the line under cursor in a popup
 table.insert(M, {
 	'rhysd/git-messenger.vim',
 	keys = {
@@ -817,6 +824,7 @@ table.insert(M, {
 	end,
 })
 
+-- Auto-insert a commit message prefix derived from the current branch name
 table.insert(M, {
 	'ofirgall/commit-prefix.nvim',
 	enabled = false, -- Solve prefixes with commit-msg hooks are much better approach
@@ -826,6 +834,7 @@ table.insert(M, {
 	end,
 })
 
+-- Graphical git log browser with rich navigation and filtering
 table.insert(M, {
 	'rbong/vim-flog',
 	dependencies = {
@@ -916,6 +925,7 @@ table.insert(M, {
 	end,
 })
 
+-- Manage GitHub issues and pull requests (view, comment, review) inside Neovim
 table.insert(M, {
 	'pwntester/octo.nvim',
 	cmd = 'Octo',

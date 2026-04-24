@@ -4,6 +4,8 @@ local ai = require('KoalaVim.utils.ai.general')
 
 local with_default_tool = ai.with_default_tool
 
+-- AI CLI sidecar (Claude, Copilot, Cursor, etc.) integrated into Neovim
+-- with NES inline next-edit suggestions and prompt send helpers.
 table.insert(M, {
 	'ofirgall/sidekick.nvim', --fork
 	config = function(_, opts)

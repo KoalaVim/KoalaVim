@@ -29,6 +29,7 @@ LSP_SERVERS['ltex'] = {
 
 local cmd = require('KoalaVim.utils.cmd')
 
+-- Markdown preview in a webview window powered by Deno
 table.insert(M, {
 	'toppair/peek.nvim',
 	enabled = false,
@@ -41,6 +42,7 @@ table.insert(M, {
 	end,
 })
 
+-- Browser-based live markdown preview with GitHub-flavored rendering
 table.insert(M, {
 	'iamcco/markdown-preview.nvim',
 	cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
@@ -61,6 +63,7 @@ table.insert(M, {
 	end,
 })
 
+-- Render markdown inside the buffer (headings, code blocks, tables, etc.)
 table.insert(M, {
 	'MeanderingProgrammer/render-markdown.nvim',
 	opts = {

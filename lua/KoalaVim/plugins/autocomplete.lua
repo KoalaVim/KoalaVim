@@ -251,7 +251,7 @@ table.insert(M, {
 	end,
 })
 
--- Snippet engine
+-- Snippet engine (TextMate/UltiSnips-compatible, integrates with nvim-cmp)
 table.insert(M, {
 	'dcampos/nvim-snippy',
 	dependencies = {
@@ -272,7 +272,7 @@ table.insert(M, {
 	},
 })
 
--- Autopair
+-- Auto-insert matching pairs (brackets, quotes) with treesitter awareness
 table.insert(M, {
 	'windwp/nvim-autopairs',
 	event = 'InsertEnter',
@@ -282,7 +282,7 @@ table.insert(M, {
 	},
 })
 
--- Cargo.toml cmp sources
+-- Cargo.toml completion, version info, and management for Rust crates
 table.insert(M, {
 	'saecki/crates.nvim',
 	ft = 'toml',

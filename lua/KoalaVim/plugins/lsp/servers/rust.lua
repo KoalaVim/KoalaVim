@@ -11,6 +11,7 @@ LSP_SERVERS['rust-analyzer'] = {
 	mason = 'rust_analyzer',
 }
 
+-- Batteries-included Rust tooling: rust-analyzer config, runnables, debugging
 table.insert(M, {
 	'mrcjkb/rustaceanvim',
 	ft = 'rust',
@@ -83,8 +84,8 @@ table.insert(M, {
 	end,
 })
 
+-- Jump to the next Rust compile error via cargo-limit (run cargo lrun/lcheck)
 table.insert(M, {
-	-- Jump to rust errors (run `cargo lrun` in terminal)
 	'alopatindev/cargo-limit',
 	run = 'cargo install cargo-limit nvim-send',
 	ft = 'rust',

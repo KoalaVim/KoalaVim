@@ -2,6 +2,7 @@ local M = {}
 
 local usercmd = require('KoalaVim.utils.cmd')
 
+-- Debug Adapter Protocol client — debug code from Neovim (cpp/rust/go/python)
 table.insert(M, {
 	'mfussenegger/nvim-dap',
 	enabled = false,
@@ -229,6 +230,7 @@ table.insert(M, {
 	},
 })
 
+-- UI panels for nvim-dap (scopes, watches, breakpoints, stacks, repl)
 table.insert(M, {
 	'rcarriga/nvim-dap-ui',
 	lazy = true, -- Loading with dap-ui
@@ -293,8 +295,8 @@ table.insert(M, {
 	end,
 })
 
+-- Cycle between DAP breakpoints with ]d/[d
 table.insert(M, {
-	-- Cycle breakpoints with ]d/[d
 	'ofirgall/goto-breakpoints.nvim',
 	keys = {
 		{
@@ -321,6 +323,7 @@ table.insert(M, {
 	},
 })
 
+-- Show variable values as virtual text inline while debugging
 table.insert(M, {
 	'theHamsta/nvim-dap-virtual-text',
 	lazy = true,
