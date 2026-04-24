@@ -37,18 +37,6 @@ table.insert(M, {
 	end,
 })
 
--- Peek at the contents of Vim registers in a floating window
-table.insert(M, {
-	'gennaro-tedesco/nvim-peekup',
-	keys = { '""' },
-	config = function()
-		local peekup_config = require('nvim-peekup.config')
-		peekup_config.on_keystroke['delay'] = ''
-		peekup_config.on_keystroke['autoclose'] = true
-		peekup_config.on_keystroke['paste_reg'] = '"'
-	end,
-})
-
 -- Auto-detect indentation style (tabs vs spaces, width) per file
 table.insert(M, {
 	'KoalaVim/guess-indent.nvim', -- fork
@@ -204,47 +192,6 @@ table.insert(M, {
 	},
 })
 
--- Interactive REPL integration for running code snippets (IPython/Lua/shell)
-table.insert(M, {
-	'Vigemus/iron.nvim',
-	cmd = { 'IPython', 'Lua' },
-	opts = {
-		config = {
-			should_map_plug = false,
-			scratch_repl = true,
-			close_window_on_exit = true,
-			repl_definition = {
-				sh = {
-					command = { 'zsh' },
-				},
-				python = {
-					command = { 'ipython3' },
-				},
-			},
-			repl_open_cmd = 'belowright 15 split',
-		},
-		highlight = {
-			italic = false,
-			bold = false,
-		},
-	},
-	config = function(_, opts)
-		require('iron.core').setup(opts)
-
-		usercmd.create('IPython', 'Open IPython interpreter in split', function()
-			require('iron.core').repl_for('python')
-			require('iron.core').focus_on('python')
-			api.nvim_feedkeys('i', 'n', false)
-		end, {})
-
-		usercmd.create('Lua', 'Open Lua interpreter in split', function()
-			require('iron.core').repl_for('lua')
-			require('iron.core').focus_on('lua')
-			api.nvim_feedkeys('i', 'n', false)
-		end, {})
-	end,
-})
-
 -- Highlight color codes (#RRGGBB, rgb(), named colors) inline
 table.insert(M, {
 	'KoalaVim/nvim-colorizer.lua',
@@ -254,18 +201,6 @@ table.insert(M, {
 	},
 	config = function(_, opts)
 		require('colorizer').setup(opts)
-	end,
-})
-
--- Interactive color picker with sliders (hue/saturation/value)
-table.insert(M, {
-	'ziontee113/color-picker.nvim',
-	keys = {
-		{ '<leader>rgb', '<cmd>PickColor<CR>', desc = 'Pick color' },
-	},
-	opts = {},
-	config = function(_, opts)
-		require('color-picker').setup(opts)
 	end,
 })
 
@@ -423,41 +358,6 @@ table.insert(M, {
 	},
 })
 
--- Convert numbers between hex and decimal bases
-table.insert(M, {
-	'trmckay/based.nvim',
-	opts = {
-		highlight = 'Title',
-	},
-	config = function(_, opts)
-		require('based').setup(opts)
-	end,
-	keys = {
-		{
-			'<leader>H',
-			function()
-				require('based').convert()
-			end,
-			mode = { 'n', 'v' },
-			desc = 'Convert hex <=> decimal',
-		},
-	},
-})
-
--- Swap the content between two splits
-table.insert(M, {
-	'riddlew/swap-split.nvim',
-	cmd = 'SwapSplit',
-	opts = {
-		ignore_filetypes = {
-			'NvimTree',
-		},
-	},
-	config = function(_, opts)
-		require('swap-split').setup(opts)
-	end,
-})
-
 -- Toggle current buffer between text and hexdump view
 table.insert(M, {
 	'RaafatTurki/hex.nvim',
@@ -468,26 +368,10 @@ table.insert(M, {
 	end,
 })
 
--- Sync spellfile additions across machines (via git)
-table.insert(M, {
-	'micarmst/vim-spellsync',
-	event = 'VeryLazy',
-	init = function()
-		vim.g.spellsync_enable_git_union_merge = 0
-		vim.g.spellsync_enable_git_ignore = 0
-	end,
-})
-
 -- Read/write files requiring sudo from inside Neovim
 table.insert(M, {
 	'lambdalisue/suda.vim',
 	cmd = { 'SudaRead', 'SudaWrite' },
-})
-
--- Interactive swap of function arguments / list items via picker
-table.insert(M, {
-	'mizlan/iswap.nvim',
-	cmd = 'ISwap',
 })
 
 -- Edit quickfix, location list and registers as regular buffers
@@ -693,22 +577,6 @@ table.insert(M, {
 
 		HELPERS['spectre_panel'] = '?'
 	end,
-})
-
--- Auto-convert strings to/from f-strings/template literals when needed
-table.insert(M, {
-	'chrisgrieser/nvim-puppeteer',
-	-- Supported languages
-	ft = {
-		'python',
-		'javascript',
-		'typescript',
-		'javascriptreact',
-		'typescriptreact',
-		'vue',
-		'astro',
-		'lua',
-	},
 })
 
 -- Dynamic scrolloff based on a fraction of the window height

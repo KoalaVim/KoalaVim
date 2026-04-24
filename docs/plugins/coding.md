@@ -10,9 +10,7 @@ Editing, motions, text objects and refactor helpers.
 | [numb.nvim](https://github.com/nacro90/numb.nvim) | Peek at line jumps without leaving the current position. |
 | [leap.nvim](https://github.com/ggandor/leap.nvim) | General-purpose motion plugin — jump anywhere visible. |
 | [flit.nvim](https://github.com/ggandor/flit.nvim) | Enhances f/F/t/T with leap-style labels. |
-| [debugprint.nvim](https://github.com/andrewferrier/debugprint.nvim) | Generate language-aware debug print statements. |
 | [nvim-toggler](https://github.com/nguyenvukhang/nvim-toggler) | Toggle opposite words (true↔false, prev↔next, etc.). |
-| [text-case.nvim](https://github.com/johmsalas/text-case.nvim) | Convert identifiers between case styles (snake, camel, etc.). |
 | [yanky.nvim](https://github.com/gbprod/yanky.nvim) | Yank history ring — cycle through past yanks. |
 | [nvim-surround](https://github.com/kylechui/nvim-surround) | Add/change/delete surrounding pairs via operators. |
 | [treesj](https://github.com/Wansmer/treesj) | Split/join blocks of code using treesitter. |

@@ -31,8 +31,6 @@ LSP client, servers, formatters and linters.
 | [rustaceanvim](https://github.com/mrcjkb/rustaceanvim) | Rust | Batteries-included Rust tooling with rust-analyzer. |
 | [cargo-limit](https://github.com/alopatindev/cargo-limit) | Rust | Jump to the next Rust compile error. |
 | [go.nvim](https://github.com/ray-x/go.nvim) | Go | Rich Go tooling: gopls config, codelens, tests, refactor helpers. |
-| [plantuml-syntax](https://github.com/aklt/plantuml-syntax) | PlantUML | Syntax highlighting for PlantUML files. |
-| [plantuml-previewer.vim](https://github.com/weirongxu/plantuml-previewer.vim) | PlantUML | Live-preview PlantUML diagrams in the browser. |
 | [peek.nvim](https://github.com/toppair/peek.nvim) | Markdown | Markdown preview in a webview window powered by Deno. |
 | [markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim) | Markdown | Browser-based live markdown preview with GitHub-flavored rendering. |
 | [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim) | Markdown | Render markdown inside the buffer (headings, code blocks, tables, etc.). |

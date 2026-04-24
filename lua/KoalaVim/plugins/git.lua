@@ -824,16 +824,6 @@ table.insert(M, {
 	end,
 })
 
--- Auto-insert a commit message prefix derived from the current branch name
-table.insert(M, {
-	'ofirgall/commit-prefix.nvim',
-	enabled = false, -- Solve prefixes with commit-msg hooks are much better approach
-	ft = 'gitcommit',
-	config = function()
-		require('commit-prefix').setup()
-	end,
-})
-
 -- Graphical git log browser with rich navigation and filtering
 table.insert(M, {
 	'rbong/vim-flog',

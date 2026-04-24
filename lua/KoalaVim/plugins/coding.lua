@@ -1,8 +1,6 @@
 local M = {}
 -- Plugins you interact by actual coding
 
-local usercmd = require('KoalaVim.utils.cmd')
-
 -- Smart commenting with gcc/gc mappings and treesitter-aware commentstring
 table.insert(M, {
 	'numToStr/Comment.nvim',
@@ -107,19 +105,6 @@ table.insert(M, {
 	keys = { 'f', 'F', 't', 'T' },
 })
 
--- Generate language-aware debug print statements with one keystroke
-table.insert(M, {
-	'andrewferrier/debugprint.nvim',
-	opts = {
-		print_tag = '--- DEBUG PRINT ---',
-	},
-	config = function(_, opts)
-		require('debugprint').setup(opts)
-	end,
-	keys = { 'g?p', 'g?P', 'g?v', 'g?V' },
-	cmd = 'DeleteDebugPrints',
-})
-
 -- Toggle opposite words under the cursor (true↔false, prev↔next, etc.)
 table.insert(M, {
 	'nguyenvukhang/nvim-toggler',
@@ -148,42 +133,6 @@ table.insert(M, {
 			desc = 'Invert words',
 		},
 	},
-})
-
-local text_case_cmd_table = {
-	['UpperCase'] = 'to_upper_case',
-	['LowerCase'] = 'to_lower_case',
-	['SnakeCase'] = 'to_snake_case',
-	['ConstantCase'] = 'to_dash_case',
-	['DashCase'] = 'to_constant_case',
-	['DotCase'] = 'to_dot_case',
-	['CamelCase'] = 'to_camel_case',
-	['PascalCase'] = 'to_pascal_case',
-	['TitleCase'] = 'to_title_case',
-	['PathCase'] = 'to_path_case',
-	['PhraseCase'] = 'to_phrase_case',
-}
-
-local text_case_cmds = {}
-
-for key, _ in pairs(text_case_cmd_table) do
-	table.insert(text_case_cmds, key)
-end
-
--- Convert identifiers between case styles (snake, camel, pascal, etc.)
-table.insert(M, {
-	'johmsalas/text-case.nvim',
-	cmd = text_case_cmds,
-	config = function(_, opts)
-		local textcase = require('textcase')
-		textcase.setup(opts)
-
-		for usrcmd, apiname in pairs(text_case_cmd_table) do
-			usercmd.create(usrcmd, 'Convert case to ' .. usrcmd, function()
-				textcase.current_word(apiname)
-			end, {})
-		end
-	end,
 })
 
 -- Yank history ring — cycle through past yanks when pasting
