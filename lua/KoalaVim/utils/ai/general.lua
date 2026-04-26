@@ -1,6 +1,30 @@
 local M = {}
 
-local SUPPORTED_AGENTS = { cursor = true, claude = true }
+local SUPPORTED_AGENTS = { cursor = true, claude = true, codex = true }
+
+local GET_PROMPT = {
+	claude = function()
+		return require('KoalaVim.utils.ai.claude').get_prompt
+	end,
+	codex = function()
+		return require('KoalaVim.utils.ai.codex').get_prompt
+	end,
+	cursor = function()
+		return require('KoalaVim.utils.ai.cursor').get_prompt
+	end,
+}
+
+local CLEAR_KEYS = {
+	claude = '\x0c',
+	codex = '\x15',
+	cursor = '\x03',
+}
+
+local PROMPT_PATTERNS = {
+	claude = '❯',
+	codex = '^›',
+	cursor = ' ┌─',
+}
 
 --- Debug why a key (default: space) feels slow in the current terminal buffer.
 --- Call from the sidekick terminal buffer (after `<C-\><C-n>` to exit term mode):
@@ -151,8 +175,7 @@ function M.edit_prompt()
 		return
 	end
 
-	local get_prompt = agent == 'claude' and require('KoalaVim.utils.ai.claude').get_prompt
-		or require('KoalaVim.utils.ai.cursor').get_prompt
+	local get_prompt = GET_PROMPT[agent]()
 	local current_prompt_lines = get_prompt()
 	local bufid = vim.api.nvim_create_buf(false, true)
 	local term_win = vim.api.nvim_get_current_win()
@@ -179,7 +202,7 @@ function M.edit_prompt()
 				require('sidekick.cli.state').with(function(state)
 					-- Clear current prompt content
 					local termbufid = state.terminal.buf
-					local clear_key = state.tool.name == 'claude' and '\x0c' or '\x03'
+					local clear_key = CLEAR_KEYS[state.tool.name] or '\x03'
 					vim.api.nvim_chan_send(vim.bo[termbufid].channel, clear_key)
 
 					state.session:send(content)
@@ -253,7 +276,7 @@ function M.nav_to_prompt(search_char)
 		return
 	end
 
-	local pattern = agent == 'claude' and '❯' or ' ┌─'
+	local pattern = PROMPT_PATTERNS[agent]
 
 	local f = function()
 		vim.fn.setreg('/', pattern)
