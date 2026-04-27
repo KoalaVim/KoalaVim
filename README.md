@@ -21,7 +21,7 @@ Batteries-included, extensible Neovim distribution — curated plugins, robust d
 
 ## Requirements
 
-- Neovim ≥ v0.11.5
+- Neovim ≥ v0.12.0
 - A [Nerd Font](https://www.nerdfonts.com/)
 - A terminal with true-color and undercurl support — [kitty](https://github.com/kovidgoyal/kitty), [wezterm](https://github.com/wez/wezterm), [ghostty](https://ghostty.org/), [alacritty](https://github.com/alacritty/alacritty), or [iterm2](https://iterm2.com/)
 
