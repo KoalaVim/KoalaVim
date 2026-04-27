@@ -2,7 +2,11 @@
 
 # KoalaVim
 
-Batteries-included, extensible Neovim distribution — curated plugins, robust defaults, and terminal-first tooling. Powered by [lazy.nvim](https://github.com/folke/lazy.nvim) and managed by [`kv`](https://github.com/KoalaVim/kv).
+A meta-config for Neovim — a foundation you extend, not a finished config you adopt.
+
+KoalaVim ships keymaps, autocmds, a curated plugin set, and a robust set of defaults. Your own config layers on top: add plugins, override anything, ship your taste. Pair it with [`kv`](https://github.com/KoalaVim/kv) for isolated environments, lockfile-pinned plugin sets, dependency installation, and git-aware launch modes — all driven from the terminal.
+
+Powered by [lazy.nvim](https://github.com/folke/lazy.nvim).
 
 <br><br><br><br><br><br>
 
@@ -12,12 +16,10 @@ Batteries-included, extensible Neovim distribution — curated plugins, robust d
 
 ## Features
 
-- Improved AI integration over [sidekick.nvim](https://github.com/folke/sidekick.nvim) — in-buffer edit-prompt, prompt navigation, zoom-to-tabpage, sticky default-tool selector, and fast-typing auto-edit detection.
-- Git-aware launch modes (diff, status, tree).
-- Modal sub-modes via [Hydra](docs/plugins/hydra.md).
-- Curated plugin set across 16 categories — see [`docs/plugins/`](docs/plugins/README.md).
-- Isolated virtual environments via [`kv`](https://github.com/KoalaVim/kv).
-- JSON-schema-validated user config.
+- **AI agents in your editor** — Claude / Codex / Cursor / opencode CLIs running inside nvim via [sidekick.nvim](https://github.com/folke/sidekick.nvim), plus KoalaVim's edit-prompt buffer, prompt navigation, and fast-typing auto-edit detection on top. Launch straight into AI mode with `kv --ai`.
+- **Git-aware launch modes** — drop nvim straight into git workflows from the shell: `kv -g` (git mode), `kv -t` (tree), `kv --git-diff` (diff).
+- **[Hydra](docs/plugins/hydra.md) sub-modes** — chord-style interfaces for repetitive sequences (window resize, diff viewing, …) without holding modifier keys.
+- **A 16-category plugin map** — every choice documented at [`docs/plugins/`](docs/plugins/README.md), so you can see (and replace) what's in your editor.
 
 ## Requirements
 
