@@ -2,7 +2,7 @@
 
 # KoalaVim
 
-Extensible Neovim distribution, powered by [lazy.nvim](https://github.com/folke/lazy.nvim) and managed by [`kv`](https://github.com/KoalaVim/kv).
+Batteries-included, extensible Neovim distribution — curated plugins, robust defaults, and terminal-first tooling. Powered by [lazy.nvim](https://github.com/folke/lazy.nvim) and managed by [`kv`](https://github.com/KoalaVim/kv).
 
 <br><br><br><br><br><br>
 
@@ -12,7 +12,7 @@ Extensible Neovim distribution, powered by [lazy.nvim](https://github.com/folke/
 
 ## Features
 
-- AI layer on top of [sidekick.nvim](https://github.com/folke/sidekick.nvim) — in-buffer edit-prompt, prompt navigation, zoom-to-tabpage, sticky default-tool selector, and fast-typing auto-edit detection.
+- Improved AI integration over [sidekick.nvim](https://github.com/folke/sidekick.nvim) — in-buffer edit-prompt, prompt navigation, zoom-to-tabpage, sticky default-tool selector, and fast-typing auto-edit detection.
 - Git-aware launch modes (diff, status, tree).
 - Modal sub-modes via [Hydra](docs/plugins/hydra.md).
 - Curated plugin set across 16 categories — see [`docs/plugins/`](docs/plugins/README.md).
@@ -25,8 +25,7 @@ Extensible Neovim distribution, powered by [lazy.nvim](https://github.com/folke/
 - A [Nerd Font](https://www.nerdfonts.com/)
 - A terminal with true-color and undercurl support — [kitty](https://github.com/kovidgoyal/kitty), [wezterm](https://github.com/wez/wezterm), [ghostty](https://ghostty.org/), [alacritty](https://github.com/alacritty/alacritty), or [iterm2](https://iterm2.com/)
 
-> [!NOTE]
-> Tool dependencies (ripgrep, fd, fzf, …) are installed by `kv install`. If you're not using `kv`, install them manually — see [kv install docs](https://github.com/KoalaVim/kv/blob/main/docs/install.md) for the full list.
+Tool dependencies (ripgrep, fd, fzf, …) are installed automatically by `kv install`.
 
 ## Installation
 
@@ -52,9 +51,12 @@ Launch KoalaVim:
 kv
 ```
 
-### Manual
+### Manual Install (Not Recommended)
 
 If you'd rather not use `kv`, you can install KoalaVim into the standard Neovim config location.
+
+> [!NOTE]
+> You'll need to install tool dependencies yourself — at minimum `ripgrep`, `fd`, and `fzf`. See the [kv install docs](https://github.com/KoalaVim/kv/blob/main/docs/install.md) for the full list.
 
 Back up your existing Neovim config and data directories:
 
