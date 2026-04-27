@@ -12,7 +12,7 @@ Extensible Neovim distribution, powered by [lazy.nvim](https://github.com/folke/
 
 ## Features
 
-- AI sidekick integration with Claude, Codex, Cursor, and opencode CLI agents inside Neovim.
+- AI layer on top of [sidekick.nvim](https://github.com/folke/sidekick.nvim) — in-buffer edit-prompt, prompt navigation, zoom-to-tabpage, sticky default-tool selector, and fast-typing auto-edit detection.
 - Git-aware launch modes (diff, status, tree).
 - Modal sub-modes via [Hydra](docs/plugins/hydra.md).
 - Curated plugin set across 16 categories — see [`docs/plugins/`](docs/plugins/README.md).
@@ -23,9 +23,10 @@ Extensible Neovim distribution, powered by [lazy.nvim](https://github.com/folke/
 
 - Neovim ≥ v0.11.5
 - A [Nerd Font](https://www.nerdfonts.com/)
-- A terminal with true-color and undercurl support — [kitty](https://github.com/kovidgoyal/kitty), [wezterm](https://github.com/wez/wezterm), [alacritty](https://github.com/alacritty/alacritty), or [iterm2](https://iterm2.com/)
+- A terminal with true-color and undercurl support — [kitty](https://github.com/kovidgoyal/kitty), [wezterm](https://github.com/wez/wezterm), [ghostty](https://ghostty.org/), [alacritty](https://github.com/alacritty/alacritty), or [iterm2](https://iterm2.com/)
 
-Tool dependencies (ripgrep, fd, fzf, …) are installed by `kv install` — see [kv install docs](https://github.com/KoalaVim/kv/blob/main/docs/install.md).
+> [!NOTE]
+> Tool dependencies (ripgrep, fd, fzf, …) are installed by `kv install`. If you're not using `kv`, install them manually — see [kv install docs](https://github.com/KoalaVim/kv/blob/main/docs/install.md) for the full list.
 
 ## Installation
 
@@ -79,9 +80,9 @@ The first launch installs all treesitter parsers and may be laggy. Restart Neovi
 
 ## Configuration
 
-KoalaVim is configured via `kvim.conf` (JSON) at your config root. The full schema lives in [`config_scheme.jsonc`](config_scheme.jsonc); the [KoalaConfig template](https://github.com/KoalaVim/KoalaConfig.template) is a working starter.
+The common knobs are exposed via `kvim.conf` (JSON) at your config root. Full schema: [`config_scheme.jsonc`](config_scheme.jsonc). The [KoalaConfig template](https://github.com/KoalaVim/KoalaConfig.template) is a working starter.
 
-Example:
+Example `kvim.conf`:
 
 ```json
 {
@@ -96,6 +97,17 @@ Example:
   }
 }
 ```
+
+### Advanced configuration
+
+JSON only covers what's been exposed. For anything beyond — extra plugins, custom keymaps, lazy.nvim option overrides — your config root is a regular Lua project that extends KoalaVim:
+
+- `lua/plugins/*.lua` — your own [lazy.nvim plugin specs](https://lazy.folke.io/spec). Merged with KoalaVim's spec at startup.
+- `lua/config/*.lua` — options, keymaps, autocmds, usercmds. Loaded after KoalaVim's config, so it can override anything.
+- `lua/config_lazy/*.lua` — same as above but loaded after lazy.nvim finishes (`KoalaVimStarted` event).
+- `lazy_opts` in `init.lua` — override lazy.nvim setup options (e.g. default colorscheme).
+
+See the [KoalaConfig template](https://github.com/KoalaVim/KoalaConfig.template) for a working `init.lua` and examples of each.
 
 ## Plugins
 
