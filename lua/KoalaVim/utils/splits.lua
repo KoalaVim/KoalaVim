@@ -61,10 +61,23 @@ function M.smart_split(direction)
 	if ft == 'toggleterm' then
 		open_new_terminal(direction)
 	else
+		local in_terminal_mode = vim.fn.mode() == 't'
 		if direction == 'vertical' then
-			api.nvim_input('<cmd>vsplit<cr>')
+			vim.cmd('vsplit')
 		else
-			api.nvim_input('<cmd>split<cr>')
+			vim.cmd('split')
+		end
+		if ft == 'sidekick_terminal' then
+			vim.wo.number = false
+			vim.wo.relativenumber = false
+			vim.wo.statuscolumn = ''
+			vim.wo.signcolumn = 'no'
+			vim.wo.foldcolumn = '0'
+			vim.wo.winbar = ''
+			if in_terminal_mode then
+				vim.cmd('stopinsert')
+				vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-\\><C-n>', true, true, true), 'n', false)
+			end
 		end
 	end
 end

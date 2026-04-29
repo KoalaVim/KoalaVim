@@ -21,7 +21,11 @@ table.insert(M, {
 		{
 			'<M-e>',
 			function()
-				open_new_terminal('vertical')
+				if vim.bo.filetype == 'sidekick_terminal' then
+					require('KoalaVim.utils.splits').smart_split('vertical')
+				else
+					open_new_terminal('vertical')
+				end
 			end,
 			mode = 't',
 			desc = 'Split terminal',
