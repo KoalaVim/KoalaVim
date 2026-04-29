@@ -56,28 +56,76 @@ function M.close()
 	end
 end
 
+local function sidekick_split(direction)
+	local in_terminal_mode = vim.fn.mode() == 't'
+	if direction == 'vertical' then
+		vim.cmd('vsplit')
+	else
+		vim.cmd('split')
+	end
+
+	local saved = {
+		number = vim.wo.number,
+		relativenumber = vim.wo.relativenumber,
+		statuscolumn = vim.wo.statuscolumn,
+		signcolumn = vim.wo.signcolumn,
+		foldcolumn = vim.wo.foldcolumn,
+		winbar = vim.wo.winbar,
+	}
+
+	vim.wo.number = false
+	vim.wo.relativenumber = false
+	vim.wo.statuscolumn = ''
+	vim.wo.signcolumn = 'no'
+	vim.wo.foldcolumn = '0'
+	vim.wo.winbar = ''
+
+	if in_terminal_mode then
+		vim.cmd('stopinsert')
+		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-\\><C-n>', true, true, true), 'n', false)
+	end
+
+	local winid = api.nvim_get_current_win()
+	local initial_buf = api.nvim_win_get_buf(winid)
+	local group = api.nvim_create_augroup('KoalaSidekickSplit_' .. winid, { clear = true })
+	api.nvim_create_autocmd('BufWinEnter', {
+		group = group,
+		callback = function(args)
+			if not api.nvim_win_is_valid(winid) then
+				api.nvim_del_augroup_by_id(group)
+				return
+			end
+			if api.nvim_get_current_win() ~= winid or args.buf == initial_buf then
+				return
+			end
+			api.nvim_win_call(winid, function()
+				for opt, value in pairs(saved) do
+					vim.wo[opt] = value
+				end
+			end)
+			api.nvim_del_augroup_by_id(group)
+		end,
+	})
+	api.nvim_create_autocmd('WinClosed', {
+		group = group,
+		pattern = tostring(winid),
+		callback = function()
+			api.nvim_del_augroup_by_id(group)
+		end,
+	})
+end
+
 function M.smart_split(direction)
 	local ft = api.nvim_buf_get_option(0, 'filetype')
 	if ft == 'toggleterm' then
 		open_new_terminal(direction)
+	elseif ft == 'sidekick_terminal' then
+		sidekick_split(direction)
 	else
-		local in_terminal_mode = vim.fn.mode() == 't'
 		if direction == 'vertical' then
 			vim.cmd('vsplit')
 		else
 			vim.cmd('split')
-		end
-		if ft == 'sidekick_terminal' then
-			vim.wo.number = false
-			vim.wo.relativenumber = false
-			vim.wo.statuscolumn = ''
-			vim.wo.signcolumn = 'no'
-			vim.wo.foldcolumn = '0'
-			vim.wo.winbar = ''
-			if in_terminal_mode then
-				vim.cmd('stopinsert')
-				vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-\\><C-n>', true, true, true), 'n', false)
-			end
 		end
 	end
 end
