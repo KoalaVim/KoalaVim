@@ -2,7 +2,7 @@ local map = require('KoalaVim.utils.map').map
 
 -- stylua: ignore start
 -- Tabline binds
-map('n', '<C-q>', function() Snacks.bufdelete.delete() end, 'Close current tab')
+map('n', '<leader>qq', function() Snacks.bufdelete.delete() end, 'Close current tab')
 map('n', '<leader>1', function() require('bufferline').go_to_buffer(1, true) end, 'Go to tab #1')
 map('n', '<leader>2', function() require('bufferline').go_to_buffer(2, true) end, 'Go to tab #2')
 map('n', '<leader>3', function() require('bufferline').go_to_buffer(3, true) end, 'Go to tab #3')
@@ -32,8 +32,20 @@ map('n', 'g7', '<cmd>tabnext7<cr>', 'Go to tabpage #7')
 map('n', 'g8', '<cmd>tabnext8<cr>', 'Go to tabpage #8')
 map('n', 'g9', '<cmd>tabnext9<cr>', 'Go to tabpage #9')
 map('n', 'g0', '<cmd>tabnext10<cr>', 'Go to tabpage #10')
+map({ 'n', 't' }, '<C-1>', '<cmd>tabnext1<cr>', 'Go to tabpage #1')
+map({ 'n', 't' }, '<C-2>', '<cmd>tabnext2<cr>', 'Go to tabpage #2')
+map({ 'n', 't' }, '<C-3>', '<cmd>tabnext3<cr>', 'Go to tabpage #3')
+map({ 'n', 't' }, '<C-4>', '<cmd>tabnext4<cr>', 'Go to tabpage #4')
+map({ 'n', 't' }, '<C-5>', '<cmd>tabnext5<cr>', 'Go to tabpage #5')
+map({ 'n', 't' }, '<C-6>', '<cmd>tabnext6<cr>', 'Go to tabpage #6')
+map({ 'n', 't' }, '<C-7>', '<cmd>tabnext7<cr>', 'Go to tabpage #7')
+map({ 'n', 't' }, '<C-8>', '<cmd>tabnext8<cr>', 'Go to tabpage #8')
+map({ 'n', 't' }, '<C-9>', '<cmd>tabnext9<cr>', 'Go to tabpage #9')
+map({ 'n', 't' }, '<C-0>', '<cmd>tabnext10<cr>', 'Go to tabpage #10')
+map({ 'n', 't' }, '<C-`>', '<cmd>tabnext #<cr>', 'Go to last active tabpage')
 map('n', '<M-t>', '<cmd>tabnew %<cr>', 'New tabpage')
 map('n', 'gq', '<cmd>tabclose<cr>', 'Close tabpage')
+map({ 'n', 't' }, '<C-q>', '<cmd>tabclose<cr>', 'Close tabpage')
 -- Map `gQ` to default gq
 map('', 'gQ', 'gq', 'Default gq')
 
