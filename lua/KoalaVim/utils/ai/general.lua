@@ -337,7 +337,7 @@ function M.zoom_sidekick()
 		pcall(vim.api.nvim_del_augroup_by_name, 'ZoomSidekickWinNew')
 		vim.api.nvim_set_current_tabpage(zoom_tabpage)
 		vim.cmd('tabclose')
-		vim.o.showtabline = 2
+		-- vim.o.showtabline = 2
 		zoom_tabpage = nil
 		zoom_ref_opts = nil
 		if zoom_orig_win and vim.api.nvim_win_is_valid(zoom_orig_win) then
@@ -411,7 +411,7 @@ function M.zoom_sidekick()
 		end,
 	})
 
-	vim.o.showtabline = 0
+	-- vim.o.showtabline = 0
 
 	zoom_orig_win = orig_win
 end

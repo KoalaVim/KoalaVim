@@ -89,9 +89,9 @@ table.insert(M, {
 	opts = {
 		winopts = {
 			offset = {
-				top = 0.0,
+				top = 0.02,
 				width = 1.0,
-				height = 0.99,
+				height = 0.98,
 			},
 			border = '',
 		},
@@ -101,13 +101,13 @@ table.insert(M, {
 				require('lualine').hide({ place = { 'winbar' } })
 				-- vim.o.laststatus = 0
 				vim.wo.winbar = ''
-				vim.o.showtabline = 0
+				-- vim.o.showtabline = 0
 			end,
 		},
 		close_callbacks = {
 			function()
 				-- vim.o.laststatus = 3
-				vim.o.showtabline = 2
+				-- vim.o.showtabline= 2
 				require('lualine').hide({ place = { 'winbar' }, unhide = true })
 			end,
 		},
