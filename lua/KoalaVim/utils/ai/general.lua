@@ -15,7 +15,7 @@ local GET_PROMPT = {
 }
 
 local CLEAR_KEYS = {
-	claude = '\x0c',
+	claude = '\x15',
 	codex = '\x15',
 	cursor = '\x03',
 }
