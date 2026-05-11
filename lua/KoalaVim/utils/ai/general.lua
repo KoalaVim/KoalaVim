@@ -198,6 +198,7 @@ function M.edit_prompt()
 			local lines = vim.api.nvim_buf_get_lines(bufid, 0, -1, false)
 			local content = table.concat(lines, '\n')
 			if content ~= '' then
+				require('KoalaVim.utils.ai.history').append(content, agent)
 				-- Using internal sidekick cli to not parse "{}" variables
 				require('sidekick.cli.state').with(function(state)
 					-- Clear current prompt content
