@@ -92,6 +92,16 @@ The existing `content ~= ''` guard is reused — empty content is not appended.
 
 Built on `Snacks.picker` (already a dep). One implementation, scope passed in.
 
+### Implementation: pure Lua, async streaming
+
+Justification: at expected scale (hundreds–low thousands of records), `vim.json.decode` on the full set runs in well under 100ms and the append path is microseconds. Shelling out to `jq`/`rg`/`fd` adds dependencies and fork overhead without meaningful speedup. Responsiveness comes from running the work off the UI thread, not from changing language.
+
+Mechanism:
+
+- File discovery uses `vim.fs.find` (built-in, no dep). For `local` scope this is a single path check; for `workspace` and `global` it walks one or two directory levels.
+- The snacks picker source is an async finder: it `yield`s items as records are decoded, so the picker window opens immediately and rows stream in. Decoding work is chunked (e.g., yield after every N records) to keep the event loop responsive.
+- Reading uses `vim.uv.fs_open` / `fs_read` with a single read per file (files are small, line-oriented). Lines are split on `\n` and decoded one by one; bad lines are skipped silently.
+
 ### Item display
 
 Each picker item shows one row:
