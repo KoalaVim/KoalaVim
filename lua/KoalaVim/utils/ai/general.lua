@@ -261,6 +261,10 @@ local function open_prompt_buffer(agent, initial_lines, term_win)
 	vim.keymap.set({ 'n', 'i' }, '<C-b>', function()
 		picker.open('buffers', paste_to_buffer_cb, {})
 	end, { buffer = bufid })
+
+	vim.keymap.set({ 'n', 'i' }, '<C-r>', function()
+		require('KoalaVim.utils.ai.history').pick('local')
+	end, { buffer = bufid })
 end
 
 --- Opens a split with a temporary buffer for editing a prompt.

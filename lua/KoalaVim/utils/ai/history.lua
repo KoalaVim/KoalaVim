@@ -184,12 +184,16 @@ local function format_row(record)
 end
 
 --- Open a snacks picker over the given scope. Selecting a prompt with <CR>
---- opens an editable buffer; <C-s> sends it directly.
+--- opens an editable buffer; <C-s> sends it directly. <C-l>/<C-w>/<C-g>
+--- switch the picker between local/workspace/global scopes.
 ---@param scope 'local' | 'workspace' | 'global'
 function M.pick(scope)
 	local files = M.list_files(scope)
 	if #files == 0 then
-		vim.notify('prompt history: nothing recorded yet', vim.log.levels.INFO)
+		vim.notify(
+			('prompt history (%s): nothing recorded yet'):format(scope),
+			vim.log.levels.INFO
+		)
 		return
 	end
 
@@ -245,8 +249,18 @@ function M.pick(scope)
 		})
 	end
 
+	local function switch_scope(picker, new_scope)
+		if new_scope == scope then
+			return
+		end
+		picker:close()
+		vim.schedule(function()
+			M.pick(new_scope)
+		end)
+	end
+
 	Snacks.picker({
-		title = 'Prompt history (' .. scope .. ')',
+		title = ('Prompt history [%s] — <C-l>local <C-w>workspace <C-g>global'):format(scope),
 		finder = finder,
 		format = 'text',
 		preview = 'preview',
@@ -254,6 +268,9 @@ function M.pick(scope)
 			input = {
 				keys = {
 					['<c-s>'] = { 'send_directly', mode = { 'n', 'i' } },
+					['<c-l>'] = { 'scope_local', mode = { 'n', 'i' } },
+					['<c-w>'] = { 'scope_workspace', mode = { 'n', 'i' } },
+					['<c-g>'] = { 'scope_global', mode = { 'n', 'i' } },
 				},
 			},
 		},
@@ -263,6 +280,15 @@ function M.pick(scope)
 				if item and item.record then
 					send_directly(item.record)
 				end
+			end,
+			scope_local = function(picker)
+				switch_scope(picker, 'local')
+			end,
+			scope_workspace = function(picker)
+				switch_scope(picker, 'workspace')
+			end,
+			scope_global = function(picker)
+				switch_scope(picker, 'global')
 			end,
 		},
 		confirm = function(picker, item)
