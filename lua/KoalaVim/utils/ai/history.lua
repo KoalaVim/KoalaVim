@@ -113,4 +113,56 @@ function M.append(prompt, agent)
 	end
 end
 
+--- List jsonl file paths for the given scope.
+---@param scope 'local' | 'workspace' | 'global'
+---@return string[]
+function M.list_files(scope)
+	local paths = M.resolve_path()
+	if scope == 'local' then
+		if vim.uv.fs_stat(paths.file) then
+			return { paths.file }
+		end
+		return {}
+	end
+
+	local root
+	if scope == 'workspace' then
+		root = root_dir() .. '/' .. paths.workspace
+	elseif scope == 'global' then
+		root = root_dir()
+	else
+		error('unknown scope: ' .. tostring(scope))
+	end
+
+	if not vim.uv.fs_stat(root) then
+		return {}
+	end
+
+	return vim.fs.find('prompts.jsonl', {
+		path = root,
+		type = 'file',
+		limit = math.huge,
+	})
+end
+
+--- Read and decode all records from a single jsonl file.
+--- Bad lines are skipped silently.
+---@param path string
+---@return table[]
+function M.read_file(path)
+	local data = read_file_contents(path)
+	if not data then
+		return {}
+	end
+	local records = {}
+	for line in data:gmatch('[^\n]+') do
+		local ok, decoded = pcall(vim.json.decode, line)
+		if ok and type(decoded) == 'table' then
+			decoded._file = path
+			table.insert(records, decoded)
+		end
+	end
+	return records
+end
+
 return M
