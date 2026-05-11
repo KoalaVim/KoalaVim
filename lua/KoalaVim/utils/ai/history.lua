@@ -167,20 +167,29 @@ end
 
 local function format_row(record)
 	local time_str = os.date('%Y-%m-%d %H:%M', record.ts or 0)
-	local workspace = vim.fn.fnamemodify(record.cwd or '', ':t')
-	local branch = record.branch or 'no-branch'
 	local first_line = (record.prompt or ''):match('[^\n]*') or ''
-	if #first_line > 120 then
-		first_line = first_line:sub(1, 117) .. '...'
+	if #first_line > 200 then
+		first_line = first_line:sub(1, 197) .. '...'
 	end
-	return string.format(
-		'%s · %s · %s/%s · %s',
-		time_str,
-		record.agent or '?',
-		workspace,
-		branch,
-		first_line
-	)
+	return string.format('%s │ %s', time_str, first_line)
+end
+
+local function format_preview(record)
+	local time_str = os.date('%Y-%m-%d %H:%M:%S', record.ts or 0)
+	local workspace = vim.fn.fnamemodify(record.cwd or '', ':t')
+	return table.concat({
+		'# Prompt',
+		'',
+		'- **Time:**      ' .. time_str,
+		'- **Agent:**     ' .. (record.agent or '?'),
+		'- **Workspace:** ' .. workspace,
+		'- **Branch:**    ' .. (record.branch or 'no-branch'),
+		'- **Cwd:**       ' .. (record.cwd or ''),
+		'',
+		'---',
+		'',
+		record.prompt or '',
+	}, '\n')
 end
 
 --- Open a snacks picker over the given scope. Selecting a prompt with <CR>
@@ -210,7 +219,7 @@ function M.pick(scope)
 				table.insert(out, {
 					text = format_row(rec),
 					preview = {
-						text = rec.prompt or '',
+						text = format_preview(rec),
 						ft = 'markdown',
 					},
 					record = rec,
