@@ -167,25 +167,19 @@ local function check_agent()
 	return agent
 end
 
---- Opens a split with a temporary buffer for editing a prompt.
---- On closing the buffer, sends its content to sidekick CLI.
-function M.edit_prompt()
-	local agent = check_agent()
-	if not agent then
-		return
-	end
-
-	local get_prompt = GET_PROMPT[agent]()
-	local current_prompt_lines = get_prompt()
+--- Opens a split with a temporary buffer for editing a prompt and sends it
+--- to the sidekick CLI on close. `initial_lines` is the prefilled content.
+---@param agent string
+---@param initial_lines string[]
+---@param term_win integer the window to refocus after closing
+local function open_prompt_buffer(agent, initial_lines, term_win)
 	local bufid = vim.api.nvim_create_buf(false, true)
-	local term_win = vim.api.nvim_get_current_win()
 
 	-- Enter insert mode when focusing the buffer
 	vim.api.nvim_create_autocmd('BufEnter', {
 		buffer = bufid,
 		once = true,
 		callback = vim.schedule_wrap(function()
-			-- Go to end and start in insert mode
 			vim.api.nvim_feedkeys('G$a', 'n', false)
 		end),
 	})
@@ -232,7 +226,7 @@ function M.edit_prompt()
 	})
 
 	vim.bo[bufid].filetype = 'sidekick_koala_prompt'
-	vim.api.nvim_buf_set_lines(bufid, 0, -1, false, current_prompt_lines)
+	vim.api.nvim_buf_set_lines(bufid, 0, -1, false, initial_lines)
 
 	---@param items sidekick.context.Loc[]
 	local paste_to_buffer_cb = function(items)
@@ -246,10 +240,8 @@ function M.edit_prompt()
 			end
 		end
 		vim.schedule(function()
-			-- ret = { { " " }, { "@", "SidekickLocDelim" }, { "docs/loadbalancing-architecture.md", "SidekickLocFile" }, { " " } }
 			local text = table.concat(
 				vim.tbl_map(function(c)
-					-- c[2] is highlight (if exist)
 					return c[1]
 				end, ret),
 				''
@@ -269,6 +261,34 @@ function M.edit_prompt()
 	vim.keymap.set({ 'n', 'i' }, '<C-b>', function()
 		picker.open('buffers', paste_to_buffer_cb, {})
 	end, { buffer = bufid })
+end
+
+--- Opens a split with a temporary buffer for editing a prompt.
+--- On closing the buffer, sends its content to sidekick CLI.
+function M.edit_prompt()
+	local agent = check_agent()
+	if not agent then
+		return
+	end
+
+	local get_prompt = GET_PROMPT[agent]()
+	local current_prompt_lines = get_prompt()
+	local term_win = vim.api.nvim_get_current_win()
+
+	open_prompt_buffer(agent, current_prompt_lines, term_win)
+end
+
+--- Open the edit-prompt buffer prefilled with arbitrary content.
+--- Used by the history picker to "load" a past prompt.
+---@param content string
+function M.open_prompt_with(content)
+	local agent = check_agent()
+	if not agent then
+		return
+	end
+	local term_win = vim.api.nvim_get_current_win()
+	local lines = vim.split(content, '\n', { plain = true })
+	open_prompt_buffer(agent, lines, term_win)
 end
 
 function M.nav_to_prompt(search_char)
