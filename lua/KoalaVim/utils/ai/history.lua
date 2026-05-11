@@ -165,4 +165,113 @@ function M.read_file(path)
 	return records
 end
 
+local function format_row(record)
+	local time_str = os.date('%Y-%m-%d %H:%M', record.ts or 0)
+	local workspace = vim.fn.fnamemodify(record.cwd or '', ':t')
+	local branch = record.branch or 'no-branch'
+	local first_line = (record.prompt or ''):match('[^\n]*') or ''
+	if #first_line > 120 then
+		first_line = first_line:sub(1, 117) .. '...'
+	end
+	return string.format(
+		'%s · %s · %s/%s · %s',
+		time_str,
+		record.agent or '?',
+		workspace,
+		branch,
+		first_line
+	)
+end
+
+--- Open a snacks picker over the given scope. Selecting a prompt with <CR>
+--- opens an editable buffer; <C-s> sends it directly.
+---@param scope 'local' | 'workspace' | 'global'
+function M.pick(scope)
+	local files = M.list_files(scope)
+	if #files == 0 then
+		vim.notify('prompt history: nothing recorded yet', vim.log.levels.INFO)
+		return
+	end
+
+	local Snacks = require('snacks')
+
+	---@type snacks.picker.finder
+	local finder = function(_, ctx)
+		local out = {}
+		for _, path in ipairs(files) do
+			local records = M.read_file(path)
+			-- Reverse: newest first
+			for i = #records, 1, -1 do
+				local rec = records[i]
+				table.insert(out, {
+					text = format_row(rec),
+					preview = {
+						text = rec.prompt or '',
+						ft = 'markdown',
+					},
+					record = rec,
+				})
+				-- Yield periodically so the UI stays responsive
+				if #out % 200 == 0 then
+					ctx.async:yield(out)
+					out = {}
+				end
+			end
+		end
+		return out
+	end
+
+	local function send_directly(record)
+		local content = record.prompt or ''
+		if content == '' then
+			return
+		end
+		require('KoalaVim.utils.ai.history').append(content, record.agent or 'claude')
+		require('sidekick.cli.state').with(function(state)
+			local termbufid = state.terminal.buf
+			local clear_keys = {
+				claude = '\x15',
+				codex = '\x15',
+				cursor = '\x03',
+			}
+			local clear_key = clear_keys[state.tool.name] or '\x03'
+			vim.api.nvim_chan_send(vim.bo[termbufid].channel, clear_key)
+			state.session:send(content)
+		end, {
+			attach = true,
+			filter = {},
+			focus = true,
+			show = true,
+		})
+	end
+
+	Snacks.picker({
+		title = 'Prompt history (' .. scope .. ')',
+		finder = finder,
+		format = 'text',
+		preview = 'preview',
+		win = {
+			input = {
+				keys = {
+					['<c-s>'] = { 'send_directly', mode = { 'n', 'i' } },
+				},
+			},
+		},
+		actions = {
+			send_directly = function(picker, item)
+				picker:close()
+				if item and item.record then
+					send_directly(item.record)
+				end
+			end,
+		},
+		confirm = function(picker, item)
+			picker:close()
+			if item and item.record then
+				require('KoalaVim.utils.ai.general').open_prompt_with(item.record.prompt or '')
+			end
+		end,
+	})
+end
+
 return M
