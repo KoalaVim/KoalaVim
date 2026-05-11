@@ -87,4 +87,30 @@ function M._root_dir()
 	return root_dir()
 end
 
+--- Append a prompt record to the per-workspace/per-branch JSONL file.
+--- Never throws; on failure, emits a single WARN notify.
+---@param prompt string
+---@param agent string
+function M.append(prompt, agent)
+	local ok, err = pcall(function()
+		local cwd = vim.fn.getcwd()
+		local paths = M.resolve_path(cwd)
+		vim.fn.mkdir(paths.dir, 'p')
+		local record = {
+			ts = os.time(),
+			cwd = cwd,
+			agent = agent,
+			branch = paths.branch,
+			prompt = prompt,
+		}
+		local line = vim.json.encode(record) .. '\n'
+		local fd = assert(vim.uv.fs_open(paths.file, 'a', 420))
+		vim.uv.fs_write(fd, line, -1)
+		vim.uv.fs_close(fd)
+	end)
+	if not ok then
+		vim.notify('prompt history: append failed: ' .. tostring(err), vim.log.levels.WARN)
+	end
+end
+
 return M
