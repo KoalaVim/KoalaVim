@@ -235,27 +235,10 @@ function M.pick(scope)
 	end
 
 	local function send_directly(record)
-		local content = record.prompt or ''
-		if content == '' then
-			return
-		end
-		require('KoalaVim.utils.ai.history').append(content, record.agent or 'claude')
-		require('sidekick.cli.state').with(function(state)
-			local termbufid = state.terminal.buf
-			local clear_keys = {
-				claude = '\x15',
-				codex = '\x15',
-				cursor = '\x03',
-			}
-			local clear_key = clear_keys[state.tool.name] or '\x03'
-			vim.api.nvim_chan_send(vim.bo[termbufid].channel, clear_key)
-			state.session:send(content)
-		end, {
-			attach = true,
-			filter = {},
-			focus = true,
-			show = true,
-		})
+		require('KoalaVim.utils.ai.general').send_to_sidekick(
+			record.prompt or '',
+			record.agent or 'claude'
+		)
 	end
 
 	local function switch_scope(picker, new_scope)

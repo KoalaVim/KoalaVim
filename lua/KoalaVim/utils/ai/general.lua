@@ -167,6 +167,28 @@ local function check_agent()
 	return agent
 end
 
+--- Send `content` to the attached sidekick CLI, clearing whatever is
+--- currently in the prompt first, and record it in prompt history.
+---@param content string
+---@param agent string
+function M.send_to_sidekick(content, agent)
+	if content == '' then
+		return
+	end
+	require('KoalaVim.utils.ai.history').append(content, agent)
+	require('sidekick.cli.state').with(function(state)
+		local termbufid = state.terminal.buf
+		local clear_key = CLEAR_KEYS[state.tool.name] or '\x03'
+		vim.api.nvim_chan_send(vim.bo[termbufid].channel, clear_key)
+		state.session:send(content)
+	end, {
+		attach = true,
+		filter = {},
+		focus = true,
+		show = true,
+	})
+end
+
 --- Opens a split with a temporary buffer for editing a prompt and sends it
 --- to the sidekick CLI on close. `initial_lines` is the prefilled content.
 ---@param agent string
@@ -191,23 +213,8 @@ local function open_prompt_buffer(agent, initial_lines, term_win)
 		callback = function()
 			local lines = vim.api.nvim_buf_get_lines(bufid, 0, -1, false)
 			local content = table.concat(lines, '\n')
-			if content ~= '' then
-				require('KoalaVim.utils.ai.history').append(content, agent)
-				-- Using internal sidekick cli to not parse "{}" variables
-				require('sidekick.cli.state').with(function(state)
-					-- Clear current prompt content
-					local termbufid = state.terminal.buf
-					local clear_key = CLEAR_KEYS[state.tool.name] or '\x03'
-					vim.api.nvim_chan_send(vim.bo[termbufid].channel, clear_key)
-
-					state.session:send(content)
-				end, {
-					attach = true,
-					filter = {},
-					focus = true,
-					show = true,
-				})
-			end
+			-- Using internal sidekick cli to not parse "{}" variables
+			M.send_to_sidekick(content, agent)
 
 			-- Re-focus the terminal window so we stay in the same tabpage
 			if vim.api.nvim_win_is_valid(term_win) then
