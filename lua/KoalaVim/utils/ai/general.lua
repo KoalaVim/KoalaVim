@@ -555,16 +555,4 @@ function M.setup_fast_typing_detection()
 	end)
 end
 
-function M.pick_prompt_history_local()
-	require('KoalaVim.utils.ai.history').pick('local')
-end
-
-function M.pick_prompt_history_workspace()
-	require('KoalaVim.utils.ai.history').pick('workspace')
-end
-
-function M.pick_prompt_history_global()
-	require('KoalaVim.utils.ai.history').pick('global')
-end
-
 return M
