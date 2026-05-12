@@ -199,10 +199,7 @@ end
 function M.pick(scope)
 	local files = M.list_files(scope)
 	if #files == 0 then
-		vim.notify(
-			('prompt history (%s): nothing recorded yet'):format(scope),
-			vim.log.levels.INFO
-		)
+		vim.notify(('prompt history (%s): nothing recorded yet'):format(scope), vim.log.levels.INFO)
 		return
 	end
 
@@ -235,10 +232,7 @@ function M.pick(scope)
 	end
 
 	local function send_directly(record)
-		require('KoalaVim.utils.ai.general').send_to_sidekick(
-			record.prompt or '',
-			record.agent or 'claude'
-		)
+		require('KoalaVim.utils.ai.general').send_to_sidekick(record.prompt or '', record.agent or 'claude')
 	end
 
 	local function switch_scope(picker, new_scope)
