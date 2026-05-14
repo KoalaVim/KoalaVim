@@ -239,7 +239,6 @@ local function git_to_floating_window(buf)
 	vim.schedule(function()
 		vim.api.nvim_set_current_win(new_win)
 		vim.api.nvim_win_close(orig_win, false)
-		-- FIXME: support not ofirkai themes
 		require('KoalaVim.utils.windows').set_option(new_win, 'winhighlight', 'FloatBorder:FloatBorderNotHidden')
 	end)
 end
@@ -384,7 +383,6 @@ table.insert(M, {
 		local lifecycle = require('codediff.ui.lifecycle')
 		local nav = require('codediff.ui.view.navigation')
 
-		-- FIXME: support custom keymaps in codediff to get rid of this shit code
 		local function goto_file_in_prev_tab(file_path)
 			local tabs = vim.api.nvim_list_tabpages()
 			local current_tab = vim.api.nvim_get_current_tabpage()
@@ -641,7 +639,6 @@ table.insert(M, {
 			actions.refresh_files()
 		end
 
-		-- FIXME: hook to diffview create/close to clear the autocmd
 		-- Auto execute ]c when entering a new diff buffer
 		local jumped = {}
 		vim.api.nvim_create_autocmd('BufEnter', {
@@ -922,7 +919,6 @@ table.insert(M, {
 	event = { { event = 'BufReadCmd', pattern = 'octo://*' } },
 	opts = {
 		enable_builtin = true,
-		-- FIXME: add `gh auth refresh -s read:project` to README.md
 		default_to_projects_v2 = true,
 		default_merge_method = 'squash',
 		picker = 'telescope',

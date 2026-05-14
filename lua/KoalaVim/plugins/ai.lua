@@ -121,9 +121,6 @@ table.insert(M, {
 			end,
 			desc = 'Toggle sidekick NES',
 		},
-		-- nes is also useful in normal mode
-		-- FIXME: enable 'nes'
-		-- { '<tab>', LazyVim.cmp.map({ 'ai_nes' }, '<tab>'), mode = { 'n' }, expr = true },
 		{ '<leader>a', '', desc = '+ai', mode = { 'n', 'v' } },
 		{
 			'<c-.>',

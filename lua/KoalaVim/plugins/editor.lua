@@ -25,8 +25,6 @@ table.insert(M, {
 				return
 			end
 
-			-- FIXME: disable autosave on codediff (for conflicts)
-
 			local mode = vim.api.nvim_get_mode()
 			-- Don't save while we in insert/select mode (triggered with autopair and such)
 			if mode.mode ~= 'n' then
@@ -625,7 +623,6 @@ table.insert(M, {
 })
 
 -- folke QoL grab-bag: notifier, dim, scroll, input, picker, dashboard, etc.
--- FIXME: go over snacks.nvim and replace/add stuff
 table.insert(M, {
 	'folke/snacks.nvim',
 	priority = 1000,

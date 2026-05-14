@@ -7,7 +7,6 @@ CONFORM_FORMATTERS['gofmt'] = { 'go', mason = false }
 -- Rich Go development tools: gopls config, codelens, tests, refactoring helpers
 table.insert(M, {
 	'ray-x/go.nvim',
-	-- FIXME: enable
 	enabled = false,
 	dependencies = {
 		'ray-x/guihua.lua',

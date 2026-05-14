@@ -364,7 +364,6 @@ let g:VM_maps['Add Cursor Up'] = '<C-Up>'
 	end,
 })
 
--- TODO: dial.nvim doesn't work for some reason
 -- table.insert(M, {
 -- 	-- Enhance C-X/A
 -- 	'monaqa/dial.nvim',

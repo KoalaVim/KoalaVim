@@ -260,7 +260,6 @@ local function open_prompt_buffer(agent, initial_lines, term_win)
 
 	local picker = require('sidekick.cli.picker').get()
 
-	-- FIXME: show hidden files in sidekick as well
 	vim.keymap.set({ 'n', 'i' }, '<C-f>', function()
 		picker.open('files', paste_to_buffer_cb, { hidden = true })
 	end, { buffer = bufid })

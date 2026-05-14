@@ -1,10 +1,5 @@
 local M = {}
 
--- TODO: fix this annoying bug
---		reproduce:	1. Open terminal (C-t)
---					2. Split it (M-e) twice
---					3. Close all (M-q) * 3
---					4. Reopen terminal, will show term2 instead of 1 and continue to create term2
 -- Toggleable floating/split terminals with multi-instance support.
 -- Bundles term-edit.nvim for vim-style editing at the shell prompt.
 table.insert(M, {
@@ -69,7 +64,6 @@ table.insert(M, {
 			local ft = vim.api.nvim_buf_get_option(0, 'filetype')
 			local dir = vim.fn.expand('%:p:h')
 			if ft == 'toggleterm' then
-				-- TODO: this should open in the same dir as the term but it doesn't work
 				dir = string.gsub(string.gsub(vim.fn.expand('%:h:h:h'), 'term://', ''), '//.+', '')
 			end
 			-- Fallback to cwd when the buffer's dir isn't a real directory

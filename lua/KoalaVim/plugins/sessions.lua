@@ -2,8 +2,6 @@ local M = {}
 
 local usercmd = require('KoalaVim.utils.cmd')
 
--- TODO: handle zombie files
-
 KOALA_AUTOSAVE_SESSION = true
 KOALA_SESSION_LOADED = false
 
@@ -106,7 +104,6 @@ table.insert(M, {
 					auto_load_session = false
 					break
 				else
-					-- FIXME: sometimes this crashes nvim
 					auto_load_session = true
 					vim.api.nvim_set_current_dir(arg)
 				end

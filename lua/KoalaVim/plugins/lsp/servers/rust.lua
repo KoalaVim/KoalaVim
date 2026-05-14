@@ -49,7 +49,6 @@ table.insert(M, {
 							enable = true,
 						},
 					},
-					-- FIXME: add bacon from LazyVim
 					-- Add clippy lints for Rust if using rust-analyzer
 					checkOnSave = 'rust-analyzer',
 					-- Enable diagnostics if using rust-analyzer

@@ -483,7 +483,6 @@ table.insert(M, {
 		local wk = require('which-key')
 		wk.setup(opts)
 
-		-- FIXME: migrate to new format
 		-- TODO: <leader>fm as operator
 		-- local keymaps = {
 		-- 	mode = { 'n' },
@@ -497,7 +496,6 @@ table.insert(M, {
 		-- 	['s'] = { name = '+surround/split args' },
 		-- }
 
-		-- FIXME: migrate to new format
 		-- Hack to show surround and split args
 		-- local map = require('KoalaVim.utils.map').map
 		-- stylua: ignore

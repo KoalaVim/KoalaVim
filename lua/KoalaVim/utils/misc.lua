@@ -12,7 +12,6 @@ function M.restart_nvim()
 		f:close()
 	end
 
-	-- FIXME: move to possession.nvim
 	local sidekick_ok, sidekick_cli = pcall(require, 'sidekick.cli')
 	if sidekick_ok then
 		sidekick_cli.close()

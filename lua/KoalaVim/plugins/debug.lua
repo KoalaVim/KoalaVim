@@ -160,7 +160,6 @@ table.insert(M, {
 			end,
 			desc = 'Debug: Toggle breakpoint',
 		},
-		-- TODO: conditional breakpoint
 		{
 			'<F5>',
 			function()

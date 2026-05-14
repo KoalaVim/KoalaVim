@@ -58,7 +58,6 @@ table.insert(M, {
 			})
 		end
 		local function setup_server(server)
-			-- FIXME: vim.lsp: re-visit capabilities, on_attach and on_init
 			local server_opts_merged = vim.tbl_deep_extend('force', {
 				capabilities = LSP_CAPS,
 				on_attach = LSP_ON_ATTACH,

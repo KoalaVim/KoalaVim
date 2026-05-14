@@ -27,7 +27,6 @@ table.insert(M, {
 	ft = FTS,
 })
 
--- FIXME: enable eslint_d none ls src
 -- Linter
 -- NONE_LS_SRCS['eslint_d'] = {
 -- 	builtins_sources = {
