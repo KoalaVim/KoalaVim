@@ -52,14 +52,6 @@ table.insert(M, {
 	},
 	keys = {
 		{
-			-- FIXME: apply only in cursor
-			'<C-.>',
-			'<S-tab>',
-			ft = 'sidekick_terminal',
-			desc = 'Switch cursor modes',
-			mode = { 'n', 't' },
-		},
-		{
 			'<C-e>',
 			function()
 				ai.edit_prompt()

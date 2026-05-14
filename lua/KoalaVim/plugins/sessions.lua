@@ -2,7 +2,6 @@ local M = {}
 
 local usercmd = require('KoalaVim.utils.cmd')
 
--- TODO: restore fugitive
 -- TODO: handle zombie files
 
 KOALA_AUTOSAVE_SESSION = true

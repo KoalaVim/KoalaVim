@@ -1,6 +1,5 @@
 local M = {}
 
--- TODO: check on https://github.com/mtshiba/pylyzer
 LSP_SERVERS['pyright'] = {
 	settings = {
 		pyright = {
@@ -56,8 +55,5 @@ NONE_LS_SRCS['mypy'] = {
 CONFORM_FORMATTERS['black'] = { 'python' }
 CONFORM_FORMATTERS['ruff_format'] = { 'python', mason = 'ruff' }
 
--- TODO: upgrade tools
--- New tools:
--- https://github.com/mtshiba/pylyzer (not ready yet)
 
 return M

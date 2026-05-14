@@ -68,8 +68,6 @@ table.insert(M, {
 			show_start = false,
 			show_end = false,
 			highlight = 'IndentContext',
-			-- FIXME: show scopes of dicts like this scope
-			-- include = {}
 		},
 		whitespace = {
 			remove_blankline_trail = false,
