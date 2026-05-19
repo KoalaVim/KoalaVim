@@ -73,6 +73,18 @@ function M.sidekick_goto_file(with_line)
 		return
 	end
 
+	-- Stay in normal mode when returning to this terminal buffer
+	local sidekick_buf = vim.api.nvim_get_current_buf()
+	vim.api.nvim_create_autocmd('BufEnter', {
+		buffer = sidekick_buf,
+		once = true,
+		callback = function()
+			vim.schedule(function()
+				vim.cmd('stopinsert')
+			end)
+		end,
+	})
+
 	local target_win = find_editor_win()
 	local created_split = false
 
@@ -107,6 +119,8 @@ function M.sidekick_goto_file(with_line)
 	if lnum then
 		vim.api.nvim_win_set_cursor(0, { lnum, 0 })
 	end
+
+	vim.cmd('stopinsert')
 end
 
 return M
