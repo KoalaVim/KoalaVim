@@ -35,3 +35,9 @@ map('n', '<leader>B', function()
 	require('KoalaVim.utils.build').reset_deploy()
 	require('KoalaVim.utils.build').deploy()
 end, 'Reset deploy, build & deploy')
+
+-- Go to file
+map('', 'gf', function()
+	require('KoalaVim.utils.editor').goto_file_with_line()
+end, 'Go to file + line number')
+map('', 'gF', 'gf', 'Go to file')

@@ -52,6 +52,24 @@ table.insert(M, {
 	},
 	keys = {
 		{
+			'gf',
+			function()
+				require('KoalaVim.utils.editor').sidekick_goto_file(true)
+			end,
+			ft = 'sidekick_terminal',
+			desc = 'Go to file + line number in editor split',
+			mode = 'n',
+		},
+		{
+			'gF',
+			function()
+				require('KoalaVim.utils.editor').sidekick_goto_file(false)
+			end,
+			ft = 'sidekick_terminal',
+			desc = 'Go to file in editor split',
+			mode = 'n',
+		},
+		{
 			'<C-e>',
 			function()
 				ai.edit_prompt()
