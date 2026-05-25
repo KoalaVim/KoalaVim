@@ -472,6 +472,8 @@ table.insert(M, {
 					if not path then
 						return
 					end
+					local line = vim.api.nvim_win_get_cursor(0)[1]
+					path = path .. ':' .. line
 					vim.fn.setreg('+', path)
 					vim.notify('Copied: ' .. path)
 				end, { desc = 'Copy file path to clipboard' })
