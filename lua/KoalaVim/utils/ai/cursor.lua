@@ -3,6 +3,7 @@ local M = {}
 local IGNORE_PREFIXES = {
 	'Add a follow-up',
 	'Plan, search, build anything',
+	'Describe how to revise the plan',
 }
 
 function M.get_prompt()
