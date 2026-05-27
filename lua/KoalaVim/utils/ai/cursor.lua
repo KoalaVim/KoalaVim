@@ -1,5 +1,10 @@
 local M = {}
 
+local IGNORE_PREFIXES = {
+	'Add a follow-up',
+	'Plan, search, build anything',
+}
+
 function M.get_prompt()
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
 
@@ -34,6 +39,14 @@ function M.get_prompt()
 			content = vim.trim(content)
 			if content ~= '' then
 				table.insert(prompt_lines, content)
+			end
+		end
+	end
+
+	if prompt_lines[1] then
+		for _, prefix in ipairs(IGNORE_PREFIXES) do
+			if prompt_lines[1]:sub(1, #prefix) == prefix then
+				return {}
 			end
 		end
 	end
