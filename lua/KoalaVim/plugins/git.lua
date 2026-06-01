@@ -339,6 +339,7 @@ table.insert(M, {
 			height = 10,
 			width = 35,
 			initial_focus = 'modified',
+			auto_refresh = false,
 		},
 		diff = {
 			layout = 'inline',
