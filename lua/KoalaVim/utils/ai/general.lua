@@ -14,10 +14,18 @@ local GET_PROMPT = {
 	end,
 }
 
+local DOWN = '\x1b[B' -- down arrow
+local END_OF_LINE = '\x05' -- ctrl-e
+
+-- `key` is sent to the terminal to clear the current prompt.
+-- claude/cursor: ctrl-c clears the whole prompt in one shot.
+-- codex: ctrl-u only clears a single line, so `per_line` makes us first move to
+-- the end of the prompt (down once per line, then end-of-line) and then send the
+-- key once per line (see send_to_sidekick).
 local CLEAR_KEYS = {
-	claude = '\x03',
-	codex = '\x03',
-	cursor = '\x03',
+	claude = { key = '\x03' },
+	codex = { key = '\x15', per_line = true },
+	cursor = { key = '\x03' },
 }
 
 local PROMPT_PATTERNS = {
@@ -171,15 +179,28 @@ end
 --- currently in the prompt first, and record it in prompt history.
 ---@param content string
 ---@param agent string
-function M.send_to_sidekick(content, agent)
+---@param clear_count? integer how many lines the current prompt has (default 1)
+function M.send_to_sidekick(content, agent, clear_count)
 	if content == '' then
 		return
 	end
 	require('KoalaVim.utils.ai.history').append(content, agent)
 	require('sidekick.cli.state').with(function(state)
 		local termbufid = state.terminal.buf
-		local clear_key = CLEAR_KEYS[state.tool.name] or '\x03'
-		vim.api.nvim_chan_send(vim.bo[termbufid].channel, clear_key)
+		local clear = CLEAR_KEYS[state.tool.name] or { key = '\x03' }
+		local chan = vim.bo[termbufid].channel
+
+		-- Clear whatever is currently in the prompt.
+		if clear.per_line then
+			local nlines = math.max(clear_count or 1, 1)
+			-- Move to the end of the prompt (down once per line, then end-of-line),
+			-- then clear each line.
+			local seq = DOWN:rep(nlines) .. END_OF_LINE .. clear.key:rep(nlines * 2)
+			vim.api.nvim_chan_send(chan, seq)
+		else
+			vim.api.nvim_chan_send(chan, clear.key)
+		end
+
 		state.session:send(content)
 	end, {
 		attach = true,
@@ -214,7 +235,7 @@ local function open_prompt_buffer(agent, initial_lines, term_win)
 			local lines = vim.api.nvim_buf_get_lines(bufid, 0, -1, false)
 			local content = table.concat(lines, '\n')
 			-- Using internal sidekick cli to not parse "{}" variables
-			M.send_to_sidekick(content, agent)
+			M.send_to_sidekick(content, agent, #initial_lines)
 
 			-- Re-focus the terminal window so we stay in the same tabpage
 			if vim.api.nvim_win_is_valid(term_win) then
