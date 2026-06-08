@@ -1,11 +1,5 @@
 local M = {}
 
-local function is_status_line(line)
-	local trimmed = vim.trim(line)
-
-	return trimmed:find('Context', 1, true) and trimmed:match('^gpt[%w%._%-]*%s')
-end
-
 function M.get_prompt()
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
 
@@ -26,25 +20,27 @@ function M.get_prompt()
 	local after = prompt_col and raw:sub(prompt_col + #'›') or ''
 	local first = vim.trim(after)
 
-	local prompt_lines = {}
-	if first ~= '' then
-		table.insert(prompt_lines, first)
-	end
-
-	for i = prompt_start + 1, #lines do
-		local line = lines[i]
-		local trimmed = vim.trim(line)
-
-		if trimmed == '' or is_status_line(line) then
+	-- Find the end of the prompt. codex's composer pads every line it owns (input
+	-- lines, in-prompt blanks, the blank padding, and the footer/status line) with
+	-- at least a space, while the unused terminal rows below are truly empty ("").
+	-- So the footer is the bottom-most non-empty line, and everything above it down
+	-- to the marker is prompt content (blank lines included). We deliberately don't
+	-- match the footer's text, since that can change.
+	local prompt_end = prompt_start
+	for i = #lines, prompt_start + 1, -1 do
+		if #lines[i] > 0 then
+			prompt_end = i - 1 -- exclude the footer line itself
 			break
 		end
+	end
 
-		-- Wrapped prompt lines are rendered two columns in, below the input text.
-		local content = line:sub(1, 2) == '  ' and line:sub(3) or trimmed
-		content = content:gsub('%s+$', '')
-		if content ~= '' then
-			table.insert(prompt_lines, content)
-		end
+	-- Keep the first line always (even if empty) so leading/embedded blanks are
+	-- preserved; trailing blanks are trimmed below.
+	local prompt_lines = { first }
+	for i = prompt_start + 1, prompt_end do
+		-- Continuation lines are rendered two columns in.
+		local content = lines[i]:sub(3):gsub('%s+$', '')
+		table.insert(prompt_lines, content)
 	end
 
 	while #prompt_lines > 0 and prompt_lines[#prompt_lines]:match('^%s*$') do
