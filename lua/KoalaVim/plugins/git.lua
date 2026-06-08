@@ -36,21 +36,21 @@ table.insert(M, {
 
 				-- Navigation
 				-- TODO: center screen after jump
-				map_buffer(bufnr, 'n', ']c', function()
-					if vim.wo.diff then
-						return ']c'
+				local function nav_hunk(direction, diff_key)
+					return function()
+						if vim.wo.diff then
+							return diff_key
+						end
+						nav(direction)
+						return '<Ignore>'
 					end
-					nav('next')
-					return '<Ignore>'
-				end, 'Jump to next git hunk', { expr = true })
+				end
 
-				map_buffer(bufnr, 'n', '[c', function()
-					if vim.wo.diff then
-						return '[c'
-					end
-					nav('prev')
-					return '<Ignore>'
-				end, 'Jump to previous git hunk', { expr = true })
+				map_buffer(bufnr, 'n', ']c', nav_hunk('next', ']c'), 'Jump to next git hunk', { expr = true })
+				map_buffer(bufnr, 'n', '<M-j>', nav_hunk('next', ']c'), 'Jump to next git hunk', { expr = true })
+
+				map_buffer(bufnr, 'n', '[c', nav_hunk('prev', '[c'), 'Jump to previous git hunk', { expr = true })
+				map_buffer(bufnr, 'n', '<M-k>', nav_hunk('prev', '[c'), 'Jump to previous git hunk', { expr = true })
 				-- Actions
 				map_buffer(bufnr, { 'n', 'v' }, '<leader>hs', ':Gitsigns stage_hunk<CR>', 'Stage Hunk')
 				map_buffer(bufnr, { 'n', 'v' }, '<leader>hr', ':Gitsigns reset_hunk<CR>', 'Reset Hunk')
