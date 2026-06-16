@@ -125,38 +125,35 @@ local function location_text(ctx, range, kind)
 end
 
 ---@param kind 'this'|'file'|'selection'
----@param send fun(action: fun(opts: table), extra: table)
+---@return sidekick.Text[]? text
 ---@return boolean handled
-function M.send_context(kind, send)
+function M.context_text(kind)
 	local ctx = get_context()
 	if not ctx then
-		return false
+		return nil, false
 	end
 
 	if kind == 'file' then
-		send(require('sidekick.cli').send, { text = location_text(ctx, nil, 'file') })
-		return true
+		return location_text(ctx, nil, 'file'), true
 	end
 
 	local selected, range = selection_text(ctx)
 	if kind == 'selection' then
 		if not selected then
 			vim.notify('No CodeDiff selection to send.', vim.log.levels.WARN)
-			return true
+			return nil, true
 		end
 		local text = location_text(ctx, range, 'position')
 		table.insert(text, { { '' } })
 		vim.list_extend(text, selected)
-		send(require('sidekick.cli').send, { text = text })
-		return true
+		return text, true
 	end
 
 	if kind == 'this' then
-		send(require('sidekick.cli').send, { text = location_text(ctx, range, 'position') })
-		return true
+		return location_text(ctx, range, 'position'), true
 	end
 
-	return false
+	return nil, false
 end
 
 return M

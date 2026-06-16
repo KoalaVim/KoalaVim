@@ -103,16 +103,89 @@ function M.set_default_tool(name)
 	_default_tool = name
 end
 
-function M.send_context(kind)
-	if require('KoalaVim.utils.plugins.codediff').send_context(kind, M.with_default_tool) then
-		return
-	end
-
-	local msg = ({
+local function context_message(kind)
+	return ({
 		this = '{this}',
 		file = '{file}',
 		selection = '{selection}',
 	})[kind]
+end
+
+local function find_prompt_win()
+	local current_win = vim.api.nvim_get_current_win()
+	if vim.bo[vim.api.nvim_win_get_buf(current_win)].filetype == 'sidekick_koala_prompt' then
+		return current_win
+	end
+
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		if vim.api.nvim_win_is_valid(win) then
+			local buf = vim.api.nvim_win_get_buf(win)
+			if vim.bo[buf].filetype == 'sidekick_koala_prompt' then
+				return win
+			end
+		end
+	end
+end
+
+---@param text sidekick.Text[]
+local function insert_text_in_prompt(text)
+	local prompt_win = find_prompt_win()
+	if not prompt_win then
+		return false
+	end
+
+	local lines = require('sidekick.text').lines(text)
+	if vim.tbl_isempty(lines) then
+		return true
+	end
+
+	vim.api.nvim_set_current_win(prompt_win)
+	vim.api.nvim_put(lines, '', true, true)
+	return true
+end
+
+local function render_context(kind)
+	local text, handled = require('KoalaVim.utils.plugins.codediff').context_text(kind)
+	if handled then
+		return text, true
+	end
+
+	local msg = context_message(kind)
+	if not msg then
+		return nil, false
+	end
+
+	local _, rendered = require('sidekick.cli').render({ msg = msg })
+	return rendered, rendered ~= nil
+end
+
+local function send_codediff_context(kind)
+	local text, handled = require('KoalaVim.utils.plugins.codediff').context_text(kind)
+	if handled then
+		if text then
+			M.with_default_tool(require('sidekick.cli').send, { text = text })
+		end
+		return true
+	end
+	return false
+end
+
+function M.send_context(kind)
+	if find_prompt_win() then
+		local text, handled = render_context(kind)
+		if handled then
+			if text then
+				insert_text_in_prompt(text)
+			end
+			return
+		end
+	end
+
+	if send_codediff_context(kind) then
+		return
+	end
+
+	local msg = context_message(kind)
 	if msg then
 		M.with_default_tool(require('sidekick.cli').send, { msg = msg })
 	end
