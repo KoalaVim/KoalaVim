@@ -103,6 +103,21 @@ function M.set_default_tool(name)
 	_default_tool = name
 end
 
+function M.send_context(kind)
+	if require('KoalaVim.utils.plugins.codediff').send_context(kind, M.with_default_tool) then
+		return
+	end
+
+	local msg = ({
+		this = '{this}',
+		file = '{file}',
+		selection = '{selection}',
+	})[kind]
+	if msg then
+		M.with_default_tool(require('sidekick.cli').send, { msg = msg })
+	end
+end
+
 --- Runs a sidekick cli function with the default tool.
 --- If a default is set, calls the action directly with that tool name.
 --- Otherwise, prompts an installed-only selection first.

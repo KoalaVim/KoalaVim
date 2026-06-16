@@ -196,7 +196,7 @@ table.insert(M, {
 		{
 			'<leader>at',
 			function()
-				with_default_tool(require('sidekick.cli').send, { msg = '{this}' })
+				ai.send_context('this')
 			end,
 			mode = { 'x', 'n' },
 			desc = 'Send This',
@@ -204,14 +204,14 @@ table.insert(M, {
 		{
 			'<leader>af',
 			function()
-				with_default_tool(require('sidekick.cli').send, { msg = '{file}' })
+				ai.send_context('file')
 			end,
 			desc = 'Send File',
 		},
 		{
 			'<leader>av',
 			function()
-				with_default_tool(require('sidekick.cli').send, { msg = '{selection}' })
+				ai.send_context('selection')
 			end,
 			mode = { 'x' },
 			desc = 'Send Visual Selection',
