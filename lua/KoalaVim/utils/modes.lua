@@ -41,9 +41,23 @@ local function ai_mode(args)
 		end,
 	})
 
-	local tool = vim.trim(args or '')
-	if tool ~= '' then
+	local parts = vim.split(vim.trim(args or ''), '%s+', { trimempty = true })
+	local tool = table.remove(parts, 1)
+	if tool and tool ~= '' then
 		require('KoalaVim.utils.ai.general').set_default_tool(tool)
+
+		if not vim.tbl_isempty(parts) then
+			local config = require('sidekick.config')
+			local tool_config = config.cli.tools[tool]
+			if not tool_config then
+				health.error(('Unknown Sidekick tool `%s`'):format(tool))
+				return
+			end
+
+			local cmd = vim.deepcopy(config.get_tool(tool).cmd)
+			vim.list_extend(cmd, parts)
+			tool_config.cmd = cmd
+		end
 	end
 
 	require('KoalaVim.utils.ai.general').with_default_tool(require('sidekick.cli').show)
