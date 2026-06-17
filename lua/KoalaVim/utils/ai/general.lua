@@ -34,6 +34,16 @@ local PROMPT_PATTERNS = {
 	cursor = ' ┌─',
 }
 
+local QUESTION_TUI_HANDLER = {
+	cursor = function(prompt_lines)
+		local cur = require('KoalaVim.utils.ai.cursor')
+		if not cur.is_question_tui(prompt_lines) then
+			return nil
+		end
+		return cur.get_question_prompt(prompt_lines), { key = '\x15' }
+	end,
+}
+
 --- Debug why a key (default: space) feels slow in the current terminal buffer.
 --- Call from the sidekick terminal buffer (after `<C-\><C-n>` to exit term mode):
 ---   :lua require('KoalaVim.utils.ai.general').debug_slow_key()
@@ -268,14 +278,15 @@ end
 ---@param content string
 ---@param agent string
 ---@param clear_count? integer how many lines the current prompt has (default 1)
-function M.send_to_sidekick(content, agent, clear_count)
+---@param clear_override? { key: string, per_line?: boolean }
+function M.send_to_sidekick(content, agent, clear_count, clear_override)
 	if content == '' then
 		return
 	end
 	require('KoalaVim.utils.ai.history').append(content, agent)
 	require('sidekick.cli.state').with(function(state)
 		local termbufid = state.terminal.buf
-		local clear = CLEAR_KEYS[state.tool.name] or { key = '\x03' }
+		local clear = clear_override or CLEAR_KEYS[state.tool.name] or { key = '\x03' }
 		local chan = vim.bo[termbufid].channel
 
 		-- Clear whatever is currently in the prompt.
@@ -303,7 +314,9 @@ end
 ---@param agent string
 ---@param initial_lines string[]
 ---@param term_win integer the window to refocus after closing
-local function open_prompt_buffer(agent, initial_lines, term_win)
+---@param clear_override? { key: string, per_line?: boolean }
+---@param single_line? boolean join lines with spaces before sending
+local function open_prompt_buffer(agent, initial_lines, term_win, clear_override, single_line)
 	local bufid = vim.api.nvim_create_buf(false, true)
 
 	-- Enter insert mode when focusing the buffer
@@ -321,9 +334,9 @@ local function open_prompt_buffer(agent, initial_lines, term_win)
 		once = true,
 		callback = function()
 			local lines = vim.api.nvim_buf_get_lines(bufid, 0, -1, false)
-			local content = table.concat(lines, '\n')
+			local content = table.concat(lines, single_line and ' ' or '\n')
 			-- Using internal sidekick cli to not parse "{}" variables
-			M.send_to_sidekick(content, agent, #initial_lines)
+			M.send_to_sidekick(content, agent, #initial_lines, clear_override)
 
 			-- Re-focus the terminal window so we stay in the same tabpage
 			if vim.api.nvim_win_is_valid(term_win) then
@@ -392,9 +405,21 @@ function M.edit_prompt()
 
 	local get_prompt = GET_PROMPT[agent]()
 	local current_prompt_lines = get_prompt()
-	local term_win = vim.api.nvim_get_current_win()
+	local clear_override
+	local single_line
 
-	open_prompt_buffer(agent, current_prompt_lines, term_win)
+	local question_handler = QUESTION_TUI_HANDLER[agent]
+	if question_handler then
+		local q_lines, clear = question_handler(current_prompt_lines)
+		if q_lines then
+			current_prompt_lines = q_lines
+			clear_override = clear
+			single_line = true
+		end
+	end
+
+	local term_win = vim.api.nvim_get_current_win()
+	open_prompt_buffer(agent, current_prompt_lines, term_win, clear_override, single_line)
 end
 
 --- Open the edit-prompt buffer prefilled with arbitrary content.

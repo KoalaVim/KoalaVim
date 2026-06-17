@@ -55,4 +55,44 @@ function M.get_prompt()
 	return prompt_lines
 end
 
+local QUESTION_HINT = '↑/↓ option'
+
+---@param prompt_lines string[]
+function M.is_question_tui(prompt_lines)
+	local last = prompt_lines[#prompt_lines]
+	return last ~= nil and last:find(QUESTION_HINT, 1, true) ~= nil
+end
+
+---@param prompt_lines string[]
+function M.get_question_prompt(prompt_lines)
+	local result = {}
+	local collecting = false
+
+	for _, line in ipairs(prompt_lines) do
+		if line:find(QUESTION_HINT, 1, true) then
+			break
+		end
+
+		local text = line:match('%[.%]%s.-%:%s*(.*)')
+		if text then
+			collecting = true
+			result = {}
+			if text ~= '' then
+				table.insert(result, text)
+			end
+		elseif collecting then
+			if line:match('%[.%]') then
+				if #result > 0 then
+					break
+				end
+				collecting = false
+			else
+				table.insert(result, line)
+			end
+		end
+	end
+
+	return result
+end
+
 return M
