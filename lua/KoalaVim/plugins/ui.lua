@@ -147,6 +147,7 @@ table.insert(M, {
 				require('nvim-tree.api').tree.toggle()
 			end,
 			desc = 'Toggle file tree',
+			mode = { 'n', 't', 'v' },
 		},
 		{
 			'<M-M>',
@@ -154,6 +155,7 @@ table.insert(M, {
 				require('nvim-tree.api').tree.open({ find_file = true })
 			end,
 			desc = 'Locate file',
+			mode = { 'n', 't', 'v' },
 		},
 	},
 	deactivate = function()
