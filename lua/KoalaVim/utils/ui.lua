@@ -87,6 +87,38 @@ local function get_lsp_count()
 	)
 end
 
+local function get_codediff_path()
+	if not package.loaded['codediff.ui.lifecycle'] then
+		return nil
+	end
+	local lifecycle = require('codediff.ui.lifecycle')
+	local buf = vim.api.nvim_get_current_buf()
+	local tabpage = lifecycle.find_tabpage_by_buffer(buf)
+	if not tabpage then
+		return nil
+	end
+	local session = lifecycle.get_session(tabpage)
+	if not session then
+		return nil
+	end
+	local path
+	if buf == session.original_bufnr then
+		path = session.original_path
+	elseif buf == session.modified_bufnr then
+		path = session.modified_path
+	elseif buf == session.result_bufnr then
+		path = session.modified_path
+	end
+	if not path or path == '' then
+		return nil
+	end
+	local root = session.git_root and session.git_root:gsub('/$', '') or nil
+	if root and path:sub(1, #root + 1) == root .. '/' then
+		path = path:sub(#root + 2)
+	end
+	return path
+end
+
 function M.setup_lualine(is_half, opts)
 	if opts then
 		M.lualine_opts = opts
@@ -194,6 +226,9 @@ function M.setup_lualine(is_half, opts)
 				'filename',
 				path = 0,
 				-- color = { fg = colors.black, bg = '#60A8A4' },
+				fmt = function(str)
+					return get_codediff_path() or str
+				end,
 			},
 		},
 		lualine_c = {
@@ -228,6 +263,9 @@ function M.setup_lualine(is_half, opts)
 		{
 			'filename',
 			path = 1,
+			fmt = function(str)
+				return get_codediff_path() or str
+			end,
 		},
 	}
 	inactive_winbar.lualine_c = {
@@ -282,7 +320,14 @@ function M.setup_lualine(is_half, opts)
 			lualine_a = lualine_a,
 			lualine_b = lualine_b,
 			lualine_c = {
-				{ 'filename', shorting_target = 0, icon = '' },
+				{
+					'filename',
+					shorting_target = 0,
+					icon = '',
+					fmt = function(str)
+						return get_codediff_path() or str
+					end,
+				},
 			},
 			lualine_x = {
 				{
