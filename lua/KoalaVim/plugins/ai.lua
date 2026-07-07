@@ -202,6 +202,14 @@ table.insert(M, {
 			desc = 'Send This',
 		},
 		{
+			'<M-a>',
+			function()
+				ai.send_context('this')
+			end,
+			mode = 'x',
+			desc = 'Send This',
+		},
+		{
 			'<leader>af',
 			function()
 				ai.send_context('file')
