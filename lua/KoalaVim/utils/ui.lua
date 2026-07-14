@@ -376,7 +376,7 @@ function M.setup_lualine(is_half, opts)
 					fmt = function(str)
 						return str:gsub('[%[%]]', '')
 					end,
-					icon = '',
+					icon = '',
 					separator = hard_info_seperator,
 					padding = 0,
 				},
