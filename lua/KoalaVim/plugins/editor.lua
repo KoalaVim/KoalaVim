@@ -270,9 +270,29 @@ table.insert(M, {
 			desc = 'Open current word',
 		},
 	},
-	opts = {},
+	opts = {
+		openers_config = {
+			-- TODO: move to personal
+			['markdown-preview'] = {
+				system_open = {
+					cmd = 'gh',
+					args = { 'markdown-preview', '--full' },
+				},
+			},
+		},
+	},
 	config = function(_, opts)
 		require('open').setup(opts)
+
+		-- TODO: move to personal
+		require('open').register_opener({
+			name = 'markdown-preview',
+			open_fn = function(text)
+				if text:match('%.md$') then
+					return { text }
+				end
+			end,
+		})
 	end,
 	dependencies = {
 		{
