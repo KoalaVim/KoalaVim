@@ -127,6 +127,17 @@ table.insert(M, {
 		},
 	},
 	config = function(_, opts)
+		-- Strip asdf shims from PATH so Mason installs don't fail with
+		-- "No version is set for command ..." when staging dirs lack .tool-versions
+		local asdf_shims = (vim.env.ASDF_DATA_DIR or (vim.env.HOME .. '/.asdf')) .. '/shims'
+		local path_parts = vim.split(vim.env.PATH, ':', { plain = true })
+		local filtered = vim.tbl_filter(function(p)
+			return p ~= asdf_shims
+		end, path_parts)
+		if #filtered < #path_parts then
+			vim.env.PATH = table.concat(filtered, ':')
+		end
+
 		-- convert to list to set
 		local ensure_installed = {}
 		for _, formatter in ipairs(opts.ensure_installed) do
