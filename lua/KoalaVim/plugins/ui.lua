@@ -177,6 +177,8 @@ table.insert(M, {
 			map_buffer(bufnr, 'n', 'gh', git_hist_path, 'Nvimtree: view git history in current path')
 			map_buffer(bufnr, 'n', 'gh', git_hist_path, 'Nvimtree: view git history in current path')
 			map_buffer(bufnr, 'n', '<F2>', tree_api.fs.rename, 'Nvimtree: rename file')
+			map_buffer(bufnr, 'n', '<M-j>', tree_api.node.navigate.git.next, 'Next git change')
+			map_buffer(bufnr, 'n', '<M-k>', tree_api.node.navigate.git.prev, 'Prev git change')
 		end
 
 		require('nvim-tree').setup({
