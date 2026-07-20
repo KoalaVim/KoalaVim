@@ -52,7 +52,7 @@ table.insert(M, {
 	end,
 	keys = {
 		{
-			'<M-p>',
+			'<leader>up',
 			ft = 'markdown',
 			'<cmd>MarkdownPreviewToggle<cr>',
 			desc = 'Markdown Preview',
@@ -81,7 +81,7 @@ table.insert(M, {
 	-- ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
 	keys = {
 		{
-			'<leader>up',
+			'<M-p>',
 			ft = 'markdown',
 			function()
 				require('render-markdown').toggle()
