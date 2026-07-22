@@ -32,6 +32,11 @@ table.insert(M, {
 
 		if opts.on_attach == nil then
 			opts.on_attach = function(bufnr)
+				-- Avoid overriding codediff binds (not tight because working with window option instead of buf opt)
+				if vim.w.code_diff_win then
+					return
+				end
+
 				local map_buffer = require('KoalaVim.utils.map').map_buffer
 
 				-- Navigation
