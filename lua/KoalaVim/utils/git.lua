@@ -10,14 +10,15 @@ function M.show_status()
 	end
 end
 
-function M.show_diff()
+function M.show_diff(args)
+	args = args or ''
 	if vim.env.KOALA_CODE_DIFF == 'true' then
 		pcall(function()
 			require('format-on-leave').disable()
 		end)
-		vim.cmd('CodeDiff')
+		vim.cmd('CodeDiff ' .. args)
 	else
-		vim.cmd('DiffviewOpen')
+		vim.cmd('DiffviewOpen ' .. args)
 	end
 end
 

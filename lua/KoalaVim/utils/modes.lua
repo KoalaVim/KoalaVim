@@ -23,7 +23,7 @@ local function git_tree_mode(args)
 end
 
 local function git_diff_mode(args)
-	require('KoalaVim.utils.git').show_diff()
+	require('KoalaVim.utils.git').show_diff(args)
 
 	vim.schedule(function()
 		vim.cmd('tabonly') -- Close other tab pages
