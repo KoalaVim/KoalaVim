@@ -380,7 +380,7 @@ table.insert(M, {
 	'nvim-telescope/telescope-fzf-native.nvim',
 	lazy = true,
 	build = (vim.fn.has('win32') == 1)
-		and 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release'
+			and 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release'
 		or 'make',
 	config = function()
 		require('telescope').load_extension('fzf')
