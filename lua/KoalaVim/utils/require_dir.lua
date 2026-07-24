@@ -37,7 +37,7 @@ end
 
 local function _get_current_dir()
 	local info = debug.getinfo(3, 'S')
-	return string.match(info.source, '^@(.*)/') .. '/'
+	return string.match(info.source, '^@(.*)[/\\]') .. '/'
 end
 
 local function _require(relative_dir, recursive, require_prefix)
