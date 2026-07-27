@@ -562,7 +562,7 @@ table.insert(M, {
 				CLOSE_KOALA_DASHBOARD()
 
 				KoalaDisableAutoSession()
-				find_files()
+				require('fff').find_files()
 			end),
 			dashboard.button('fw', '  Find Text (words)', function()
 				CLOSE_KOALA_DASHBOARD()
