@@ -312,11 +312,29 @@ table.insert(M, {
 			desc = 'Go to Type in Xsplit',
 		},
 
-		-- Goto symbol (snacks)
+		-- Goto symbol (snacks) — small cursor-anchored picker like telescope had
 		{
 			'gs',
 			function()
-				Snacks.picker.lsp_symbols()
+				local pos = vim.fn.screenpos(0, vim.fn.line('.'), vim.fn.col('.'))
+				Snacks.picker.lsp_symbols({
+					layout = {
+						preview = false,
+						reverse = false,
+						layout = {
+							box = 'vertical',
+							border = true,
+							title = '{title}',
+							title_pos = 'center',
+							width = 100,
+							height = 15,
+							row = pos.row,
+							col = pos.col,
+							{ win = 'input', height = 1, border = 'bottom' },
+							{ win = 'list', border = 'none' },
+						},
+					},
+				})
 			end,
 			desc = 'Go Symbols',
 		},
@@ -365,7 +383,25 @@ table.insert(M, {
 		{
 			'ss',
 			function()
-				Snacks.picker.spelling()
+				local pos = vim.fn.screenpos(0, vim.fn.line('.'), vim.fn.col('.'))
+				Snacks.picker.spelling({
+					layout = {
+						preview = false,
+						reverse = false,
+						layout = {
+							box = 'vertical',
+							border = true,
+							title = '{title}',
+							title_pos = 'center',
+							width = 40,
+							height = 10,
+							row = pos.row,
+							col = pos.col,
+							{ win = 'input', height = 1, border = 'bottom' },
+							{ win = 'list', border = 'none' },
+						},
+					},
+				})
 			end,
 			desc = 'Spell suggest',
 		},

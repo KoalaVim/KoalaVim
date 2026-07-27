@@ -91,7 +91,7 @@
   "nvim-vtsls": { "branch": "main", "commit": "0b5f73c9e50ce95842ea07bb3f05c7d66d87d14a" },
   "nvim-web-devicons": { "branch": "master", "commit": "803353450c374192393f5387b6a0176d0972b848" },
   "octo.nvim": { "branch": "master", "commit": "4a3a4fc5a9d3a372c91041f5b846f33b8d6b31fa" },
-  "ofirkai.nvim": { "branch": "master", "commit": "3e092e3889c172df3aee301d5867e73e86c1e179" },
+  "ofirkai.nvim": { "branch": "master", "commit": "e4bd8f1898c8173524682080065c532bdf96c7f6" },
   "open-jira.nvim": { "branch": "master", "commit": "dcbe121d675df64f93aa0e50f32c86a1d7439e28" },
   "open.nvim": { "branch": "master", "commit": "f00d07e2cbf79a10874bce02b462cb9b0aac7435" },
   "output-panel.nvim": { "branch": "main", "commit": "3f199ff9e7d56fa30e39edfb07a883ef4142cd98" },
