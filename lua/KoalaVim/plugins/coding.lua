@@ -55,7 +55,7 @@ table.insert(M, {
 	event = { 'InsertEnter' },
 	opts = {
 		check_ts = true,
-		disable_filetype = { 'TelescopePrompt', 'guihua', 'guihua_rust', 'clap_input' },
+		disable_filetype = { 'snacks_picker_input', 'guihua', 'guihua_rust', 'clap_input' },
 		-- enable_moveright = false,
 	},
 	config = function(_, opts)
