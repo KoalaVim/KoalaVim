@@ -134,11 +134,15 @@ The system SHALL provide smooth cursor movement animation. Animation SHALL be di
 
 ### Requirement: Notification system
 
-The system SHALL provide toast-style notifications with history viewing. Notifications SHALL support different severity levels and configurable display duration. A history viewer SHALL allow reviewing past notifications.
+The system SHALL provide toast-style notifications with history viewing. Notifications SHALL support different severity levels and configurable display duration. A history viewer SHALL allow reviewing past notifications and copying their content.
 
 #### Scenario: View notification history
 - **WHEN** the user triggers the notification history command
-- **THEN** all past notifications from the current session SHALL be displayed
+- **THEN** all past notifications from the current session SHALL be displayed in a picker
+
+#### Scenario: Copy notification to clipboard
+- **WHEN** the user selects a notification from the history picker
+- **THEN** the notification text SHALL be copied to the system clipboard
 
 #### Scenario: Dismiss all notifications
 - **WHEN** the user triggers the dismiss-all command

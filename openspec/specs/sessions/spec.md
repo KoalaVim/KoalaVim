@@ -46,11 +46,11 @@ The system SHALL support creating, loading, renaming, and deleting named session
 
 ### Requirement: Session list browser
 
-The system SHALL provide a browsable list of all saved sessions, sorted by proximity to the current working directory. Session paths SHALL be displayed relative to the home directory.
+The system SHALL provide a browsable list of all saved sessions. Session paths SHALL be displayed relative to the home directory.
 
 #### Scenario: Browse and load session
 - **WHEN** the user opens the session list
-- **THEN** all saved sessions SHALL be displayed sorted by path similarity to the current directory, and selecting one SHALL load it
+- **THEN** all saved sessions SHALL be displayed in a picker, and selecting one SHALL load it
 
 ### Requirement: Session disable controls
 

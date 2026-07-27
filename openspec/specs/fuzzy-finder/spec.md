@@ -6,7 +6,7 @@ The fuzzy finder is the primary navigation interface: file search, full-text gre
 
 ### Requirement: File finder
 
-The system SHALL provide a fuzzy file finder that searches across all project files, respecting gitignore and configurable ignore patterns. The finder SHALL support pre-populating from the current word, visual selection, or current filename.
+The system SHALL provide a fuzzy file finder that searches across all project files, respecting gitignore and configurable ignore patterns. Results SHALL be ranked by frecency (frequency + recency of access). The finder SHALL support pre-populating from the current word, visual selection, or current filename.
 
 #### Scenario: Find file with ignore patterns
 - **WHEN** the user opens the file finder in a project with configured additional ignore patterns
@@ -70,11 +70,7 @@ The system SHALL provide fuzzy pickers for all LSP navigation targets: definitio
 
 ### Requirement: Picker layout and interaction
 
-All pickers SHALL support toggling between horizontal and vertical layouts, toggling the preview pane, navigating results with keyboard shortcuts, and sending results to the diagnostics panel.
-
-#### Scenario: Toggle layout
-- **WHEN** the user presses the layout-toggle key inside a picker
-- **THEN** the picker SHALL switch between horizontal and vertical layout
+All pickers SHALL support toggling the preview pane, navigating results with keyboard shortcuts, and sending results to the diagnostics panel.
 
 #### Scenario: Toggle preview
 - **WHEN** the user presses the preview-toggle key inside a picker
@@ -92,17 +88,13 @@ The system SHALL provide a picker for browsing and re-executing previous command
 - **WHEN** the user opens the command history picker and selects a previous command
 - **THEN** the command SHALL be executed
 
-### Requirement: Spell and synonym lookup
+### Requirement: Spell correction
 
-The system SHALL provide pickers for spell correction suggestions and synonym lookup for the word under the cursor.
+The system SHALL provide a picker for spell correction suggestions for the word under the cursor.
 
 #### Scenario: Spell suggest
 - **WHEN** the user triggers spell-suggest on a misspelled word
-- **THEN** a picker SHALL show correction suggestions, and selecting one SHALL replace the word
-
-#### Scenario: Synonym lookup
-- **WHEN** the user triggers synonym lookup on a word
-- **THEN** a picker SHALL show synonyms, and selecting one SHALL replace the word
+- **THEN** a compact picker SHALL show correction suggestions near the cursor, and selecting one SHALL replace the word
 
 ### Requirement: Git dirty files picker
 
