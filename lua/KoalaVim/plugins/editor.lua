@@ -662,9 +662,18 @@ table.insert(M, {
 			ui_select = true,
 			layout = {
 				preset = 'default',
+				reverse = true,
 				layout = {
+					box = 'horizontal',
 					width = 0.9,
 					height = 0.9,
+					{
+						box = 'vertical',
+						border = true,
+						{ win = 'list', border = 'none' },
+						{ win = 'input', height = 1, border = 'top', title = '{title} {live} {flags}', title_pos = 'center' },
+					},
+					{ win = 'preview', title = '{preview}', border = true, width = 0.5 },
 				},
 			},
 			win = {
