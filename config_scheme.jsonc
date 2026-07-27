@@ -122,12 +122,12 @@
                         }
                     }
                 },
-                "telescope": {
-                    "description": "Telescope options",
+                "fff": {
+                    "description": "fff file finder options",
                     "type": "object",
                     "properties": {
-                        "additional_file_ignore_patterns": {
-                            "description": "Extends KoalaVim's default file ignore patterns",
+                        "additional_ignore_patterns": {
+                            "description": "Additional glob patterns for fff to ignore (add to .ignore file in project root)",
                             "type": "array",
                             "items": {
                                 "type": "string"
