@@ -113,6 +113,22 @@ table.insert(M, {
 			height = 0.9,
 			width = 0.9,
 			preview_size = 0.5,
+			prompt_position = 'bottom',
+		},
+		hl = {
+			normal = 'FffNormal',
+			border = 'FffBorder',
+			title = 'FffTitle',
+			prompt = 'FffPrompt',
+			cursorline = 'FffCursorLine',
+			matched = 'FffMatched',
+			selected = 'FffSelected',
+			selected_active = 'FffSelectedActive',
+			frecency = 'FffFrecency',
+			directory_path = 'FffDirectory',
+			winhl = {
+				preview = 'Normal:FffPreviewNormal,FloatBorder:FffPreviewBorder,FloatTitle:FffPreviewTitle',
+			},
 		},
 	},
 	keys = {
