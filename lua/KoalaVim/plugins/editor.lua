@@ -686,6 +686,15 @@ table.insert(M, {
 				select = {
 					layout = { preset = 'select' },
 				},
+				notifications = {
+					confirm = function(picker, item)
+						picker:close()
+						if item then
+							vim.fn.setreg('+', item.text)
+							vim.notify('Copied to clipboard', vim.log.levels.INFO)
+						end
+					end,
+				},
 			},
 		},
 		notifier = {
