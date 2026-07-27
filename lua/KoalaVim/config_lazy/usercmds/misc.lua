@@ -25,11 +25,11 @@ usercmd.create('NoOsClipboard', 'Set vim clipboard to default', function()
 end, {})
 
 usercmd.create('ListKeys', 'List all the keys', function()
-	require('telescope.builtin').keymaps()
+	Snacks.picker.keymaps()
 end, {})
 
 usercmd.create('ListCmds', 'List the cmds', function()
-	require('telescope.builtin').commands()
+	Snacks.picker.commands()
 end, {})
 
 usercmd.create('KoalaUpdate', 'Update KoalaVim', function()

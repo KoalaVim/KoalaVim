@@ -41,7 +41,12 @@ HYDRAS['spell fixer'] = {
 			end,
 		},
 
-		{ '<Enter>', '<cmd>telescope spell_suggest<CR>' },
+		{
+			'<Enter>',
+			function()
+				Snacks.picker.spelling()
+			end,
+		},
 		--
 		{ '<Esc>', nil, { exit = true, nowait = true } },
 		{ 'q', nil, { exit = true, nowait = true } },

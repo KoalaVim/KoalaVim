@@ -12,17 +12,15 @@ local function node_relative_path()
 end
 
 local function search_in_path()
-	local opts = {}
-	opts.default_text = '-F "'
-	opts.cwd = node_relative_path()
-	require('nvim-tree.api').tree.close() -- Close tree before jumping to file
-	require('telescope').extensions.live_grep_args.live_grep_args(opts)
+	local cwd = node_relative_path()
+	require('nvim-tree.api').tree.close()
+	require('fff').live_grep({ cwd = cwd })
 end
 
 local function find_in_path()
 	local rel_path = node_relative_path()
-	require('nvim-tree.api').tree.close() -- Close tree before jumping to file
-	vim.api.nvim_exec2('Telescope find_files cwd=' .. rel_path, {}) -- TODO: to lua
+	require('nvim-tree.api').tree.close()
+	require('fff').find_files_in_dir(rel_path)
 end
 
 local function find_and_replace_in_path()
@@ -564,17 +562,17 @@ table.insert(M, {
 				CLOSE_KOALA_DASHBOARD()
 
 				KoalaDisableAutoSession()
-				find_files()
+				require('fff').find_files()
 			end),
 			dashboard.button('fw', '  Find Text (words)', function()
 				CLOSE_KOALA_DASHBOARD()
 				KoalaDisableAutoSession()
-				require('telescope.builtin').live_grep()
+				require('fff').live_grep()
 			end),
 			dashboard.button('r', '  Recent files', function()
 				CLOSE_KOALA_DASHBOARD()
 				KoalaDisableAutoSession()
-				require('telescope.builtin').oldfiles()
+				Snacks.picker.recent()
 			end),
 
 			dashboard.button('gs', '  Git Tree & Status', function()

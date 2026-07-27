@@ -114,7 +114,7 @@ table.insert(M, {
 		require('neo-zoom').setup(opts)
 
 		-- Protect UnZoom when accidentally trying to leave the zoomed window
-		-- unless it's a floating window e.g: telescope
+		-- unless it's a floating window e.g: fff picker
 		vim.api.nvim_create_autocmd('WinLeave', {
 			group = vim.api.nvim_create_augroup('NeoZoomAutoClose', { clear = true }),
 			callback = function()
@@ -657,7 +657,68 @@ table.insert(M, {
 		explorer = { enabled = false },
 		indent = { enabled = false },
 		input = { enabled = false },
-		picker = { enabled = false },
+		picker = {
+			enabled = true,
+			ui_select = true,
+			layout = {
+				preset = 'default',
+				reverse = true,
+				layout = {
+					box = 'horizontal',
+					width = 0.9,
+					height = 0.9,
+					{
+						box = 'vertical',
+						border = true,
+						{ win = 'list', border = 'none' },
+						{
+							win = 'input',
+							height = 1,
+							border = 'top',
+							title = '{title} {live} {flags}',
+							title_pos = 'center',
+						},
+					},
+					{ win = 'preview', title = '{preview}', border = true, width = 0.5 },
+				},
+			},
+			win = {
+				input = {
+					keys = {
+						['<C-j>'] = { 'list_down', mode = { 'i', 'n' } },
+						['<C-k>'] = { 'list_up', mode = { 'i', 'n' } },
+						['<C-x>'] = { 'edit_split', mode = { 'i', 'n' } },
+						['<C-v>'] = { 'edit_vsplit', mode = { 'i', 'n' } },
+						['<C-t>'] = { 'tab', mode = { 'i', 'n' } },
+						['<C-s>'] = { 'toggle_preview', mode = { 'i', 'n' } },
+						['<M-q>'] = { 'trouble_open', mode = { 'i', 'n' } },
+					},
+				},
+				list = {
+					keys = {
+						['<C-j>'] = 'list_down',
+						['<C-k>'] = 'list_up',
+						['<C-x>'] = 'edit_split',
+						['<C-s>'] = 'toggle_preview',
+						['<M-q>'] = 'trouble_open',
+					},
+				},
+			},
+			sources = {
+				select = {
+					layout = { preset = 'select' },
+				},
+				notifications = {
+					confirm = function(picker, item)
+						picker:close()
+						if item then
+							vim.fn.setreg('+', item.text)
+							vim.notify('Copied to clipboard', vim.log.levels.INFO)
+						end
+					end,
+				},
+			},
+		},
 		notifier = {
 			timeout = 1800,
 			enabled = true,
