@@ -660,6 +660,13 @@ table.insert(M, {
 		picker = {
 			enabled = true,
 			ui_select = true,
+			layout = {
+				preset = 'default',
+				layout = {
+					width = 0.9,
+					height = 0.9,
+				},
+			},
 			win = {
 				input = {
 					keys = {
