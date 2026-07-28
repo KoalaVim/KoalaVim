@@ -120,19 +120,33 @@ table.insert(M, {
 			desc = 'Uncheck todo item',
 		},
 		{
-			'<leader>t=',
-			'<cmd>Checkmate cycle_next<CR>',
+			'<leader>tl',
+			function()
+				_G._checkmate_cycle_next = function()
+					require('checkmate').cycle()
+				end
+				vim.go.operatorfunc = 'v:lua._checkmate_cycle_next'
+				vim.cmd('normal! g@l')
+			end,
 			ft = 'markdown',
-			mode = { 'n', 'v' },
+			mode = 'n',
 			desc = 'Cycle todo next',
 		},
+		{ '<leader>tl', '<cmd>Checkmate cycle_next<CR>', ft = 'markdown', mode = 'v', desc = 'Cycle todo next' },
 		{
-			'<leader>t-',
-			'<cmd>Checkmate cycle_previous<CR>',
+			'<leader>th',
+			function()
+				_G._checkmate_cycle_prev = function()
+					require('checkmate').cycle({ backward = true })
+				end
+				vim.go.operatorfunc = 'v:lua._checkmate_cycle_prev'
+				vim.cmd('normal! g@l')
+			end,
 			ft = 'markdown',
-			mode = { 'n', 'v' },
+			mode = 'n',
 			desc = 'Cycle todo previous',
 		},
+		{ '<leader>th', '<cmd>Checkmate cycle_previous<CR>', ft = 'markdown', mode = 'v', desc = 'Cycle todo previous' },
 		{ '<leader>tn', '<cmd>Checkmate create<CR>', ft = 'markdown', mode = { 'n', 'v' }, desc = 'Create todo item' },
 		{
 			'<leader>tr',
@@ -148,6 +162,21 @@ table.insert(M, {
 			mode = { 'n', 'v' },
 			desc = 'Remove all metadata',
 		},
+		{
+			'<leader>ts',
+			function()
+				local states = vim.tbl_keys(require('checkmate.config').options.todo_states)
+				table.sort(states)
+				vim.ui.select(states, { prompt = 'Set todo state' }, function(choice)
+					if choice then
+						require('checkmate').toggle(choice)
+					end
+				end)
+			end,
+			ft = 'markdown',
+			mode = { 'n', 'v' },
+			desc = 'Select todo state',
+		},
 		{ '<leader>ta', '<cmd>Checkmate archive<CR>', ft = 'markdown', desc = 'Archive completed todos' },
 		{ '<leader>tF', '<cmd>Checkmate select_todo<CR>', ft = 'markdown', desc = 'Select todo (picker)' },
 		{ '<leader>tv', '<cmd>Checkmate metadata select_value<CR>', ft = 'markdown', desc = 'Select metadata value' },
@@ -155,6 +184,28 @@ table.insert(M, {
 	opts = {
 		files = { '*.md' },
 		keys = false,
+		todo_states = {
+			unchecked = { marker = '□' },
+			checked = { marker = '✔' },
+			in_progress = {
+				marker = '◐',
+				markdown = '.',
+				type = 'incomplete',
+				order = 50,
+			},
+			cancelled = {
+				marker = '✗',
+				markdown = 'c',
+				type = 'complete',
+				order = 2,
+			},
+			on_hold = {
+				marker = '⏸',
+				markdown = '/',
+				type = 'inactive',
+				order = 100,
+			},
+		},
 	},
 })
 
