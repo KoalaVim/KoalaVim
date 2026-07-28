@@ -67,7 +67,7 @@ table.insert(M, {
 table.insert(M, {
 	'MeanderingProgrammer/render-markdown.nvim',
 	opts = {
-		enabled = false,
+		enabled = true,
 		code = {
 			sign = false,
 			width = 'block',
@@ -78,7 +78,7 @@ table.insert(M, {
 			icons = {},
 		},
 	},
-	-- ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
+	ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
 	keys = {
 		{
 			'<M-p>',
@@ -92,6 +92,70 @@ table.insert(M, {
 	config = function(_, opts)
 		require('render-markdown').setup(opts)
 	end,
+})
+
+table.insert(M, {
+	'bngarren/checkmate.nvim',
+	ft = 'markdown',
+	keys = {
+		{
+			'<leader>tt',
+			'<cmd>Checkmate toggle<CR>',
+			ft = 'markdown',
+			mode = { 'n', 'v' },
+			desc = 'Toggle todo item',
+		},
+		{
+			'<leader>tc',
+			'<cmd>Checkmate check<CR>',
+			ft = 'markdown',
+			mode = { 'n', 'v' },
+			desc = 'Check todo item',
+		},
+		{
+			'<leader>tu',
+			'<cmd>Checkmate uncheck<CR>',
+			ft = 'markdown',
+			mode = { 'n', 'v' },
+			desc = 'Uncheck todo item',
+		},
+		{
+			'<leader>t=',
+			'<cmd>Checkmate cycle_next<CR>',
+			ft = 'markdown',
+			mode = { 'n', 'v' },
+			desc = 'Cycle todo next',
+		},
+		{
+			'<leader>t-',
+			'<cmd>Checkmate cycle_previous<CR>',
+			ft = 'markdown',
+			mode = { 'n', 'v' },
+			desc = 'Cycle todo previous',
+		},
+		{ '<leader>tn', '<cmd>Checkmate create<CR>', ft = 'markdown', mode = { 'n', 'v' }, desc = 'Create todo item' },
+		{
+			'<leader>tr',
+			'<cmd>Checkmate remove<CR>',
+			ft = 'markdown',
+			mode = { 'n', 'v' },
+			desc = 'Remove todo marker',
+		},
+		{
+			'<leader>tR',
+			'<cmd>Checkmate remove_all_metadata<CR>',
+			ft = 'markdown',
+			mode = { 'n', 'v' },
+			desc = 'Remove all metadata',
+		},
+		{ '<leader>ta', '<cmd>Checkmate archive<CR>', ft = 'markdown', desc = 'Archive completed todos' },
+		{ '<leader>tF', '<cmd>Checkmate select_todo<CR>', ft = 'markdown', desc = 'Select todo (picker)' },
+		{ '<leader>tv', '<cmd>Checkmate metadata select_value<CR>', ft = 'markdown', desc = 'Select metadata value' },
+	},
+	opts = {
+		files = { '*.md' },
+		keys = false,
+	},
 })
 
 return M
