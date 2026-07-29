@@ -146,7 +146,13 @@ table.insert(M, {
 			mode = 'n',
 			desc = 'Cycle todo previous',
 		},
-		{ '<leader>th', '<cmd>Checkmate cycle_previous<CR>', ft = 'markdown', mode = 'v', desc = 'Cycle todo previous' },
+		{
+			'<leader>th',
+			'<cmd>Checkmate cycle_previous<CR>',
+			ft = 'markdown',
+			mode = 'v',
+			desc = 'Cycle todo previous',
+		},
 		{ '<leader>tn', '<cmd>Checkmate create<CR>', ft = 'markdown', mode = { 'n', 'v' }, desc = 'Create todo item' },
 		{
 			'<leader>tr',

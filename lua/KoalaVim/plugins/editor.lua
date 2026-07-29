@@ -358,13 +358,23 @@ table.insert(M, {
 	end,
 })
 
--- Unified window navigation between Neovim splits and tmux/wezterm panes
+-- Unified window navigation between Neovim splits and tmux/wezterm/zellij panes
 table.insert(M, {
 	'numToStr/Navigator.nvim',
 	opts = {
 		disable_on_zoom = false,
 	},
 	config = function(_, opts)
+		-- Navigator ships no zellij backend. Checked before 'auto' detection because
+		-- zellij nested inside wezterm sets both $ZELLIJ and TERM_PROGRAM=WezTerm,
+		-- and the innermost multiplexer owns the pane we live in.
+		if vim.env.ZELLIJ ~= nil then
+			local ok, zellij = pcall(function()
+				return require('KoalaVim.utils.plugins.navigator_zellij'):new()
+			end)
+			opts.mux = ok and zellij or 'auto'
+		end
+
 		require('Navigator').setup(opts)
 	end,
 	cmd = { 'NavigatorLeft', 'NavigatorRight', 'NavigatorDown', 'NavigatorUp' },
