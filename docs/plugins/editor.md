@@ -14,7 +14,7 @@ General editor enhancements and QoL utilities.
 | [open.nvim](https://github.com/ofirgall/open.nvim) | Open URL/file/issue-ref under the cursor in the right external app. |
 | [open-jira.nvim](https://github.com/ofirgall/open-jira.nvim) | open.nvim handler for Jira ticket references. |
 | [nvim-retrail](https://github.com/zakharykaplan/nvim-retrail) | Highlight and trim trailing whitespace/blank lines at EOF. |
-| [Navigator.nvim](https://github.com/numToStr/Navigator.nvim) | Unified window navigation between Neovim splits and tmux/wezterm panes. |
+| [Navigator.nvim](https://github.com/numToStr/Navigator.nvim) | Unified window navigation between Neovim splits and tmux/wezterm/zellij panes. |
 | [hex.nvim](https://github.com/RaafatTurki/hex.nvim) | Toggle current buffer between text and hexdump view. |
 | [suda.vim](https://github.com/lambdalisue/suda.vim) | Read/write files requiring sudo from inside Neovim. |
 | [vim-buffest](https://github.com/rbong/vim-buffest) | Edit quickfix, location list and registers as regular buffers. |
@@ -33,3 +33,25 @@ General editor enhancements and QoL utilities.
 | [marks.nvim](https://github.com/ofirgall/marks.nvim) | Visual sign column for Vim marks plus enhanced mark bindings. |
 | [snacks.nvim](https://github.com/folke/snacks.nvim) | folke QoL grab-bag: notifier, dim, scroll, input, picker, dashboard, etc. |
 | [nerdy.nvim](https://github.com/2kabhishek/nerdy.nvim) | Browse and insert Nerd Font icons from a picker. |
+
+## Zellij navigation
+
+Navigator.nvim has no zellij backend upstream, so KoalaVim supplies one
+(`KoalaVim.utils.plugins.navigator_zellij`). It is selected when `$ZELLIJ` is
+set, which also means it wins over wezterm when zellij is nested inside it — the
+innermost multiplexer owns the pane Neovim lives in.
+
+Two things are needed on the zellij side, neither of which KoalaVim can do for
+you:
+
+- **Zellij must be in locked mode while nvim is focused**, otherwise zellij
+  keeps `<C-hjkl>` for itself and Neovim never sees the keys. The
+  [zellij-autolock](https://github.com/fresh2dev/zellij-autolock) plugin does
+  this automatically; it matches on the pane's running command, so a wrapper
+  script around nvim needs to be added to its trigger list. `zellij action
+  list-clients` shows the command it matches against.
+- **`zellij` must be on `PATH`.** Handoff shells out to `zellij action`; a
+  failure surfaces as a warning notification rather than failing silently.
+
+Navigation is pane-scoped in every direction and never crosses zellij tabs,
+matching the tmux and wezterm backends. At the edge of the tab, focus stays put.
