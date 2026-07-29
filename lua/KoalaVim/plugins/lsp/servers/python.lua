@@ -55,5 +55,4 @@ NONE_LS_SRCS['mypy'] = {
 CONFORM_FORMATTERS['black'] = { 'python' }
 CONFORM_FORMATTERS['ruff_format'] = { 'python', mason = 'ruff' }
 
-
 return M
