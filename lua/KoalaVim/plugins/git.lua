@@ -334,9 +334,6 @@ CODE_DIFF_OPENED = false
 -- Tab-based git diff viewer with file explorer, staging and commit history
 table.insert(M, {
 	'ofirgall/codediff.nvim', -- For custom key maps monkey patch...
-	enabled = function()
-		return vim.env.KOALA_CODE_DIFF == 'true'
-	end,
 	cmd = 'CodeDiff',
 	opts = {
 		explorer = {
@@ -623,168 +620,6 @@ table.insert(M, {
 	end,
 })
 
--- Classic side-by-side diff viewer with file history and conflict resolution
-table.insert(M, {
-	'dlyongemallo/diffview.nvim',
-	enabled = function()
-		return vim.env.KOALA_CODE_DIFF ~= 'true'
-	end,
-	cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
-	keys = {
-		{ '<leader>gd', '<cmd>DiffviewOpen<CR>', desc = 'Git show diff' },
-		{ '<leader>gh', '<cmd>DiffviewFileHistory %<CR>', desc = 'Git file History' },
-		{ '<leader>gH', '<cmd>DiffviewFileHistory .<CR>', desc = 'Git workspace History' },
-		{
-			'gh',
-			'<Esc><cmd>lua require("KoalaVim.utils.git").show_history("v")<cr>',
-			mode = 'v',
-			desc = 'Show Git History of the visual selection',
-		},
-	},
-	config = function()
-		local actions = require('diffview.actions')
-		local function next_file()
-			actions.select_next_entry()
-			actions.refresh_files()
-		end
-
-		local function prev_file()
-			actions.select_prev_entry()
-			actions.refresh_files()
-		end
-
-		-- Auto execute ]c when entering a new diff buffer
-		local jumped = {}
-		vim.api.nvim_create_autocmd('BufEnter', {
-			callback = vim.schedule_wrap(function(ev)
-				if not vim.api.nvim_buf_is_valid(ev.buf) then
-					return
-				end
-
-				local name = vim.api.nvim_buf_get_name(ev.buf)
-				if not vim.wo[vim.api.nvim_get_current_win()].diff then
-					-- ignore not diff files
-					return
-				end
-
-				-- Don't jump again if buffer already being jumped
-				if jumped[ev.buf] then
-					return
-				end
-
-				if name:match('^diffview://') ~= nil then
-					-- Don't send ]c to diffview files (compared old files)
-					return
-				end
-
-				jumped[ev.buf] = true
-				vim.schedule(function()
-					api.nvim_feedkeys(']c', 'n', false)
-				end)
-			end),
-		})
-
-		require('diffview').setup({
-			watch_index = false,
-			enhanced_diff_hl = true,
-			file_history_panel = {
-				log_options = {
-					git = {
-						single_file = {
-							follow = true,
-						},
-					},
-				},
-			},
-			key_bindings = {
-				view = {
-					{ 'n', 'q', '<cmd>DiffviewClose<cr>', { desc = 'Close Diffview' } },
-					{ 'n', '<M-n>', actions.focus_files, { desc = 'Focus files panel' } },
-					{ 'n', '<M-m>', actions.toggle_files, { desc = 'Toggle files panel' } },
-					{ 'n', '<leader>ck', actions.conflict_choose('ours'), { desc = 'Choose OURS (up) conflict' } },
-					{ 'n', '<leader>cj', actions.conflict_choose('theirs'), { desc = 'Choose OURS (down) conflict' } },
-					{ 'n', '<tab>', next_file, { desc = 'Select next file' } },
-					{ 'n', '<s-tab>', prev_file, { desc = 'Select prev file' } },
-					{ 'n', '<M-j>', ']c', { desc = 'Next change' } },
-					{ 'n', '<M-k>', '[c', { desc = 'Next change' } },
-					{ 'n', '<C-g>', actions.cycle_layout, { desc = 'Cycle layout' } },
-					{ 'n', '<M-s>', '<cmd>Gitsigns stage_hunk<CR>', { desc = 'Stage change' } },
-					{ 'n', '<M-u>', '<cmd>Gitsigns undo_stage_hunk<CR>', { desc = 'Undo Stage change' } },
-					{ 'n', '<M-r>', '<cmd>Gitsigns reset_hunk<CR>', { desc = 'Reset change' } },
-				},
-				file_panel = {
-					{ 'n', 'cc', '<cmd>Git commit<cr>', { desc = 'Stage file' } },
-					{ 'n', 's', actions.toggle_stage_entry, { desc = 'Stage file' } },
-					{ 'n', '=', actions.toggle_stage_entry, { desc = 'Stage file' } },
-					{ 'n', 'q', actions.close, { desc = 'Close' } },
-					{ 'n', 'gf', actions.goto_file_edit, { desc = 'Close' } },
-					{ 'n', '<M-n>', actions.focus_files, { desc = 'Focus files panel' } },
-					{ 'n', '<M-m>', actions.toggle_files, { desc = 'Toggle files panel' } },
-					{ 'n', '<tab>', next_file, { desc = 'Select next file' } },
-					{ 'n', '<s-tab>', prev_file, { desc = 'Select prev file' } },
-					{ 'n', '<C-g>', actions.cycle_layout, { desc = 'Cycle layout' } },
-				},
-				file_history_panel = {
-					{ 'n', 's', actions.open_in_diffview, { desc = 'Show full commit diff in diffview' } },
-					{ 'n', 'S', actions.open_commit_log, { desc = 'Show commit details' } },
-					{ 'n', 'q', actions.close, { desc = 'Close' } },
-					{ 'n', 'gf', actions.goto_file_edit, { desc = 'Open the file in the previous tabpage' } },
-					{ 'n', '<M-n>', actions.focus_files, { desc = 'Focus on file panel' } },
-					{ 'n', '<M-m>', actions.toggle_files, { desc = 'Toggle file panel' } },
-					{ 'n', '<C-g>', actions.cycle_layout, { desc = 'Cycle layout' } },
-					-- disable binds
-					['zo'] = false,
-					['zM'] = false,
-					['h'] = false,
-					['zc'] = false,
-					['zR'] = false,
-					['za'] = false,
-					['g<C-x>'] = false,
-					['<C-A-d>'] = false,
-					['X'] = false,
-					['<leader>b'] = false,
-				},
-				-- TODO: close commit_log_panel with 'q'
-			},
-			view = {
-				default = {
-					layout = 'diff2_horizontal',
-				},
-				merge_tool = {
-					layout = 'diff4_mixed',
-					disable_diagnostics = true,
-				},
-				file_history = {
-					layout = 'diff2_horizontal',
-				},
-			},
-			commit_log_panel = {
-				win_config = {
-					height = 30,
-				},
-			},
-			file_panel = {
-				win_config = {
-					position = 'bottom',
-					height = 10,
-				},
-			},
-			hooks = {
-				view_opened = function(view)
-					-- Auto focus on right side panel
-					vim.defer_fn(function()
-						vim.api.nvim_command('wincmd k')
-						vim.api.nvim_command('wincmd l')
-					end, 300)
-				end,
-			},
-		})
-
-		HELPERS['DiffviewFileHistory'] = 'g?'
-		HELPERS['DiffviewFiles'] = 'g?'
-	end,
-})
-
 -- Show the git commit responsible for the line under cursor in a popup
 table.insert(M, {
 	'rhysd/git-messenger.vim',
@@ -872,28 +707,16 @@ table.insert(M, {
 		end
 
 		local function flog_diff_current()
-			if vim.env.KOALA_CODE_DIFF == 'true' then
-				vim.cmd('CodeDiff ' .. flog_current_commit())
-			else
-				vim.cmd('DiffviewOpen ' .. flog_current_commit())
-			end
+			vim.cmd('CodeDiff ' .. flog_current_commit())
 		end
 
 		function flog_diff_current_visual()
 			local commits = flog_commit_range_visual()
-			if vim.env.KOALA_CODE_DIFF == 'true' then
-				vim.cmd('CodeDiff ' .. commits[2] .. '^ ' .. commits[1])
-			else
-				vim.cmd('DiffviewOpen ' .. commits[2] .. '^..' .. commits[1])
-			end
+			vim.cmd('CodeDiff ' .. commits[2] .. '^ ' .. commits[1])
 		end
 
 		local function flog_show_current()
-			if vim.env.KOALA_CODE_DIFF == 'true' then
-				vim.cmd('CodeDiff ' .. flog_current_commit() .. '^ ' .. flog_current_commit())
-			else
-				vim.cmd('DiffviewOpen ' .. flog_current_commit() .. '^..' .. flog_current_commit())
-			end
+			vim.cmd('CodeDiff ' .. flog_current_commit() .. '^ ' .. flog_current_commit())
 		end
 
 		local map_buffer = require('KoalaVim.utils.map').map_buffer
@@ -906,7 +729,7 @@ table.insert(M, {
 				-- map_buffer(events.buf, 'n', '<C-d>', flog_diff_current, 'Floggraph: show diff from head to current')
 				-- map_buffer(events.buf, 'x', '<C-d>', '<Esc><cmd>lua flog_diff_current_visual()<cr>', 'Floggraph: show diff of selection')
 				map_buffer(events.buf, 'x', '<C-s>', '<Esc><cmd>lua flog_diff_current_visual()<cr>', 'Floggraph: show diff of selection')
-				map_buffer(events.buf, 'n', '<C-s>', flog_show_current, 'Floggraph: show current in diffview')
+				map_buffer(events.buf, 'n', '<C-s>', flog_show_current, 'Floggraph: show current commit in full diff')
 				map_buffer(events.buf, 'n', 'q', '<cmd>q<CR>', 'close Floggraph')
 				map_buffer(events.buf, 'n', 'yy', function()
 					local hash = flog_current_commit()

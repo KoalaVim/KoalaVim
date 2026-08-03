@@ -132,19 +132,19 @@ HYDRAS['diff_viewer'] = {
 		{
 			'<C-k>',
 			function()
-				require('diffview.actions').conflict_choose('ours')
+				-- require('diffview.actions').conflict_choose('ours')
 			end,
 		},
 		{
 			'<C-j>',
 			function()
-				require('diffview.actions').conflict_choose('theirs')
+				-- require('diffview.actions').conflict_choose('theirs')
 			end,
 		},
 		{
 			'<C-a>',
 			function()
-				require('diffview.actions').conflict_choose('all')
+				-- require('diffview.actions').conflict_choose('all')
 			end,
 		},
 		{

@@ -31,11 +31,7 @@ local function find_and_replace_in_path()
 end
 
 local function git_hist_path()
-	if vim.env.KOALA_CODE_DIFF == 'true' then
-		vim.fn.execute('CodeDiff history ' .. node_relative_path())
-	else
-		vim.fn.execute('DiffviewFileHistory ' .. node_relative_path())
-	end
+	vim.fn.execute('CodeDiff history ' .. node_relative_path())
 end
 
 -- Color scheme
@@ -719,7 +715,6 @@ table.insert(M, {
 						'git',
 						'floggraph',
 						'sidekick_terminal',
-						'DiffviewFiles',
 						-- FIXME: fix tinting fucks up coloring
 						'NeogitStatus', -- to avoid coloring issues
 					},

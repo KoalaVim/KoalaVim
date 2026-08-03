@@ -12,36 +12,14 @@ end
 
 function M.show_diff(args)
 	args = args or ''
-	if vim.env.KOALA_CODE_DIFF == 'true' then
-		pcall(function()
-			require('format-on-leave').disable()
-		end)
-		vim.cmd('CodeDiff ' .. args)
-	else
-		vim.cmd('DiffviewOpen ' .. args)
-	end
+	pcall(function()
+		require('format-on-leave').disable()
+	end)
+	vim.cmd('CodeDiff ' .. args)
 end
 
 function M.show_tree(args)
 	vim.cmd('Flog -- ' .. args)
-end
-
-function M.show_history(mode)
-	local start_pos = nil
-	local end_pos = nil
-
-	if mode == 'v' then
-		start_pos = api.nvim_buf_get_mark(0, '<')
-		end_pos = api.nvim_buf_get_mark(0, '>')
-	elseif mode == 'n' then
-		start_pos = api.nvim_buf_get_mark(0, '[')
-		end_pos = api.nvim_buf_get_mark(0, ']')
-	end
-
-	local start_line = start_pos[1]
-	local end_line = end_pos[1]
-
-	api.nvim_command('DiffviewFileHistory -L' .. start_line .. ',' .. end_line .. ':' .. vim.fn.expand('%') .. ' %')
 end
 
 local function get_repo_root()

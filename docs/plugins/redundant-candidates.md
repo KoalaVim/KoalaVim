@@ -37,7 +37,7 @@ Plugins that at first glance look duplicated by AI but actually still carry thei
 
 - **sidekick.nvim** (ai.lua) — primary AI integration, keep.
 - **nvim-cmp + cmp-nvim-lsp + cmp-buffer + cmp-path + cmp-cmdline** — still the core completion engine; only the *long-tail* sources (look, calc, git) are redundant.
-- **gitsigns / fugitive / neogit / diffview / codediff / vim-flog / octo / git-messenger** — git UX plugins that operate on concrete repo state; AI doesn't replace interactive staging, blame, or PR review.
+- **gitsigns / fugitive / neogit / codediff / vim-flog / octo / git-messenger** — git UX plugins that operate on concrete repo state; AI doesn't replace interactive staging, blame, or PR review.
 - **telescope + fzf-native + live-grep-args** — primary navigation; AI complements but does not replace fuzzy finding.
 - **nvim-dap / nvim-dap-ui / nvim-dap-virtual-text / goto-breakpoints** — interactive debugging state cannot be prompt-driven.
 - **treesitter + textobjects + context + matchup** — structural editing foundation.
