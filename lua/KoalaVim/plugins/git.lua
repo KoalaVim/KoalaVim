@@ -329,6 +329,8 @@ table.insert(M, {
 	end,
 })
 
+CODE_DIFF_OPENED = false
+
 -- Tab-based git diff viewer with file explorer, staging and commit history
 table.insert(M, {
 	'ofirgall/codediff.nvim', -- For custom key maps monkey patch...
@@ -522,6 +524,12 @@ table.insert(M, {
 		api.nvim_create_autocmd('User', {
 			pattern = 'CodeDiffOpen',
 			callback = function(ev)
+				CODE_DIFF_OPENED = true
+				-- disable chcekmate in codediff
+				local ok, checkmate = pcall(require, 'checkmate')
+				if ok then
+					checkmate.setup({ enabled = false })
+				end
 				local tabpage = ev.data.tabpage or vim.api.nvim_get_current_tabpage()
 				for _, win_id in ipairs(vim.api.nvim_tabpage_list_wins(tabpage)) do
 					vim.w[win_id].vimade_disabled = 1

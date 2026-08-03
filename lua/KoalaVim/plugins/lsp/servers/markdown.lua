@@ -68,6 +68,9 @@ table.insert(M, {
 	'MeanderingProgrammer/render-markdown.nvim',
 	opts = {
 		enabled = true,
+		ignore = function(_buf)
+			return CODE_DIFF_OPENED
+		end,
 		code = {
 			sign = false,
 			width = 'block',
