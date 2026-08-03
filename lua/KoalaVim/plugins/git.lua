@@ -105,7 +105,7 @@ table.insert(M, {
 table.insert(M, {
 	'ofirgall/neogit',
 	enabled = function()
-		return vim.env.NEOGIT == 'true'
+		return vim.env.KOALA_FUGITIVE ~= 'true'
 	end,
 	lazy = true,
 	dependencies = {
@@ -250,7 +250,7 @@ end
 
 local _fugitive_keys = {}
 
-if vim.env.NEOGIT ~= 'true' then
+if vim.env.KOALA_FUGITIVE == 'true' then
 	_fugitive_keys = {
 		{ '<leader>gc', '<cmd>Git commit<CR>', desc = 'Git commit' },
 		{ '<leader>gac', '<cmd>Git commit --amend<CR>', desc = 'Git commit --amend' },

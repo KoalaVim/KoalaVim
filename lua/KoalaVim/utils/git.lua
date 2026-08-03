@@ -3,7 +3,7 @@ local M = {}
 local api = vim.api
 
 function M.show_status()
-	if vim.env.NEOGIT == 'true' then
+	if vim.env.KOALA_FUGITIVE ~= 'true' then
 		require('neogit').open({ kind = 'split' })
 	else
 		vim.cmd('G')
