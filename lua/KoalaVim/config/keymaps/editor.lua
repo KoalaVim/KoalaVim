@@ -41,3 +41,12 @@ map('', 'gf', function()
 	require('KoalaVim.utils.editor').goto_file_with_line()
 end, 'Go to file + line number')
 map('', 'gF', 'gf', 'Go to file')
+
+map('n', '<M-N>', function()
+	local note_path = vim.fn.system('ez session note path'):gsub('%s+$', '')
+	if vim.v.shell_error ~= 0 then
+		vim.notify('Failed to get session note path', vim.log.levels.ERROR)
+		return
+	end
+	vim.cmd('split ' .. vim.fn.fnameescape(note_path .. '/README.md'))
+end, 'Open session note in vsplit')
