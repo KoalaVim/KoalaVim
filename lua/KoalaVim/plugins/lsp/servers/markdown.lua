@@ -80,6 +80,10 @@ table.insert(M, {
 			sign = false,
 			icons = {},
 		},
+		anti_conceal = {
+			-- Do not remove render on current line
+			enabled = false,
+		},
 	},
 	ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
 	keys = {
