@@ -324,7 +324,7 @@ local function open_prompt_buffer(agent, initial_lines, term_win, clear_override
 		buffer = bufid,
 		once = true,
 		callback = vim.schedule_wrap(function()
-			vim.api.nvim_feedkeys('G$a', 'n', false)
+			vim.api.nvim_feedkeys('G$a ', 'n', false)
 		end),
 	})
 
