@@ -102,7 +102,7 @@ table.insert(M, {
 })
 
 table.insert(M, {
-	'bngarren/checkmate.nvim',
+	'KoalaVim/checkmate.nvim', -- fork
 	ft = 'markdown',
 	keys = {
 		{
