@@ -22,8 +22,6 @@ map('', '<Up>', '<C-y>', 'Up to scroll')
 map('n', '<F1>', ':set spell!<cr>', 'Toggle spell check')
 map('i', '<F1>', '<C-O>:set spell!<cr>', 'Toggle spell check')
 
-map('n', '<M-r>', '<cmd>echo "Current File Reloaded!"<cr><cmd>luafile %<cr>', 'Reload current luafile')
-
 map('t', '<M-Esc>', '<C-\\><C-n>', 'Escape from terminal with escape key')
 
 -- deploy

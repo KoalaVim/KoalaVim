@@ -115,7 +115,7 @@ table.insert(M, {
 			mode = 'n',
 		},
 		{
-			'<C-r>',
+			'<M-r>',
 			function()
 				ai.toggle_max()
 			end,

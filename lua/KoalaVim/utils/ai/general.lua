@@ -390,7 +390,7 @@ local function open_prompt_buffer(agent, initial_lines, term_win, clear_override
 		picker.open('buffers', paste_to_buffer_cb, {})
 	end, { buffer = bufid })
 
-	vim.keymap.set({ 'n', 'i' }, '<C-r>', function()
+	vim.keymap.set({ 'n', 'i' }, '<M-r>', function()
 		require('KoalaVim.utils.ai.history').pick('local')
 	end, { buffer = bufid })
 end
