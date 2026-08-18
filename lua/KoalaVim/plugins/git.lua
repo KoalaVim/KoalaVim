@@ -368,7 +368,7 @@ table.insert(M, {
 		highlights = {
 			-- TODO: support autocmd theme reload
 			-- defaults 0.92 or 1.4
-			char_brightness = vim.o.background == "light" and 0.92 or 1.6,
+			char_brightness = vim.o.background == 'light' and 0.92 or 1.6,
 		},
 	},
 	keys = {
