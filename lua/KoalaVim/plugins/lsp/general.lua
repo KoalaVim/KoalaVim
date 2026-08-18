@@ -6,7 +6,7 @@ local api = vim.api
 
 LSP_ON_INIT = function(client)
 	-- Disable semantic tokens (breaks highlighting)
-	client.server_capabilities.semanticTokensProvider = nil
+	-- client.server_capabilities.semanticTokensProvider = nil
 end
 
 LSP_ON_ATTACH = function(client, buffer)

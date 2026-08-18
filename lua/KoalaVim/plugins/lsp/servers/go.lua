@@ -1,6 +1,12 @@
 local M = {}
 
-LSP_SERVERS['gopls'] = {}
+LSP_SERVERS['gopls'] = {
+	settings = {
+		gopls = {
+			semanticTokens = true,
+		},
+	},
+}
 
 CONFORM_FORMATTERS['gofmt'] = { 'go', mason = false }
 
