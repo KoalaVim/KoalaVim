@@ -344,6 +344,14 @@ table.insert(M, {
 			width = 35,
 			initial_focus = 'modified',
 			auto_refresh = false,
+			file_filter = {
+				ignore = {
+					'.git/**',
+					'.jj/**',
+					':(exclude,attr:linguist-generated=true)', -- filter out generated files
+					'*_test*', -- filter out test files
+				},
+			},
 		},
 		diff = {
 			layout = 'inline',
@@ -368,7 +376,7 @@ table.insert(M, {
 		highlights = {
 			-- TODO: support autocmd theme reload
 			-- defaults 0.92 or 1.4
-			char_brightness = vim.o.background == "light" and 0.92 or 1.6,
+			char_brightness = vim.o.background == 'light' and 0.92 or 1.6,
 		},
 	},
 	keys = {
