@@ -546,6 +546,27 @@ table.insert(M, {
 					vim.w[win_id].vimade_disabled = 1
 					vim.w[win_id].code_diff_win = true
 				end
+
+				-- Sync gitsigns base with the CodeDiff revision
+				vim.defer_fn(function()
+					local ctx = lifecycle.get_git_context(tabpage)
+					if ctx and ctx.original_revision
+						and ctx.original_revision ~= 'WORKING'
+						and ctx.original_revision ~= 'STAGED' then
+						pcall(function()
+							require('gitsigns').change_base(ctx.original_revision, true)
+						end)
+					end
+				end, 300)
+			end,
+		})
+
+		api.nvim_create_autocmd('User', {
+			pattern = 'CodeDiffClose',
+			callback = function()
+				pcall(function()
+					require('gitsigns').change_base(nil, true)
+				end)
 			end,
 		})
 
