@@ -8,7 +8,7 @@ HYDRAS['Goto funcs'] = {
   _<Esc>_
 	]],
 	config = {
-		timeout = 4000,
+		-- timeout = 4000,
 		hint = {
 			border = 'rounded',
 		},
