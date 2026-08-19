@@ -375,13 +375,10 @@ local function capture_prompt_anchor(agent)
 end
 
 local function open_prompt_float(bufid)
-	local height = math.ceil(vim.o.lines * 0.3)
-
 	local anchor = _prompt_anchor
 	_prompt_anchor = nil
 
 	local win_opts = {
-		height = height,
 		border = 'rounded',
 		style = 'minimal',
 	}
@@ -390,6 +387,7 @@ local function open_prompt_float(bufid)
 		win_opts.relative = 'win'
 		win_opts.win = anchor.win
 		win_opts.width = vim.api.nvim_win_get_width(anchor.win) - anchor.col - 2
+		win_opts.height = vim.api.nvim_win_get_height(anchor.win) - anchor.row - 2
 		win_opts.row = anchor.row
 		win_opts.col = anchor.col
 	else
