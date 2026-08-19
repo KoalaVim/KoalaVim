@@ -16,6 +16,7 @@ table.insert(M, {
 		local available_langs = require('nvim-treesitter').get_available()
 
 		local usercmd = require('KoalaVim.utils.cmd')
+		vim.treesitter.language.register('markdown', 'sidekick_koala_prompt')
 		local function _enable_ts(ft, bufid)
 			local lang = vim.treesitter.language.get_lang(ft)
 			if vim.tbl_contains(available_langs, lang) then
