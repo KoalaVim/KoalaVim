@@ -103,6 +103,20 @@ function M.freeze(win, term_buf)
 
 	vim.bo[scratch].modifiable = false
 	vim.api.nvim_win_set_buf(win, scratch)
+	local last_content = 1
+	for i, line in ipairs(lines) do
+		if line:match('%S') then
+			last_content = i
+		end
+	end
+	vim.api.nvim_win_set_cursor(win, { last_content, 0 })
+	vim.defer_fn(function()
+		if vim.api.nvim_win_is_valid(win) then
+			vim.api.nvim_win_call(win, function()
+				vim.cmd('normal! zb')
+			end)
+		end
+	end, 100)
 	frozen = {
 		win = win,
 		term_buf = term_buf,
