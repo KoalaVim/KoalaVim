@@ -463,10 +463,34 @@ local function open_prompt_inline_float(bufid)
 end
 
 local SPLIT_DIRECTIONS = {
-	bottom = { split = 'below', dim = 'height', total = function() return vim.o.lines end },
-	top = { split = 'above', dim = 'height', total = function() return vim.o.lines end },
-	right = { split = 'right', dim = 'width', total = function() return vim.o.columns end },
-	left = { split = 'left', dim = 'width', total = function() return vim.o.columns end },
+	bottom = {
+		split = 'below',
+		dim = 'height',
+		total = function()
+			return vim.o.lines
+		end,
+	},
+	top = {
+		split = 'above',
+		dim = 'height',
+		total = function()
+			return vim.o.lines
+		end,
+	},
+	right = {
+		split = 'right',
+		dim = 'width',
+		total = function()
+			return vim.o.columns
+		end,
+	},
+	left = {
+		split = 'left',
+		dim = 'width',
+		total = function()
+			return vim.o.columns
+		end,
+	},
 }
 
 local function open_prompt_split(bufid, layout)
