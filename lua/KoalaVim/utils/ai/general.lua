@@ -266,6 +266,25 @@ for _, opt in ipairs(COPY_WIN_OPTS) do
 end
 DEFAULT_WIN_OPTS['winhighlight'] = ''
 
+local function get_ref_win_opts()
+	local skip_ft = { sidekick_terminal = true, alpha = true }
+	local tab = vim.api.nvim_get_current_tabpage()
+	for _, w in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
+		local win_config = vim.api.nvim_win_get_config(w)
+		if win_config.relative == '' then
+			local ft = vim.bo[vim.api.nvim_win_get_buf(w)].filetype
+			if not skip_ft[ft] then
+				local opts = {}
+				for _, opt in ipairs(COPY_WIN_OPTS) do
+					opts[opt] = vim.wo[w][opt]
+				end
+				return opts
+			end
+		end
+	end
+	return vim.tbl_extend('force', {}, DEFAULT_WIN_OPTS)
+end
+
 local function check_agent()
 	local agent = M.get_attached_agent()
 	if not agent then
@@ -397,7 +416,17 @@ local function open_prompt_float(bufid)
 		win_opts.col = 0
 	end
 
-	return vim.api.nvim_open_win(bufid, true, win_opts)
+	local win = vim.api.nvim_open_win(bufid, true, win_opts)
+	local ref_opts = get_ref_win_opts()
+	vim.print(ref_opts)
+	for _, opt in ipairs(COPY_WIN_OPTS) do
+		vim.wo[win][opt] = ref_opts[opt]
+	end
+	vim.api.nvim_set_hl(0, 'KoalaPromptBorder', { fg = '#ffffff' })
+	vim.wo[win].winhighlight =
+		'Normal:SidekickChat,NormalNC:SidekickChat,EndOfBuffer:EndOfBuffer,SignColumn:SidekickChat,FloatBorder:KoalaPromptBorder,LineNr:SidekickLineNr'
+	vim.wo[win].signcolumn = 'no'
+	return win
 end
 
 local function open_prompt_buffer(agent, initial_lines, term_win, clear_override, single_line)
@@ -682,34 +711,7 @@ function M.zoom_sidekick()
 	local orig_win = vim.api.nvim_get_current_win()
 	local termbuf = vim.api.nvim_get_current_buf()
 
-	-- Capture options from a normal editor window to use as defaults
-	-- for new windows in the zoom tabpage.
-	-- Skip sidekick terminals and special buffers (alpha, etc.) that have
-	-- non-standard options. Fall back to vim.opt values if no suitable window found.
-	zoom_ref_opts = {}
-	local skip_ft = { sidekick_terminal = true, alpha = true }
-	local ref_found = false
-	local orig_tab = vim.api.nvim_get_current_tabpage()
-	for _, w in ipairs(vim.api.nvim_tabpage_list_wins(orig_tab)) do
-		-- Skip floating windows (notifications, popups, etc.)
-		local win_config = vim.api.nvim_win_get_config(w)
-		if win_config.relative ~= '' then
-			goto continue
-		end
-		local ft = vim.bo[vim.api.nvim_win_get_buf(w)].filetype
-		if not skip_ft[ft] then
-			for _, opt in ipairs(COPY_WIN_OPTS) do
-				zoom_ref_opts[opt] = vim.wo[w][opt]
-			end
-			ref_found = true
-			break
-		end
-		::continue::
-	end
-	if not ref_found then
-		-- No suitable reference window, use defaults captured at module load time
-		zoom_ref_opts = vim.tbl_extend('force', {}, DEFAULT_WIN_OPTS)
-	end
+	zoom_ref_opts = get_ref_win_opts()
 
 	vim.cmd('tabnew')
 	zoom_tabpage = vim.api.nvim_get_current_tabpage()
