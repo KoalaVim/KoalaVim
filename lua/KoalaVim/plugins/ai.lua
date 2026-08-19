@@ -72,10 +72,15 @@ table.insert(M, {
 		{
 			'<C-e>',
 			function()
-				ai.edit_prompt()
+				if ai.is_question_active() then
+					ai.edit_prompt()
+				else
+					local chan = vim.bo[vim.api.nvim_get_current_buf()].channel
+					vim.api.nvim_chan_send(chan, '\x07')
+				end
 			end,
 			ft = 'sidekick_terminal',
-			desc = 'edit prompt in neovim buffer',
+			desc = 'edit prompt via CLI native editor',
 			mode = { 'n', 't' },
 		},
 		{

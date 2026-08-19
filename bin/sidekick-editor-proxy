@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# $EDITOR proxy: open $1 in the host Neovim ($NVIM) and block until the buffer closes.
+
+if [[ -z "${NVIM:-}" ]]; then
+	printf 'sidekick-editor-proxy: NVIM is empty; cannot reach the host Neovim\n' >&2
+	exit 1
+fi
+
+if [[ $# -lt 1 || -z "$1" ]]; then
+	printf 'sidekick-editor-proxy: missing file path\n' >&2
+	exit 1
+fi
+
+FILE="$1"
+
+PIPE="$(mktemp -u "${TMPDIR:-/tmp}/sidekick-editor-proxy.XXXXXX")"
+mkfifo "$PIPE"
+trap 'rm -f "$PIPE"' EXIT
+
+vim_quote() {
+	# Vim single-quoted string: only "'" is special, doubled to "''".
+	local s=$1
+	s=${s//\'/\'\'}
+	printf "'%s'" "$s"
+}
+
+expr="v:lua.require('KoalaVim.utils.ai.general').open_editor_file($(vim_quote "$FILE"), $(vim_quote "$PIPE"))"
+
+if ! remote_out=$(nvim --server "$NVIM" --remote-expr "$expr" 2>&1); then
+	printf 'sidekick-editor-proxy: nvim --remote-expr failed (NVIM=%s): %s\n' "$NVIM" "$remote_out" >&2
+	exit 1
+fi
+
+# Neovim writes a byte to unblock; read returns non-zero on EOF without a newline.
+read < "$PIPE" || true
+exit 0
