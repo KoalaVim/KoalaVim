@@ -34,6 +34,12 @@ local PROMPT_PATTERNS = {
 	cursor = ' ┌─',
 }
 
+local PROMPT_ANCHOR_OFFSETS = {
+	claude = { row = -2, col = 1 },
+	codex = { row = -3, col = 1 },
+	cursor = { row = -5, col = 3 },
+}
+
 local QUESTION_TUI_HANDLER = {
 	cursor = function(prompt_lines)
 		local cur = require('KoalaVim.utils.ai.cursor')
@@ -358,11 +364,42 @@ local function setup_prompt_split(bufid, win_id)
 	end, { buffer = bufid })
 end
 
-local function open_prompt_split(bufid)
-	return vim.api.nvim_open_win(bufid, true, {
-		split = 'below',
-		height = math.ceil(vim.o.lines * 0.3),
-	})
+---@type { win: integer, row: number, col: number }?
+local _prompt_anchor = nil
+
+local function capture_prompt_anchor(agent)
+	local win = vim.api.nvim_get_current_win()
+	local pos = vim.api.nvim_win_get_cursor(win)
+	local offsets = PROMPT_ANCHOR_OFFSETS[agent] or { row = 1, col = 0 }
+	_prompt_anchor = { win = win, row = pos[1] + offsets.row, col = offsets.col }
+end
+
+local function open_prompt_float(bufid)
+	local width = math.ceil(vim.o.columns * 0.6)
+	local height = math.ceil(vim.o.lines * 0.3)
+
+	local anchor = _prompt_anchor
+	_prompt_anchor = nil
+
+	local win_opts = {
+		width = width,
+		height = height,
+		border = 'rounded',
+		style = 'minimal',
+	}
+
+	if anchor and vim.api.nvim_win_is_valid(anchor.win) then
+		win_opts.relative = 'win'
+		win_opts.win = anchor.win
+		win_opts.row = anchor.row
+		win_opts.col = anchor.col
+	else
+		win_opts.relative = 'cursor'
+		win_opts.row = 1
+		win_opts.col = 0
+	end
+
+	return vim.api.nvim_open_win(bufid, true, win_opts)
 end
 
 local function open_prompt_buffer(agent, initial_lines, term_win, clear_override, single_line)
@@ -387,7 +424,7 @@ local function open_prompt_buffer(agent, initial_lines, term_win, clear_override
 		end,
 	})
 
-	local win_id = open_prompt_split(bufid)
+	local win_id = open_prompt_float(bufid)
 	vim.api.nvim_buf_set_lines(bufid, 0, -1, false, initial_lines)
 	setup_prompt_split(bufid, win_id)
 
@@ -466,10 +503,12 @@ function M.send_editor_key()
 	if freeze_mod.is_frozen() then
 		return
 	end
+	local agent = M.get_attached_agent()
+	capture_prompt_anchor(agent)
 	local buf = vim.api.nvim_get_current_buf()
 	local win = vim.api.nvim_get_current_win()
 	local chan = vim.bo[buf].channel
-	if M.get_attached_agent() == 'claude' then
+	if agent == 'claude' then
 		freeze_mod.freeze(win, buf)
 	end
 	vim.api.nvim_chan_send(chan, '\x07')
@@ -521,7 +560,7 @@ function M.open_editor_file(file, pipe)
 
 		local bufid = vim.fn.bufadd(file)
 		vim.fn.bufload(bufid)
-		local win_id = open_prompt_split(bufid)
+		local win_id = open_prompt_float(bufid)
 		setup_prompt_split(bufid, win_id)
 
 		vim.api.nvim_create_autocmd('BufWinLeave', {
