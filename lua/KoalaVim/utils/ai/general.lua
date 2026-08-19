@@ -395,6 +395,21 @@ local function open_prompt_buffer(agent, initial_lines, term_win, clear_override
 	end, { buffer = bufid })
 end
 
+function M.is_question_active()
+	local agent = check_agent()
+	if not agent then
+		return false
+	end
+	local handler = QUESTION_TUI_HANDLER[agent]
+	if not handler then
+		return false
+	end
+	local get_prompt = GET_PROMPT[agent]()
+	local lines = get_prompt()
+	local q_lines = handler(lines)
+	return q_lines ~= nil
+end
+
 --- Opens a split with a temporary buffer for editing a prompt.
 --- On closing the buffer, sends its content to sidekick CLI.
 function M.edit_prompt()

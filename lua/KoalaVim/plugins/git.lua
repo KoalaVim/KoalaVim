@@ -128,14 +128,14 @@ table.insert(M, {
 			desc = 'Open Git Status',
 			mode = { 'n', 't' },
 		},
-		{
-			'<C-g>',
-			function()
-				require('KoalaVim.utils.git').show_diff()
-			end,
-			desc = 'Open Diff',
-			mode = { 'n', 't' },
-		},
+		-- {
+		-- 	'<C-g>',
+		-- 	function()
+		-- 		require('KoalaVim.utils.git').show_diff()
+		-- 	end,
+		-- 	desc = 'Open Diff',
+		-- 	mode = { 'n', 't' },
+		-- },
 		{
 			'<leader>gp',
 			'<cmd>Neogit push<cr>',
@@ -265,14 +265,14 @@ if vim.env.KOALA_FUGITIVE == 'true' then
 			desc = 'Open Git Status',
 			mode = { 'n', 't' },
 		},
-		{
-			'<C-g>',
-			function()
-				require('KoalaVim.utils.git').show_diff()
-			end,
-			desc = 'Open Diff',
-			mode = { 'n', 't' },
-		},
+		-- {
+		-- 	'<C-g>',
+		-- 	function()
+		-- 		require('KoalaVim.utils.git').show_diff()
+		-- 	end,
+		-- 	desc = 'Open Diff',
+		-- 	mode = { 'n', 't' },
+		-- },
 	}
 end
 
