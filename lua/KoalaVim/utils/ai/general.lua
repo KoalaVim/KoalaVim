@@ -1,6 +1,6 @@
 local M = {}
 
-local SUPPORTED_AGENTS = { cursor = true, claude = true, codex = true }
+local SUPPORTED_AGENTS = { cursor = true, claude = true, codex = true, pi = true }
 
 local GET_PROMPT = {
 	claude = function()
@@ -50,6 +50,7 @@ local CURSOR_ANCHOR_OFFSETS = {
 	claude = { row = -3, col = 1 },
 	codex = { row = -3, col = 0 },
 	cursor = { row = -5, col = 0 },
+	pi = { row = -2, col = 0 },
 }
 
 local QUESTION_TUI_HANDLER = {
