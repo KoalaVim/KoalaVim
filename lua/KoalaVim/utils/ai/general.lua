@@ -542,6 +542,7 @@ function M.open_editor_file(file, pipe)
 			height = math.ceil(vim.o.lines * 0.3),
 		})
 		vim.bo[bufid].filetype = 'sidekick_koala_prompt'
+		pcall(vim.treesitter.stop, bufid)
 
 		-- Enter insert mode at end of file without dirtying the buffer
 		-- (a trailing space would make an unmodified close write extra bytes).
