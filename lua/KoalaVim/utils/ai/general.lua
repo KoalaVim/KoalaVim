@@ -451,6 +451,16 @@ function M.open_prompt_with(content)
 	open_prompt_buffer(agent, lines, term_win)
 end
 
+local freeze_mod = require('KoalaVim.utils.ai.freeze_terminal')
+
+function M.freeze_terminal(win, term_buf)
+	freeze_mod.freeze(win, term_buf)
+end
+
+function M.is_terminal_frozen()
+	return freeze_mod.is_frozen()
+end
+
 --- Sessions keyed by FIFO path so concurrent `$EDITOR` invocations stay independent.
 ---@type table<string, { origin_win: integer }>
 local editor_file_sessions = {}
@@ -518,6 +528,7 @@ function M.open_editor_file(file, pipe)
 				end
 
 				signal_editor_pipe(pipe)
+				freeze_mod.unfreeze()
 
 				local term_win = find_sidekick_terminal_win()
 				if not term_win or not vim.api.nvim_win_is_valid(term_win) then

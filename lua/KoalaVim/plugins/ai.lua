@@ -75,7 +75,15 @@ table.insert(M, {
 				if ai.is_question_active() then
 					ai.edit_prompt()
 				else
-					local chan = vim.bo[vim.api.nvim_get_current_buf()].channel
+					if ai.is_terminal_frozen() then
+						return
+					end
+					local buf = vim.api.nvim_get_current_buf()
+					local win = vim.api.nvim_get_current_win()
+					local chan = vim.bo[buf].channel
+					if ai.get_attached_agent() == 'claude' then
+						ai.freeze_terminal(win, buf)
+					end
 					vim.api.nvim_chan_send(chan, '\x07')
 				end
 			end,
