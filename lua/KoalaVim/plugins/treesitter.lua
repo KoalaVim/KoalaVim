@@ -12,39 +12,83 @@ table.insert(M, {
 		{ '<BS>', desc = 'Decrement selection', mode = 'x' },
 	},
 	config = function(_, _)
-		local enabled = {}
 		local available_langs = require('nvim-treesitter').get_available()
 
 		local usercmd = require('KoalaVim.utils.cmd')
 		vim.treesitter.language.register('markdown', 'sidekick_koala_prompt')
-		local function _enable_ts(ft, bufid)
-			local lang = vim.treesitter.language.get_lang(ft)
-			if vim.tbl_contains(available_langs, lang) then
-				enabled[bufid] = true
 
-				-- install if not exist
-				require('nvim-treesitter').install(lang):await(function()
-					-- syntax highlighting, provided by Neovim
-					vim.treesitter.start(bufid)
-					-- folds, provided by Neovim
-					vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-					vim.wo.foldmethod = 'expr'
-					-- indentation, provided by nvim-treesitter
-					vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-				end)
+		-- Must target bufid explicitly — the filetype-changed buffer is often
+		-- not current (e.g. picker preview), so bare vim.wo/vim.bo would
+		-- clobber the wrong window.
+		local function _apply_fold_indent(bufid)
+			if vim.bo[bufid].buftype ~= '' then
+				return
+			end
+
+			-- indentation, provided by nvim-treesitter
+			vim.bo[bufid].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+
+			-- folds, provided by Neovim — window-local, so set per window.
+			for _, win in ipairs(vim.fn.win_findbuf(bufid)) do
+				vim.wo[win].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+				vim.wo[win].foldmethod = 'expr'
 			end
 		end
 
+		local function _setup_ts(bufid, lang)
+			-- syntax highlighting, provided by Neovim
+			if not pcall(vim.treesitter.start, bufid, lang) then
+				return
+			end
+			_apply_fold_indent(bufid)
+		end
+
+		local function _enable_ts(ft, bufid)
+			local lang = vim.treesitter.language.get_lang(ft)
+			if not vim.tbl_contains(available_langs, lang) then
+				return
+			end
+
+			-- Re-check ts_highlight (not a one-way latch) — pickers reuse
+			-- preview buffers and call vim.treesitter.stop() between results.
+			if vim.b[bufid].ts_highlight then
+				local active = vim.treesitter.highlighter.active[bufid]
+				if active and active.tree and active.tree:lang() == lang then
+					_apply_fold_indent(bufid)
+					return
+				end
+				-- Different language — detach first to avoid leaking callbacks.
+				vim.treesitter.stop(bufid)
+			end
+
+			-- Probe directly — install() rescans the full parser table (~640us),
+			-- too expensive per preview keystroke.
+			local probed, has_parser = pcall(vim.treesitter.language.add, lang)
+			if probed and has_parser then
+				_setup_ts(bufid, lang)
+				return
+			end
+
+			-- install if not exist
+			require('nvim-treesitter').install(lang):await(function()
+				if not vim.api.nvim_buf_is_valid(bufid) then
+					return
+				end
+				if vim.treesitter.language.get_lang(vim.bo[bufid].ft) ~= lang then
+					return
+				end
+				_setup_ts(bufid, lang)
+			end)
+		end
+
 		usercmd.create('TSKoala', 'Tree sitter enable via koala', function()
-			_enable_ts(vim.bo.ft)
+			_enable_ts(vim.bo.ft, vim.api.nvim_get_current_buf())
 		end, {})
 
 		vim.api.nvim_create_autocmd('FileType', {
 			group = vim.api.nvim_create_augroup('lazy_treesitter', { clear = true }),
 			callback = function(ev)
-				if not enabled[ev.buf] then
-					_enable_ts(ev.match, ev.buf)
-				end
+				_enable_ts(ev.match, ev.buf)
 			end,
 		})
 	end,
