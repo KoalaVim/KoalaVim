@@ -419,7 +419,7 @@ local function capture_prompt_anchor(agent)
 	_prompt_anchor = { win = win, row = pos[1] + offsets.row, col = offsets.col }
 end
 
-local function open_prompt_float(bufid)
+local function open_prompt_inline_float(bufid)
 	local anchor = _prompt_anchor
 	_prompt_anchor = nil
 
@@ -454,6 +454,36 @@ local function open_prompt_float(bufid)
 	return win
 end
 
+local function open_prompt_bottom_split(bufid)
+	return vim.api.nvim_open_win(bufid, true, {
+		split = 'below',
+		height = math.ceil(vim.o.lines * 0.3),
+	})
+end
+
+local function open_prompt_right_split(bufid)
+	return vim.api.nvim_open_win(bufid, true, {
+		split = 'right',
+		width = math.ceil(vim.o.columns * 0.3),
+	})
+end
+
+local LAYOUT_OPENERS = {
+	['inline-float'] = open_prompt_inline_float,
+	['bottom-30%'] = open_prompt_bottom_split,
+	['right-30%'] = open_prompt_right_split,
+}
+
+local function open_prompt_win(bufid)
+	local conf = require('KoalaVim').conf
+	local layout = conf and conf.ai and conf.ai.edit_prompt_layout
+	if not layout or layout == vim.NIL then
+		layout = 'inline-float'
+	end
+	local opener = LAYOUT_OPENERS[layout] or open_prompt_inline_float
+	return opener(bufid)
+end
+
 local function open_prompt_buffer(agent, initial_lines, term_win, clear_override, single_line)
 	local bufid = vim.api.nvim_create_buf(false, true)
 
@@ -476,7 +506,7 @@ local function open_prompt_buffer(agent, initial_lines, term_win, clear_override
 		end,
 	})
 
-	local win_id = open_prompt_float(bufid)
+	local win_id = open_prompt_win(bufid)
 	vim.api.nvim_buf_set_lines(bufid, 0, -1, false, initial_lines)
 	setup_prompt_split(bufid, win_id)
 
@@ -612,7 +642,7 @@ function M.open_editor_file(file, pipe)
 
 		local bufid = vim.fn.bufadd(file)
 		vim.fn.bufload(bufid)
-		local win_id = open_prompt_float(bufid)
+		local win_id = open_prompt_win(bufid)
 		setup_prompt_split(bufid, win_id)
 
 		vim.api.nvim_create_autocmd('BufWinLeave', {

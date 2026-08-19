@@ -42,6 +42,11 @@
                         "null"
                     ]
                 },
+                "edit_prompt_layout": {
+                    "description": "Window layout for the edit-prompt buffer",
+                    "type": "string",
+                    "enum": ["inline-float", "bottom-30%", "right-30%"]
+                },
                 "auto_edit_prompt": {
                     "description": "Auto-open edit_prompt buffer when typing fast in a sidekick terminal",
                     "type": "object",
