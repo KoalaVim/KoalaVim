@@ -375,14 +375,12 @@ local function capture_prompt_anchor(agent)
 end
 
 local function open_prompt_float(bufid)
-	local width = math.ceil(vim.o.columns * 0.6)
 	local height = math.ceil(vim.o.lines * 0.3)
 
 	local anchor = _prompt_anchor
 	_prompt_anchor = nil
 
 	local win_opts = {
-		width = width,
 		height = height,
 		border = 'rounded',
 		style = 'minimal',
@@ -391,10 +389,12 @@ local function open_prompt_float(bufid)
 	if anchor and vim.api.nvim_win_is_valid(anchor.win) then
 		win_opts.relative = 'win'
 		win_opts.win = anchor.win
+		win_opts.width = vim.api.nvim_win_get_width(anchor.win) - anchor.col - 2
 		win_opts.row = anchor.row
 		win_opts.col = anchor.col
 	else
 		win_opts.relative = 'cursor'
+		win_opts.width = vim.api.nvim_win_get_width(0)
 		win_opts.row = 1
 		win_opts.col = 0
 	end
