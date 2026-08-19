@@ -435,6 +435,152 @@ function M.open_prompt_with(content)
 	open_prompt_buffer(agent, lines, term_win)
 end
 
+--- Buffer-local file/buffer pickers shared with the `<C-e>` prompt split.
+--- History recall (`<M-r>`) is omitted: this buffer round-trips through the
+--- CLI temp file rather than injecting via `CLEAR_KEYS`.
+---@param bufid integer
+---@param win_id integer
+local function setup_prompt_buffer_keymaps(bufid, win_id)
+	---@param items sidekick.context.Loc[]
+	local paste_to_buffer_cb = function(items)
+		local Loc = require('sidekick.cli.context.location')
+		local ret = { { ' ' } } ---@type sidekick.Text
+		for _, item in ipairs(items) do
+			local file = Loc.get(item, { kind = 'file' })[1]
+			if file then
+				vim.list_extend(ret, file)
+				ret[#ret + 1] = { ' ' }
+			end
+		end
+		vim.schedule(function()
+			local text = table.concat(
+				vim.tbl_map(function(c)
+					return c[1]
+				end, ret),
+				''
+			)
+			if vim.api.nvim_win_is_valid(win_id) then
+				vim.api.nvim_set_current_win(win_id)
+				vim.api.nvim_put({ text }, '', true, true)
+			end
+		end)
+	end
+
+	local picker = require('sidekick.cli.picker').get()
+
+	vim.keymap.set({ 'n', 'i' }, '<C-f>', function()
+		picker.open('files', paste_to_buffer_cb, { hidden = true })
+	end, { buffer = bufid })
+
+	vim.keymap.set({ 'n', 'i' }, '<C-b>', function()
+		picker.open('buffers', paste_to_buffer_cb, {})
+	end, { buffer = bufid })
+end
+
+--- Sessions keyed by FIFO path so concurrent `$EDITOR` invocations stay independent.
+---@type table<string, { origin_win: integer }>
+local editor_file_sessions = {}
+
+--- Unblock the editor proxy. Fire-and-forget: opening a FIFO for write blocks
+--- until a reader attaches, so this must not run on the main loop. A vanished
+--- FIFO (proxy killed) fails in the child process, not here.
+---@param pipe string
+local function signal_editor_pipe(pipe)
+	pcall(vim.system, { 'sh', '-c', 'echo done > ' .. vim.fn.shellescape(pipe) })
+end
+
+local function find_sidekick_terminal_win()
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		if vim.api.nvim_win_is_valid(win) then
+			local buf = vim.api.nvim_win_get_buf(win)
+			if vim.bo[buf].filetype == 'sidekick_terminal' then
+				return win
+			end
+		end
+	end
+end
+
+--- Open a CLI `$EDITOR` temp file in a split and signal `pipe` (FIFO) when
+--- the user closes the buffer. Called via `v:lua` from the editor proxy.
+--- Returns immediately so the proxy can attach its FIFO reader before any write.
+---@param file string
+---@param pipe string
+---@return string
+function M.open_editor_file(file, pipe)
+	local origin_win = vim.api.nvim_get_current_win()
+	editor_file_sessions[pipe] = { origin_win = origin_win }
+
+	vim.schedule(function()
+		local session = editor_file_sessions[pipe]
+		if not session then
+			return
+		end
+
+		if vim.api.nvim_win_is_valid(session.origin_win) then
+			vim.api.nvim_set_current_win(session.origin_win)
+		end
+
+		local bufid = vim.fn.bufadd(file)
+		vim.fn.bufload(bufid)
+		local win_id = vim.api.nvim_open_win(bufid, true, {
+			split = 'below',
+			height = math.ceil(vim.o.lines * 0.3),
+		})
+		vim.bo[bufid].filetype = 'sidekick_koala_prompt'
+
+		-- Enter insert mode at end of file without dirtying the buffer
+		-- (a trailing space would make an unmodified close write extra bytes).
+		vim.api.nvim_create_autocmd('BufEnter', {
+			buffer = bufid,
+			once = true,
+			callback = vim.schedule_wrap(function()
+				if vim.api.nvim_get_current_buf() ~= bufid then
+					return
+				end
+				vim.cmd('normal! G$')
+				vim.cmd('startinsert!')
+			end),
+		})
+
+		vim.api.nvim_create_autocmd('BufWinLeave', {
+			buffer = bufid,
+			once = true,
+			callback = function()
+				editor_file_sessions[pipe] = nil
+
+				if vim.bo[bufid].modified then
+					local ok, err = pcall(function()
+						vim.api.nvim_buf_call(bufid, function()
+							vim.cmd.update()
+						end)
+					end)
+					if not ok then
+						vim.notify('Failed to write editor file: ' .. tostring(err), vim.log.levels.WARN)
+					end
+				end
+
+				signal_editor_pipe(pipe)
+
+				local term_win = find_sidekick_terminal_win()
+				if not term_win or not vim.api.nvim_win_is_valid(term_win) then
+					term_win = session.origin_win
+				end
+				if vim.api.nvim_win_is_valid(term_win) then
+					vim.schedule(function()
+						if vim.api.nvim_win_is_valid(term_win) then
+							vim.api.nvim_set_current_win(term_win)
+						end
+					end)
+				end
+			end,
+		})
+
+		setup_prompt_buffer_keymaps(bufid, win_id)
+	end)
+
+	return ''
+end
+
 function M.nav_to_prompt(search_char)
 	local agent = check_agent()
 	if not agent then
