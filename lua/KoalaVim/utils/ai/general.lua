@@ -482,7 +482,8 @@ end
 ---@return string
 function M.open_editor_file(file, pipe)
 	local origin_win = vim.api.nvim_get_current_win()
-	editor_file_sessions[pipe] = { origin_win = origin_win }
+	local origin_mode = vim.fn.mode()
+	editor_file_sessions[pipe] = { origin_win = origin_win, origin_mode = origin_mode }
 
 	vim.schedule(function()
 		local session = editor_file_sessions[pipe]
@@ -526,6 +527,9 @@ function M.open_editor_file(file, pipe)
 					vim.schedule(function()
 						if vim.api.nvim_win_is_valid(term_win) then
 							vim.api.nvim_set_current_win(term_win)
+							if session.origin_mode == 't' then
+								vim.cmd.startinsert()
+							end
 						end
 					end)
 				end
