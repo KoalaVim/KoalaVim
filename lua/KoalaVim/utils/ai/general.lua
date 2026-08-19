@@ -403,6 +403,13 @@ local function capture_prompt_anchor(agent)
 	local win = vim.api.nvim_get_current_win()
 	local buf = vim.api.nvim_win_get_buf(win)
 	local pattern = PROMPT_START_ANCHOR[agent]
+	if not pattern and agent == 'pi' then
+		local conf = require('KoalaVim').conf
+		local anchor = conf and conf.ai and conf.ai.pi_prompt_anchor
+		if anchor and anchor ~= vim.NIL then
+			pattern = anchor
+		end
+	end
 
 	if pattern then
 		local offsets = PROMPT_ANCHOR_OFFSETS[agent] or { row = 0, col = 0 }
@@ -455,25 +462,24 @@ local function open_prompt_inline_float(bufid)
 	return win
 end
 
-local function open_prompt_bottom_split(bufid)
-	return vim.api.nvim_open_win(bufid, true, {
-		split = 'below',
-		height = math.ceil(vim.o.lines * 0.3),
-	})
-end
-
-local function open_prompt_right_split(bufid)
-	return vim.api.nvim_open_win(bufid, true, {
-		split = 'right',
-		width = math.ceil(vim.o.columns * 0.3),
-	})
-end
-
-local LAYOUT_OPENERS = {
-	['inline-float'] = open_prompt_inline_float,
-	['bottom-30%'] = open_prompt_bottom_split,
-	['right-30%'] = open_prompt_right_split,
+local SPLIT_DIRECTIONS = {
+	bottom = { split = 'below', dim = 'height', total = function() return vim.o.lines end },
+	top = { split = 'above', dim = 'height', total = function() return vim.o.lines end },
+	right = { split = 'right', dim = 'width', total = function() return vim.o.columns end },
+	left = { split = 'left', dim = 'width', total = function() return vim.o.columns end },
 }
+
+local function open_prompt_split(bufid, layout)
+	local dir, pct = layout:match('^(%a+)-(%d+)%%$')
+	local spec = dir and SPLIT_DIRECTIONS[dir]
+	if not spec then
+		return open_prompt_inline_float(bufid)
+	end
+	return vim.api.nvim_open_win(bufid, true, {
+		split = spec.split,
+		[spec.dim] = math.ceil(spec.total() * tonumber(pct) / 100),
+	})
+end
 
 local function open_prompt_win(bufid)
 	local conf = require('KoalaVim').conf
@@ -481,8 +487,10 @@ local function open_prompt_win(bufid)
 	if not layout or layout == vim.NIL then
 		layout = 'inline-float'
 	end
-	local opener = LAYOUT_OPENERS[layout] or open_prompt_inline_float
-	return opener(bufid)
+	if layout == 'inline-float' then
+		return open_prompt_inline_float(bufid)
+	end
+	return open_prompt_split(bufid, layout)
 end
 
 local function open_prompt_buffer(agent, initial_lines, term_win, clear_override, single_line)

@@ -43,9 +43,13 @@
                     ]
                 },
                 "edit_prompt_layout": {
-                    "description": "Window layout for the edit-prompt buffer",
+                    "description": "Window layout for the edit-prompt buffer.\n\tinline-float: float in the agent TUI (default)",
                     "type": "string",
-                    "enum": ["inline-float", "bottom-30%", "right-30%"]
+                    "enum": ["inline-float", "bottom-30%", "bottom-50%", "top-30%", "top-50%", "right-30%", "right-50%", "left-30%", "left-50%"]
+                },
+                "pi_prompt_anchor": {
+                    "description": "Prompt anchor character for the pi harness (used to position the inline-float edit prompt)",
+                    "type": ["string", "null"]
                 },
                 "auto_edit_prompt": {
                     "description": "Auto-open edit_prompt buffer when typing fast in a sidekick terminal",
