@@ -316,46 +316,13 @@ end
 ---@param term_win integer the window to refocus after closing
 ---@param clear_override? { key: string, per_line?: boolean }
 ---@param single_line? boolean join lines with spaces before sending
-local function open_prompt_buffer(agent, initial_lines, term_win, clear_override, single_line)
-	local bufid = vim.api.nvim_create_buf(false, true)
-
-	-- Enter insert mode when focusing the buffer
-	vim.api.nvim_create_autocmd('BufEnter', {
-		buffer = bufid,
-		once = true,
-		callback = vim.schedule_wrap(function()
-			vim.api.nvim_feedkeys('G$a ', 'n', false)
-		end),
-	})
-
-	-- Send content to sidekick CLI when closing the buffer
-	vim.api.nvim_create_autocmd('BufWinLeave', {
-		buffer = bufid,
-		once = true,
-		callback = function()
-			local lines = vim.api.nvim_buf_get_lines(bufid, 0, -1, false)
-			local content = table.concat(lines, single_line and ' ' or '\n')
-			-- Using internal sidekick cli to not parse "{}" variables
-			M.send_to_sidekick(content, agent, #initial_lines, clear_override)
-
-			-- Re-focus the terminal window so we stay in the same tabpage
-			if vim.api.nvim_win_is_valid(term_win) then
-				vim.schedule(function()
-					if vim.api.nvim_win_is_valid(term_win) then
-						vim.api.nvim_set_current_win(term_win)
-					end
-				end)
-			end
-		end,
-	})
-
-	local win_id = vim.api.nvim_open_win(bufid, true, {
-		split = 'below',
-		height = math.ceil(vim.o.lines * 0.3),
-	})
-
+---@param bufid integer
+---@param win_id integer
+local function setup_prompt_split(bufid, win_id)
 	vim.bo[bufid].filetype = 'sidekick_koala_prompt'
-	vim.api.nvim_buf_set_lines(bufid, 0, -1, false, initial_lines)
+	vim.api.nvim_feedkeys('G$a ', 'n', false)
+
+	local picker = require('sidekick.cli.picker').get()
 
 	---@param items sidekick.context.Loc[]
 	local paste_to_buffer_cb = function(items)
@@ -375,12 +342,12 @@ local function open_prompt_buffer(agent, initial_lines, term_win, clear_override
 				end, ret),
 				''
 			)
-			vim.api.nvim_set_current_win(win_id)
-			vim.api.nvim_put({ text }, '', true, true)
+			if vim.api.nvim_win_is_valid(win_id) then
+				vim.api.nvim_set_current_win(win_id)
+				vim.api.nvim_put({ text }, '', true, true)
+			end
 		end)
 	end
-
-	local picker = require('sidekick.cli.picker').get()
 
 	vim.keymap.set({ 'n', 'i' }, '<C-f>', function()
 		picker.open('files', paste_to_buffer_cb, { hidden = true })
@@ -389,6 +356,40 @@ local function open_prompt_buffer(agent, initial_lines, term_win, clear_override
 	vim.keymap.set({ 'n', 'i' }, '<C-b>', function()
 		picker.open('buffers', paste_to_buffer_cb, {})
 	end, { buffer = bufid })
+end
+
+local function open_prompt_split(bufid)
+	return vim.api.nvim_open_win(bufid, true, {
+		split = 'below',
+		height = math.ceil(vim.o.lines * 0.3),
+	})
+end
+
+local function open_prompt_buffer(agent, initial_lines, term_win, clear_override, single_line)
+	local bufid = vim.api.nvim_create_buf(false, true)
+
+	-- Send content to sidekick CLI when closing the buffer
+	vim.api.nvim_create_autocmd('BufWinLeave', {
+		buffer = bufid,
+		once = true,
+		callback = function()
+			local lines = vim.api.nvim_buf_get_lines(bufid, 0, -1, false)
+			local content = table.concat(lines, single_line and ' ' or '\n')
+			M.send_to_sidekick(content, agent, #initial_lines, clear_override)
+
+			if vim.api.nvim_win_is_valid(term_win) then
+				vim.schedule(function()
+					if vim.api.nvim_win_is_valid(term_win) then
+						vim.api.nvim_set_current_win(term_win)
+					end
+				end)
+			end
+		end,
+	})
+
+	local win_id = open_prompt_split(bufid)
+	vim.api.nvim_buf_set_lines(bufid, 0, -1, false, initial_lines)
+	setup_prompt_split(bufid, win_id)
 
 	vim.keymap.set({ 'n', 'i' }, '<M-r>', function()
 		require('KoalaVim.utils.ai.history').pick('local')
@@ -450,48 +451,6 @@ function M.open_prompt_with(content)
 	open_prompt_buffer(agent, lines, term_win)
 end
 
---- Buffer-local file/buffer pickers shared with the `<C-e>` prompt split.
---- History recall (`<M-r>`) is omitted: this buffer round-trips through the
---- CLI temp file rather than injecting via `CLEAR_KEYS`.
----@param bufid integer
----@param win_id integer
-local function setup_prompt_buffer_keymaps(bufid, win_id)
-	---@param items sidekick.context.Loc[]
-	local paste_to_buffer_cb = function(items)
-		local Loc = require('sidekick.cli.context.location')
-		local ret = { { ' ' } } ---@type sidekick.Text
-		for _, item in ipairs(items) do
-			local file = Loc.get(item, { kind = 'file' })[1]
-			if file then
-				vim.list_extend(ret, file)
-				ret[#ret + 1] = { ' ' }
-			end
-		end
-		vim.schedule(function()
-			local text = table.concat(
-				vim.tbl_map(function(c)
-					return c[1]
-				end, ret),
-				''
-			)
-			if vim.api.nvim_win_is_valid(win_id) then
-				vim.api.nvim_set_current_win(win_id)
-				vim.api.nvim_put({ text }, '', true, true)
-			end
-		end)
-	end
-
-	local picker = require('sidekick.cli.picker').get()
-
-	vim.keymap.set({ 'n', 'i' }, '<C-f>', function()
-		picker.open('files', paste_to_buffer_cb, { hidden = true })
-	end, { buffer = bufid })
-
-	vim.keymap.set({ 'n', 'i' }, '<C-b>', function()
-		picker.open('buffers', paste_to_buffer_cb, {})
-	end, { buffer = bufid })
-end
-
 --- Sessions keyed by FIFO path so concurrent `$EDITOR` invocations stay independent.
 ---@type table<string, { origin_win: integer }>
 local editor_file_sessions = {}
@@ -537,25 +496,8 @@ function M.open_editor_file(file, pipe)
 
 		local bufid = vim.fn.bufadd(file)
 		vim.fn.bufload(bufid)
-		local win_id = vim.api.nvim_open_win(bufid, true, {
-			split = 'below',
-			height = math.ceil(vim.o.lines * 0.3),
-		})
-		vim.bo[bufid].filetype = 'sidekick_koala_prompt'
-
-		-- Enter insert mode at end of file without dirtying the buffer
-		-- (a trailing space would make an unmodified close write extra bytes).
-		vim.api.nvim_create_autocmd('BufEnter', {
-			buffer = bufid,
-			once = true,
-			callback = vim.schedule_wrap(function()
-				if vim.api.nvim_get_current_buf() ~= bufid then
-					return
-				end
-				vim.cmd('normal! G$')
-				vim.cmd('startinsert!')
-			end),
-		})
+		local win_id = open_prompt_split(bufid)
+		setup_prompt_split(bufid, win_id)
 
 		vim.api.nvim_create_autocmd('BufWinLeave', {
 			buffer = bufid,
@@ -589,8 +531,6 @@ function M.open_editor_file(file, pipe)
 				end
 			end,
 		})
-
-		setup_prompt_buffer_keymaps(bufid, win_id)
 	end)
 
 	return ''
