@@ -461,6 +461,20 @@ function M.is_terminal_frozen()
 	return freeze_mod.is_frozen()
 end
 
+--- Freeze the terminal (claude only) and send Ctrl+G to trigger $EDITOR.
+function M.send_editor_key()
+	if freeze_mod.is_frozen() then
+		return
+	end
+	local buf = vim.api.nvim_get_current_buf()
+	local win = vim.api.nvim_get_current_win()
+	local chan = vim.bo[buf].channel
+	if M.get_attached_agent() == 'claude' then
+		freeze_mod.freeze(win, buf)
+	end
+	vim.api.nvim_chan_send(chan, '\x07')
+end
+
 --- Sessions keyed by FIFO path so concurrent `$EDITOR` invocations stay independent.
 ---@type table<string, { origin_win: integer }>
 local editor_file_sessions = {}

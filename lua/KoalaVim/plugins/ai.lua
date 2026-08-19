@@ -75,21 +75,21 @@ table.insert(M, {
 				if ai.is_question_active() then
 					ai.edit_prompt()
 				else
-					if ai.is_terminal_frozen() then
-						return
-					end
-					local buf = vim.api.nvim_get_current_buf()
-					local win = vim.api.nvim_get_current_win()
-					local chan = vim.bo[buf].channel
-					if ai.get_attached_agent() == 'claude' then
-						ai.freeze_terminal(win, buf)
-					end
-					vim.api.nvim_chan_send(chan, '\x07')
+					ai.send_editor_key()
 				end
 			end,
 			ft = 'sidekick_terminal',
 			desc = 'edit prompt via CLI native editor',
 			mode = { 'n', 't' },
+		},
+		{
+			'<C-g>',
+			function()
+				ai.send_editor_key()
+			end,
+			ft = 'sidekick_terminal',
+			desc = 'native CLI editor (freeze for claude)',
+			mode = 't',
 		},
 		{
 			']p',
