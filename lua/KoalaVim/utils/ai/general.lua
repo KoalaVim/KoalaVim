@@ -1,6 +1,6 @@
 local M = {}
 
-local SUPPORTED_AGENTS = { cursor = true, claude = true, codex = true }
+local SUPPORTED_AGENTS = { cursor = true, claude = true, codex = true, pi = true }
 
 local GET_PROMPT = {
 	claude = function()
@@ -32,6 +32,25 @@ local PROMPT_PATTERNS = {
 	claude = '❯',
 	codex = '^›',
 	cursor = ' ┌─',
+}
+
+local PROMPT_START_ANCHOR = {
+	claude = '❯',
+	codex = '^›',
+	cursor = '→',
+}
+
+local PROMPT_ANCHOR_OFFSETS = {
+	claude = { row = -3, col = 1 },
+	codex = { row = -3, col = 0 },
+	cursor = { row = -2, col = 0 },
+}
+
+local CURSOR_ANCHOR_OFFSETS = {
+	claude = { row = -3, col = 1 },
+	codex = { row = -3, col = 0 },
+	cursor = { row = -5, col = 0 },
+	pi = { row = -2, col = 0 },
 }
 
 local QUESTION_TUI_HANDLER = {
@@ -260,6 +279,25 @@ for _, opt in ipairs(COPY_WIN_OPTS) do
 end
 DEFAULT_WIN_OPTS['winhighlight'] = ''
 
+local function get_ref_win_opts()
+	local skip_ft = { sidekick_terminal = true, alpha = true }
+	local tab = vim.api.nvim_get_current_tabpage()
+	for _, w in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
+		local win_config = vim.api.nvim_win_get_config(w)
+		if win_config.relative == '' then
+			local ft = vim.bo[vim.api.nvim_win_get_buf(w)].filetype
+			if not skip_ft[ft] then
+				local opts = {}
+				for _, opt in ipairs(COPY_WIN_OPTS) do
+					opts[opt] = vim.wo[w][opt]
+				end
+				return opts
+			end
+		end
+	end
+	return vim.tbl_extend('force', {}, DEFAULT_WIN_OPTS)
+end
+
 local function check_agent()
 	local agent = M.get_attached_agent()
 	if not agent then
@@ -358,11 +396,101 @@ local function setup_prompt_split(bufid, win_id)
 	end, { buffer = bufid })
 end
 
-local function open_prompt_split(bufid)
+---@type { win: integer, row: number, col: number }?
+local _prompt_anchor = nil
+
+local function capture_prompt_anchor(agent)
+	local win = vim.api.nvim_get_current_win()
+	local buf = vim.api.nvim_win_get_buf(win)
+	local pattern = PROMPT_START_ANCHOR[agent]
+	if not pattern and agent == 'pi' then
+		local conf = require('KoalaVim').conf
+		local anchor = conf and conf.ai and conf.ai.pi_prompt_anchor
+		if anchor and anchor ~= vim.NIL then
+			pattern = anchor
+		end
+	end
+
+	if pattern then
+		local offsets = PROMPT_ANCHOR_OFFSETS[agent] or { row = 0, col = 0 }
+		local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+		for i = #lines, 1, -1 do
+			if lines[i]:find(pattern) then
+				_prompt_anchor = { win = win, row = i + offsets.row, col = offsets.col }
+				return
+			end
+		end
+	end
+
+	local offsets = CURSOR_ANCHOR_OFFSETS[agent] or { row = 0, col = 0 }
+	local pos = vim.api.nvim_win_get_cursor(win)
+	_prompt_anchor = { win = win, row = pos[1] + offsets.row, col = offsets.col }
+end
+
+local function open_prompt_inline_float(bufid)
+	local anchor = _prompt_anchor
+	_prompt_anchor = nil
+
+	local win_opts = {
+		border = 'rounded',
+		style = 'minimal',
+	}
+
+	if anchor and vim.api.nvim_win_is_valid(anchor.win) then
+		win_opts.relative = 'win'
+		win_opts.win = anchor.win
+		win_opts.width = vim.api.nvim_win_get_width(anchor.win) - anchor.col - 2
+		win_opts.height = vim.api.nvim_win_get_height(anchor.win) - anchor.row - 2
+		win_opts.row = anchor.row
+		win_opts.col = anchor.col
+	else
+		win_opts.relative = 'cursor'
+		win_opts.width = vim.api.nvim_win_get_width(0)
+		win_opts.row = 1
+		win_opts.col = 0
+	end
+
+	local win = vim.api.nvim_open_win(bufid, true, win_opts)
+	local ref_opts = get_ref_win_opts()
+	for _, opt in ipairs(COPY_WIN_OPTS) do
+		vim.wo[win][opt] = ref_opts[opt]
+	end
+	vim.api.nvim_set_hl(0, 'KoalaPromptBorder', { fg = '#3f478f' })
+	vim.wo[win].winhighlight =
+		'Normal:SidekickChat,NormalNC:SidekickChat,EndOfBuffer:EndOfBuffer,SignColumn:SidekickChat,FloatBorder:KoalaPromptBorder,LineNr:SidekickLineNr'
+	vim.wo[win].signcolumn = 'no'
+	return win
+end
+
+local SPLIT_DIRECTIONS = {
+	bottom = { split = 'below', dim = 'height', total = function() return vim.o.lines end },
+	top = { split = 'above', dim = 'height', total = function() return vim.o.lines end },
+	right = { split = 'right', dim = 'width', total = function() return vim.o.columns end },
+	left = { split = 'left', dim = 'width', total = function() return vim.o.columns end },
+}
+
+local function open_prompt_split(bufid, layout)
+	local dir, pct = layout:match('^(%a+)-(%d+)%%$')
+	local spec = dir and SPLIT_DIRECTIONS[dir]
+	if not spec then
+		return open_prompt_inline_float(bufid)
+	end
 	return vim.api.nvim_open_win(bufid, true, {
-		split = 'below',
-		height = math.ceil(vim.o.lines * 0.3),
+		split = spec.split,
+		[spec.dim] = math.ceil(spec.total() * tonumber(pct) / 100),
 	})
+end
+
+local function open_prompt_win(bufid)
+	local conf = require('KoalaVim').conf
+	local layout = conf and conf.ai and conf.ai.edit_prompt_layout
+	if not layout or layout == vim.NIL then
+		layout = 'inline-float'
+	end
+	if layout == 'inline-float' then
+		return open_prompt_inline_float(bufid)
+	end
+	return open_prompt_split(bufid, layout)
 end
 
 local function open_prompt_buffer(agent, initial_lines, term_win, clear_override, single_line)
@@ -387,7 +515,7 @@ local function open_prompt_buffer(agent, initial_lines, term_win, clear_override
 		end,
 	})
 
-	local win_id = open_prompt_split(bufid)
+	local win_id = open_prompt_win(bufid)
 	vim.api.nvim_buf_set_lines(bufid, 0, -1, false, initial_lines)
 	setup_prompt_split(bufid, win_id)
 
@@ -466,10 +594,12 @@ function M.send_editor_key()
 	if freeze_mod.is_frozen() then
 		return
 	end
+	local agent = M.get_attached_agent()
+	capture_prompt_anchor(agent)
 	local buf = vim.api.nvim_get_current_buf()
 	local win = vim.api.nvim_get_current_win()
 	local chan = vim.bo[buf].channel
-	if M.get_attached_agent() == 'claude' then
+	if agent == 'claude' then
 		freeze_mod.freeze(win, buf)
 	end
 	vim.api.nvim_chan_send(chan, '\x07')
@@ -521,7 +651,7 @@ function M.open_editor_file(file, pipe)
 
 		local bufid = vim.fn.bufadd(file)
 		vim.fn.bufload(bufid)
-		local win_id = open_prompt_split(bufid)
+		local win_id = open_prompt_win(bufid)
 		setup_prompt_split(bufid, win_id)
 
 		vim.api.nvim_create_autocmd('BufWinLeave', {
@@ -645,34 +775,7 @@ function M.zoom_sidekick()
 	local orig_win = vim.api.nvim_get_current_win()
 	local termbuf = vim.api.nvim_get_current_buf()
 
-	-- Capture options from a normal editor window to use as defaults
-	-- for new windows in the zoom tabpage.
-	-- Skip sidekick terminals and special buffers (alpha, etc.) that have
-	-- non-standard options. Fall back to vim.opt values if no suitable window found.
-	zoom_ref_opts = {}
-	local skip_ft = { sidekick_terminal = true, alpha = true }
-	local ref_found = false
-	local orig_tab = vim.api.nvim_get_current_tabpage()
-	for _, w in ipairs(vim.api.nvim_tabpage_list_wins(orig_tab)) do
-		-- Skip floating windows (notifications, popups, etc.)
-		local win_config = vim.api.nvim_win_get_config(w)
-		if win_config.relative ~= '' then
-			goto continue
-		end
-		local ft = vim.bo[vim.api.nvim_win_get_buf(w)].filetype
-		if not skip_ft[ft] then
-			for _, opt in ipairs(COPY_WIN_OPTS) do
-				zoom_ref_opts[opt] = vim.wo[w][opt]
-			end
-			ref_found = true
-			break
-		end
-		::continue::
-	end
-	if not ref_found then
-		-- No suitable reference window, use defaults captured at module load time
-		zoom_ref_opts = vim.tbl_extend('force', {}, DEFAULT_WIN_OPTS)
-	end
+	zoom_ref_opts = get_ref_win_opts()
 
 	vim.cmd('tabnew')
 	zoom_tabpage = vim.api.nvim_get_current_tabpage()

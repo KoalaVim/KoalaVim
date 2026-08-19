@@ -550,9 +550,12 @@ table.insert(M, {
 				-- Sync gitsigns base with the CodeDiff revision
 				vim.defer_fn(function()
 					local ctx = lifecycle.get_git_context(tabpage)
-					if ctx and ctx.original_revision
+					if
+						ctx
+						and ctx.original_revision
 						and ctx.original_revision ~= 'WORKING'
-						and ctx.original_revision ~= 'STAGED' then
+						and ctx.original_revision ~= 'STAGED'
+					then
 						pcall(function()
 							require('gitsigns').change_base(ctx.original_revision, true)
 						end)
