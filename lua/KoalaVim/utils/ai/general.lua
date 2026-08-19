@@ -34,10 +34,22 @@ local PROMPT_PATTERNS = {
 	cursor = ' ┌─',
 }
 
+local PROMPT_START_ANCHOR = {
+	claude = '❯',
+	codex = '^›',
+	cursor = '→',
+}
+
 local PROMPT_ANCHOR_OFFSETS = {
-	claude = { row = -2, col = 1 },
-	codex = { row = -3, col = 1 },
-	cursor = { row = -5, col = 3 },
+	claude = { row = -3, col = 1 },
+	codex = { row = -3, col = 0 },
+	cursor = { row = -2, col = 0 },
+}
+
+local CURSOR_ANCHOR_OFFSETS = {
+	claude = { row = -3, col = 1 },
+	codex = { row = -3, col = 0 },
+	cursor = { row = -5, col = 0 },
 }
 
 local QUESTION_TUI_HANDLER = {
@@ -388,8 +400,22 @@ local _prompt_anchor = nil
 
 local function capture_prompt_anchor(agent)
 	local win = vim.api.nvim_get_current_win()
+	local buf = vim.api.nvim_win_get_buf(win)
+	local pattern = PROMPT_START_ANCHOR[agent]
+
+	if pattern then
+		local offsets = PROMPT_ANCHOR_OFFSETS[agent] or { row = 0, col = 0 }
+		local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+		for i = #lines, 1, -1 do
+			if lines[i]:find(pattern) then
+				_prompt_anchor = { win = win, row = i + offsets.row, col = offsets.col }
+				return
+			end
+		end
+	end
+
+	local offsets = CURSOR_ANCHOR_OFFSETS[agent] or { row = 0, col = 0 }
 	local pos = vim.api.nvim_win_get_cursor(win)
-	local offsets = PROMPT_ANCHOR_OFFSETS[agent] or { row = 1, col = 0 }
 	_prompt_anchor = { win = win, row = pos[1] + offsets.row, col = offsets.col }
 end
 
@@ -418,11 +444,10 @@ local function open_prompt_float(bufid)
 
 	local win = vim.api.nvim_open_win(bufid, true, win_opts)
 	local ref_opts = get_ref_win_opts()
-	vim.print(ref_opts)
 	for _, opt in ipairs(COPY_WIN_OPTS) do
 		vim.wo[win][opt] = ref_opts[opt]
 	end
-	vim.api.nvim_set_hl(0, 'KoalaPromptBorder', { fg = '#ffffff' })
+	vim.api.nvim_set_hl(0, 'KoalaPromptBorder', { fg = '#3f478f' })
 	vim.wo[win].winhighlight =
 		'Normal:SidekickChat,NormalNC:SidekickChat,EndOfBuffer:EndOfBuffer,SignColumn:SidekickChat,FloatBorder:KoalaPromptBorder,LineNr:SidekickLineNr'
 	vim.wo[win].signcolumn = 'no'
