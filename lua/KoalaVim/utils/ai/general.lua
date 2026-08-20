@@ -159,7 +159,11 @@ end
 function M.focus_prompt_win()
 	local win = find_prompt_win()
 	if win and win ~= vim.api.nvim_get_current_win() then
-		vim.api.nvim_set_current_win(win)
+		vim.schedule(function()
+			if vim.api.nvim_win_is_valid(win) then
+				vim.api.nvim_set_current_win(win)
+			end
+		end)
 		return true
 	end
 	return false

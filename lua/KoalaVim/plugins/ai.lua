@@ -98,6 +98,17 @@ table.insert(M, {
 			mode = 't',
 		},
 		{
+			'<C-j>',
+			function()
+				if not ai.focus_prompt_win() then
+					vim.cmd('NavigatorDown')
+				end
+			end,
+			ft = 'sidekick_terminal',
+			desc = 'focus edit prompt window',
+			mode = { 'n', 't' },
+		},
+		{
 			']p',
 			function()
 				ai.nav_to_prompt('n')
