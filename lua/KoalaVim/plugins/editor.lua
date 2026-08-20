@@ -358,17 +358,25 @@ table.insert(M, {
 	end,
 })
 
--- Unified window navigation between Neovim splits and tmux/wezterm/zellij panes
+-- Unified window navigation between Neovim splits and tmux/wezterm/zellij/herdr panes
 table.insert(M, {
 	'numToStr/Navigator.nvim',
+	lazy = vim.env.HERDR_PANE_ID == nil or vim.env.HERDR_PANE_ID == '',
 	opts = {
 		disable_on_zoom = false,
 	},
 	config = function(_, opts)
+		-- Herdr: checked first because herdr sets HERDR_PANE_ID and may run inside
+		-- a terminal that also has $TMUX from an outer session.
+		if vim.env.HERDR_PANE_ID ~= nil and vim.env.HERDR_PANE_ID ~= '' then
+			local ok, herdr = pcall(function()
+				return require('KoalaVim.utils.plugins.navigator_herdr'):new()
+			end)
+			opts.mux = ok and herdr or 'auto'
 		-- Navigator ships no zellij backend. Checked before 'auto' detection because
 		-- zellij nested inside wezterm sets both $ZELLIJ and TERM_PROGRAM=WezTerm,
 		-- and the innermost multiplexer owns the pane we live in.
-		if vim.env.ZELLIJ ~= nil then
+		elseif vim.env.ZELLIJ ~= nil then
 			local ok, zellij = pcall(function()
 				return require('KoalaVim.utils.plugins.navigator_zellij'):new()
 			end)
