@@ -7,7 +7,7 @@ local with_default_tool = ai.with_default_tool
 -- AI CLI sidecar (Claude, Copilot, Cursor, etc.) integrated into Neovim
 -- with NES inline next-edit suggestions and prompt send helpers.
 table.insert(M, {
-	'ofirgall/sidekick.nvim', --fork
+	'KoalaVim/sidekick.nvim', --fork
 	config = function(_, opts)
 		require('sidekick').setup(opts)
 		ai.setup_fast_typing_detection()

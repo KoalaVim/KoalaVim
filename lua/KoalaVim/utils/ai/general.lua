@@ -420,20 +420,32 @@ local function capture_prompt_anchor(agent)
 			if lines[i]:find(pattern) then
 				_prompt_anchor = { win = win, row = i + offsets.row, col = offsets.col }
 				if debug then
-					vim.print(string.format(
-						'[inline-float] capture: agent=%s source=pattern pattern=%q matched_line=%d line=%q offsets=(%d,%d) result=(%d,%d) buf_lines=%d',
-						agent, pattern, i, lines[i], offsets.row, offsets.col,
-						_prompt_anchor.row, _prompt_anchor.col, #lines
-					))
+					vim.print(
+						string.format(
+							'[inline-float] capture: agent=%s source=pattern pattern=%q matched_line=%d line=%q offsets=(%d,%d) result=(%d,%d) buf_lines=%d',
+							agent,
+							pattern,
+							i,
+							lines[i],
+							offsets.row,
+							offsets.col,
+							_prompt_anchor.row,
+							_prompt_anchor.col,
+							#lines
+						)
+					)
 				end
 				return
 			end
 		end
 		if debug then
-			vim.print(string.format(
-				'[inline-float] capture: agent=%s pattern=%q not found, falling back to cursor',
-				agent, pattern
-			))
+			vim.print(
+				string.format(
+					'[inline-float] capture: agent=%s pattern=%q not found, falling back to cursor',
+					agent,
+					pattern
+				)
+			)
 		end
 	end
 
@@ -441,11 +453,17 @@ local function capture_prompt_anchor(agent)
 	local pos = vim.api.nvim_win_get_cursor(win)
 	_prompt_anchor = { win = win, row = pos[1] + offsets.row, col = offsets.col }
 	if debug then
-		vim.print(string.format(
-			'[inline-float] capture: agent=%s source=cursor cursor_row=%d offsets=(%d,%d) result=(%d,%d)',
-			agent, pos[1], offsets.row, offsets.col,
-			_prompt_anchor.row, _prompt_anchor.col
-		))
+		vim.print(
+			string.format(
+				'[inline-float] capture: agent=%s source=cursor cursor_row=%d offsets=(%d,%d) result=(%d,%d)',
+				agent,
+				pos[1],
+				offsets.row,
+				offsets.col,
+				_prompt_anchor.row,
+				_prompt_anchor.col
+			)
+		)
 	end
 end
 
@@ -477,19 +495,31 @@ local function open_prompt_inline_float(bufid)
 		win_opts.col = anchor.col
 		if debug then
 			if raw_width <= 0 or raw_height <= 0 then
-				vim.print(string.format(
-					'[inline-float] CLAMPED: raw_size=%dx%d clamped_size=%dx%d',
-					raw_width, raw_height, win_opts.width, win_opts.height
-				))
+				vim.print(
+					string.format(
+						'[inline-float] CLAMPED: raw_size=%dx%d clamped_size=%dx%d',
+						raw_width,
+						raw_height,
+						win_opts.width,
+						win_opts.height
+					)
+				)
 			end
-			vim.print(string.format(
-				'[inline-float] anchor=win(%d) win_size=%dx%d anchor_pos=(%d,%d) raw_size=%dx%d computed_size=%dx%d buf_lines=%d',
-				anchor.win, win_width, win_height,
-				anchor.row, anchor.col,
-				raw_width, raw_height,
-				win_opts.width, win_opts.height,
-				vim.api.nvim_buf_line_count(bufid)
-			))
+			vim.print(
+				string.format(
+					'[inline-float] anchor=win(%d) win_size=%dx%d anchor_pos=(%d,%d) raw_size=%dx%d computed_size=%dx%d buf_lines=%d',
+					anchor.win,
+					win_width,
+					win_height,
+					anchor.row,
+					anchor.col,
+					raw_width,
+					raw_height,
+					win_opts.width,
+					win_opts.height,
+					vim.api.nvim_buf_line_count(bufid)
+				)
+			)
 		end
 	else
 		local win_width = vim.api.nvim_win_get_width(0)
@@ -503,18 +533,26 @@ local function open_prompt_inline_float(bufid)
 		win_opts.col = 0
 		if debug then
 			if raw_height <= 0 then
-				vim.print(string.format(
-					'[inline-float] CLAMPED: raw_height=%d clamped_height=%d',
-					raw_height, win_opts.height
-				))
+				vim.print(
+					string.format(
+						'[inline-float] CLAMPED: raw_height=%d clamped_height=%d',
+						raw_height,
+						win_opts.height
+					)
+				)
 			end
-			vim.print(string.format(
-				'[inline-float] anchor=cursor win_size=%dx%d winline=%d raw_height=%d computed_size=%dx%d buf_lines=%d',
-				win_width, win_height,
-				winline, raw_height,
-				win_opts.width, win_opts.height,
-				vim.api.nvim_buf_line_count(bufid)
-			))
+			vim.print(
+				string.format(
+					'[inline-float] anchor=cursor win_size=%dx%d winline=%d raw_height=%d computed_size=%dx%d buf_lines=%d',
+					win_width,
+					win_height,
+					winline,
+					raw_height,
+					win_opts.width,
+					win_opts.height,
+					vim.api.nvim_buf_line_count(bufid)
+				)
+			)
 		end
 	end
 
@@ -525,12 +563,14 @@ local function open_prompt_inline_float(bufid)
 	local win = vim.api.nvim_open_win(bufid, true, win_opts)
 
 	if debug then
-		vim.print(string.format(
-			'[inline-float] result: win=%d actual_size=%dx%d',
-			win,
-			vim.api.nvim_win_get_width(win),
-			vim.api.nvim_win_get_height(win)
-		))
+		vim.print(
+			string.format(
+				'[inline-float] result: win=%d actual_size=%dx%d',
+				win,
+				vim.api.nvim_win_get_width(win),
+				vim.api.nvim_win_get_height(win)
+			)
+		)
 	end
 	local ref_opts = get_ref_win_opts()
 	for _, opt in ipairs(COPY_WIN_OPTS) do
@@ -544,10 +584,34 @@ local function open_prompt_inline_float(bufid)
 end
 
 local SPLIT_DIRECTIONS = {
-	bottom = { split = 'below', dim = 'height', total = function() return vim.o.lines end },
-	top = { split = 'above', dim = 'height', total = function() return vim.o.lines end },
-	right = { split = 'right', dim = 'width', total = function() return vim.o.columns end },
-	left = { split = 'left', dim = 'width', total = function() return vim.o.columns end },
+	bottom = {
+		split = 'below',
+		dim = 'height',
+		total = function()
+			return vim.o.lines
+		end,
+	},
+	top = {
+		split = 'above',
+		dim = 'height',
+		total = function()
+			return vim.o.lines
+		end,
+	},
+	right = {
+		split = 'right',
+		dim = 'width',
+		total = function()
+			return vim.o.columns
+		end,
+	},
+	left = {
+		split = 'left',
+		dim = 'width',
+		total = function()
+			return vim.o.columns
+		end,
+	},
 }
 
 local function open_prompt_split(bufid, layout)
