@@ -19,6 +19,9 @@ Batteries-included, extensible Neovim distribution — curated plugins, robust d
 - Isolated virtual environments via [`kv`](https://github.com/KoalaVim/kv).
 - JSON-schema-validated user config.
 
+## Integrations
+- [herdr aware plugin](https://github.com/KoalaVim/herdr-nvim-aware)
+
 ## Requirements
 
 - Neovim ≥ v0.12.0
