@@ -14,11 +14,20 @@ The system SHALL automatically install and enable treesitter grammars for any fi
 
 ### Requirement: Treesitter-based folding
 
-The system SHALL use treesitter expression-based folding as the default fold method. All folds SHALL start open by default.
+The system SHALL use treesitter expression-based folding as the default fold method for normal file-visiting buffers (`buftype == ''`). Scratch and preview buffers (`buftype != ''`) SHALL NOT have foldmethod or indentexpr applied. All folds SHALL start open by default.
 
 #### Scenario: Folds available on open
-- **WHEN** a file with a treesitter grammar is opened
+- **WHEN** a normal file with a treesitter grammar is opened
 - **THEN** folds SHALL be available at structural boundaries (functions, classes, blocks) and all SHALL be open
+
+#### Scenario: No folds on preview buffer
+- **WHEN** a picker displays a file in a scratch preview buffer (`buftype == 'nofile'`)
+- **THEN** foldmethod and indentexpr SHALL NOT be set on that buffer's windows
+
+#### Scenario: Highlighting without folds on preview buffer
+- **WHEN** a picker sets the filetype on a scratch preview buffer
+- **THEN** treesitter syntax highlighting SHALL be attached synchronously
+- **AND** no fold recomputation SHALL be triggered
 
 ### Requirement: Structural text objects
 
