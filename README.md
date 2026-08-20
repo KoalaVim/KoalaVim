@@ -20,7 +20,7 @@ Batteries-included, extensible Neovim distribution — curated plugins, robust d
 - JSON-schema-validated user config.
 
 ## Integrations
-- [herdr aware plugin](https://github.com/KoalaVim/herdr-nvim-aware)
+- [herdr aware plugin](https://github.com/KoalaVim/herdr-nvim-aware) — [example herdr config](external-configs/herdr-config.toml)
 
 ## Requirements
 
