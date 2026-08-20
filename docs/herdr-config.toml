@@ -1,0 +1,87 @@
+# Example herdr config for KoalaVim
+#
+# This config provides nvim-aware keybindings that mirror the KoalaVim
+# navigation experience (Ctrl+h/j/k/l) plus nvim-aware splits, close,
+# and zoom via the herdr-nvim-aware plugin.
+#
+# Install the plugin:
+#   herdr plugin install KoalaVim/herdr-nvim-aware
+#
+# Place this file at: ~/.config/herdr/config.toml
+
+onboarding = false
+
+[keys]
+# Disable built-in pane focus (handled by herdr-nvim-aware plugin)
+focus_pane_left = ""
+focus_pane_down = ""
+focus_pane_up = ""
+focus_pane_right = ""
+
+# Disable built-in split/close/zoom (handled by plugin)
+split_vertical = ""
+split_horizontal = ""
+close_pane = ""
+zoom = ""
+
+# Force overrides — bypass nvim detection, always do the herdr action
+# Useful when you want to split/navigate herdr even while nvim is focused.
+# focus_pane_left = "alt+shift+h"
+# focus_pane_down = "alt+shift+j"
+# focus_pane_up = "alt+shift+k"
+# focus_pane_right = "alt+shift+l"
+# split_vertical = "alt+shift+e"
+# zoom = "alt+shift+z"
+
+# Nvim-aware navigation: forwards Ctrl+h/j/k/l to nvim when it owns the
+# pane (for split navigation), otherwise moves herdr pane focus.
+[[keys.command]]
+key = "ctrl+h"
+type = "plugin_action"
+command = "herdr-nvim-aware.left"
+
+[[keys.command]]
+key = "ctrl+j"
+type = "plugin_action"
+command = "herdr-nvim-aware.down"
+
+[[keys.command]]
+key = "ctrl+k"
+type = "plugin_action"
+command = "herdr-nvim-aware.up"
+
+[[keys.command]]
+key = "ctrl+l"
+type = "plugin_action"
+command = "herdr-nvim-aware.right"
+
+# Nvim-aware splits: forwards Alt+e/o to nvim (for nvim splits),
+# otherwise splits the herdr pane.
+[[keys.command]]
+key = "alt+e"
+type = "plugin_action"
+command = "herdr-nvim-aware.split_v"
+
+[[keys.command]]
+key = "alt+o"
+type = "plugin_action"
+command = "herdr-nvim-aware.split_h"
+
+# Nvim-aware close: forwards Alt+w to nvim (close nvim split),
+# otherwise closes the herdr pane.
+[[keys.command]]
+key = "alt+w"
+type = "plugin_action"
+command = "herdr-nvim-aware.close"
+
+[[keys.command]]
+key = "alt+q"
+type = "plugin_action"
+command = "herdr-nvim-aware.quit"
+
+# Nvim-aware zoom: forwards Alt+z to nvim (nvim zoom toggle),
+# otherwise toggles herdr pane zoom.
+[[keys.command]]
+key = "alt+z"
+type = "plugin_action"
+command = "herdr-nvim-aware.zoom"
