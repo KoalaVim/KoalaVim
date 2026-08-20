@@ -156,6 +156,15 @@ local function find_prompt_win()
 	end
 end
 
+function M.focus_prompt_win()
+	local win = find_prompt_win()
+	if win and win ~= vim.api.nvim_get_current_win() then
+		vim.api.nvim_set_current_win(win)
+		return true
+	end
+	return false
+end
+
 ---@param text sidekick.Text[]
 local function insert_text_in_prompt(text)
 	local prompt_win = find_prompt_win()

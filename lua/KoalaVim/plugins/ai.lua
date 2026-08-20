@@ -72,6 +72,9 @@ table.insert(M, {
 		{
 			'<C-e>',
 			function()
+				if ai.focus_prompt_win() then
+					return
+				end
 				if ai.is_question_active() then
 					ai.edit_prompt()
 				else
@@ -85,6 +88,9 @@ table.insert(M, {
 		{
 			'<C-g>',
 			function()
+				if ai.focus_prompt_win() then
+					return
+				end
 				ai.send_editor_key()
 			end,
 			ft = 'sidekick_terminal',
