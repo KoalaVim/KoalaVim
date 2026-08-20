@@ -439,13 +439,14 @@ local function open_prompt_inline_float(bufid)
 	if anchor and vim.api.nvim_win_is_valid(anchor.win) then
 		win_opts.relative = 'win'
 		win_opts.win = anchor.win
-		win_opts.width = vim.api.nvim_win_get_width(anchor.win) - anchor.col - 2
-		win_opts.height = vim.api.nvim_win_get_height(anchor.win) - anchor.row - 2
+		win_opts.width = math.max(1, vim.api.nvim_win_get_width(anchor.win) - anchor.col - 2)
+		win_opts.height = math.max(1, vim.api.nvim_win_get_height(anchor.win) - anchor.row - 2)
 		win_opts.row = anchor.row
 		win_opts.col = anchor.col
 	else
 		win_opts.relative = 'cursor'
 		win_opts.width = vim.api.nvim_win_get_width(0)
+		win_opts.height = math.max(1, vim.api.nvim_win_get_height(0) - vim.fn.winline())
 		win_opts.row = 1
 		win_opts.col = 0
 	end
@@ -477,7 +478,7 @@ local function open_prompt_split(bufid, layout)
 	end
 	return vim.api.nvim_open_win(bufid, true, {
 		split = spec.split,
-		[spec.dim] = math.ceil(spec.total() * tonumber(pct) / 100),
+		[spec.dim] = math.max(1, math.ceil(spec.total() * tonumber(pct) / 100)),
 	})
 end
 
