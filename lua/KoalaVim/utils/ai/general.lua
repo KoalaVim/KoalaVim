@@ -41,13 +41,13 @@ local PROMPT_START_ANCHOR = {
 }
 
 local PROMPT_ANCHOR_OFFSETS = {
-	claude = { row = -3, col = 1 },
+	claude = { row = -2, col = 1 },
 	codex = { row = -3, col = 0 },
 	cursor = { row = -2, col = 0 },
 }
 
 local CURSOR_ANCHOR_OFFSETS = {
-	claude = { row = -3, col = 1 },
+	claude = { row = -2, col = 1 },
 	codex = { row = -3, col = 0 },
 	cursor = { row = -5, col = 0 },
 	pi = { row = -2, col = 0 },
@@ -593,6 +593,7 @@ local function open_prompt_inline_float(bufid)
 	vim.wo[win].winhighlight =
 		'Normal:SidekickChat,NormalNC:SidekickChat,EndOfBuffer:EndOfBuffer,SignColumn:SidekickChat,FloatBorder:KoalaPromptBorder,LineNr:SidekickLineNr'
 	vim.wo[win].signcolumn = 'no'
+	vim.wo[win].winbar = ''
 	return win
 end
 
