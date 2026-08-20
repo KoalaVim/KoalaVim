@@ -411,20 +411,42 @@ local function capture_prompt_anchor(agent)
 		end
 	end
 
+	local debug = vim.env.DEBUG_INLINE_FLOAT
+
 	if pattern then
 		local offsets = PROMPT_ANCHOR_OFFSETS[agent] or { row = 0, col = 0 }
 		local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
 		for i = #lines, 1, -1 do
 			if lines[i]:find(pattern) then
 				_prompt_anchor = { win = win, row = i + offsets.row, col = offsets.col }
+				if debug then
+					vim.print(string.format(
+						'[inline-float] capture: agent=%s source=pattern pattern=%q matched_line=%d line=%q offsets=(%d,%d) result=(%d,%d) buf_lines=%d',
+						agent, pattern, i, lines[i], offsets.row, offsets.col,
+						_prompt_anchor.row, _prompt_anchor.col, #lines
+					))
+				end
 				return
 			end
+		end
+		if debug then
+			vim.print(string.format(
+				'[inline-float] capture: agent=%s pattern=%q not found, falling back to cursor',
+				agent, pattern
+			))
 		end
 	end
 
 	local offsets = CURSOR_ANCHOR_OFFSETS[agent] or { row = 0, col = 0 }
 	local pos = vim.api.nvim_win_get_cursor(win)
 	_prompt_anchor = { win = win, row = pos[1] + offsets.row, col = offsets.col }
+	if debug then
+		vim.print(string.format(
+			'[inline-float] capture: agent=%s source=cursor cursor_row=%d offsets=(%d,%d) result=(%d,%d)',
+			agent, pos[1], offsets.row, offsets.col,
+			_prompt_anchor.row, _prompt_anchor.col
+		))
+	end
 end
 
 local function open_prompt_inline_float(bufid)
@@ -436,22 +458,80 @@ local function open_prompt_inline_float(bufid)
 		style = 'minimal',
 	}
 
+	local debug = vim.env.DEBUG_INLINE_FLOAT
+	local conf = require('KoalaVim').conf
+	local float_conf = conf and conf.ai and conf.ai.inline_float or {}
+	local min_width = float_conf.min_width or 1
+	local min_height = float_conf.min_height or 1
+
 	if anchor and vim.api.nvim_win_is_valid(anchor.win) then
+		local win_width = vim.api.nvim_win_get_width(anchor.win)
+		local win_height = vim.api.nvim_win_get_height(anchor.win)
+		local raw_width = win_width - anchor.col - 2
+		local raw_height = win_height - anchor.row - 2
 		win_opts.relative = 'win'
 		win_opts.win = anchor.win
-		win_opts.width = math.max(1, vim.api.nvim_win_get_width(anchor.win) - anchor.col - 2)
-		win_opts.height = math.max(1, vim.api.nvim_win_get_height(anchor.win) - anchor.row - 2)
+		win_opts.width = math.max(min_width, raw_width)
+		win_opts.height = math.max(min_height, raw_height)
 		win_opts.row = anchor.row
 		win_opts.col = anchor.col
+		if debug then
+			if raw_width <= 0 or raw_height <= 0 then
+				vim.print(string.format(
+					'[inline-float] CLAMPED: raw_size=%dx%d clamped_size=%dx%d',
+					raw_width, raw_height, win_opts.width, win_opts.height
+				))
+			end
+			vim.print(string.format(
+				'[inline-float] anchor=win(%d) win_size=%dx%d anchor_pos=(%d,%d) raw_size=%dx%d computed_size=%dx%d buf_lines=%d',
+				anchor.win, win_width, win_height,
+				anchor.row, anchor.col,
+				raw_width, raw_height,
+				win_opts.width, win_opts.height,
+				vim.api.nvim_buf_line_count(bufid)
+			))
+		end
 	else
+		local win_width = vim.api.nvim_win_get_width(0)
+		local win_height = vim.api.nvim_win_get_height(0)
+		local winline = vim.fn.winline()
+		local raw_height = win_height - winline
 		win_opts.relative = 'cursor'
-		win_opts.width = vim.api.nvim_win_get_width(0)
-		win_opts.height = math.max(1, vim.api.nvim_win_get_height(0) - vim.fn.winline())
+		win_opts.width = math.max(min_width, win_width)
+		win_opts.height = math.max(min_height, raw_height)
 		win_opts.row = 1
 		win_opts.col = 0
+		if debug then
+			if raw_height <= 0 then
+				vim.print(string.format(
+					'[inline-float] CLAMPED: raw_height=%d clamped_height=%d',
+					raw_height, win_opts.height
+				))
+			end
+			vim.print(string.format(
+				'[inline-float] anchor=cursor win_size=%dx%d winline=%d raw_height=%d computed_size=%dx%d buf_lines=%d',
+				win_width, win_height,
+				winline, raw_height,
+				win_opts.width, win_opts.height,
+				vim.api.nvim_buf_line_count(bufid)
+			))
+		end
+	end
+
+	if debug then
+		vim.print('[inline-float] win_opts=' .. vim.inspect(win_opts))
 	end
 
 	local win = vim.api.nvim_open_win(bufid, true, win_opts)
+
+	if debug then
+		vim.print(string.format(
+			'[inline-float] result: win=%d actual_size=%dx%d',
+			win,
+			vim.api.nvim_win_get_width(win),
+			vim.api.nvim_win_get_height(win)
+		))
+	end
 	local ref_opts = get_ref_win_opts()
 	for _, opt in ipairs(COPY_WIN_OPTS) do
 		vim.wo[win][opt] = ref_opts[opt]
@@ -476,9 +556,12 @@ local function open_prompt_split(bufid, layout)
 	if not spec then
 		return open_prompt_inline_float(bufid)
 	end
+	local conf = require('KoalaVim').conf
+	local float_conf = conf and conf.ai and conf.ai.inline_float or {}
+	local min = spec.dim == 'width' and (float_conf.min_width or 1) or (float_conf.min_height or 1)
 	return vim.api.nvim_open_win(bufid, true, {
 		split = spec.split,
-		[spec.dim] = math.max(1, math.ceil(spec.total() * tonumber(pct) / 100)),
+		[spec.dim] = math.max(min, math.ceil(spec.total() * tonumber(pct) / 100)),
 	})
 end
 

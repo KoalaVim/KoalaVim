@@ -47,6 +47,22 @@
                     "type": "string",
                     "enum": ["inline-float", "bottom-30%", "bottom-50%", "top-30%", "top-50%", "right-30%", "right-50%", "left-30%", "left-50%"]
                 },
+                "inline_float": {
+                    "description": "Settings for the inline-float edit prompt window",
+                    "type": "object",
+                    "properties": {
+                        "min_width": {
+                            "description": "Minimum width of the inline float window",
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "min_height": {
+                            "description": "Minimum height of the inline float window",
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                },
                 "pi_prompt_anchor": {
                     "description": "Prompt anchor character for the pi harness (used to position the inline-float edit prompt)",
                     "type": ["string", "null"]
