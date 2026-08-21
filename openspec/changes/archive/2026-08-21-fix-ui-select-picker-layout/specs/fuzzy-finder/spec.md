@@ -4,7 +4,7 @@
 
 All pickers SHALL support toggling the preview pane, navigating results with keyboard shortcuts, and sending results to the diagnostics panel.
 
-The picker framework SHALL define a single project-wide default layout, and individual picker sources SHALL be able to override it with a layout appropriate to their content. A source's layout override SHALL take effect without requiring the override to restate the full window structure.
+The picker framework SHALL define a single project-wide default layout, and individual picker sources SHALL be able to override it with a layout appropriate to their content. A source's layout override SHALL take effect without requiring the override to restate the full window structure. Result ordering SHALL follow the layout's search field position rather than being fixed globally.
 
 #### Scenario: Toggle preview
 - **WHEN** the user presses the preview-toggle key inside a picker
@@ -21,6 +21,12 @@ The picker framework SHALL define a single project-wide default layout, and indi
 #### Scenario: Source-specific layout override takes effect
 - **WHEN** a picker source declares a layout override, such as a compact popup for short option lists
 - **THEN** the picker SHALL render with that override rather than the project default layout
+
+#### Scenario: Result ordering follows the search field position
+- **WHEN** a picker's layout places the search field below the results list
+- **THEN** results SHALL be ordered bottom-up so the best match sits nearest the search field
+- **WHEN** a picker's layout places the search field above the results list
+- **THEN** results SHALL be ordered top-down, again nearest the search field
 
 ### Requirement: UI-select routing
 

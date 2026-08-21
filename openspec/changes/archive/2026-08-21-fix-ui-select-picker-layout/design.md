@@ -47,7 +47,7 @@ Two prior commits are part of this story. `234ab48` set only `width`/`height` un
 
 ### D1: Redefine `layouts.default` instead of adding a new named preset
 
-Move the custom box list into `picker.layouts.default` and reduce the global `picker.layout` to `{ preset = 'default', reverse = true }`.
+Move the custom box list into `picker.layouts.default` and reduce the global `picker.layout` to `{ preset = 'default' }`. `reverse = true` goes into `layouts.default` alongside the box, not onto the global `layout` (see D4).
 
 The custom layout is the built-in `default` preset with three deltas: 0.9 instead of 0.8, no `min_width`, and input below list instead of above. It is not a new layout, it is a redefinition of the default one. Overriding `layouts.default` says exactly that, and every source that already asks for `default` inherits it with no further wiring.
 
@@ -71,14 +71,26 @@ Revised during implementation. An earlier draft of this design called the inline
 | `spelling` (`ss`) | `preset = 'vscode'` — top-anchored, full width | 40x10 popup at the cursor |
 | `lsp_symbols` (`gs`) | none at all | 100x15 popup at the cursor |
 
-Both keymaps compute `row`/`col` from `vim.fn.screenpos` at call time. No built-in preset anchors a picker at the cursor, and `lsp_symbols` carries no layout preset to inherit. So these tables encode a requirement the preset system does not cover; they are not workarounds for the guard described in D1. They also already set `reverse = false`, which is still needed to stop the global `reverse = true` from leaking in.
+Both keymaps compute `row`/`col` from `vim.fn.screenpos` at call time. No built-in preset anchors a picker at the cursor, and `lsp_symbols` carries no layout preset to inherit. So these tables encode a requirement the preset system does not cover; they are not workarounds for the guard described in D1. They also set `reverse = false`, which was needed to stop the config-level `reverse = true` from leaking in; after D4 it is redundant but harmless, and left in place.
 
 Converting them anyway would mean reproducing the cursor anchoring on top of a preset that pins `min_width = 80` (against `ss`'s desired 40), for no reduction in hardcoded dimensions and with a visual regression risk that cannot be verified without a live UI. Out of scope.
+
+### D4: `reverse` belongs to `layouts.default`, not to the global `layout`
+
+Added after review. The first implementation left `reverse = true` on the global `picker.layout` and opted `sources.select` out with `reverse = false`. That treated one symptom of a wider problem.
+
+`reverse` controls list item direction only (`snacks/picker/core/list.lua:191`), not box order. `config.layout()` builds `todo = { preset, layout }` and merges with the config's `layout` **last**, so a config-level `reverse` beats every preset's own value. Presets whose input sits on top therefore rendered results bottom-up, stranding the first match at the far edge of the window with a gap between input and results.
+
+Observed in `:CmdHistory`: four matches pinned to the bottom of a tall list. `spelling`, `search_history` and `icons` resolve the same `vscode` preset and had it too; the `ss` keymap escaped only because it passes `reverse = false` per call.
+
+Moving `reverse = true` into `layouts.default` scopes it to the one box that actually puts its input at the bottom. Presets that do not ask for bottom-up no longer get it, and the `sources.select` opt-out becomes unnecessary and was removed.
+
+Verified: `reverse` now tracks box order. True for `files` and `diagnostics` (list first), false for `select`, `command_history`, `spelling`, `search_history`, `icons` (input first). Widths and `backdrop = 60` unchanged.
 
 ## Risks / Trade-offs
 
 - [D1 changes `default` for sources that explicitly request `preset = 'default'` rather than inheriting it] → That is the intent; the previous global config already forced the same box on them. No behavior change expected.
-- [`reverse = true` now merges onto resolved presets rather than being part of a fixed box] → Resolved: `reverse` only controls list item ordering (`snacks/picker/core/list.lua:191`), not box order, so the `select` preset keeps its input on top while results would render bottom-up, putting the first match furthest from the input. `sources.select` therefore sets `reverse = false`, matching the `gs` and `ss` popups which already pair input-on-top with `reverse = false`.
+- [`reverse = true` now merges onto resolved presets rather than being part of a fixed box] → Real, and the first fix was wrong. See D4: the config-level `reverse` overrides every preset, so it had to move into `layouts.default` rather than be opted out of per source.
 - [Presets resolving again also restores each preset's `backdrop` setting, which the old global box was suppressing] → Found in live testing: `M.default` is the only preset in `snacks/picker/config/layouts.lua` without `backdrop = false`, so the previous config dimmed the screen behind every picker by inheriting `snacks.win`'s default of 60. Once presets resolve, `select` and `vscode` turn the backdrop off. Restored by setting `layout.layout = { backdrop = 60 }` on the global config, which applies to whichever preset a source resolves to. This is a restoration of prior behavior, not a new choice.
 - [Presets resolving again will change the appearance of other pickers that previously fell through to the global box] → This is a real, intended widening. Sources in `snacks/picker/config/sources.lua` carrying their own `layout` key are `explorer` (disabled here), `command_history`, `icons`, `lines`, `search_history`, `select`, `spelling`, and `gh_reactions` / `gh_labels` / `gh_actions`. The `max_width = 50` cap belongs to the three `gh_*` sources, not to `spelling`. The one reachable here without an explicit per-call override is `command_history` (`:CmdHistory`), which now resolves its `vscode` preset — top-anchored, no preview — instead of the large box. `spelling` and `lsp_symbols` are unaffected because their keymaps pass a full per-call layout (see D3).
 

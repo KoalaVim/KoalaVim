@@ -7,7 +7,7 @@ The cause is config shape, not the picker choice. `snacks.picker.layout` in `lua
 ## What Changes
 
 - Move the custom 0.9x0.9 horizontal picker layout from the global `picker.layout` into `picker.layouts.default`, redefining the built-in `default` preset rather than inlining a box list globally.
-- Reduce the global `picker.layout` to `{ preset = 'default', reverse = true }` so it carries no `layout.layout` key and preset resolution runs again.
+- Reduce the global `picker.layout` to `{ preset = 'default' }` so it carries no `layout.layout` key and preset resolution runs again. `reverse = true` moves into `layouts.default` with the box it belongs to, rather than staying at config level where it would override every preset.
 - `sources.select = { layout = { preset = 'select' } }` (already present but dead) becomes effective: `vim.ui.select` pickers get the compact, preview-less select layout.
 
 No visual change to file, grep, LSP, or diagnostic pickers.

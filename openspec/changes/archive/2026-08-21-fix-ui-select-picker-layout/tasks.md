@@ -1,8 +1,8 @@
 ## 1. Restore preset resolution
 
 - [x] 1.1 In `lua/KoalaVim/plugins/editor.lua`, add `layouts = { default = { layout = { ... } } }` to the `snacks.nvim` `picker` opts, moving the existing `box = 'horizontal'` structure (width/height 0.9, vertical list+input box, preview at width 0.5) into it verbatim
-- [x] 1.2 Reduce the global `picker.layout` to `{ preset = 'default', reverse = true }` so it carries no `layout.layout` key
-- [x] 1.3 Confirm `sources.select = { layout = { preset = 'select' } }` is still present, and add `reverse = false` so the preset's input-on-top box reads top-down like the other compact popups
+- [x] 1.2 Reduce the global `picker.layout` to `{ preset = 'default' }` so it carries no `layout.layout` key, and put `reverse = true` in `layouts.default` with the box it applies to
+- [x] 1.3 Confirm `sources.select = { layout = { preset = 'select' } }` is still present and unchanged (an interim `reverse = false` here was removed once D4 scoped `reverse` correctly)
 
 ## 2. Per-keymap layouts (dropped)
 
@@ -21,3 +21,4 @@ per source (`Snacks.picker.config.layout`), rather than by eye:
 - [x] 3.4 `stylua --check lua/KoalaVim/plugins/editor.lua` passes
 - [x] 3.5 Live check of the sidekick tool picker: geometry and highlights correct, but the dimmed backdrop was gone
 - [x] 3.6 Restore the backdrop with `layout.layout = { backdrop = 60 }` on the global config, and confirm `select` / `files` / `command_history` all resolve `backdrop = 60`, matching the pre-fix config
+- [x] 3.7 Live check of `:CmdHistory` found results stranded at the bottom of the list. Fixed per D4 by moving `reverse` into `layouts.default`; confirmed `reverse` now tracks box order across `files`, `diagnostics`, `select`, `command_history`, `spelling`, `search_history`, `icons`
