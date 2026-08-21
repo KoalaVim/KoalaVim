@@ -684,6 +684,11 @@ table.insert(M, {
 			-- compact, preview-less `select` used by vim.ui.select) a no-op.
 			layouts = {
 				default = {
+					-- `reverse` lives here, not on `layout` below: a config-level `reverse`
+					-- overrides every preset (M.layout merges the preset first, the config
+					-- layout last), which forces bottom-up lists onto presets whose input
+					-- sits on top and strands their results at the far edge.
+					reverse = true,
 					layout = {
 						box = 'horizontal',
 						width = 0.9,
@@ -706,7 +711,6 @@ table.insert(M, {
 			},
 			layout = {
 				preset = 'default',
-				reverse = true,
 				-- Every preset except `default` ships `backdrop = false`. Set it here so
 				-- the dimmed overlay applies whichever preset a source resolves to.
 				layout = { backdrop = 60 },
@@ -735,9 +739,7 @@ table.insert(M, {
 			},
 			sources = {
 				select = {
-					-- `reverse = false` matches the other compact popups (`gs`, `ss`):
-					-- the select preset puts the input on top, so results read top-down.
-					layout = { preset = 'select', reverse = false },
+					layout = { preset = 'select' },
 				},
 				notifications = {
 					confirm = function(picker, item)
