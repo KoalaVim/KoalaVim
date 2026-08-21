@@ -19,4 +19,5 @@ per source (`Snacks.picker.config.layout`), rather than by eye:
 - [x] 3.2 `files`, `lsp_definitions`, `diagnostics` resolve byte-identically before and after: horizontal, 0.9x0.9, `reverse = true`, `list | input | preview:0.5`, nothing hidden
 - [x] 3.3 `command_history` (`:CmdHistory`) now resolves its `vscode` preset (0.4x0.4 vertical, no preview) instead of the large box
 - [x] 3.4 `stylua --check lua/KoalaVim/plugins/editor.lua` passes
-- [ ] 3.5 Open the sidekick tool picker in a live session and confirm it reads well — the one check the resolver cannot make
+- [x] 3.5 Live check of the sidekick tool picker: geometry and highlights correct, but the dimmed backdrop was gone
+- [x] 3.6 Restore the backdrop with `layout.layout = { backdrop = 60 }` on the global config, and confirm `select` / `files` / `command_history` all resolve `backdrop = 60`, matching the pre-fix config

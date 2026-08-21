@@ -707,6 +707,9 @@ table.insert(M, {
 			layout = {
 				preset = 'default',
 				reverse = true,
+				-- Every preset except `default` ships `backdrop = false`. Set it here so
+				-- the dimmed overlay applies whichever preset a source resolves to.
+				layout = { backdrop = 60 },
 			},
 			win = {
 				input = {
