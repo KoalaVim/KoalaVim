@@ -99,6 +99,11 @@ table.insert(M, {
 		require('fff.download').download_or_build_binary()
 	end,
 	lazy = false,
+	config = function(_, opts)
+		-- Required at load time, ofirkai isn't on the rtp when the spec is read
+		opts.hl = require('ofirkai.plugins.fff').hl
+		require('fff').setup(opts)
+	end,
 	opts = {
 		prompt_vim_mode = true,
 		keymaps = {
@@ -114,21 +119,6 @@ table.insert(M, {
 			width = 0.9,
 			preview_size = 0.5,
 			prompt_position = 'bottom',
-		},
-		hl = {
-			normal = 'FffNormal',
-			border = 'FffBorder',
-			title = 'FffTitle',
-			prompt = 'FffPrompt',
-			cursorline = 'FffCursorLine',
-			matched = 'FffMatched',
-			selected = 'FffSelected',
-			selected_active = 'FffSelectedActive',
-			frecency = 'FffFrecency',
-			directory_path = 'FffDirectory',
-			winhl = {
-				preview = 'Normal:FffPreviewNormal,FloatBorder:FffPreviewBorder,FloatTitle:FffPreviewTitle',
-			},
 		},
 	},
 	keys = {
