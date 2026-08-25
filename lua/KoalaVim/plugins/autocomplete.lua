@@ -7,7 +7,7 @@ end
 
 local function all_visible_buffers_source(priority, max_item_count)
 	return {
-		name = 'buffer',
+		name = 'fuzzy_buffer',
 		priority = priority,
 		option = {
 			get_bufnrs = function()
@@ -30,15 +30,15 @@ table.insert(M, {
 	event = { 'InsertEnter', 'CmdLineEnter' },
 	dependencies = {
 		'hrsh7th/cmp-nvim-lsp',
-		'hrsh7th/cmp-buffer',
-		'hrsh7th/cmp-path',
+		'tzachar/cmp-fuzzy-buffer',
+		'tzachar/cmp-fuzzy-path',
 		'hrsh7th/cmp-cmdline',
 		'dcampos/nvim-snippy',
 		'dcampos/cmp-snippy',
 		'ofirgall/cmp-lspkind-priority',
 		'onsails/lspkind.nvim',
 		'windwp/nvim-autopairs',
-		'octaltree/cmp-look', -- TODO: maybe replace with https://github.com/uga-rosa/cmp-dictionary to support non linux users
+		'uga-rosa/cmp-dictionary',
 		'hrsh7th/cmp-calc',
 	},
 	config = function(_, opts)
@@ -156,16 +156,14 @@ table.insert(M, {
 						return true
 					end,
 				},
-				{ name = 'path', option = { trailing_slash = true }, priority = 500 },
+				{ name = 'fuzzy_path', option = { trailing_slash = true }, priority = 500 },
 				{ name = 'snippy', priority = 200 },
-				-- { name = 'buffer', priority = 100, max_item_count = 5 },
 				all_visible_buffers_source(150, 10),
 				{
-					name = 'look',
+					name = 'dictionary',
 					priority = 50,
 					max_item_count = 5,
 					keyword_length = 3,
-					option = { convert_case = true, loud = true },
 				},
 				{ name = 'calc', priority = 50 },
 			}),
@@ -200,7 +198,7 @@ table.insert(M, {
 
 		cmp.setup.cmdline(':', {
 			sources = cmp.config.sources({
-				{ name = 'path', option = { trailing_slash = true } },
+				{ name = 'fuzzy_path', option = { trailing_slash = true } },
 			}, {
 				{
 					name = 'cmdline',
@@ -225,6 +223,25 @@ table.insert(M, {
 
 -- Lazy load cmp_nvim_lsp for capabilities
 table.insert(M, { 'hrsh7th/cmp-nvim-lsp', lazy = true })
+
+-- Shared dependency for cmp-fuzzy-buffer and cmp-fuzzy-path
+table.insert(M, {
+	'tzachar/fuzzy.nvim',
+	lazy = true,
+	dependencies = { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+})
+
+-- Fuzzy matching cmp source for buffer words
+table.insert(M, { 'tzachar/cmp-fuzzy-buffer', dependencies = { 'tzachar/fuzzy.nvim' }, lazy = true })
+
+-- Fuzzy matching cmp source for filesystem paths
+table.insert(M, { 'tzachar/cmp-fuzzy-path', dependencies = { 'tzachar/fuzzy.nvim' }, lazy = true })
+
+-- Dictionary based cmp source
+table.insert(M, { 'uga-rosa/cmp-dictionary', lazy = true })
+
+-- Mention and complete file paths in insert mode
+table.insert(M, { 'not-manu/filemention.nvim', event = 'InsertEnter' })
 
 -- Github cmp source
 table.insert(M, {
