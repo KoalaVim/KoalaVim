@@ -75,9 +75,7 @@ table.insert(M, {
 				if ai.focus_prompt_win() then
 					return
 				end
-				if ai.is_question_active()
-					or (ai.get_attached_agent() == 'claude' and vim.fn.has('win32') == 1)
-				then
+				if ai.is_question_active() or (ai.get_attached_agent() == 'claude' and vim.fn.has('win32') == 1) then
 					ai.edit_prompt()
 				else
 					ai.send_editor_key()
