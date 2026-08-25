@@ -231,7 +231,7 @@ table.insert(M, { 'hrsh7th/cmp-nvim-lsp', lazy = true })
 table.insert(M, {
 	'tzachar/fuzzy.nvim',
 	lazy = true,
-	dependencies = { { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' } },
+	dependencies = { { 'romgrk/fzy-lua-native', build = 'make' } },
 })
 
 -- Fuzzy matching cmp source for buffer words
