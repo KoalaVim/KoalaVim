@@ -776,7 +776,15 @@ local editor_file_sessions = {}
 --- FIFO (proxy killed) fails in the child process, not here.
 ---@param pipe string
 local function signal_editor_pipe(pipe)
-	pcall(vim.system, { 'sh', '-c', 'echo done > ' .. vim.fn.shellescape(pipe) })
+	if vim.fn.has('win32') == 1 then
+		local f = io.open(pipe, 'w')
+		if f then
+			f:write('done\n')
+			f:close()
+		end
+	else
+		pcall(vim.system, { 'sh', '-c', 'echo done > ' .. vim.fn.shellescape(pipe) })
+	end
 end
 
 local function find_sidekick_terminal_win()
