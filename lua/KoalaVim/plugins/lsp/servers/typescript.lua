@@ -11,9 +11,7 @@ local inlay_hints = {
 	enumMemberValues = { enabled = true },
 }
 
-table.insert(LSP_LAZY_SERVERS, function()
-	local conf = require('KoalaVim').conf.lsp
-
+LSP_SERVER(function(conf)
 	local opts = {
 		on_attach = LSP_ON_ATTACH,
 		on_init = LSP_ON_INIT,

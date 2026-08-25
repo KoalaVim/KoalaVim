@@ -44,19 +44,26 @@ table.insert(M, {
 		LSP_CAPS = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 		LSP_CAPS.textDocument.completion.completionItem.labelDetailsSupport = nil -- Overriding with false doesn't work for some reason
 
-		for _, resolver in ipairs(LSP_LAZY_SERVERS) do
-			local name, opts = resolver()
-			if name then
-				LSP_SERVERS[name] = opts
+		local lsp_conf = require('KoalaVim').conf.lsp
+		local servers = {}
+		for key, value in pairs(LSP_SERVERS) do
+			if type(value) == 'function' then
+				local name, opts = value(lsp_conf)
+				if name then
+					servers[name] = opts
+				end
+			else
+				servers[key] = value
 			end
 		end
+		LSP_SERVERS = servers
 
-		local function setup_server(server)
+		local function setup_server(server, server_opts)
 			local server_opts_merged = vim.tbl_deep_extend('force', {
 				capabilities = LSP_CAPS,
 				on_attach = LSP_ON_ATTACH,
 				on_init = LSP_ON_INIT,
-			}, LSP_SERVERS[server] or {})
+			}, server_opts)
 
 			vim.lsp.config[server] = server_opts_merged
 			vim.lsp.enable(server)
@@ -67,7 +74,7 @@ table.insert(M, {
 		local mason_available_servers = mlsp.get_available_servers()
 		-- DEBUG(mason_available_servers, 'mason_available_servers')
 
-		for server, server_opts in pairs(LSP_SERVERS) do
+		for server, server_opts in pairs(servers) do
 			-- Use mason name instead of server name if .mason set to string
 			local mason_server_name = server_opts.mason or server
 
@@ -76,7 +83,7 @@ table.insert(M, {
 			end
 
 			if server_opts.dont_setup ~= true then
-				setup_server(server)
+				setup_server(server, server_opts)
 			end
 		end
 		DEBUG(mason_ensure_installed, 'mason_ensure_installed')
