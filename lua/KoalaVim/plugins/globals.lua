@@ -2,6 +2,7 @@
 local M = {}
 
 LSP_SERVERS = {}
+LSP_LAZY_SERVERS = {}
 NONE_LS_SRCS = {}
 HYDRAS = {}
 CONFORM_FORMATTERS = {}

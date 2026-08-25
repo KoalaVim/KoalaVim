@@ -166,6 +166,16 @@
             "description": "Language server protocol settings (intellisense)",
             "type": "object",
             "properties": {
+                "tsgo": {
+                    "description": "tsgo (TypeScript native Go compiler) LSP settings",
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "description": "Use tsgo instead of vtsls as the TypeScript/JavaScript LSP server",
+                            "type": "boolean"
+                        }
+                    }
+                },
                 "vtsls": {
                     "description": "TypeScript/JavaScript language server settings",
                     "type": "object",
