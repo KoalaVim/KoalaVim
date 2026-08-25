@@ -40,6 +40,7 @@ table.insert(M, {
 		'windwp/nvim-autopairs',
 		'uga-rosa/cmp-dictionary',
 		'hrsh7th/cmp-calc',
+		'not-manu/filemention.nvim',
 	},
 	config = function(_, opts)
 		-- onsails/lspkind-nvim
@@ -156,6 +157,7 @@ table.insert(M, {
 						return true
 					end,
 				},
+				{ name = 'filemention', priority = 600 },
 				{ name = 'fuzzy_path', option = { trailing_slash = true }, priority = 500 },
 				{ name = 'snippy', priority = 200 },
 				all_visible_buffers_source(150, 10),
@@ -174,6 +176,7 @@ table.insert(M, {
 			sorting = {
 				comparators = {
 					lspkind_priority.compare, -- compare.kind,
+					require('cmp_fuzzy_buffer.compare'),
 					compare.offset,
 					compare.exact,
 					-- compare.scopes,
@@ -228,7 +231,7 @@ table.insert(M, { 'hrsh7th/cmp-nvim-lsp', lazy = true })
 table.insert(M, {
 	'tzachar/fuzzy.nvim',
 	lazy = true,
-	dependencies = { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+	dependencies = { { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' } },
 })
 
 -- Fuzzy matching cmp source for buffer words
@@ -238,10 +241,33 @@ table.insert(M, { 'tzachar/cmp-fuzzy-buffer', dependencies = { 'tzachar/fuzzy.nv
 table.insert(M, { 'tzachar/cmp-fuzzy-path', dependencies = { 'tzachar/fuzzy.nvim' }, lazy = true })
 
 -- Dictionary based cmp source
-table.insert(M, { 'uga-rosa/cmp-dictionary', lazy = true })
+table.insert(M, {
+	'uga-rosa/cmp-dictionary',
+	lazy = true,
+	config = function()
+		local dict_path
+		if vim.fn.has('mac') == 1 then
+			dict_path = '/usr/share/dict/words'
+		else
+			dict_path = '/usr/share/dict/words'
+		end
+		require('cmp_dictionary').setup({
+			paths = { dict_path },
+			exact_length = 2,
+		})
+	end,
+})
 
 -- Mention and complete file paths in insert mode
-table.insert(M, { 'not-manu/filemention.nvim', event = 'InsertEnter' })
+table.insert(M, {
+	'not-manu/filemention.nvim',
+	event = 'InsertEnter',
+	dependencies = { 'dmtrKovalenko/fff.nvim' },
+	opts = {
+		filetypes = { 'markdown', 'text', 'gitcommit', 'sidekick_koala_prompt' },
+		finder = 'fff',
+	},
+})
 
 -- Github cmp source
 table.insert(M, {
