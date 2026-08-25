@@ -1,3 +1,6 @@
+dev-setup: ## Setup dev environment (git hooks)
+	git config --local include.path ../.gitconfig
+
 tmpconfig: ## Make a skeleton for a template config
 	@./.internal/makescripts/tmpconfig
 

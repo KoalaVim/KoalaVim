@@ -120,10 +120,10 @@ Plugins are organized by category. See [`docs/plugins/README.md`](docs/plugins/R
 
 ## Contributing
 
-- Enable the pre-commit hook:
+- Setup dev environment (git hooks):
 
   ```bash
-  git config --local include.path ../.gitconfig
+  make dev-setup
   ```
 
 - Lua formatting via [`stylua`](https://github.com/JohnnyMorganz/StyLua) (config: [`stylua.toml`](stylua.toml)).

@@ -14,6 +14,9 @@ set -e
 HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
 KV_ENV="$(basename "$(dirname "$(dirname "$(dirname "$HOOK_DIR")")")")"
 
+# **TMP FIX** Windows kv uses "<env>-data" directory names
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) KV_ENV="${KV_ENV%-data}" ;; esac
+
 
 ### Update lock file ###
 # Stash dirty before generating lockfile
