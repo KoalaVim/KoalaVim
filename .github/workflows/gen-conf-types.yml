@@ -1,0 +1,31 @@
+name: gen-conf-types
+
+on:
+  push:
+    paths:
+      - 'config_scheme.jsonc'
+      - 'scripts/gen_conf_types.lua'
+      - 'lua/KoalaVim/types/conf.lua'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    name: Check generated types are up to date
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Neovim
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: stable
+
+      - name: Regenerate types
+        run: nvim -l scripts/gen_conf_types.lua
+
+      - name: Check for diff
+        run: |
+          if ! git diff --exit-code lua/KoalaVim/types/conf.lua; then
+            echo "::error::lua/KoalaVim/types/conf.lua is out of date. Run: nvim -l scripts/gen_conf_types.lua"
+            exit 1
+          fi
