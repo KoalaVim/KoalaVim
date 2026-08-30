@@ -161,7 +161,7 @@ table.insert(M, {
 				},
 				{ name = 'filemention', priority = 600 },
 				{ name = 'fuzzy_path', option = { trailing_slash = true, fuzzy_backend = 'zf' }, priority = 500 },
-				{ name = 'agents_skills', priority = 300 },
+				{ name = 'agents_skills', priority = 300, option = { fuzzy_backend = 'fzf' } },
 				{ name = 'snippy', priority = 200 },
 				all_visible_buffers_source(150, 10),
 				{
