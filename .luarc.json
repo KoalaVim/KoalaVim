@@ -1,0 +1,27 @@
+{
+    "diagnostics.globals": [
+        "LSP_SERVERS",
+        "LSP_SERVER",
+        "LSP_ON_INIT",
+        "LSP_ON_ATTACH",
+        "LSP_ON_ATTACH_NO_HOVER",
+        "LSP_CAPS",
+        "NONE_LS_SRCS",
+        "HYDRAS",
+        "CONFORM_FORMATTERS",
+        "HELPERS",
+        "GHOST_FILETYPES",
+        "DEBUG",
+        "KOALA_AUTOSAVE_SESSION",
+        "KOALA_SESSION_LOADED",
+        "CODE_DIFF_OPENED",
+        "AUTO_FORMAT_BLACKLIST",
+        "AUTO_FORMAT_FT_BLACKLIST",
+        "REFRESH_LSP_COUNT",
+        "CLOSE_KOALA_DASHBOARD",
+        "KoalaDisableAutoSession",
+        "KoalaDisableSession",
+        "KoalaEnableSession",
+        "KoalaDeleteCurrentSession"
+    ]
+}

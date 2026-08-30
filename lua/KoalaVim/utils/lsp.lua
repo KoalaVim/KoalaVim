@@ -70,8 +70,9 @@ local function _format(buf, win, async, blacklist, blacklist_ft)
 
 		-- applied only for lsp
 		filter = function(client)
-			if LSP_SERVERS[client.name] then
-				return not vim.tbl_contains(blacklist, client.name) and not LSP_SERVERS[client.name].dont_format
+			local resolved = LOADED_LSP_SERVERS or {}
+			if resolved[client.name] then
+				return not vim.tbl_contains(blacklist, client.name) and not resolved[client.name].dont_format
 			end
 			return false
 		end,
