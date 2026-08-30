@@ -70,7 +70,7 @@ local function _format(buf, win, async, blacklist, blacklist_ft)
 
 		-- applied only for lsp
 		filter = function(client)
-			local resolved = require('KoalaVim').state.lsp_servers or {}
+			local resolved = LOADED_LSP_SERVERS or {}
 			if resolved[client.name] then
 				return not vim.tbl_contains(blacklist, client.name) and not resolved[client.name].dont_format
 			end

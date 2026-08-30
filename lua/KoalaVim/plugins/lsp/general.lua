@@ -56,7 +56,7 @@ table.insert(M, {
 				servers[key] = value
 			end
 		end
-		require('KoalaVim').state.lsp_servers = servers
+		LOADED_LSP_SERVERS = servers
 
 		local function setup_server(server, server_opts)
 			local server_opts_merged = vim.tbl_deep_extend('force', {
