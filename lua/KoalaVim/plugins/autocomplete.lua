@@ -40,6 +40,7 @@ table.insert(M, {
 		'onsails/lspkind.nvim',
 		'windwp/nvim-autopairs',
 		'KoalaVim/cmp-fuzzy-dictionary',
+		'KoalaVim/cmp-agents-skills',
 		'hrsh7th/cmp-calc',
 		'not-manu/filemention.nvim',
 	},
@@ -160,6 +161,7 @@ table.insert(M, {
 				},
 				{ name = 'filemention', priority = 600 },
 				{ name = 'fuzzy_path', option = { trailing_slash = true, fuzzy_backend = 'zf' }, priority = 500 },
+				{ name = 'agents_skills', priority = 300 },
 				{ name = 'snippy', priority = 200 },
 				all_visible_buffers_source(150, 10),
 				{
@@ -256,6 +258,13 @@ table.insert(M, {
 			fuzzy_backend = 'fzf',
 		})
 	end,
+})
+
+-- Agent skills cmp source
+table.insert(M, {
+	'KoalaVim/cmp-agents-skills',
+	lazy = true,
+	dependencies = { 'KoalaVim/fuzzy.nvim' },
 })
 
 -- Mention and complete file paths in insert mode
