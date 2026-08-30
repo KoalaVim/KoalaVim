@@ -227,18 +227,18 @@ table.insert(M, {
 -- Lazy load cmp_nvim_lsp for capabilities
 table.insert(M, { 'hrsh7th/cmp-nvim-lsp', lazy = true })
 
--- Shared dependency for cmp-fuzzy-buffer and cmp-fuzzy-path
+-- Shared dependency for cmp-fuzzy-buffer and cmp-fuzzy-path (using fork with fzy_matcher fix)
 table.insert(M, {
-	'tzachar/fuzzy.nvim',
+	'KoalaVim/fuzzy.nvim',
 	lazy = true,
 	dependencies = { { 'romgrk/fzy-lua-native', build = 'make' } },
 })
 
 -- Fuzzy matching cmp source for buffer words
-table.insert(M, { 'tzachar/cmp-fuzzy-buffer', dependencies = { 'tzachar/fuzzy.nvim' }, lazy = true })
+table.insert(M, { 'tzachar/cmp-fuzzy-buffer', dependencies = { 'KoalaVim/fuzzy.nvim' }, lazy = true })
 
 -- Fuzzy matching cmp source for filesystem paths
-table.insert(M, { 'tzachar/cmp-fuzzy-path', dependencies = { 'tzachar/fuzzy.nvim' }, lazy = true })
+table.insert(M, { 'tzachar/cmp-fuzzy-path', dependencies = { 'KoalaVim/fuzzy.nvim' }, lazy = true })
 
 -- Dictionary based cmp source
 table.insert(M, {

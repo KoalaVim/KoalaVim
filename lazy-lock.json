@@ -30,7 +30,7 @@
   "filemention.nvim": { "branch": "main", "commit": "d8aa9116fa441d0529c53bb5cb2c321f30d9544d" },
   "flit.nvim": { "branch": "main", "commit": "ef18183b22377741e154cffb5b914516381d3870" },
   "format-on-leave.nvim": { "branch": "conform", "commit": "cd167b9512a0eb6a552db8afd1e307a21682f951" },
-  "fuzzy.nvim": { "branch": "master", "commit": "68608f6a232f7e73ccf81437bf12108128f15bd4" },
+  "fuzzy.nvim": { "branch": "fix/fzy-matcher", "commit": "8380a07defd7d5fafdd8caa6c3abbfaad16c6739" },
   "fzy-lua-native": { "branch": "master", "commit": "9d720745d5c2fb563c0d86c17d77612a3519c506" },
   "git-blame.nvim": { "branch": "main", "commit": "5c536e2d4134d064aa3f41575280bc8a2a0e03d7" },
   "git-messenger.vim": { "branch": "master", "commit": "fd124457378a295a5d1036af4954b35d6b807385" },
