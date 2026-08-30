@@ -38,7 +38,7 @@ table.insert(M, {
 		'ofirgall/cmp-lspkind-priority',
 		'onsails/lspkind.nvim',
 		'windwp/nvim-autopairs',
-		'uga-rosa/cmp-dictionary',
+		'KoalaVim/cmp-fuzzy-dictionary',
 		'hrsh7th/cmp-calc',
 		'not-manu/filemention.nvim',
 	},
@@ -162,7 +162,7 @@ table.insert(M, {
 				{ name = 'snippy', priority = 200 },
 				all_visible_buffers_source(150, 10),
 				{
-					name = 'dictionary',
+					name = 'fuzzy_dictionary',
 					priority = 50,
 					max_item_count = 5,
 					keyword_length = 3,
@@ -240,20 +240,14 @@ table.insert(M, { 'tzachar/cmp-fuzzy-buffer', dependencies = { 'KoalaVim/fuzzy.n
 -- Fuzzy matching cmp source for filesystem paths
 table.insert(M, { 'tzachar/cmp-fuzzy-path', dependencies = { 'KoalaVim/fuzzy.nvim' }, lazy = true })
 
--- Dictionary based cmp source
+-- Fuzzy dictionary cmp source
 table.insert(M, {
-	'uga-rosa/cmp-dictionary',
+	'KoalaVim/cmp-fuzzy-dictionary',
 	lazy = true,
+	dependencies = { 'KoalaVim/fuzzy.nvim' },
 	config = function()
-		local dict_path
-		if vim.fn.has('mac') == 1 then
-			dict_path = '/usr/share/dict/words'
-		else
-			dict_path = '/usr/share/dict/words'
-		end
-		require('cmp_dictionary').setup({
-			paths = { dict_path },
-			exact_length = 2,
+		require('cmp_fuzzy_dictionary').reload({
+			paths = { '/usr/share/dict/words' },
 		})
 	end,
 })
