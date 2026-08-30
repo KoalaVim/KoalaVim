@@ -164,8 +164,8 @@ table.insert(M, {
 				{
 					name = 'fuzzy_dictionary',
 					priority = 50,
-					max_item_count = 5,
-					keyword_length = 3,
+					max_item_count = 7,
+					keyword_length = 2,
 				},
 				{ name = 'calc', priority = 50 },
 			}),
