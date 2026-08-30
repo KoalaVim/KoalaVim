@@ -7,9 +7,10 @@ end
 
 local function all_visible_buffers_source(priority, max_item_count)
 	return {
-		name = 'buffer',
+		name = 'fuzzy_buffer',
 		priority = priority,
 		option = {
+			fuzzy_backend = 'fzy',
 			get_bufnrs = function()
 				local bufs = {}
 				for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -30,16 +31,18 @@ table.insert(M, {
 	event = { 'InsertEnter', 'CmdLineEnter' },
 	dependencies = {
 		'hrsh7th/cmp-nvim-lsp',
-		'hrsh7th/cmp-buffer',
-		'hrsh7th/cmp-path',
+		'KoalaVim/cmp-fuzzy-buffer',
+		'KoalaVim/cmp-fuzzy-path',
 		'hrsh7th/cmp-cmdline',
 		'dcampos/nvim-snippy',
 		'dcampos/cmp-snippy',
 		'ofirgall/cmp-lspkind-priority',
 		'onsails/lspkind.nvim',
 		'windwp/nvim-autopairs',
-		'octaltree/cmp-look', -- TODO: maybe replace with https://github.com/uga-rosa/cmp-dictionary to support non linux users
+		'KoalaVim/cmp-fuzzy-dictionary',
+		'KoalaVim/cmp-agents-skills',
 		'hrsh7th/cmp-calc',
+		'not-manu/filemention.nvim',
 	},
 	config = function(_, opts)
 		-- onsails/lspkind-nvim
@@ -156,16 +159,16 @@ table.insert(M, {
 						return true
 					end,
 				},
-				{ name = 'path', option = { trailing_slash = true }, priority = 500 },
+				{ name = 'filemention', priority = 600 },
+				{ name = 'fuzzy_path', option = { trailing_slash = true, fuzzy_backend = 'zf' }, priority = 500 },
+				{ name = 'agents_skills', priority = 300 },
 				{ name = 'snippy', priority = 200 },
-				-- { name = 'buffer', priority = 100, max_item_count = 5 },
 				all_visible_buffers_source(150, 10),
 				{
-					name = 'look',
+					name = 'fuzzy_dictionary',
 					priority = 50,
-					max_item_count = 5,
-					keyword_length = 3,
-					option = { convert_case = true, loud = true },
+					max_item_count = 7,
+					keyword_length = 2,
 				},
 				{ name = 'calc', priority = 50 },
 			}),
@@ -176,6 +179,7 @@ table.insert(M, {
 			sorting = {
 				comparators = {
 					lspkind_priority.compare, -- compare.kind,
+					require('cmp_fuzzy_buffer.compare'),
 					compare.offset,
 					compare.exact,
 					-- compare.scopes,
@@ -200,7 +204,7 @@ table.insert(M, {
 
 		cmp.setup.cmdline(':', {
 			sources = cmp.config.sources({
-				{ name = 'path', option = { trailing_slash = true } },
+				{ name = 'fuzzy_path', option = { trailing_slash = true, fuzzy_backend = 'zf' } },
 			}, {
 				{
 					name = 'cmdline',
@@ -225,6 +229,54 @@ table.insert(M, {
 
 -- Lazy load cmp_nvim_lsp for capabilities
 table.insert(M, { 'hrsh7th/cmp-nvim-lsp', lazy = true })
+
+-- Shared dependency for cmp-fuzzy-buffer, cmp-fuzzy-path, and cmp-fuzzy-dictionary
+table.insert(M, {
+	'KoalaVim/fuzzy.nvim',
+	lazy = true,
+	dependencies = {
+		{ 'romgrk/fzy-lua-native', build = 'make' },
+		{ 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+		{ 'natecraddock/telescope-zf-native.nvim' },
+	},
+})
+
+-- Fuzzy matching cmp source for buffer words
+table.insert(M, { 'KoalaVim/cmp-fuzzy-buffer', dependencies = { 'KoalaVim/fuzzy.nvim' }, lazy = true })
+
+-- Fuzzy matching cmp source for filesystem paths
+table.insert(M, { 'KoalaVim/cmp-fuzzy-path', dependencies = { 'KoalaVim/fuzzy.nvim' }, lazy = true })
+
+-- Fuzzy dictionary cmp source
+table.insert(M, {
+	'KoalaVim/cmp-fuzzy-dictionary',
+	lazy = true,
+	dependencies = { 'KoalaVim/fuzzy.nvim' },
+	config = function()
+		require('cmp_fuzzy_dictionary').reload({
+			paths = { '/usr/share/dict/words' },
+			fuzzy_backend = 'fzf',
+		})
+	end,
+})
+
+-- Agent skills cmp source
+table.insert(M, {
+	'KoalaVim/cmp-agents-skills',
+	lazy = true,
+	dependencies = { 'KoalaVim/fuzzy.nvim' },
+})
+
+-- Mention and complete file paths in insert mode
+table.insert(M, {
+	'not-manu/filemention.nvim',
+	event = 'InsertEnter',
+	dependencies = { 'dmtrKovalenko/fff.nvim' },
+	opts = {
+		filetypes = { 'markdown', 'text', 'gitcommit', 'sidekick_koala_prompt' },
+		finder = 'fff',
+	},
+})
 
 -- Github cmp source
 table.insert(M, {
