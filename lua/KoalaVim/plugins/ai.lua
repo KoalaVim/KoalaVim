@@ -48,6 +48,19 @@ table.insert(M, {
 					},
 				},
 			},
+			prompts = {
+				changes = 'Review the branch changes',
+				conflicts = 'Resolve conflicts, dont rebase --continue, dont push',
+				-- simple context prompts
+				buffers = '{buffers}',
+				file = '{file}',
+				line = '{line}',
+				position = '{position}',
+				quickfix = '{quickfix}',
+				selection = '{selection}',
+				['function'] = '{function}',
+				class = '{class}',
+			},
 		},
 	},
 	keys = {
