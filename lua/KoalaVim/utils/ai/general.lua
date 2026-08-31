@@ -728,13 +728,23 @@ function M.edit_prompt()
 	open_prompt_buffer(agent, current_prompt_lines, term_win, clear_override, single_line)
 end
 
+-- Cursor doesn't support $EDITOR in "Describe how to revise the plan" prompt
+local function is_cursor_revise_plan_prompt()
+	return M.get_attached_agent() == 'cursor'
+		and vim.tbl_contains(GET_PROMPT.cursor()(), 'Describe how to revise the plan')
+end
+
 function M.trigger_edit_prompt()
 	if M.focus_prompt_win() then
 		return
 	end
 	-- Cursor doesn't support $EDITOR in question mode
 	-- Claude's $EDITOR proxy doesn't work on win32 for unknown reason
-	if M.is_question_active() or (M.get_attached_agent() == 'claude' and vim.fn.has('win32') == 1) then
+	if
+		M.is_question_active()
+		or (M.get_attached_agent() == 'claude' and vim.fn.has('win32') == 1)
+		or is_cursor_revise_plan_prompt()
+	then
 		M.edit_prompt()
 	else
 		M.send_editor_key()
