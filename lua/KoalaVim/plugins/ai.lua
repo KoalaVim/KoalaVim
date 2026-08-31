@@ -85,14 +85,7 @@ table.insert(M, {
 		{
 			'<C-e>',
 			function()
-				if ai.focus_prompt_win() then
-					return
-				end
-				if ai.is_question_active() or (ai.get_attached_agent() == 'claude' and vim.fn.has('win32') == 1) then
-					ai.edit_prompt()
-				else
-					ai.send_editor_key()
-				end
+				ai.trigger_edit_prompt()
 			end,
 			ft = 'sidekick_terminal',
 			desc = 'edit prompt via CLI native editor',
@@ -101,14 +94,7 @@ table.insert(M, {
 		{
 			'<C-g>',
 			function()
-				if ai.focus_prompt_win() then
-					return
-				end
-				if ai.get_attached_agent() == 'claude' and vim.fn.has('win32') == 1 then
-					ai.edit_prompt()
-				else
-					ai.send_editor_key()
-				end
+				ai.trigger_edit_prompt()
 			end,
 			ft = 'sidekick_terminal',
 			desc = 'native CLI editor (freeze for claude)',

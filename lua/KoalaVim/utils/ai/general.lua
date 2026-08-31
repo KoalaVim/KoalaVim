@@ -728,6 +728,19 @@ function M.edit_prompt()
 	open_prompt_buffer(agent, current_prompt_lines, term_win, clear_override, single_line)
 end
 
+function M.trigger_edit_prompt()
+	if M.focus_prompt_win() then
+		return
+	end
+	-- Cursor doesn't support $EDITOR in question mode
+	-- Claude's $EDITOR proxy doesn't work on win32 for unknown reason
+	if M.is_question_active() or (M.get_attached_agent() == 'claude' and vim.fn.has('win32') == 1) then
+		M.edit_prompt()
+	else
+		M.send_editor_key()
+	end
+end
+
 --- Open the edit-prompt buffer prefilled with arbitrary content.
 --- Used by the history picker to "load" a past prompt.
 ---@param content string
