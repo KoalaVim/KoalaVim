@@ -731,7 +731,7 @@ end
 -- Cursor doesn't support $EDITOR in "Describe how to revise the plan" prompt
 local function is_cursor_revise_plan_prompt()
 	return M.get_attached_agent() == 'cursor'
-		and vim.tbl_contains(GET_PROMPT.cursor()(), 'Describe how to revise the plan')
+		and vim.tbl_contains(GET_PROMPT.cursor()(true), 'Describe how to revise the plan (Enter to submit, Esc to cancel)')
 end
 
 function M.trigger_edit_prompt()

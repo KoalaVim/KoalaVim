@@ -6,7 +6,7 @@ local IGNORE_PREFIXES = {
 	'Describe how to revise the plan',
 }
 
-function M.get_prompt()
+function M.get_prompt(return_raw_prompt)
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
 
 	-- Find the last prompt box (bottom-up search)
@@ -42,6 +42,10 @@ function M.get_prompt()
 				table.insert(prompt_lines, content)
 			end
 		end
+	end
+
+	if return_raw_prompt then
+		return prompt_lines
 	end
 
 	if prompt_lines[1] then
