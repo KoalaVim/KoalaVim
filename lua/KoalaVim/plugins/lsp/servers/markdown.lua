@@ -98,6 +98,41 @@ table.insert(M, {
 	},
 	config = function(_, opts)
 		require('render-markdown').setup(opts)
+
+		-- Keep rendering while marking with mouse
+		local mouse_visual_active = false
+		local drag_key = vim.api.nvim_replace_termcodes('<LeftDrag>', true, false, true)
+		local function set_visual_render(enable)
+			local state = require('render-markdown.state')
+			if not state.config then
+				return
+			end
+			if enable then
+				state.config.render_modes = { 'n', 'c', 't', 'v', 'V', '\22' }
+			else
+				state.config.render_modes = { 'n', 'c', 't' }
+			end
+			state.cache = {}
+		end
+		vim.keymap.set({ 'n', 'v' }, '<LeftDrag>', function()
+			if not mouse_visual_active and vim.bo.filetype == 'markdown' then
+				mouse_visual_active = true
+				set_visual_render(true)
+			end
+			vim.api.nvim_feedkeys(drag_key, 'in', false)
+		end)
+		vim.api.nvim_create_autocmd('ModeChanged', {
+			pattern = '[vV\x16]*:*',
+			callback = function()
+				local mode = vim.fn.mode()
+				if mode ~= 'v' and mode ~= 'V' and mode ~= '\22' then
+					if mouse_visual_active then
+						mouse_visual_active = false
+						set_visual_render(false)
+					end
+				end
+			end,
+		})
 	end,
 })
 
