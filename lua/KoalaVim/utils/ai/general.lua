@@ -371,7 +371,7 @@ end
 ---@param win_id integer
 local function setup_prompt_split(bufid, win_id)
 	vim.bo[bufid].filetype = 'sidekick_koala_prompt'
-	vim.api.nvim_feedkeys('G$a ', 'n', false)
+	vim.api.nvim_feedkeys('G$a', 'n', false)
 
 	local picker = require('sidekick.cli.picker').get()
 
@@ -731,7 +731,10 @@ end
 -- Cursor doesn't support $EDITOR in "Describe how to revise the plan" prompt
 local function is_cursor_revise_plan_prompt()
 	return M.get_attached_agent() == 'cursor'
-		and vim.tbl_contains(GET_PROMPT.cursor()(true), 'Describe how to revise the plan (Enter to submit, Esc to cancel)')
+		and vim.tbl_contains(
+			GET_PROMPT.cursor()(true),
+			'Describe how to revise the plan (Enter to submit, Esc to cancel)'
+		)
 end
 
 function M.trigger_edit_prompt()
