@@ -696,6 +696,21 @@ table.insert(M, {
 		legacy_computing_symbols_support = true,
 		smear_insert_mode = false, -- no effect?
 	},
+	config = function(_, opts)
+		require('smear_cursor').setup(opts)
+
+		vim.api.nvim_create_autocmd('VimEnter', {
+			callback = function()
+				io.write('\x1b]7776;shader=off\x1b\\')
+			end,
+		})
+
+		vim.api.nvim_create_autocmd('VimLeave', {
+			callback = function()
+				io.write('\x1b]7776;shader=on\x1b\\')
+			end,
+		})
+	end,
 	specs = {},
 })
 
