@@ -102,6 +102,8 @@ table.insert(M, {
 		-- Keep rendering while marking with mouse
 		local mouse_visual_active = false
 		local drag_key = vim.api.nvim_replace_termcodes('<LeftDrag>', true, false, true)
+		local double_click_key = vim.api.nvim_replace_termcodes('<2-LeftMouse>', true, false, true)
+		local triple_click_key = vim.api.nvim_replace_termcodes('<3-LeftMouse>', true, false, true)
 		local function set_visual_render(enable)
 			local state = require('render-markdown.state')
 			if not state.config then
@@ -114,23 +116,34 @@ table.insert(M, {
 			end
 			state.cache = {}
 		end
-		vim.keymap.set({ 'n', 'v' }, '<LeftDrag>', function()
-			if not mouse_visual_active and vim.bo.filetype == 'markdown' then
+		local function mouse_visual_start(feedkey)
+			if vim.bo.filetype == 'markdown' then
 				mouse_visual_active = true
 				set_visual_render(true)
 			end
-			vim.api.nvim_feedkeys(drag_key, 'in', false)
+			vim.api.nvim_feedkeys(feedkey, 'in', false)
+		end
+		vim.keymap.set({ 'n', 'v' }, '<LeftDrag>', function()
+			mouse_visual_start(drag_key)
+		end)
+		vim.keymap.set({ 'n', 'v' }, '<2-LeftMouse>', function()
+			mouse_visual_start(double_click_key)
+		end)
+		vim.keymap.set({ 'n', 'v' }, '<3-LeftMouse>', function()
+			mouse_visual_start(triple_click_key)
 		end)
 		vim.api.nvim_create_autocmd('ModeChanged', {
 			pattern = '[vV\x16]*:*',
-			callback = function()
-				local mode = vim.fn.mode()
-				if mode ~= 'v' and mode ~= 'V' and mode ~= '\22' then
-					if mouse_visual_active then
-						mouse_visual_active = false
-						set_visual_render(false)
+			callback = function(args)
+				vim.schedule(function()
+					local mode = vim.fn.mode()
+					if mode ~= 'v' and mode ~= 'V' and mode ~= '\22' then
+						if mouse_visual_active then
+							mouse_visual_active = false
+							set_visual_render(false)
+						end
 					end
-				end
+				end)
 			end,
 		})
 	end,
