@@ -51,6 +51,7 @@ table.insert(M, {
 			prompts = {
 				changes = 'Review the branch changes',
 				conflicts = 'Resolve conflicts, dont rebase --continue, dont push',
+				sync_n_archive = '/openspec-sync-specs /openspec-archive-change and git commit',
 				-- simple context prompts
 				buffers = '{buffers}',
 				file = '{file}',
