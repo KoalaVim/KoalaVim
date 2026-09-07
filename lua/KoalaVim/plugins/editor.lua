@@ -261,6 +261,7 @@ table.insert(M, {
 -- Open URL/file/issue-ref under the cursor in the right external app
 table.insert(M, {
 	'ofirgall/open.nvim',
+	lazy = true,
 	keys = {
 		{
 			'<leader>gx',

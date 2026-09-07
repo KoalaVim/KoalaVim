@@ -1,18 +1,25 @@
 local M = {}
 
 local function parse_file_and_line()
-	local cfile = vim.fn.expand('<cfile>')
+	local cfile = require('open').file_under_cursor()
 	if not cfile or cfile == '' then
 		return nil, nil
 	end
 
-	local line_text = vim.fn.getline('.')
-	local _, _, l = line_text:find(vim.pesc(cfile) .. ':L(%d+)')
-	if not l then
-		_, _, l = line_text:find(vim.pesc(cfile) .. ':(%d+)')
+	-- <cfile> may include a trailing line spec (e.g. :99, :L99, :99-106) when
+	-- digits/hyphen are in 'isfname'. Strip it if the result is a real file.
+	local stripped, l = cfile:match('^(.+):L?(%d+)')
+	if stripped and (vim.fn.findfile(stripped) ~= '' or vim.fn.filereadable(stripped) == 1) then
+		return stripped, tonumber(l)
 	end
 
-	return cfile, l and tonumber(l) or nil
+	local line_text = vim.fn.getline('.')
+	local _, _, lnum = line_text:find(vim.pesc(cfile) .. ':L(%d+)')
+	if not lnum then
+		_, _, lnum = line_text:find(vim.pesc(cfile) .. ':(%d+)')
+	end
+
+	return cfile, lnum and tonumber(lnum) or nil
 end
 
 function M.goto_file_with_line()
