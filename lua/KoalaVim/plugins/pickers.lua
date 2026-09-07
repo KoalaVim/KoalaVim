@@ -209,9 +209,16 @@ table.insert(M, {
 			'<MiddleMouse>',
 			function()
 				vim.api.nvim_input('<LeftMouse>')
-				vim.schedule(goto_def)
+				vim.schedule(function()
+					if vim.bo.filetype == 'sidekick_terminal' then
+						require('open').open_cword()
+					else
+						goto_def()
+					end
+				end)
 			end,
-			desc = 'Go to Definition',
+			desc = 'Go to Definition / Open in sidekick',
+			mode = { 'n', 't' },
 		},
 		{
 			'<C-LeftMouse>',
