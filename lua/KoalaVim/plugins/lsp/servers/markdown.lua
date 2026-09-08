@@ -68,8 +68,21 @@ table.insert(M, {
 	'MeanderingProgrammer/render-markdown.nvim',
 	opts = {
 		enabled = true,
-		ignore = function(_buf)
-			return CODE_DIFF_OPENED
+		ignore = function(buf)
+			if not CODE_DIFF_OPENED then
+				return false
+			end
+			local ok, lifecycle = pcall(require, 'codediff.ui.lifecycle')
+			if not ok then
+				return true
+			end
+			local tabpage = lifecycle.find_tabpage_by_buffer(buf)
+			if not tabpage then
+				return false
+			end
+			local session = lifecycle.get_session(tabpage)
+			-- Don't ignore added/untracked files (single pane view)
+			return session ~= nil and not session.single_pane
 		end,
 		code = {
 			sign = false,
