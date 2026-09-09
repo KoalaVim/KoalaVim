@@ -8,7 +8,7 @@ api.nvim_create_autocmd('TextYankPost', {
 	group = koala_autocmds,
 	pattern = '*',
 	callback = function()
-		vim.highlight.on_yank({ timeout = 350, higroup = 'Visual' })
+		vim.hl.on_yank({ timeout = 350, higroup = 'Visual' })
 	end,
 })
 
