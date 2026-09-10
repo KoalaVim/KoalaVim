@@ -12,7 +12,7 @@
   "cmp-agents-skills": { "branch": "main", "commit": "ea4a9bc0130004de0e95fb58db79dce92a3b3d3d" },
   "cmp-calc": { "branch": "main", "commit": "5947b412da67306c5b68698a02a846760059be2e" },
   "cmp-cmdline": { "branch": "main", "commit": "d126061b624e0af6c3a556428712dd4d4194ec6d" },
-  "cmp-fuzzy-buffer": { "branch": "main", "commit": "5241efea35177be23d0f31997d55b8e181a205d3" },
+  "cmp-fuzzy-buffer": { "branch": "main", "commit": "091f30a45bed082b7fc5a9ac69a19ce6438bf522" },
   "cmp-fuzzy-dictionary": { "branch": "main", "commit": "84bcfcdf16e711accfe4fd1999c329536b9c26c4" },
   "cmp-fuzzy-path": { "branch": "master", "commit": "02582f464309426fd931aae874a1cf75247f55ea" },
   "cmp-git": { "branch": "main", "commit": "b24309c386c9666c549a1abaedd4956541676d06" },
