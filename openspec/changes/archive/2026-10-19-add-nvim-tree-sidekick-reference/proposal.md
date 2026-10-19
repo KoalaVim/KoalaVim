@@ -24,5 +24,6 @@ _None._
 
 - `lua/KoalaVim/utils/ai/general.lua`: `send_context` / `render_context` gain an nvim-tree context provider, alongside the existing codediff provider.
 - New `lua/KoalaVim/utils/plugins/nvim_tree.lua` (mirrors `utils/plugins/codediff.lua`): builds sidekick text from tree nodes.
-- `lua/KoalaVim/plugins/ai.lua`: `<M-a>` in visual mode must also work in the NvimTree buffer (no new keys expected).
+- `lua/KoalaVim/plugins/ai.lua`: `<M-a>` in visual mode must also work in the NvimTree buffer.
+- `lua/KoalaVim/plugins/ui.lua`: nvim-tree `on_attach` adds a buffer-local normal `<M-a>` that sends the node(s) (global normal `<M-a>` toggles the AI panel).
 - Depends on nvim-tree's public API (`nvim-tree.api`: `tree.get_node_under_cursor`, `marks.list`, `marks.clear`); no sidekick.nvim changes required.

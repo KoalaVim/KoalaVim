@@ -11,6 +11,7 @@
 - [x] 2.1 In `lua/KoalaVim/utils/ai/general.lua`, introduce a provider list (`codediff`, `nvim_tree`) and use it in `render_context` (prompt-editor path)
 - [x] 2.2 Generalize `send_codediff_context` into a provider-send helper used by `send_context` (sidekick path), keeping codediff behavior unchanged
 - [x] 2.3 Verify the visual `<M-a>` keymap in `plugins/ai.lua` reaches the provider in the NvimTree buffer while still in visual mode (adjust the mapping if it exits visual first)
+- [x] 2.4 Add a buffer-local normal-mode `<M-a>` in nvim-tree's `on_attach` (`plugins/ui.lua`) that calls `send_context('this')`
 
 ## 3. Verify
 

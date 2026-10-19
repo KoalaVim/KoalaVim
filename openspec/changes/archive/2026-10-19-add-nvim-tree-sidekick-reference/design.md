@@ -15,7 +15,7 @@ Inside nvim-tree, `vim.api.nvim_buf_get_name(0)` is the tree buffer, so today th
 - Files and directories.
 
 **Non-Goals:**
-- No new keymaps in the tree and no sidekick.nvim changes.
+- No sidekick.nvim changes. The only new keymap is a tree-local normal-mode `<M-a>` (see below).
 - Not sending file *contents* — explorer context is references only (sidekick reads the files itself).
 - Other file explorers (neo-tree, oil, …).
 
@@ -41,6 +41,9 @@ Build each reference with `require('sidekick.cli.context.location').get({ name =
 
 ### Visual `<M-a>` in the tree
 `<M-a>` in `x` mode is a global lazy key, so it already fires in the tree buffer. Its kind is `'this'`; the provider detects visual mode itself (`vim.fn.mode()` is `v`/`V` when the mapping runs) rather than relying on the kind.
+
+### Tree-local normal `<M-a>`
+Global normal-mode `<M-a>` toggles the sidekick terminal, so it never sent context. In practice `<M-a>` is the natural key in the tree, so nvim-tree's `on_attach` (`plugins/ui.lua`) maps a buffer-local normal `<M-a>` to `send_context('this')`. The global toggle is unchanged elsewhere.
 
 ## Risks / Trade-offs
 

@@ -20,6 +20,11 @@ The system SHALL allow sending context to the AI tool: the current file, a visua
 - **WHEN** the user triggers send-context ("this" or "file") in the file explorer with no marked nodes and the cursor on a file or directory node
 - **THEN** a reference to that node's path (cwd-relative, in the same `@path` format as file context) SHALL be sent
 
+#### Scenario: Normal-mode send key in file explorer
+- **WHEN** the user presses `<M-a>` in normal mode in the file explorer
+- **THEN** the explorer node(s) SHALL be referenced as for send-context ("this") instead of toggling the AI panel
+- **AND** `<M-a>` outside the file explorer SHALL keep toggling the AI panel
+
 #### Scenario: Reference visually selected nodes from file explorer
 - **WHEN** the user selects several lines in the file explorer in visual mode and triggers send-context
 - **THEN** a reference for every file and directory node in the selection SHALL be sent, in tree order, separated by spaces
