@@ -56,6 +56,13 @@ table.insert(M, {
 
 				map_buffer(bufnr, 'n', '[c', nav_hunk('prev', '[c'), 'Jump to previous git hunk', { expr = true })
 				map_buffer(bufnr, 'n', '<M-k>', nav_hunk('prev', '[c'), 'Jump to previous git hunk', { expr = true })
+
+				-- Mouse side buttons (mouse4 = next, mouse5 = prev)
+				for _, click in ipairs({ '', '2-', '3-', '4-' }) do -- map multi-clicks too so fast clicks don't select text
+					local next_key, prev_key = '<' .. click .. 'X1Mouse>', '<' .. click .. 'X2Mouse>'
+					map_buffer(bufnr, 'n', next_key, nav_hunk('next', ']c'), 'Jump to next git hunk', { expr = true })
+					map_buffer(bufnr, 'n', prev_key, nav_hunk('prev', '[c'), 'Jump to previous git hunk', { expr = true })
+				end
 				-- Actions
 				map_buffer(bufnr, { 'n', 'v' }, '<leader>hs', ':Gitsigns stage_hunk<CR>', 'Stage Hunk')
 				map_buffer(bufnr, { 'n', 'v' }, '<leader>hr', ':Gitsigns reset_hunk<CR>', 'Reset Hunk')
@@ -440,6 +447,10 @@ table.insert(M, {
 
 				lifecycle.set_tab_keymap(tabpage, 'n', '<M-j>', nav.next_hunk, { desc = 'Next change' })
 				lifecycle.set_tab_keymap(tabpage, 'n', '<M-k>', nav.prev_hunk, { desc = 'Prev change' })
+				for _, click in ipairs({ '', '2-', '3-', '4-' }) do -- map multi-clicks too so fast clicks don't select text
+					lifecycle.set_tab_keymap(tabpage, 'n', '<' .. click .. 'X1Mouse>', nav.next_hunk, { desc = 'Next change' })
+					lifecycle.set_tab_keymap(tabpage, 'n', '<' .. click .. 'X2Mouse>', nav.prev_hunk, { desc = 'Prev change' })
+				end
 
 				lifecycle.set_tab_keymap(
 					tabpage,
