@@ -373,7 +373,8 @@ local function setup_prompt_split(bufid, win_id)
 	vim.bo[bufid].filetype = 'sidekick_koala_prompt'
 	vim.api.nvim_feedkeys('G$a', 'n', false)
 
-	local picker = require('sidekick.cli.picker').get()
+	local Picker = require('sidekick.cli.picker')
+	local picker = Picker.get()
 
 	---@param items sidekick.context.Loc[]
 	local paste_to_buffer_cb = function(items)
@@ -401,11 +402,11 @@ local function setup_prompt_split(bufid, win_id)
 	end
 
 	vim.keymap.set({ 'n', 'i' }, '<C-f>', function()
-		picker.open('files', paste_to_buffer_cb, { hidden = true })
+		picker.open('files', paste_to_buffer_cb, Picker.opts('files'))
 	end, { buffer = bufid })
 
 	vim.keymap.set({ 'n', 'i' }, '<C-b>', function()
-		picker.open('buffers', paste_to_buffer_cb, {})
+		picker.open('buffers', paste_to_buffer_cb, Picker.opts('buffers'))
 	end, { buffer = bufid })
 end
 

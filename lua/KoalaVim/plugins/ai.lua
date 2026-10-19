@@ -62,6 +62,9 @@ table.insert(M, {
 				['function'] = '{function}',
 				class = '{class}',
 			},
+			picker_opts = {
+				files = { hidden = true, ignored = true }, -- show dotfiles and gitignored files
+			},
 			-- Small cursor-anchored prompt picker (like `ss`/`gs`)
 			prompt_layout = function()
 				local pos = vim.fn.screenpos(0, vim.fn.line('.'), vim.fn.col('.'))
