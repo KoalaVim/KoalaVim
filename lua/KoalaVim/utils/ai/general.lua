@@ -1135,4 +1135,34 @@ function M.setup_fast_typing_detection()
 	end)
 end
 
+--- Keep sidekick split panels at the same screen proportion when nvim is resized.
+--- Sidekick sets winfixwidth/winfixheight, so without this the panel keeps its absolute size.
+function M.setup_auto_resize()
+	local last_columns, last_lines = vim.o.columns, vim.o.lines
+
+	vim.api.nvim_create_autocmd('VimResized', {
+		group = vim.api.nvim_create_augroup('KoalaSidekickAutoResize', { clear = true }),
+		callback = function()
+			local old_columns, old_lines = last_columns, last_lines
+			last_columns, last_lines = vim.o.columns, vim.o.lines
+
+			-- Schedule so other VimResized handlers (e.g. half_screen layout) run first
+			vim.schedule(function()
+				for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+					local floating = vim.api.nvim_win_get_config(win).relative ~= ''
+					if vim.w[win].sidekick_cli and not floating then
+						if vim.wo[win].winfixheight then
+							local height = math.floor(vim.api.nvim_win_get_height(win) * last_lines / old_lines + 0.5)
+							pcall(vim.api.nvim_win_set_height, win, math.max(height, 1))
+						else
+							local width = math.floor(vim.api.nvim_win_get_width(win) * last_columns / old_columns + 0.5)
+							pcall(vim.api.nvim_win_set_width, win, math.max(width, 1))
+						end
+					end
+				end
+			end)
+		end,
+	})
+end
+
 return M

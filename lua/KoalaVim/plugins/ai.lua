@@ -11,6 +11,7 @@ table.insert(M, {
 	config = function(_, opts)
 		require('sidekick').setup(opts)
 		ai.setup_fast_typing_detection()
+		ai.setup_auto_resize()
 	end,
 	opts = {
 		cli = {
