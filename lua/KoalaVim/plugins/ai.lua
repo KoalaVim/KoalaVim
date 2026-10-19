@@ -62,6 +62,26 @@ table.insert(M, {
 				['function'] = '{function}',
 				class = '{class}',
 			},
+			-- Small cursor-anchored prompt picker (like `ss`/`gs`)
+			prompt_layout = function()
+				local pos = vim.fn.screenpos(0, vim.fn.line('.'), vim.fn.col('.'))
+				return {
+					reverse = false,
+					layout = {
+						box = 'vertical',
+						border = true,
+						title = '{title}',
+						title_pos = 'center',
+						width = 80,
+						height = 20,
+						row = pos.row,
+						col = pos.col,
+						{ win = 'input', height = 1, border = 'bottom' },
+						{ win = 'list', border = 'none' },
+						{ win = 'preview', title = '{preview}', height = 0.5, border = 'top' },
+					},
+				}
+			end,
 		},
 	},
 	keys = {
