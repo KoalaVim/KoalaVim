@@ -62,6 +62,7 @@ table.insert(M, {
 				['function'] = '{function}',
 				class = '{class}',
 			},
+			picker = 'fff', -- buffers fall back to snacks
 			picker_opts = {
 				files = { hidden = true, ignored = true }, -- show dotfiles and gitignored files
 			},
