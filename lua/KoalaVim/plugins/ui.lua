@@ -173,6 +173,9 @@ table.insert(M, {
 			map_buffer(bufnr, 'n', '<F2>', tree_api.fs.rename, 'Nvimtree: rename file')
 			map_buffer(bufnr, 'n', '<M-j>', tree_api.node.navigate.git.next, 'Next git change')
 			map_buffer(bufnr, 'n', '<M-k>', tree_api.node.navigate.git.prev, 'Prev git change')
+			map_buffer(bufnr, 'n', '<M-a>', function()
+				require('KoalaVim.utils.ai.general').send_context('this')
+			end, 'Nvimtree: send node to AI')
 		end
 
 		require('nvim-tree').setup({

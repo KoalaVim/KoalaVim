@@ -186,8 +186,25 @@ local function insert_text_in_prompt(text)
 	return true
 end
 
+-- Modules exposing `context_text(kind)` -> (text, handled) for special buffers.
+local context_providers = {
+	'KoalaVim.utils.plugins.codediff',
+	'KoalaVim.utils.plugins.nvim_tree',
+}
+
+--- Returns the first provider-handled context text, or `nil, false` if none handled.
+local function provider_context(kind)
+	for _, mod in ipairs(context_providers) do
+		local text, handled = require(mod).context_text(kind)
+		if handled then
+			return text, true
+		end
+	end
+	return nil, false
+end
+
 local function render_context(kind)
-	local text, handled = require('KoalaVim.utils.plugins.codediff').context_text(kind)
+	local text, handled = provider_context(kind)
 	if handled then
 		return text, true
 	end
@@ -201,8 +218,8 @@ local function render_context(kind)
 	return rendered, rendered ~= nil
 end
 
-local function send_codediff_context(kind)
-	local text, handled = require('KoalaVim.utils.plugins.codediff').context_text(kind)
+local function send_provider_context(kind)
+	local text, handled = provider_context(kind)
 	if handled then
 		if text then
 			M.with_default_tool(require('sidekick.cli').send, { text = text })
@@ -223,7 +240,7 @@ function M.send_context(kind)
 		end
 	end
 
-	if send_codediff_context(kind) then
+	if send_provider_context(kind) then
 		return
 	end
 
