@@ -25,6 +25,10 @@ local lazy_opts = {
 		-- Don't auto reload config
 		enabled = false,
 	},
+	rocks = {
+		-- Don't add hererocks to the spec, otherwise it depends on whether luarocks is installed
+		hererocks = false,
+	},
 }
 
 lazy_opts.spec = require('KoalaVim.spec')
@@ -65,6 +69,16 @@ for _, plugin in pairs(lazy_cfg.plugins) do
 		else
 			io.stderr:write('WARNING: ' .. plugin.name .. ' is not installed and has no previous lockfile entry\n')
 		end
+	end
+end
+
+-- Keep the previous branch when the commit didn't change.
+-- lazy derives the branch from the clone's origin/HEAD, which goes stale when upstream renames its default branch.
+for name, entry in pairs(Lock.lock) do
+	local old_entry = prev_lock[name]
+	if old_entry and old_entry.commit == entry.commit and old_entry.branch ~= entry.branch then
+		entry.branch = old_entry.branch
+		patched = true
 	end
 end
 
