@@ -1,0 +1,74 @@
+{
+  "ipython": {
+    "prefix": "ipython",
+    "description": "Embed IPython",
+    "body": [
+      "import IPython",
+      "IPython.embed()"
+    ]
+  },
+  "main": {
+    "prefix": "main",
+    "description": "main",
+    "body": [
+      "def main():",
+      "\t$0",
+      "",
+      "if __name__ == '__main__':",
+      "\tmain()"
+    ]
+  },
+  "maintyper": {
+    "prefix": "maintyper",
+    "description": "typer main",
+    "body": [
+      "import typer",
+      "",
+      "def main(${1:name}: ${2:str}):",
+      "\ttyper.echo(f'${3:Hello} {$1}')",
+      "",
+      "if __name__ == '__main__':",
+      "\ttyper.run(main)"
+    ]
+  },
+  "maintypersubcommands": {
+    "prefix": "maintypersubcommands",
+    "description": "typer app with subcommands",
+    "body": [
+      "import typer",
+      "",
+      "app = typer.Typer()",
+      "",
+      "",
+      "@app.command()",
+      "def hello(name: str):",
+      "\tprint(f\"Hello {name}\")",
+      "",
+      "",
+      "@app.command()",
+      "def goodbye(name: str, formal: bool = False):",
+      "\tif formal:",
+      "\t\tprint(f\"Goodbye Ms. {name}. Have a good day.\")",
+      "\telse:",
+      "\t\tprint(f\"Bye {name}!\")",
+      "",
+      "",
+      "if __name__ == '__main__':",
+      "\tapp()"
+    ]
+  },
+  "ctxmanager": {
+    "prefix": "ctxmanager",
+    "description": "contextmanager",
+    "body": [
+      "@contextmanager",
+      "def ${1:func}(${2}) -> Iterator[${3:Any}]:",
+      "\t${4}",
+      "",
+      "\ttry:",
+      "\t\tyield ${5}",
+      "\tfinally:",
+      "\t\t${6}"
+    ]
+  }
+}

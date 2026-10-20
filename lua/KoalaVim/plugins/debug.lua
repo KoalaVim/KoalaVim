@@ -2,156 +2,112 @@ local M = {}
 
 local usercmd = require('KoalaVim.utils.cmd')
 
--- Debug Adapter Protocol client — debug code from Neovim (cpp/rust/go/python)
+-- Prepend `config` to the dap configurations of `ft`, replacing a configuration with the same name
+-- (LazyVim's lang extras and mason-nvim-dap register theirs, keep them)
+local function add_config(dap, ft, config)
+	local configs = vim.tbl_filter(function(c)
+		return c.name ~= config.name
+	end, dap.configurations[ft] or {})
+	table.insert(configs, 1, config)
+	dap.configurations[ft] = configs
+end
+
+-- KoalaVim's adapters, configurations and signs.
+-- Runs as the `opts` of nvim-dap: after the lang extras registered their adapters (nvim-dap-python, dap-go),
+-- and before the `dap.core` extra's config (mason-nvim-dap, defines the signs from `LazyVim.config.icons.dap`)
+local function setup_dap()
+	local dap = require('dap')
+	dap.defaults.fallback.stepping_granularity = 'line'
+
+	--- Signs ---
+	-- Sign priority = 11
+	-- Override LazyVim's sign icons, the `dap.core` extra defines the signs from them
+	local icons = LazyVim.config.icons.dap
+	icons.Breakpoint = { '', 'DapBreakpoint' }
+	icons.BreakpointCondition = { '', 'DapCondBreakpoint' }
+	icons.BreakpointRejected = { '', 'DapBreakpoint' }
+	icons.LogPoint = { '', 'DiagnosticWarn' }
+	icons.Stopped = { '', 'DiagnosticInfo', 'CursorLine' }
+
+	--- Setup Adapaters ---
+
+	-- C/C++/Rust
+	local launch_file = {
+		name = 'Launch file',
+		type = 'codelldb',
+		request = 'launch',
+		program = require('KoalaVim.utils.debug').choose_file,
+		cwd = vim.fn.getcwd(),
+		stopOnEntry = false,
+	}
+	add_config(dap, 'cpp', launch_file)
+	add_config(dap, 'rust', launch_file)
+
+	dap.adapters.codelldb = {
+		type = 'server',
+		port = '${port}',
+		executable = {
+			command = 'codelldb',
+			args = { '--port', '${port}' },
+		},
+	}
+
+	-- C (remote gdb)
+	add_config(dap, 'c', {
+		name = 'Attach to gdbserver :1234',
+		type = 'cppdbg',
+		request = 'launch',
+		MIMode = 'gdb',
+		miDebuggerServerAddress = 'localhost:1234',
+		miDebuggerPath = 'gdb',
+		program = require('KoalaVim.utils.debug').choose_file,
+		cwd = vim.fn.getcwd(),
+		stopOnEntry = false,
+	})
+
+	-- From mason
+	dap.adapters.cppdbg = {
+		id = 'cppdbg',
+		type = 'executable',
+		command = 'OpenDebugAD7',
+	}
+
+	-- Golang (remote delve), dap-go from the go extra provides the local adapter/configurations
+	add_config(dap, 'go', {
+		name = 'Launch Remote',
+		type = 'go_remote',
+		request = 'attach',
+		mode = 'remote',
+		remotePath = '~/go/volumez',
+		port = 2345,
+		apiVersion = 2,
+		cwd = '${workspaceFolder}',
+		trace = 'verbose',
+	})
+
+	dap.adapters.go_remote = {
+		type = 'server',
+		host = 'rhel8-6.local',
+		port = 2345,
+	}
+
+	-- Python: adapter and configurations (with venv detection) come from nvim-dap-python (python extra)
+
+	usercmd.create('ClearBreakpoints', 'Debug: clear all breakpoints', function()
+		require('dap').clear_breakpoints()
+	end, {})
+
+	require('KoalaVim.utils.debug').init()
+end
+
+-- Debug Adapter Protocol client — debug code from Neovim (cpp/rust/go/python), `dap.core` extra provides the base
 table.insert(M, {
 	'mfussenegger/nvim-dap',
-	enabled = false,
 	dependencies = {
 		'rcarriga/nvim-dap-ui',
 		'theHamsta/nvim-dap-virtual-text',
 	},
-	config = function()
-		local dap = require('dap')
-		dap.defaults.fallback.stepping_granularity = 'line'
-		--- Signs ---
-		-- Sign priority = 11
-		-- stylua: ignore start
-		vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'DapBreakpoint', linehl = '', numhl = '' })
-		vim.fn.sign_define('DapBreakpointCondition', { text = '', texthl = 'DapCondBreakpoint', linehl = '', numhl = '' })
-		vim.fn.sign_define('DapBreakpointRejected', { text = '', texthl = 'DapBreakpoint', linehl = '', numhl = '' })
-		vim.fn.sign_define('DapLogPoint', { text = '', texthl = 'DiagnosticWarn', linehl = '', numhl = '' })
-		vim.fn.sign_define('DapStopped', { text = '', texthl = 'DiagnosticInfo', linehl = 'CursorLine', numhl = 'CursorLine' })
-		-- stylua: ignore end
-
-		--- Setup Adapaters ---
-
-		-- C/C++/Rust
-		dap.configurations.cpp = {
-			{
-				name = 'Launch file',
-				type = 'codelldb',
-				request = 'launch',
-				program = require('KoalaVim.utils.debug').choose_file,
-				cwd = vim.fn.getcwd(),
-				stopOnEntry = false,
-			},
-		}
-		-- dap.configurations.c = dap.configurations.cpp -- Debug c with codelldb instead
-		dap.configurations.rust = dap.configurations.cpp
-
-		dap.adapters.codelldb = {
-			type = 'server',
-			port = '${port}',
-			executable = {
-				command = 'codelldb',
-				args = { '--port', '${port}' },
-			},
-		}
-
-		-- C (remote gdb)
-		dap.configurations.c = {
-			{
-				name = 'Attach to gdbserver :1234',
-				type = 'cppdbg',
-				request = 'launch',
-				MIMode = 'gdb',
-				miDebuggerServerAddress = 'localhost:1234',
-				miDebuggerPath = 'gdb',
-				program = require('KoalaVim.utils.debug').choose_file,
-				cwd = vim.fn.getcwd(),
-				stopOnEntry = false,
-			},
-		}
-
-		-- From mason
-		dap.adapters.cppdbg = {
-			id = 'cppdbg',
-			type = 'executable',
-			command = 'OpenDebugAD7',
-		}
-
-		-- Golang
-		dap.configurations.go = {
-			{
-				name = 'Launch Remote',
-				type = 'go',
-				request = 'attach',
-				mode = 'remote',
-				remotePath = '~/go/volumez',
-				port = 2345,
-				apiVersion = 2,
-				cwd = '${workspaceFolder}',
-				trace = 'verbose',
-			},
-		}
-
-		dap.adapters.go = {
-			type = 'server',
-			host = 'rhel8-6.local',
-			port = 2345,
-		}
-
-		-- Python
-		dap.adapters.python = function(cb, config)
-			if config.request == 'attach' then
-				local port = (config.connect or config).port
-				local host = (config.connect or config).host or '127.0.0.1'
-				cb({
-					type = 'server',
-					port = assert(port, '`connect.port` is required for a python `attach` configuration'),
-					host = host,
-					options = {
-						source_filetype = 'python',
-					},
-				})
-			else
-				cb({
-					type = 'executable',
-					command = vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python',
-					args = {
-						'-m',
-						'debugpy.adapter',
-					},
-					options = {
-						source_filetype = 'python',
-					},
-				})
-			end
-		end
-
-		dap.configurations.python = {
-			{
-				-- The first three options are required by nvim-dap
-				type = 'python', -- the type here established the link to the adapter definition: `dap.adapters.python`
-				request = 'launch',
-				name = 'Launch file',
-
-				-- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
-
-				program = '${file}', -- This configuration will launch the current file if used.
-				args = require('KoalaVim.utils.debug').choose_args,
-				python = function()
-					-- debugpy supports launching an application with a different interpreter then the one used to launch debugpy itself.
-					-- The code below looks for a `venv` or `.venv` folder in the current directly and uses the python within.
-					-- You could adapt this - to for example use the `VIRTUAL_ENV` environment variable.
-					local cwd = vim.fn.getcwd()
-					if vim.fn.executable(cwd .. '/venv/bin/python') == 1 then
-						return cwd .. '/venv/bin/python'
-					elseif vim.fn.executable(cwd .. '/.venv/bin/python') == 1 then
-						return cwd .. '/.venv/bin/python'
-					else
-						return 'python'
-					end
-				end,
-			},
-		}
-
-		usercmd.create('ClearBreakpoints', 'Debug: clear all breakpoints', function()
-			require('dap').clear_breakpoints()
-		end, {})
-
-		require('KoalaVim.utils.debug').init()
-	end,
+	opts = setup_dap,
 	keys = {
 		{
 			'<F9>',
@@ -233,37 +189,42 @@ table.insert(M, {
 table.insert(M, {
 	'rcarriga/nvim-dap-ui',
 	lazy = true, -- Loading with dap-ui
-	dependencies = {
-		'ofirgall/format-on-leave.nvim',
-	},
-	config = function()
-		local dapui = require('dapui')
-		dapui.setup({
-			expand_lines = false,
-			layouts = {
-				{
-					size = 0.15,
-					position = 'top',
-					elements = {
-						'scopes', -- local vars
-						'repl',
-					},
-				},
-				{
-					size = 0.20,
-					position = 'right',
-					elements = {
-						'watches',
-						'breakpoints',
-						'stacks',
-					},
+	opts = {
+		expand_lines = false,
+		layouts = {
+			{
+				size = 0.15,
+				position = 'top',
+				elements = {
+					'scopes', -- local vars
+					'repl',
 				},
 			},
-		})
+			{
+				size = 0.20,
+				position = 'right',
+				elements = {
+					'watches',
+					'breakpoints',
+					'stacks',
+				},
+			},
+		},
+	},
+	-- Replaces the `dap.core` extra's config, opens the ui in a new tab instead
+	config = function(_, opts)
+		local dapui = require('dapui')
+		dapui.setup(opts)
 
+		local debug_tab = nil
+
+		-- Called on both `terminated` and `exited`, close the debug page only once
 		local dap_closed = function()
 			dapui.close({})
-			vim.api.nvim_command('tabclose $') -- $(last) is the debug page
+			if debug_tab and vim.api.nvim_tabpage_is_valid(debug_tab) and #vim.api.nvim_list_tabpages() > 1 then
+				vim.cmd.tabclose(vim.api.nvim_tabpage_get_number(debug_tab))
+			end
+			debug_tab = nil
 
 			require('KoalaVim.utils.map').map(
 				'n',
@@ -271,19 +232,16 @@ table.insert(M, {
 				'<LeftMouse><cmd>sleep 100m<cr><cmd>lua vim.lsp.buf.hover()<cr>',
 				'Trigger hover'
 			)
-
-			require('format-on-leave').enable()
 		end
 
 		local dap = require('dap')
 		-- Hooks to dap, opens/cloes dap-ui binds rightlick to evaluate
 		dap.listeners.after.event_initialized['dapui_config'] = function()
 			vim.api.nvim_command('$tabnew') -- $(last) is the debug page
+			debug_tab = vim.api.nvim_get_current_tabpage()
 			dapui.open({})
 
 			require('KoalaVim.utils.map').map('n', '<RightMouse>', '<LeftMouse><cmd>lua require"dapui".eval()<cr>') -- Trigger hover
-
-			require('format-on-leave').disable()
 		end
 		dap.listeners.before.event_terminated['dapui_config'] = function()
 			dap_closed()
@@ -292,6 +250,18 @@ table.insert(M, {
 			dap_closed()
 		end
 	end,
+})
+
+-- Don't let mason-nvim-dap override the adapters/configurations KoalaVim sets up (see `setup_dap`)
+table.insert(M, {
+	'jay-babu/mason-nvim-dap.nvim',
+	optional = true,
+	opts = {
+		handlers = {
+			codelldb = function() end,
+			cppdbg = function() end,
+		},
+	},
 })
 
 -- Cycle between DAP breakpoints with ]d/[d

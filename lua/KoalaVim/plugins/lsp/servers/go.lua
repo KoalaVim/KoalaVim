@@ -1,8 +1,17 @@
 local M = {}
 
-LSP_SERVERS['gopls'] = {}
-
-CONFORM_FORMATTERS['gofmt'] = { 'go', mason = false }
+-- gopls, goimports/gofumpt, golangci-lint and dap-go come from LazyVim's go extra
+table.insert(M, {
+	'neovim/nvim-lspconfig',
+	opts = {
+		servers = {
+			gopls = {
+				-- The extra re-adds the semantic tokens that KoalaVim disables for all servers
+				init_options = { semanticTokens = false },
+			},
+		},
+	},
+})
 
 -- Rich Go development tools: gopls config, codelens, tests, refactoring helpers
 table.insert(M, {
@@ -21,52 +30,13 @@ table.insert(M, {
 			lsp_codelens = false,
 			dap_debug_keymap = false,
 			textobjects = false,
-			lsp_on_attach = LSP_ON_ATTACH,
+			lsp_on_attach = false, -- LazyVim's go extra configures gopls
 			lsp_diag_hdlr = false, -- Disable go.nvim diagnostics viewer
 			lsp_inlay_hints = {
 				enable = false, -- Using inlay-hints.nvim instead
 			},
-
-			lsp_cfg = {
-				on_init = LSP_ON_INIT,
-				capabilities = LSP_CAPS,
-				settings = {
-					gopls = {
-						buildFlags = { '-tags', 'dev' },
-						analyses = {
-							ST1003 = false, -- Disable variables format https://staticcheck.io/docs/checks#ST1003
-							ST1005 = false, -- Disable error string format https://staticcheck.io/docs/checks#ST1005
-							QF1008 = false, -- Disable Hints for Omit embedded fields from selector expression
-						},
-						usePlaceholders = false,
-						hints = {
-							-- For inlay hints
-							assignVariableTypes = true,
-							compositeLiteralFields = true,
-							compositeLiteralTypes = true,
-							constantValues = true,
-							functionTypeParameters = true,
-							parameterNames = true,
-							rangeVariableTypes = true,
-						},
-						symbolMatcher = 'FastFuzzy',
-					},
-					codelenses = {
-						generate = false,
-						gc_details = false,
-						test = false,
-						tidy = false,
-						vendor = false,
-						regenerate_cgo = false,
-						upgrade_dependency = false,
-					},
-				},
-			},
+			lsp_cfg = false,
 		})
-
-		-- setup lspconfig
-		vim.lsp.config.gopls = require('go.lsp').config()
-		vim.lsp.enable('gopls')
 
 		local map_buffer = require('KoalaVim.utils.map').map_buffer
 		local add_new_line = 'i\\n<Esc>'

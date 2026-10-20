@@ -37,6 +37,7 @@ end
 -- Color scheme
 table.insert(M, {
 	'ofirgall/ofirkai.nvim',
+	branch = 'feat/lazyvim', -- FIXME: remove after merging to master (colorscheme fix + LazyVim plugin highlights)
 	lazy = false, -- make sure we load this during startup if it is your main colorscheme
 	priority = 1000, -- make sure to load this before all the other start plugins
 	config = function(_, opts)
@@ -476,37 +477,6 @@ table.insert(M, {
 	lazy = true,
 })
 
--- Popup showing possible keybinding continuations after a timeout
-table.insert(M, {
-	'folke/which-key.nvim',
-	event = 'VeryLazy',
-	config = function(_, opts)
-		local wk = require('which-key')
-		wk.setup(opts)
-
-		-- TODO: <leader>fm as operator
-		-- local keymaps = {
-		-- 	mode = { 'n' },
-		-- 	['<leader>f'] = { name = '+search' },
-		-- 	['<leader>g'] = { name = '+git' },
-		-- 	['<leader>h'] = { name = '+git hunks' },
-		-- 	['<leader>q'] = { name = '+quit' },
-		-- 	['g'] = { name = '+goto' },
-		-- 	[']'] = { name = '+next' },
-		-- 	['['] = { name = '+prev' },
-		-- 	['s'] = { name = '+surround/split args' },
-		-- }
-
-		-- Hack to show surround and split args
-		-- local map = require('KoalaVim.utils.map').map
-		-- stylua: ignore
-		-- map('n', 's', function() wk.show_command('s') end, '', {})
-		-- map('', '<leader><leader>', '<cmd>WhichKey<cr>', '', {})
-
-		-- wk.register(keymaps)
-	end,
-})
-
 function CLOSE_KOALA_DASHBOARD(clear_messages, close_buffer)
 	KOALA_DASHBOARD_CLOSED = true
 	if clear_messages then
@@ -517,6 +487,8 @@ end
 -- Greeter/dashboard shown on startup with KoalaVim shortcuts
 table.insert(M, {
 	'KoalaVim/alpha-nvim', -- fork
+	-- Not `alpha-nvim`, so LazyVim's optional `goolord/alpha-nvim` specs (dashboard buttons) don't merge into it
+	name = 'koala-alpha-nvim',
 	event = 'VimEnter',
 	opts = function()
 		local dashboard = require('alpha.themes.dashboard')

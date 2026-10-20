@@ -11,33 +11,43 @@ local inlay_hints = {
 	enumMemberValues = { enabled = true },
 }
 
-LSP_SERVER(function(conf)
-	local opts = {
-		on_attach = LSP_ON_ATTACH,
-		on_init = LSP_ON_INIT,
-		capabilities = LSP_CAPS,
-		settings = {
-			typescript = {
-				inlayHints = inlay_hints,
+-- vtsls or tsc (tsgo) is picked by `vim.g.lazyvim_ts_lsp`, set from `lsp.tsgo.enabled` in `config/options.lua`
+table.insert(M, {
+	'neovim/nvim-lspconfig',
+	opts = function(_, opts)
+		local conf = require('KoalaVim').conf.lsp
+
+		opts.servers.vtsls = vim.tbl_deep_extend('force', opts.servers.vtsls or {}, {
+			settings = {
+				typescript = {
+					inlayHints = inlay_hints,
+				},
 			},
-		},
-	}
+		})
 
-	if conf.tsgo.enabled then
-		if vim.fn.executable('tsgo') == 0 then
-			require('KoalaVim.health').warn('[tsgo] enabled but tsgo is not installed. Run :MasonInstall tsgo')
+		if conf.vtsls.max_memory and conf.vtsls.max_memory ~= vim.NIL then
+			opts.servers.vtsls.settings.typescript.tsserver = {
+				maxTsServerMemory = conf.vtsls.max_memory,
+			}
 		end
-		return 'tsgo', opts
-	end
 
-	if conf.vtsls.max_memory and conf.vtsls.max_memory ~= vim.NIL then
-		opts.settings.typescript.tsserver = {
-			maxTsServerMemory = conf.vtsls.max_memory,
-		}
-	end
+		opts.servers.tsc = vim.tbl_deep_extend('force', opts.servers.tsc or {}, {
+			settings = {
+				['js/ts'] = {
+					inlayHints = inlay_hints,
+				},
+			},
+		})
 
-	return 'vtsls', opts
-end)
+		-- nvim-lspconfig (pinned) has no `tsc` config yet
+		opts.servers.tsc.cmd = { 'tsc', '--lsp', '--stdio' }
+		opts.servers.tsc.root_markers = { 'tsconfig.json', 'jsconfig.json', 'package.json', '.git' }
+
+		if conf.tsgo.enabled and vim.fn.executable('tsc') == 0 then
+			require('KoalaVim.health').warn('[tsgo] enabled but tsc is not installed. Run :MasonInstall tsc')
+		end
+	end,
+})
 
 -- Wrapper for the vtsls TypeScript LSP with extra commands and features
 table.insert(M, {
@@ -46,15 +56,20 @@ table.insert(M, {
 	ft = FTS,
 })
 
--- Linter
--- NONE_LS_SRCS['eslint_d'] = {
--- 	builtins_sources = {
--- 		'code_actions',
--- 		'diagnostics',
--- 	},
--- }
+-- Formatters (eslint_d fixes, then prettierd). LazyVim's `formatting.prettier`/`linting.eslint` extras aren't used
+local formatters_by_ft = {}
+for _, ft in ipairs(FTS) do
+	formatters_by_ft[ft] = { 'eslint_d', 'prettierd' }
+end
 
-CONFORM_FORMATTERS['eslint_d'] = FTS
-CONFORM_FORMATTERS['prettierd'] = FTS
+table.insert(M, {
+	'stevearc/conform.nvim',
+	opts = { formatters_by_ft = formatters_by_ft },
+})
+
+table.insert(M, {
+	'mason-org/mason.nvim',
+	opts = { ensure_installed = { 'eslint_d', 'prettierd' } },
+})
 
 return M

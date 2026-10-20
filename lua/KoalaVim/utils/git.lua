@@ -12,9 +12,6 @@ end
 
 function M.show_diff(args)
 	args = args or ''
-	pcall(function()
-		require('format-on-leave').disable()
-	end)
 	vim.cmd('CodeDiff ' .. args)
 end
 

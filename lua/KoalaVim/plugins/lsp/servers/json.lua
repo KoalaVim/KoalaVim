@@ -1,35 +1,27 @@
 local M = {}
 
-LSP_SERVERS['jsonls'] = {}
-
-LSP_SERVERS['yamlls'] = {}
-
--- Catalog of JSON/YAML schemas from SchemaStore.org for jsonls/yamlls
+-- jsonls and SchemaStore come from LazyVim's json extra
 table.insert(M, {
-	'b0o/SchemaStore.nvim',
-	ft = { 'yaml', 'yaml.docker-compose', 'json', 'jsonc' },
-	config = function()
-		-- Add kvim.jsonc scheme
-		local json_schemes = require('schemastore').json.schemas()
-		table.insert(json_schemes, require('KoalaVim.conf').get_scheme())
-
-		vim.lsp.config.jsonls = {
-			capabilities = LSP_CAPS,
-			on_attach = LSP_ON_ATTACH,
-			on_init = LSP_ON_INIT,
+	'neovim/nvim-lspconfig',
+	opts = function(_, opts)
+		-- The extra's `before_init` appends the SchemaStore schemas to this list
+		opts.servers.jsonls = vim.tbl_deep_extend('force', opts.servers.jsonls or {}, {
 			settings = {
 				json = {
-					schemas = json_schemes,
-					validate = { enable = true },
+					schemas = { require('KoalaVim.conf').get_scheme() },
 				},
 			},
-		}
-		vim.lsp.enable('jsonls')
+		})
 
-		vim.lsp.config.yamlls = {
-			capabilities = LSP_CAPS,
-			on_attach = LSP_ON_ATTACH,
-			on_init = LSP_ON_INIT,
+		opts.servers.yamlls = vim.tbl_deep_extend('force', opts.servers.yamlls or {}, {
+			-- lazy-load schemastore when needed
+			before_init = function(_, new_config)
+				new_config.settings.yaml.schemas = vim.tbl_deep_extend(
+					'force',
+					new_config.settings.yaml.schemas or {},
+					require('schemastore').yaml.schemas()
+				)
+			end,
 			settings = {
 				yaml = {
 					schemaStore = {
@@ -39,11 +31,9 @@ table.insert(M, {
 						-- Avoid TypeError: Cannot read properties of undefined (reading 'length')
 						url = '',
 					},
-					schemas = require('schemastore').yaml.schemas(),
 				},
 			},
-		}
-		vim.lsp.enable('yamlls')
+		})
 	end,
 })
 

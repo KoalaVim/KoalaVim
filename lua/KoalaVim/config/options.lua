@@ -1,6 +1,26 @@
 ---@diagnostic disable: assign-type-mismatch
 local opt = vim.opt
 
+-- This file runs after LazyVim's options (`LazyVimOptionsDefaults`).
+-- Reset the LazyVim options that KoalaVim doesn't set to Neovim's defaults, KoalaVim's own values follow.
+-- stylua: ignore
+for _, name in ipairs({
+	'autowrite', 'clipboard', 'completeopt', 'conceallevel', 'confirm', 'fillchars', 'foldmethod', 'foldtext',
+	'formatexpr', 'formatoptions', 'grepformat', 'grepprg', 'jumpoptions', 'laststatus', 'linebreak', 'list',
+	'pumblend', 'pumheight', 'ruler', 'sessionoptions', 'shiftround', 'shortmess', 'showmode', 'sidescrolloff',
+	'smartcase', 'smartindent', 'splitkeep', 'statuscolumn', 'undolevels', 'virtualedit', 'wildmode', 'winminwidth',
+}) do
+	vim.cmd('set ' .. name .. '&')
+end
+vim.g.markdown_recommended_style = nil
+vim.g.trouble_lualine = false -- KoalaVim's statusline doesn't show trouble symbols
+vim.g.lazyvim_cmp = 'nvim-cmp' -- LazyVim's default (blink.cmp) disables nvim-cmp
+do
+	-- LazyVim's typescript extra picks the server from this (reset by LazyVim's options)
+	local tsgo = require('KoalaVim').conf.lsp.tsgo
+	vim.g.lazyvim_ts_lsp = tsgo.enabled == true and 'tsc' or 'vtsls'
+end
+
 opt.number = true
 opt.relativenumber = true
 opt.autoindent = true

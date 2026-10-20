@@ -1,8 +1,13 @@
 local M = {}
 
-local fidget = require('fidget')
-
 local function _log(msg, level, ttl, notify)
+	-- fidget is a plugin, it isn't on the runtimepath before lazy.nvim setup (e.g. during `KoalaVim.init()`)
+	local ok, fidget = pcall(require, 'fidget')
+	if not ok then
+		vim.notify(msg, level, {})
+		return
+	end
+
 	fidget.notify(msg, level, {
 		group = 'KoalaHealth',
 		ttl = ttl,

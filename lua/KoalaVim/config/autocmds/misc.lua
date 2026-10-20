@@ -1,5 +1,13 @@
 local api = vim.api
 
+-- This file runs after LazyVim's autocmds (`LazyVimAutocmdsDefaults`).
+-- Remove LazyVim's autocmds that duplicate or conflict with KoalaVim's (see config_lazy/autocmds/misc.lua):
+-- * highlight_yank: KoalaVim highlights the yank with its own timeout/higroup
+-- * wrap_spell: KoalaVim chooses the spell filetypes (LazyVim also enables spell for text/plaintex/typst)
+for _, group in ipairs({ 'lazyvim_highlight_yank', 'lazyvim_wrap_spell' }) do
+	pcall(api.nvim_del_augroup_by_name, group)
+end
+
 local koala_early_autocmds = api.nvim_create_augroup('koala_early', { clear = true })
 
 api.nvim_create_autocmd('FileType', {

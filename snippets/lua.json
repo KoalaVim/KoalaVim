@@ -1,0 +1,24 @@
+{
+  "insertplug": {
+    "prefix": "insertplug",
+    "description": "KoalaVim plugin spec",
+    "body": [
+      "table.insert(M, {",
+      "\t'${1}',",
+      "\topts = {",
+      "\t\t${3}",
+      "\t},",
+      "\tconfig = function(_, opts)",
+      "\t\trequire('${2}').setup(opts)",
+      "\tend,",
+      "})"
+    ]
+  },
+  "styluaignore": {
+    "prefix": "styluaignore",
+    "description": "stylua: ignore",
+    "body": [
+      "-- stylua: ignore ${1}"
+    ]
+  }
+}

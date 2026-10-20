@@ -1,6 +1,2 @@
-local M = {}
-
-LSP_SERVERS['docker_compose_language_service'] = {}
-LSP_SERVERS['dockerls'] = {}
-
-return M
+-- dockerls, docker_compose_language_service and hadolint come from LazyVim's docker extra
+return {}

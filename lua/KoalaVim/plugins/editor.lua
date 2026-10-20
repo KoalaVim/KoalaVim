@@ -31,6 +31,26 @@ table.insert(M, {
 				vim.g.auto_save_abort = true
 				return
 			end
+
+			-- Auto save doesn't format, disable LazyVim's format on save for this write only.
+			-- Keep other BufWrite hooks (gitsigns, LSP didSave, lint) by restoring `autoformat` on BufWritePost.
+			local buf = vim.api.nvim_get_current_buf()
+			local prev = vim.b[buf].autoformat -- nil|true|false
+			vim.b[buf].autoformat = false
+
+			local restored = false
+			local function restore()
+				if restored then
+					return
+				end
+				restored = true
+				if vim.api.nvim_buf_is_valid(buf) then
+					vim.b[buf].autoformat = prev
+				end
+			end
+			vim.api.nvim_create_autocmd('BufWritePost', { buffer = buf, once = true, callback = restore })
+			-- The write may fail (BufWritePost doesn't fire), don't leave the buffer with auto format off
+			vim.schedule(restore)
 		end
 	end,
 })
@@ -671,7 +691,9 @@ table.insert(M, {
 		-- your configuration comes here
 		-- or leave it empty to use the default settings
 		-- refer to the configuration section below
-		bigfile = { enabled = false },
+
+		-- bigfile, quickfile, scroll and notifier are enabled by LazyVim's snacks specs.
+		-- Modules below are explicitly disabled, LazyVim enables some of them.
 		dashboard = { enabled = false },
 		explorer = { enabled = false },
 		indent = { enabled = false },
@@ -758,9 +780,7 @@ table.insert(M, {
 			enabled = true,
 			style = 'fancy',
 		},
-		quickfile = { enabled = false },
 		scope = { enabled = false },
-		scroll = { enabled = false },
 		statuscolumn = { enabled = false },
 		words = { enabled = false },
 		dim = {

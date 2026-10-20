@@ -1,0 +1,31 @@
+{
+  "useserde": {
+    "prefix": "useserde",
+    "description": "use serde + derived struct",
+    "body": [
+      "use serde::{Deserialize, Serialize};",
+      "",
+      "#[derive(Serialize, Deserialize${1:, Debug})]",
+      "${2:pub} ${3:struct} $4 {",
+      "\t$5",
+      "}"
+    ]
+  },
+  "serdestruct": {
+    "prefix": "serdestruct",
+    "description": "serde struct",
+    "body": [
+      "#[derive(Serialize, Deserialize${1:, Debug})]",
+      "${2:pub} ${3:struct} $4 {",
+      "\t$5",
+      "}"
+    ]
+  },
+  "typeresult": {
+    "prefix": "typeresult",
+    "description": "Declare dynamic result",
+    "body": [
+      "type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;"
+    ]
+  }
+}

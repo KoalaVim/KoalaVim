@@ -1,38 +1,23 @@
 -- Require all other `.lua` files in the same directory
 -- Credit: https://github.com/hallettj/dot-vim
 
--- TODO: remove binary dependency
 local M = {}
 
-local function scandir(directory, recursive)
-	local i, t, popen = 0, {}, io.popen
-	local pfile = nil
-
-	if recursive then
-		pfile = popen('fd . --base-directory="' .. directory .. '"')
-	else
-		pfile = popen('ls -a "' .. directory .. '"')
-	end
-	-- print(directory)
-
-	if pfile == nil then
-		return {}
+-- Returns the sorted `.lua` files (relative to `directory`) under `directory`
+local function get_config_files(directory, recursive)
+	local files = {}
+	if vim.fn.isdirectory(directory) == 0 then
+		return files
 	end
 
-	for filename in pfile:lines() do
-		i = i + 1
-		t[i] = filename
-		-- print(filename)
+	for name, type in vim.fs.dir(directory, { depth = recursive and math.huge or 1 }) do
+		if (type == 'file' or type == 'link') and name:match('[.]lua$') then
+			table.insert(files, name)
+		end
 	end
-	pfile:close()
-	return t
-end
 
-local function get_config_files(dir, recursive)
-	return vim.tbl_filter(function(filename)
-		local is_lua_module = string.match(filename, '[.]lua$')
-		return is_lua_module
-	end, scandir(dir, recursive))
+	table.sort(files)
+	return files
 end
 
 local function _get_current_dir()
@@ -40,26 +25,32 @@ local function _get_current_dir()
 	return string.match(info.source, '^@(.*)[/\\]') .. '/'
 end
 
+-- Require every `.lua` file under the absolute path `dir`.
+-- Module names are `module_prefix` followed by the file's relative path (`/` -> `.`).
+-- opts.recursive: also require files from sub directories
+-- opts.skip: function(relative_module) -> boolean, return true to not require that module
+function M.require_abs(dir, module_prefix, opts)
+	opts = opts or {}
+	local ret_vals = {}
+
+	for _, filename in ipairs(get_config_files(dir, opts.recursive)) do
+		local relative_module = string.match(filename, '(.+).lua$')
+		if not (opts.skip and opts.skip(relative_module)) then
+			table.insert(ret_vals, require(module_prefix .. '.' .. relative_module:gsub('/', '.')))
+		end
+	end
+
+	return ret_vals
+end
+
 local function _require(relative_dir, recursive, require_prefix)
 	local current_dir = _get_current_dir()
 	if require_prefix == nil then
 		current_dir = current_dir .. 'lua/'
 	end
-	local ret_vals = {}
-	local full_dir = current_dir .. relative_dir .. '/'
+	local module_prefix = (require_prefix and require_prefix .. '.' or '') .. relative_dir
 
-	for _, filename in ipairs(get_config_files(full_dir, recursive)) do
-		local relative_module = string.match(filename, '(.+).lua$')
-		local require_module = ''
-		if require_prefix then
-			require_module = require_prefix .. '.'
-		end
-		require_module = require_module .. relative_dir .. '.' .. relative_module
-		-- print('require', require_module)
-		table.insert(ret_vals, require(require_module))
-	end
-
-	return ret_vals
+	return M.require_abs(current_dir .. relative_dir .. '/', module_prefix, { recursive = recursive })
 end
 
 -- TODO: doc.

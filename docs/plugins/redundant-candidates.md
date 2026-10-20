@@ -26,7 +26,7 @@ All plugins still listed here have been reviewed and **decided kept** — they r
 | Plugin | Category | Rationale | Decision |
 | --- | --- | --- | --- |
 | [hex.nvim](https://github.com/RaafatTurki/hex.nvim) | Editor | Rarely used; `:%!xxd` handles the same job. | Kept |
-| [nvim-snippy](https://github.com/dcampos/nvim-snippy) + [vim-snippets](https://github.com/honza/vim-snippets) | Autocomplete | Static snippet libraries overlap heavily with AI NES/inline completions. | Kept |
+| [nvim-snippets](https://github.com/garymjr/nvim-snippets) + [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) | Autocomplete | Static snippet libraries overlap heavily with AI NES/inline completions. | Kept |
 | [markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim) | LSP/Markdown | Overlaps with `render-markdown.nvim` and `peek.nvim`; all three for one task is excessive. | Kept |
 | [peek.nvim](https://github.com/toppair/peek.nvim) | LSP/Markdown | Already `enabled = false`; pick one markdown preview. | Kept |
 | [vim-be-good](https://github.com/ThePrimeagen/vim-be-good) | Games | Only relevant during onboarding; can stay, but not required. | Kept |

@@ -1,4 +1,4 @@
-LSP_SERVERS['cmake'] = {}
+local M = {}
 
 local clangd_cmd = {
 	'clangd',
@@ -13,13 +13,25 @@ if vim.fn.has('wsl') == 1 then
 	table.insert(clangd_cmd, '-j=4') -- Limit resources on wsl
 end
 
-LSP_SERVERS['clangd'] = {
-	init_options = {
-		clangdFileStatus = true,
+-- clangd and cmake (neocmake, replaces cmake-language-server) come from LazyVim's clangd/cmake extras
+table.insert(M, {
+	'neovim/nvim-lspconfig',
+	opts = {
+		servers = {
+			cmake = { enabled = false }, -- Don't auto-enable a leftover cmake-language-server install
+			clangd = {
+				cmd = clangd_cmd,
+				filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
+			},
+		},
 	},
-	cmd = clangd_cmd,
-	filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
-}
+})
+
+-- Tool to build CMake projects, regenerates the project on save. Wasn't part of KoalaVim
+table.insert(M, {
+	'Civitasv/cmake-tools.nvim',
+	enabled = false,
+})
 
 local add_r_new_line = 'i\\r\\n<Esc>'
 vim.api.nvim_create_autocmd('FileType', {
@@ -30,4 +42,4 @@ vim.api.nvim_create_autocmd('FileType', {
 	end,
 })
 
-return {}
+return M

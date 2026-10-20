@@ -1,86 +1,48 @@
 local M = {}
 
--- for some reason format of rust-analyzer + conform + format-on-leave doesn't work.
--- using rustfmt through conform solves the problem.
--- CONFORM_FORMATTERS['rustfmt'] = { 'rust' }
+-- Formatting goes through the rust-analyzer LSP fallback (no rustfmt in conform)
 
 local map = require('KoalaVim.utils.map')
 
-LSP_SERVERS['rust-analyzer'] = {
-	dont_setup = true, -- Dont setup but install with mason
-	mason = 'rust_analyzer',
-}
-
--- Batteries-included Rust tooling: rust-analyzer config, runnables, debugging
+-- rustaceanvim, its rust-analyzer settings and codelldb come from LazyVim's rust extra
 table.insert(M, {
 	'mrcjkb/rustaceanvim',
-	ft = 'rust',
-	opts = {
-		server = {
-			on_attach = function(_, bufnr)
-				map.map_buffer(bufnr, 'n', '<F4>', function()
-					vim.cmd.RustLsp('codeAction')
-				end, 'Rust Code Action')
+	opts = function(_, opts)
+		local extra_on_attach = opts.server.on_attach
 
-				-- override hover
-				map.map_buffer(bufnr, 'n', 'K', function()
-					vim.cmd.RustLsp({ 'hover', 'actions' })
-				end, 'Rust Hover')
+		opts.server.on_attach = function(client, bufnr)
+			if extra_on_attach then
+				extra_on_attach(client, bufnr)
+			end
 
-				map.map_buffer(bufnr, 'n', 'J', function()
-					vim.cmd.RustLsp('joinLines')
-				end, 'Rust Join Lines')
+			map.map_buffer(bufnr, 'n', '<F4>', function()
+				vim.cmd.RustLsp('codeAction')
+			end, 'Rust Code Action')
 
-				map.map_buffer(bufnr, 'n', '<leader>rr', function()
-					vim.cmd.RustLsp('runnables')
-				end, 'Rust Runnables')
+			-- override hover
+			map.map_buffer(bufnr, 'n', 'K', function()
+				vim.cmd.RustLsp({ 'hover', 'actions' })
+			end, 'Rust Hover')
 
-				map.map_buffer(bufnr, 'n', '<leader>rt', function()
-					vim.cmd.RustLsp('testables')
-				end, 'Rust Testables')
-			end,
-			default_settings = {
-				-- rust-analyzer language server configuration
-				['rust-analyzer'] = {
-					cargo = {
-						allFeatures = true,
-						loadOutDirsFromCheck = true,
-						buildScripts = {
-							enable = true,
-						},
-					},
-					-- Add clippy lints for Rust if using rust-analyzer
-					checkOnSave = 'rust-analyzer',
-					-- Enable diagnostics if using rust-analyzer
-					diagnostics = {
-						enable = 'rust-analyzer',
-					},
-					procMacro = {
-						enable = true,
-					},
-					files = {
-						exclude = {
-							'.direnv',
-							'.git',
-							'.jj',
-							'.github',
-							'.gitlab',
-							'bin',
-							'node_modules',
-							'target',
-							'venv',
-							'.venv',
-						},
-						-- Avoid Roots Scanned hanging, see https://github.com/rust-lang/rust-analyzer/issues/12613#issuecomment-2096386344
-						watcher = 'client',
-					},
-				},
-			},
-		},
-	},
-	config = function(_, opts)
-		vim.g.rustaceanvim = vim.tbl_deep_extend('keep', vim.g.rustaceanvim or {}, opts or {})
+			map.map_buffer(bufnr, 'n', 'J', function()
+				vim.cmd.RustLsp('joinLines')
+			end, 'Rust Join Lines')
+
+			map.map_buffer(bufnr, 'n', '<leader>rr', function()
+				vim.cmd.RustLsp('runnables')
+			end, 'Rust Runnables')
+
+			map.map_buffer(bufnr, 'n', '<leader>rt', function()
+				vim.cmd.RustLsp('testables')
+			end, 'Rust Testables')
+		end
 	end,
+})
+
+-- The extra doesn't install rust-analyzer
+table.insert(M, {
+	'mason-org/mason.nvim',
+	opts = { ensure_installed = { 'rust-analyzer' } },
 })
 
 -- Jump to the next Rust compile error via cargo-limit (run cargo lrun/lcheck)

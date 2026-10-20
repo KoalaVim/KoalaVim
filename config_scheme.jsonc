@@ -5,6 +5,11 @@
     "description": "Settings for KoalaVim",
     "type": "object",
     "properties": {
+        "flavor": {
+            "description": "Global flavor, chooses between KoalaVim's and LazyVim's behavior (keymaps, statusline/bufferline, dashboard, sessions, terminal). Requires restart",
+            "type": "string",
+            "enum": ["koala", "lazyvim"]
+        },
         "editor": {
             "description": "Settings for related to text editing",
             "type": "object",
@@ -191,7 +196,7 @@
                     "type": "object",
                     "properties": {
                         "blacklist": {
-                            "description": "List of lsp clients to not apply auto format with (useful for slow LSP formatters)",
+                            "description": "List of formatters (conform formatter names) or lsp clients to not apply auto format on save with (useful for slow formatters). Explicit format (<leader>F) still uses them",
                             "type": "array",
                             "items": {
                                 "type": "string"
@@ -199,7 +204,7 @@
                             }
                         },
                         "blacklist_ft": {
-                            "description": "List of file types to not apply auto format on ",
+                            "description": "List of file types to not auto format on save. Explicit format (<leader>F) still works",
                             "type": "array",
                             "items": {
                                 "type": "string"
@@ -212,7 +217,7 @@
                     "type": "object",
                     "properties": {
                         "blacklist": {
-                            "description": "List of lsp clients to not apply format with (including autoformat)",
+                            "description": "List of formatters (conform formatter names) or lsp clients to not format with at all (including autoformat and <leader>F)",
                             "type": "array",
                             "items": {
                                 "type": "string"
@@ -220,7 +225,7 @@
                             }
                         },
                         "blacklist_ft": {
-                            "description": "List of file types to not apply format on ",
+                            "description": "List of file types to not format at all (including autoformat and <leader>F)",
                             "type": "array",
                             "items": {
                                 "type": "string"

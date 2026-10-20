@@ -1,0 +1,75 @@
+{
+  "implements": {
+    "prefix": "implements",
+    "description": "Verify a type implements an interface",
+    "body": [
+      "var _ ${1:interface} = (*${2:type})(nil) // Verify that *$2 implements $1."
+    ]
+  },
+  "struct": {
+    "prefix": "struct",
+    "description": "struct",
+    "body": [
+      "type ${1:name} struct {",
+      "\t$2",
+      "}"
+    ]
+  },
+  "caller": {
+    "prefix": "caller",
+    "description": "Print caller",
+    "body": [
+      "_, file, no, ok := runtime.Caller(1)",
+      "if ok {",
+      "\tfmt.Printf(\"called from %s#%d\\n\", file, no)",
+      "}"
+    ]
+  },
+  "enum": {
+    "prefix": "enum",
+    "description": "enum",
+    "body": [
+      "type ${1:name} ${2:type}",
+      "",
+      "const (",
+      "\t$1${3:FirstName} $1 = ${4:iota}",
+      "\t$1${5:SecondName}",
+      ")"
+    ]
+  },
+  "switch": {
+    "prefix": "switch",
+    "description": "switch",
+    "body": [
+      "switch ${1:value} {",
+      "case ${2:match}:",
+      "\t$0",
+      "}"
+    ]
+  },
+  "noerr": {
+    "prefix": "noerr",
+    "description": "testify: require no error",
+    "body": [
+      "s.Require().NoError(err)"
+    ]
+  },
+  "fori": {
+    "prefix": "fori",
+    "description": "for int loop",
+    "body": [
+      "for ${1:i} := 0; $1 < ${2:count}; $1${3:++} {",
+      "\t${0}",
+      "}"
+    ]
+  },
+  "forr": {
+    "prefix": "forr",
+    "description": "for range loop",
+    "body": [
+      "for ${1:_}, ${2:e} := range ${3:collection} {",
+      "\t${0}",
+      "}"
+    ]
+  }
+}

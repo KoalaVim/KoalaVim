@@ -18,7 +18,7 @@ Look & feel: statusline, bufferline, notifications, icons.
 | [statuscol.nvim](https://github.com/luukvbaal/statuscol.nvim) | Customizable status column (sign, number, fold columns). |
 | [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) | Filetype icons for other plugins. |
 | [nui.nvim](https://github.com/MunifTanjim/nui.nvim) | UI component library used by other plugins. |
-| [which-key.nvim](https://github.com/folke/which-key.nvim) | Popup showing possible keybinding continuations. |
+| [which-key.nvim](https://github.com/folke/which-key.nvim) | Popup showing possible keybinding continuations (configured by LazyVim). |
 | [alpha-nvim](https://github.com/KoalaVim/alpha-nvim) | Greeter/dashboard shown on startup. |
 | [smear-cursor.nvim](https://github.com/sphamba/smear-cursor.nvim) | Smooth animated cursor trail. |
 | [vimade](https://github.com/tadaa/vimade) | Dim inactive windows/buffers. |

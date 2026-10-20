@@ -26,18 +26,18 @@ local function all_visible_buffers_source(priority, max_item_count)
 	}
 end
 
--- Auto complete engine
+-- Auto complete engine, on top of LazyVim's nvim-cmp extra (`vim.g.lazyvim_cmp = 'nvim-cmp'`).
+-- KoalaVim replaces the extra's sources/mappings/sorting/formatting and keeps its snippet setup,
+-- auto brackets and snippet preview (`lazyvim.util.cmp`).
 table.insert(M, {
 	'hrsh7th/nvim-cmp',
 	version = false, -- last release is way too old
-	event = { 'InsertEnter', 'CmdLineEnter' },
+	event = { 'InsertEnter', 'CmdlineEnter' },
 	dependencies = {
 		'hrsh7th/cmp-nvim-lsp',
 		'KoalaVim/cmp-fuzzy-buffer',
 		'KoalaVim/cmp-fuzzy-path',
 		'hrsh7th/cmp-cmdline',
-		'dcampos/nvim-snippy',
-		'dcampos/cmp-snippy',
 		'ofirgall/cmp-lspkind-priority',
 		'onsails/lspkind.nvim',
 		'windwp/nvim-autopairs',
@@ -46,7 +46,7 @@ table.insert(M, {
 		'hrsh7th/cmp-calc',
 		'not-manu/filemention.nvim',
 	},
-	config = function(_, opts)
+	opts = function(_, opts)
 		-- onsails/lspkind-nvim
 		local lspkind = require('lspkind')
 
@@ -84,14 +84,14 @@ table.insert(M, {
 			},
 		})
 
-		local snippy = require('snippy')
 		local cmp = require('cmp')
-		cmp.setup({
-			snippet = {
-				expand = function(args)
-					require('snippy').expand_snippet(args.body) -- For `snippy` users.
-				end,
-			},
+
+		-- `snippet` (native `vim.snippet` + nvim-snippets) is kept from LazyVim's extra.
+		-- KoalaVim's nvim-autopairs adds brackets on confirm, don't let LazyVim add them too.
+		opts.auto_brackets = {}
+		opts.completion = { completeopt = 'menu,menuone,noinsert,noselect' }
+
+		return vim.tbl_extend('force', opts, {
 			mapping = {
 				['<C-u>'] = cmp.mapping(cmp.mapping.scroll_docs(-8), { 'i', 'c' }),
 				['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(8), { 'i', 'c' }),
@@ -107,27 +107,19 @@ table.insert(M, {
 						fallback()
 					end
 				end, { 'i' }),
-				-- ['<Esc>'] = cmp.mapping(function (fallback)
-				-- 	-- if cmp.visible() and snippy.can_jump(1) then
-				-- 	if snippy.can_jump(1) then
-				-- 		snippy.next()
-				-- 	end
-				-- 	fallback()
-				-- end, { 'i' }),
+				-- Menu item, then snippet placeholder, then AI suggestion (LazyVim's actions)
 				['<Tab>'] = cmp.mapping(function(fallback)
 					if cmp.visible() then
 						cmp.select_next_item()
-					elseif snippy.can_jump(1) then
-						snippy.next()
 					else
-						fallback()
+						LazyVim.cmp.map({ 'snippet_forward', 'ai_nes', 'ai_accept' }, fallback)()
 					end
 				end, { 'i', 'c' }),
 				['<S-Tab>'] = cmp.mapping(function(fallback)
 					if cmp.visible() then
 						cmp.select_prev_item()
-					elseif snippy.can_jump(-1) then
-						snippy.previous()
+					elseif vim.snippet.active({ direction = -1 }) then
+						vim.snippet.jump(-1)
 					else
 						fallback()
 					end
@@ -164,7 +156,7 @@ table.insert(M, {
 				{ name = 'filemention', priority = 600 },
 				{ name = 'fuzzy_path', option = { trailing_slash = true, fuzzy_backend = 'zf' }, priority = 500 },
 				{ name = 'agents_skills', priority = 300, option = { fuzzy_backend = 'fzf' } },
-				{ name = 'snippy', priority = 200 },
+				{ name = 'snippets', priority = 200 },
 				all_visible_buffers_source(150, 10),
 				{
 					name = 'fuzzy_dictionary',
@@ -198,6 +190,12 @@ table.insert(M, {
 				ghost_text = false,
 			},
 		})
+	end,
+	config = function(_, opts)
+		-- Snippet parse fallback, auto brackets and missing snippet docs
+		require('lazyvim.util.cmp').setup(opts)
+
+		local cmp = require('cmp')
 		cmp.setup.cmdline('/', {
 			sources = {
 				all_visible_buffers_source(nil, 15),
@@ -305,25 +303,15 @@ table.insert(M, {
 	end,
 })
 
--- Snippet engine (TextMate/UltiSnips-compatible, integrates with nvim-cmp)
+-- VSCode-format snippets for the native `vim.snippet` engine (from LazyVim's nvim-cmp extra, with friendly-snippets).
+-- Adds KoalaVim's own snippets (`snippets/package.json`) next to the user's `<config>/snippets`.
 table.insert(M, {
-	'dcampos/nvim-snippy',
-	dependencies = {
-		'ofirgall/vim-snippets',
-	},
-	event = 'InsertEnter',
-	opts = {
-		mappings = {
-			s = {
-				['<Tab>'] = 'next',
-				['<S-Tab>'] = 'previous',
-			},
-			nx = {
-				['<Tab>'] = 'next',
-				['<S-Tab>'] = 'previous',
-			},
-		},
-	},
+	'garymjr/nvim-snippets',
+	opts = function(_, opts)
+		local koala_root = vim.fn.fnamemodify(debug.getinfo(1, 'S').source:sub(2), ':h:h:h:h')
+		opts.search_paths = opts.search_paths or { vim.fn.stdpath('config') .. '/snippets' }
+		table.insert(opts.search_paths, koala_root .. '/snippets')
+	end,
 })
 
 -- Auto-insert matching pairs (brackets, quotes) with treesitter awareness

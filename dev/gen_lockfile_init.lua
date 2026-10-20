@@ -8,9 +8,25 @@ if vim.env['KOALA_LOCKFILE_DST'] == nil then
 	os.exit(1)
 end
 
+-- Ignore the developer's LazyVim extras (`:LazyExtras` writes them to lazyvim.json)
+vim.g.lazyvim_json = vim.fn.tempname() .. '-lazyvim.json'
+
 local lazy_path = vim.fn.stdpath('data') .. '/lazy/lazy.nvim/'
 vim.opt.rtp:prepend(lazy_path)
 vim.opt.rtp:prepend(vim.fn.stdpath('data') .. '/lazy/KoalaVim/')
+-- `lazyvim.plugins` requires LazyVim's modules while lazy.nvim imports it
+vim.opt.rtp:prepend(vim.fn.stdpath('data') .. '/lazy/LazyVim/')
+-- KoalaVim's options read kvim.conf, use only the distribution defaults (not the developer's conf)
+require('KoalaVim').conf = require('KoalaVim.utils.json_file').load(require('KoalaVim.conf').get_kvim_conf(), false)
+
+-- KoalaVim's options set LazyVim globals that choose the default extras (e.g. `lazyvim_cmp`)
+vim.api.nvim_create_autocmd('User', {
+	pattern = 'LazyVimOptionsDefaults',
+	once = true,
+	callback = function()
+		require('KoalaVim.config.options')
+	end,
+})
 
 local lazy_opts = {
 	defaults = {

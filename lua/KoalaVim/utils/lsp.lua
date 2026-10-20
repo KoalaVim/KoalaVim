@@ -41,80 +41,164 @@ function M.late_attach(on_attach_func)
 	end
 end
 
-local function _format(buf, win, async, blacklist, blacklist_ft)
-	if vim.tbl_contains(blacklist_ft, vim.bo[buf].filetype) then
-		return
+-- Formatting is LazyVim's (`LazyVim.format`, conform + LSP fallback), KoalaVim applies its blacklists on top.
+-- `lsp.format.*` blacklists apply to every format, `lsp.autoformat.*` only to the automatic format on save.
+
+-- True while `LazyVim.format` runs without `force` (format on save, as opposed to `<leader>F`)
+local autoformatting = false
+
+local function in_list(list, value)
+	return vim.tbl_contains(list or {}, value)
+end
+
+---@param name string conform formatter or LSP client name
+function M.format_blacklisted(name)
+	return in_list(conf.format.blacklist, name) or (autoformatting and in_list(conf.autoformat.blacklist, name))
+end
+
+---@param buf number
+function M.ft_blacklisted(buf)
+	local ft = vim.bo[buf].filetype
+	return in_list(conf.format.blacklist_ft, ft) or (autoformatting and in_list(conf.autoformat.blacklist_ft, ft))
+end
+
+local servers_opts = nil
+
+---@param name string LSP client name
+function M.client_can_format(name)
+	if M.format_blacklisted(name) then
+		return false
 	end
 
-	local conform = require('conform')
+	-- `dont_format` is a KoalaVim flag on `opts.servers.<name>`
+	servers_opts = servers_opts or LazyVim.opts('nvim-lspconfig').servers or {}
+	local server = servers_opts[name]
+	return not (type(server) == 'table' and server.dont_format)
+end
 
-	local formatters = conform.list_formatters(buf)
-
-	if #formatters > 0 then
-		formatters = vim.tbl_filter(function(formatter)
-			return not vim.tbl_contains(blacklist, formatter.name)
-		end, formatters)
-
-		formatters = vim.tbl_map(function(formatter)
-			return formatter.name
-		end, formatters)
+-- Wrap a formatter before it's registered to `LazyVim.format`:
+-- - filetype blacklists disable the formatter (also when forced)
+-- - LSP clients are filtered by the blacklists and `dont_format`
+local function guard_formatter(formatter)
+	if formatter.koala_guarded then
+		return formatter
 	end
+	formatter.koala_guarded = true
 
-	local cursor = api.nvim_win_get_cursor(win)
+	local sources, format = formatter.sources, formatter.format
+	local is_lsp = formatter.name == 'LSP'
 
-	require('conform').format({
-		async = async,
-		bufnr = buf,
-		formatters = formatters,
-		lsp_fallback = #formatters == 0, -- prioritize non-lsp formatters
+	formatter.sources = function(buf)
+		if M.ft_blacklisted(buf) then
+			return {}
+		end
 
-		-- applied only for lsp
-		filter = function(client)
-			local resolved = LOADED_LSP_SERVERS or {}
-			if resolved[client.name] then
-				return not vim.tbl_contains(blacklist, client.name) and not resolved[client.name].dont_format
+		return vim.tbl_filter(function(name)
+			if is_lsp then
+				return M.client_can_format(name)
 			end
-			return false
-		end,
-	}, function(_, did_edit) -- callback after formatting
-		if not did_edit then
+			return not M.format_blacklisted(name)
+		end, sources(buf))
+	end
+
+	formatter.format = function(buf)
+		if M.ft_blacklisted(buf) then
 			return
 		end
 
-		-- write changes to formatted buffer and return to the current buffer
-		local saved_view = vim.fn.winsaveview()
-		vim.cmd('let buf=bufnr("%") | exec "' .. buf .. 'bufdo silent! write!" | exec "b" buf')
+		if is_lsp then
+			-- Same as `LazyVim.lsp.formatter()` but with KoalaVim's client filter
+			LazyVim.lsp.format({
+				bufnr = buf,
+				filter = function(client)
+					return M.client_can_format(client.name)
+				end,
+			})
+		else
+			format(buf)
+		end
+	end
 
-		-- restore view after bufdo recenters the view
-		vim.fn.winrestview({ topline = saved_view.topline })
-
-		-- restore cursor position after async formatting.
-		-- workaround when cursor is on formatted line, it get mispositioned afterwards.
-		api.nvim_win_set_cursor(win, cursor)
-	end)
+	return formatter
 end
 
-AUTO_FORMAT_BLACKLIST = nil
-AUTO_FORMAT_FT_BLACKLIST = nil
-function M.auto_format(async, buf, win)
-	-- Lazy load and cache auto format blacklist
-	AUTO_FORMAT_BLACKLIST = AUTO_FORMAT_BLACKLIST or vim.list_extend(conf.autoformat.blacklist, conf.format.blacklist)
-	AUTO_FORMAT_FT_BLACKLIST = AUTO_FORMAT_FT_BLACKLIST
-		or vim.list_extend(conf.autoformat.blacklist_ft, conf.format.blacklist_ft)
-	_format(buf, win, async, AUTO_FORMAT_BLACKLIST, AUTO_FORMAT_FT_BLACKLIST)
+-- Apply KoalaVim's format policy (blacklists) to all of LazyVim's formatters, must run before they register.
+function M.setup_format()
+	if M._format_setup then
+		return
+	end
+	M._format_setup = true
+
+	for _, formatter in ipairs(LazyVim.format.formatters) do
+		guard_formatter(formatter)
+	end
+
+	local register = LazyVim.format.register
+	LazyVim.format.register = function(formatter)
+		return register(guard_formatter(formatter))
+	end
+
+	-- Auto format (format on save) is the format without `force`
+	local format = LazyVim.format.format
+	LazyVim.format.format = function(opts)
+		local prev = autoformatting
+		autoformatting = not (opts and opts.force)
+		local ok, err = pcall(format, opts)
+		autoformatting = prev
+		if not ok then
+			error(err, 0)
+		end
+	end
+
+	-- `blacklist_ft` disables auto format for the filetype, `format.blacklist_ft` also blocks the forced format (see above).
+	local fts = vim.list_extend(vim.deepcopy(conf.format.blacklist_ft), conf.autoformat.blacklist_ft)
+	if #fts > 0 then
+		vim.api.nvim_create_autocmd('FileType', {
+			desc = 'KoalaVim: disable auto format for blacklisted filetypes',
+			group = vim.api.nvim_create_augroup('KoalaFormatBlacklist', { clear = true }),
+			pattern = fts,
+			callback = function(ev)
+				vim.b[ev.buf].autoformat = false
+			end,
+		})
+	end
 end
 
-function M.format(async)
-	-- FIXME: support disabling all formatters from config
-	_format(
-		api.nvim_get_current_buf(),
-		api.nvim_get_current_win(),
-		async,
-		conf.format.blacklist,
-		conf.format.blacklist_ft
-	)
+-- Skip conform formatters that are on the blacklists (`opts.formatters` of conform)
+function M.conform_blacklist(opts)
+	local names = vim.list_extend(vim.deepcopy(conf.format.blacklist), conf.autoformat.blacklist)
+	opts.formatters = opts.formatters or {}
+
+	for _, name in ipairs(names) do
+		local ok, builtin = pcall(require, 'conform.formatters.' .. name)
+		local override = opts.formatters[name]
+		-- Not a conform formatter (e.g. an LSP client), handled by `guard_formatter`
+		if ok or override ~= nil then
+			local function with_blacklist(config)
+				config = vim.deepcopy(config or {})
+				local prev = config.condition or (ok and builtin.condition) or nil
+				config.condition = function(self, ctx)
+					if M.format_blacklisted(name) then
+						return false
+					end
+					return prev == nil or prev(self, ctx)
+				end
+				return config
+			end
+
+			if type(override) == 'function' then
+				opts.formatters[name] = function(bufnr)
+					return with_blacklist(override(bufnr))
+				end
+			else
+				opts.formatters[name] = with_blacklist(override)
+			end
+		end
+	end
 end
 
+-- The base config (signs, underline, ...) is `opts.diagnostics` of lspconfig (see plugins/lsp/diagnostics.lua),
+-- the modes override only the virtual text/lines.
 local DIAGNOSTICS_CFG = {
 	{
 		virtual_lines = false,
@@ -140,7 +224,7 @@ local DIAGNOSTICS_CFG = {
 	},
 }
 
-local CURR_DIAG_CFG = DIAGNOSTICS_CFG[0]
+local CURR_DIAG_CFG = DIAGNOSTICS_CFG[1]
 
 function M.setup_diagnostic_signs()
 	local icons = require('KoalaVim.utils.icons').diagnostics
@@ -150,37 +234,39 @@ function M.setup_diagnostic_signs()
 	end
 end
 
-local _signs = nil
+local _base_signs = nil
 
 function M.set_diagnostics_mode(index)
-	if _signs == nil then
-		_signs = {
-			text = {},
-			linehl = {},
-			numhl = {},
-		}
-
-		-- Icons
-		local icons = require('KoalaVim.utils.icons').diagnostics
-		for severity, name in pairs(require('KoalaVim.utils.icons').severity_to_name) do
-			local hlname = name:gsub('^%l', string.upper) -- Captial first letter
-			hlname = 'DiagnosticSign' .. hlname
-			_signs.text[severity] = icons[name]
-			_signs.linehl[severity] = ''
-			_signs.numhl[severity] = ''
-		end
+	if _base_signs == nil then
+		-- Signs of `opts.diagnostics`, modes may add to it (priority)
+		local signs = vim.diagnostic.config().signs
+		_base_signs = type(signs) == 'table' and signs or {}
 	end
-	CURR_DIAG_CFG = DIAGNOSTICS_CFG[index]
-	CURR_DIAG_CFG.update_in_insert = false
-	CURR_DIAG_CFG.underline = false
-	CURR_DIAG_CFG.signs = _signs
 
-	vim.diagnostic.config(CURR_DIAG_CFG)
+	CURR_DIAG_CFG = DIAGNOSTICS_CFG[index]
+	vim.diagnostic.config({
+		virtual_text = CURR_DIAG_CFG.virtual_text,
+		virtual_lines = CURR_DIAG_CFG.virtual_lines,
+		signs = vim.tbl_extend('force', _base_signs, CURR_DIAG_CFG.signs or {}),
+	})
 	if CURR_DIAG_CFG.diagflow then
 		require('diagflow').enable()
 	else
 		require('diagflow').disable()
 	end
+end
+
+-- Apply the initial diagnostics mode once LazyVim's lspconfig config applied `opts.diagnostics`
+function M.init_diagnostics_mode()
+	vim.api.nvim_create_autocmd('User', {
+		pattern = 'LazyLoad',
+		callback = function(ev)
+			if ev.data == 'nvim-lspconfig' then
+				M.set_diagnostics_mode(1)
+				return true -- once
+			end
+		end,
+	})
 end
 
 function M.enable_diagflow()

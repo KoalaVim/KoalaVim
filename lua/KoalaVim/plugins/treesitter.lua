@@ -1,92 +1,136 @@
 local M = {}
 
 -- Treesitter parser manager — syntax, folds, indent powered by TS grammars
+-- The core spec (build, events, highlight/indent/folds features) comes from LazyVim, this adds
+-- KoalaVim's parsers, incremental selection and on demand parsers install.
 table.insert(M, {
 	'nvim-treesitter/nvim-treesitter',
-	version = false, -- last release is way too old
-	lazy = false,
-	build = ':TSUpdate',
-	event = { 'BufReadPost', 'BufNewFile' },
-	keys = {
-		{ '<CR>', desc = 'Increment selection' },
-		{ '<BS>', desc = 'Decrement selection', mode = 'x' },
+	-- Merged with LazyVim's list (`opts_extend`)
+	opts = {
+		ensure_installed = {
+			'cmake',
+			'cpp',
+			'css',
+			'dockerfile',
+			'git_rebase',
+			'gitcommit',
+			'gitignore',
+			'go',
+			'gomod',
+			'gosum',
+			'make',
+			'proto',
+			'rust',
+			'sql',
+			'zig',
+		},
 	},
-	config = function(_, _)
-		local available_langs = require('nvim-treesitter').get_available()
-
+	keys = {
+		-- Not `<CR>`: visual `<CR>` copies to the os clipboard
+		{
+			'<C-Space>',
+			function()
+				return require('KoalaVim.utils.ts_selection').start_expr()
+			end,
+			expr = true,
+			desc = 'Select treesitter node',
+		},
+		{
+			'<C-Space>',
+			function()
+				return require('KoalaVim.utils.ts_selection').expand_expr()
+			end,
+			expr = true,
+			mode = 'x',
+			desc = 'Increment selection',
+		},
+		{
+			'<BS>',
+			function()
+				return require('KoalaVim.utils.ts_selection').shrink_expr()
+			end,
+			expr = true,
+			mode = 'x',
+			desc = 'Decrement selection',
+		},
+	},
+	init = function()
 		local usercmd = require('KoalaVim.utils.cmd')
 		vim.treesitter.language.register('markdown', 'sidekick_koala_prompt')
 
+		local available_langs ---@type string[]?
+
+		-- LazyVim's FileType hook sets highlight, indent and folds for installed parsers. A parser
+		-- installed on demand shows up after that hook ran, so do the same here.
 		-- Must target bufid explicitly — the filetype-changed buffer is often
 		-- not current (e.g. picker preview), so bare vim.wo/vim.bo would
 		-- clobber the wrong window.
-		local function _apply_fold_indent(bufid)
+		local function _start_ts(bufid, lang)
 			if vim.bo[bufid].buftype ~= '' then
 				return
 			end
 
-			-- indentation, provided by nvim-treesitter
-			vim.bo[bufid].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-
-			-- folds, provided by Neovim — window-local, so set per window.
-			for _, win in ipairs(vim.fn.win_findbuf(bufid)) do
-				vim.wo[win].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-				vim.wo[win].foldmethod = 'expr'
-			end
-		end
-
-		local function _setup_ts(bufid, lang)
 			-- syntax highlighting, provided by Neovim
 			if not pcall(vim.treesitter.start, bufid, lang) then
 				return
 			end
-			_apply_fold_indent(bufid)
+
+			-- indentation, provided by nvim-treesitter
+			vim.bo[bufid].indentexpr = 'v:lua.LazyVim.treesitter.indentexpr()'
+
+			-- folds, provided by Neovim — window-local, so set per window.
+			for _, win in ipairs(vim.fn.win_findbuf(bufid)) do
+				vim.wo[win].foldexpr = 'v:lua.LazyVim.treesitter.foldexpr()'
+				vim.wo[win].foldmethod = 'expr'
+			end
 		end
 
-		local function _enable_ts(ft, bufid)
+		---@param force boolean? start treesitter even if the parser is already installed
+		local function _enable_ts(ft, bufid, force)
 			local lang = vim.treesitter.language.get_lang(ft)
-			if not vim.tbl_contains(available_langs, lang) then
+			if not lang then
 				return
-			end
-
-			-- Re-check ts_highlight (not a one-way latch) — pickers reuse
-			-- preview buffers and call vim.treesitter.stop() between results.
-			if vim.b[bufid].ts_highlight then
-				local active = vim.treesitter.highlighter.active[bufid]
-				if active and active.tree and active.tree:lang() == lang then
-					_apply_fold_indent(bufid)
-					return
-				end
-				-- Different language — detach first to avoid leaking callbacks.
-				vim.treesitter.stop(bufid)
 			end
 
 			-- Probe directly — install() rescans the full parser table (~640us),
 			-- too expensive per preview keystroke.
 			local probed, has_parser = pcall(vim.treesitter.language.add, lang)
 			if probed and has_parser then
-				_setup_ts(bufid, lang)
+				if force then
+					vim.treesitter.stop(bufid)
+					_start_ts(bufid, lang)
+				end
+				return
+			end
+
+			local has_ts, TS = pcall(require, 'nvim-treesitter')
+			if not has_ts then
+				return
+			end
+			available_langs = available_langs or TS.get_available()
+			if not vim.tbl_contains(available_langs, lang) then
 				return
 			end
 
 			-- install if not exist
-			require('nvim-treesitter').install(lang):await(function()
+			TS.install(lang):await(function()
 				if not vim.api.nvim_buf_is_valid(bufid) then
 					return
 				end
 				if vim.treesitter.language.get_lang(vim.bo[bufid].ft) ~= lang then
 					return
 				end
-				_setup_ts(bufid, lang)
+				LazyVim.treesitter.get_installed(true) -- refresh the installed langs
+				_start_ts(bufid, lang)
 			end)
 		end
 
 		usercmd.create('TSKoala', 'Tree sitter enable via koala', function()
-			_enable_ts(vim.bo.ft, vim.api.nvim_get_current_buf())
+			_enable_ts(vim.bo.ft, vim.api.nvim_get_current_buf(), true)
 		end, {})
 
 		vim.api.nvim_create_autocmd('FileType', {
-			group = vim.api.nvim_create_augroup('lazy_treesitter', { clear = true }),
+			group = vim.api.nvim_create_augroup('koala_treesitter', { clear = true }),
 			callback = function(ev)
 				_enable_ts(ev.match, ev.buf)
 			end,
@@ -108,6 +152,8 @@ table.insert(M, {
 			set_jumps = true, -- whether to set jumps in the jumplist
 			keys = {
 				goto_next_start = {
+					-- LazyVim's `]c`/`[c` (class) conflicts with diff navigation, KoalaVim uses `]]`/`[[`
+					[']c'] = false,
 					[']f'] = '@function.outer',
 					[']]'] = '@class.outer',
 					[']b'] = '@block.outer',
@@ -115,12 +161,14 @@ table.insert(M, {
 					[']k'] = '@call.outer',
 				},
 				goto_next_end = {
+					[']C'] = false,
 					[']F'] = '@function.outer',
 					[']B'] = '@block.outer',
 					[']A'] = '@parameter.inner',
 					[']K'] = '@call.outer',
 				},
 				goto_previous_start = {
+					['[c'] = false,
 					['[f'] = '@function.outer',
 					['[['] = '@class.outer',
 					['[b'] = '@block.outer',
@@ -128,6 +176,7 @@ table.insert(M, {
 					['[k'] = '@call.inner',
 				},
 				goto_previous_end = {
+					['[C'] = false,
 					['[F'] = '@function.outer',
 					['[B'] = '@block.outer',
 					['[A'] = '@parameter.inner',
@@ -175,9 +224,11 @@ table.insert(M, {
 		-- Set move cmds
 		for goto_cmd, keys in pairs(opts.move.keys) do
 			for lhs, obj in pairs(keys) do
-				map({ 'n', 'x', 'o' }, lhs, function()
-					require('nvim-treesitter-textobjects.move')[goto_cmd](obj, 'textobjects')
-				end, goto_cmd .. ' ' .. obj)
+				if obj then
+					map({ 'n', 'x', 'o' }, lhs, function()
+						require('nvim-treesitter-textobjects.move')[goto_cmd](obj, 'textobjects')
+					end, goto_cmd .. ' ' .. obj)
+				end
 			end
 		end
 

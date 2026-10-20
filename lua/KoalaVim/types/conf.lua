@@ -6,6 +6,7 @@
 ---@field ai KoalaVim.Conf.ai
 ---@field autocmds KoalaVim.Conf.autocmds
 ---@field editor KoalaVim.Conf.editor
+---@field flavor string
 ---@field lsp KoalaVim.Conf.lsp
 ---@field plugins KoalaVim.Conf.plugins
 ---@field ui KoalaVim.Conf.ui
