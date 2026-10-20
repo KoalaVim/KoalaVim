@@ -63,6 +63,22 @@ table.insert(M, {
 	end,
 })
 
+-- View mermaid diagrams in a float via the kitty graphics protocol (WIP)
+table.insert(M, {
+	'KoalaVim/mermaid-viewer.nvim',
+	cmd = { 'MermaidView', 'MermaidClose', 'MermaidToggle' },
+	ft = { 'markdown', 'mermaid' },
+	keys = {
+		{
+			'<leader>um',
+			'<cmd>MermaidToggle<cr>',
+			ft = { 'markdown', 'mermaid' },
+			desc = 'Mermaid Viewer',
+		},
+	},
+	opts = {},
+})
+
 -- Render markdown inside the buffer (headings, code blocks, tables, etc.)
 table.insert(M, {
 	'MeanderingProgrammer/render-markdown.nvim',
