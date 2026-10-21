@@ -63,10 +63,10 @@ table.insert(M, {
 	end,
 })
 
--- View mermaid diagrams in a float via the kitty graphics protocol (WIP)
+-- Mermaid diagrams inline above their blocks and in a zoomable float, via kitty graphics placeholders (WIP)
 table.insert(M, {
 	'KoalaVim/mermaid-viewer.nvim',
-	cmd = { 'MermaidView', 'MermaidClose', 'MermaidToggle' },
+	cmd = { 'MermaidView', 'MermaidClose', 'MermaidToggle', 'MermaidInline', 'MermaidCollapse' },
 	ft = { 'markdown', 'mermaid' },
 	keys = {
 		{
@@ -74,6 +74,18 @@ table.insert(M, {
 			'<cmd>MermaidToggle<cr>',
 			ft = { 'markdown', 'mermaid' },
 			desc = 'Mermaid Viewer',
+		},
+		{
+			'<leader>ui',
+			'<cmd>MermaidInline<cr>',
+			ft = 'markdown',
+			desc = 'Toggle inline mermaid diagrams',
+		},
+		{
+			'<leader>uc',
+			'<cmd>MermaidCollapse<cr>',
+			ft = 'markdown',
+			desc = 'Collapse mermaid block',
 		},
 	},
 	opts = {},
