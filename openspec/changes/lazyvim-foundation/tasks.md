@@ -33,7 +33,7 @@
 - [x] 5.1 Remove KoalaVim's `nvim-treesitter` core spec; add KoalaVim parsers via `opts.ensure_installed`
 - [x] 5.2 Keep endwise, matchup, jsonpath, treesitter-context, ts-context-commentstring and textobjects specs as KoalaVim additions; register `sidekick_koala_prompt` → markdown
 - [x] 5.3 Compare KoalaVim's per-buffer fold/indent hook with LazyVim's `folds`/`indent`; keep only what LazyVim doesn't cover
-- [ ] 5.4 Implement incremental selection (treesitter node-parent walk with a per-buffer stack) on `<C-Space>` (start/expand) / `<BS>` (shrink in visual). Implemented; until `lazyvim-ui-editing` disables flash, flash's `<C-Space>` shadows it. Tick once flash is off.
+- [x] 5.4 Implement incremental selection (treesitter node-parent walk with a per-buffer stack) on `<C-Space>` (start/expand) / `<BS>` (shrink in visual). Verified after `lazyvim-ui-editing` disabled flash.
 
 ## 6. Verify
 

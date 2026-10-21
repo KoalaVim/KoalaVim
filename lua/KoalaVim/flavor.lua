@@ -35,6 +35,10 @@ end
 ---@param name 'koala'|'lazyvim'
 ---@return boolean
 function M.is(name)
+	-- The lockfile generator enables every flavor's plugins, so the lockfile covers both
+	if vim.g.koala_all_flavors then
+		return true
+	end
 	return M.get() == name
 end
 

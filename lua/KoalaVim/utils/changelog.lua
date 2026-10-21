@@ -113,9 +113,9 @@ function M.render(message, error)
 		end
 	end
 
-	-- Clean pop up after alpha closed
+	-- Clean pop up after the dashboard closed
 	api.nvim_create_autocmd('User', {
-		pattern = 'AlphaClosed',
+		pattern = 'KoalaDashboardClosed',
 		callback = close_pop_up,
 	})
 
@@ -123,7 +123,7 @@ function M.render(message, error)
 	api.nvim_create_autocmd('WinLeave', {
 		callback = function(events)
 			local ft = vim.bo[events.buf].ft
-			if ft == 'alpha' or ft == 'KoalaChangeLog' then
+			if ft == 'alpha' or ft == 'snacks_dashboard' or ft == 'KoalaChangeLog' then
 				close_pop_up()
 			end
 		end,

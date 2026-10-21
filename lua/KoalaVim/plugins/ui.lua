@@ -1,5 +1,6 @@
 local M = {}
 local api = vim.api
+local flavor = require('KoalaVim.flavor')
 
 local function node_relative_path()
 	local node = require('nvim-tree.api').tree.get_node_under_cursor()
@@ -217,22 +218,25 @@ table.insert(M, {
 })
 
 -- statusline
+-- koala: KoalaVim's statusline (`utils/ui.lua`), lazyvim: LazyVim's statusline with the ofirkai theme
 table.insert(M, {
 	'nvim-lualine/lualine.nvim',
 	event = 'VeryLazy',
-	config = function(_, opts)
-		if opts.options == nil then
-			opts.options = {
-				theme = require('ofirkai.statuslines.lualine').theme,
-			}
+	opts = function(_, opts)
+		if flavor.is('lazyvim') then
+			opts.options.theme = require('ofirkai.statuslines.lualine').theme
+			opts.options.globalstatus = true -- KoalaVim's options reset `laststatus`
 		end
+	end,
+	-- lazyvim: keep LazyVim's config (plain `setup(opts)`)
+	config = flavor.is('koala') and function(_, opts)
 		require('KoalaVim.utils.ui').setup_lualine(false, opts)
 
 		-- Refresh lualine for recording macros
 		api.nvim_create_autocmd({ 'RecordingEnter', 'RecordingLeave' }, {
 			callback = require('lualine').refresh,
 		})
-	end,
+	end or nil,
 })
 
 -- Git blame (for status line)
@@ -265,31 +269,36 @@ table.insert(M, {
 })
 
 -- bufferline
+-- koala: KoalaVim's tabline, lazyvim: LazyVim's bufferline with the ofirkai colors
 table.insert(M, {
 	'akinsho/bufferline.nvim',
 	event = 'VeryLazy',
-	opts = {
-		options = {
-			separator_style = 'slant',
-			offsets = {
-				{ filetype = 'NvimTree', text = 'File Explorer', text_align = 'center', highlight = 'NvimTreeNormal' },
-			},
-			show_buffer_icons = true,
-			themable = true,
-			numbers = 'ordinal',
-			max_name_length = 40,
-		},
-	},
-	config = function(_, opts)
+	opts = function(_, opts)
 		-- TODO: merge highlights with user opts
 		opts.highlights = require('ofirkai.tablines.bufferline').highlights
 
-		local bufferline = require('bufferline')
-		opts.options.style_preset = {
-			bufferline.style_preset.no_italic,
-		}
-		bufferline.setup(opts)
+		local nvim_tree_offset =
+			{ filetype = 'NvimTree', text = 'File Explorer', text_align = 'center', highlight = 'NvimTreeNormal' }
+		if flavor.is('koala') then
+			-- Replace LazyVim's options
+			opts.options = {
+				separator_style = 'slant',
+				offsets = { nvim_tree_offset },
+				show_buffer_icons = true,
+				themable = true,
+				numbers = 'ordinal',
+				max_name_length = 40,
+				style_preset = { require('bufferline').style_preset.no_italic },
+			}
+		else
+			opts.options.themable = true
+			table.insert(opts.options.offsets, nvim_tree_offset)
+		end
 	end,
+	-- lazyvim: keep LazyVim's config
+	config = flavor.is('koala') and function(_, opts)
+		require('bufferline').setup(opts)
+	end or nil,
 })
 
 -- Nice ui for notify, :messages, and better cmdline
@@ -302,30 +311,20 @@ table.insert(M, {
 		return true
 	end,
 	event = 'VeryLazy',
-	config = function()
-		require('noice').setup({
-			popupmenu = {
+	-- Merged into LazyVim's opts (and its config)
+	opts = function(_, opts)
+		opts.popupmenu = { enabled = false }
+		opts.lsp = vim.tbl_deep_extend('force', opts.lsp or {}, {
+			signature = { enabled = true },
+			progress = {
+				-- Using fidget.nvim instead
 				enabled = false,
 			},
-			lsp = {
-				signature = {
-					enabled = true,
-				},
-				override = {
-					-- Override `vim.lsp.buf.hover` and `nvim-cmp` doc formatter with `noice` doc formatter.
-					['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-					['vim.lsp.util.stylize_markdown'] = true,
-					['cmp.entry.get_documentation'] = true,
-				},
-				progress = {
-					-- Using fidget.nvim instead
-					enabled = false,
-				},
-			},
-			routes = require('KoalaVim.misc.noice_routes'),
-			presets = {
-				lsp_doc_border = true, -- add a border to hover docs and signature help
-			},
+		})
+		-- KoalaVim's routes first, noice stops at the first matching route (LazyVim's `written` route would win)
+		opts.routes = vim.list_extend(vim.deepcopy(require('KoalaVim.misc.noice_routes')), opts.routes or {})
+		opts.presets = vim.tbl_deep_extend('force', opts.presets or {}, {
+			lsp_doc_border = true, -- add a border to hover docs and signature help
 		})
 	end,
 	keys = {
@@ -336,7 +335,7 @@ table.insert(M, {
 					return '<c-u>zz'
 				end
 			end,
-			'Scroll up in hover',
+			desc = 'Scroll up in hover',
 			silent = true,
 			expr = true,
 		},
@@ -347,7 +346,7 @@ table.insert(M, {
 					return '<c-d>zz'
 				end
 			end,
-			'Scroll down in hover',
+			desc = 'Scroll down in hover',
 			silent = true,
 			expr = true,
 		},
@@ -356,7 +355,7 @@ table.insert(M, {
 			function()
 				require('KoalaVim.utils.noice').show_signature()
 			end,
-			'Show function signature',
+			desc = 'Show function signature',
 			mode = 'i',
 		},
 		{
@@ -366,7 +365,7 @@ table.insert(M, {
 				require('noice.commands').cmd('')
 				vim.cmd('NeoZoomToggle')
 			end,
-			'Open Noice',
+			desc = 'Open Noice',
 		},
 	},
 })
@@ -477,18 +476,27 @@ table.insert(M, {
 	lazy = true,
 })
 
+-- Fires `User KoalaDashboardClosed` (flavor independent) when the dashboard closes (see alpha/snacks below)
+local function fire_dashboard_closed()
+	vim.api.nvim_exec_autocmds('User', { pattern = 'KoalaDashboardClosed' })
+end
+
 function CLOSE_KOALA_DASHBOARD(clear_messages, close_buffer)
 	KOALA_DASHBOARD_CLOSED = true
 	if clear_messages then
-		vim.api.nvim_exec_autocmds('User', { pattern = 'AlphaClosed' })
+		fire_dashboard_closed()
 	end
 end
 
 -- Greeter/dashboard shown on startup with KoalaVim shortcuts
+-- koala flavor: alpha, lazyvim flavor: snacks dashboard (below)
 table.insert(M, {
 	'KoalaVim/alpha-nvim', -- fork
 	-- Not `alpha-nvim`, so LazyVim's optional `goolord/alpha-nvim` specs (dashboard buttons) don't merge into it
 	name = 'koala-alpha-nvim',
+	enabled = function()
+		return flavor.is('koala')
+	end,
 	event = 'VimEnter',
 	opts = function()
 		local dashboard = require('alpha.themes.dashboard')
@@ -617,6 +625,11 @@ table.insert(M, {
 		end
 
 		vim.api.nvim_create_autocmd('User', {
+			pattern = 'AlphaClosed',
+			callback = fire_dashboard_closed,
+		})
+
+		vim.api.nvim_create_autocmd('User', {
 			pattern = 'AlphaReady',
 			callback = function()
 				require('KoalaVim.utils.update_checker').check()
@@ -642,6 +655,68 @@ table.insert(M, {
 					' Type :ListCmds for commands help',
 				}
 				pcall(vim.cmd.AlphaRedraw)
+			end,
+		})
+	end,
+})
+
+-- Dashboard for the lazyvim flavor: LazyVim's snacks dashboard with KoalaVim's buttons
+table.insert(M, {
+	'folke/snacks.nvim',
+	opts = function(_, opts)
+		opts.dashboard = opts.dashboard or {}
+		-- Same as the alpha dashboard, don't show on restart or when loading into koala mode
+		opts.dashboard.enabled = flavor.is('lazyvim') and not vim.env.KOALA_RESTART and not vim.env.KOALA_MODE
+		if not flavor.is('lazyvim') then
+			return
+		end
+
+		-- Insert before `Quit`
+		local keys = opts.dashboard.preset.keys
+		local quit = #keys
+		for i, key in ipairs(keys) do
+			if key.key == 'q' then
+				quit = i
+			end
+		end
+		-- stylua: ignore
+		local koala_keys = {
+			{ icon = '󰚩 ', key = 'a', desc = 'AI Sidekick', action = function()
+				KoalaDisableAutoSession()
+				CLOSE_KOALA_DASHBOARD(true)
+				require('KoalaVim.utils.modes').load('ai')
+			end },
+			{ icon = '𝝙 ', key = 'd', desc = 'Git Diff', action = function()
+				CLOSE_KOALA_DASHBOARD()
+				KoalaDisableSession()
+				require('KoalaVim.utils.modes').load('git_diff')
+			end },
+			{ icon = ' ', key = 'u', desc = 'Koala Update', action = function()
+				CLOSE_KOALA_DASHBOARD()
+				require('KoalaVim.utils.update_checker').update()
+			end },
+			{ icon = ' ', key = 'C', desc = 'Koala Change Log', action = function()
+				CLOSE_KOALA_DASHBOARD()
+				require('KoalaVim.utils.changelog').check()
+			end },
+		}
+		for i, key in ipairs(koala_keys) do
+			table.insert(keys, quit + i - 1, key)
+		end
+	end,
+	init = function()
+		if not flavor.is('lazyvim') then
+			return
+		end
+
+		vim.api.nvim_create_autocmd('User', {
+			pattern = 'SnacksDashboardClosed',
+			callback = fire_dashboard_closed,
+		})
+		vim.api.nvim_create_autocmd('User', {
+			pattern = 'SnacksDashboardOpened',
+			callback = function()
+				require('KoalaVim.utils.update_checker').check()
 			end,
 		})
 	end,

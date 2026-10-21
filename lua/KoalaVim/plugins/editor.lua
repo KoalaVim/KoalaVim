@@ -352,6 +352,8 @@ table.insert(M, {
 				'markdown',
 				'fugitive',
 				'toggleterm',
+				'snacks_terminal',
+				'trouble',
 				'log',
 				'noice',
 				'nui',
@@ -544,46 +546,12 @@ table.insert(M, {
 })
 
 -- Pretty panel for diagnostics, quickfix, loclist, references, todo comments
+-- LazyVim's spec brings the rest of the keys (`<leader>x*`, `[q`, `]q`)
 table.insert(M, {
-	'ofirgall/trouble.nvim', -- fork
-	lazy = true,
-	dependencies = { 'nvim-tree/nvim-web-devicons' },
-	cmd = { 'TroubleToggle', 'Trouble' },
+	'folke/trouble.nvim',
 	keys = {
-		{ '<leader>t', '<cmd>TroubleToggle<cr>', desc = 'Toggle Trouble Panel' },
-		{ '<leader>xx', '<cmd>TroubleToggle document_diagnostics<cr>', desc = 'Document Diagnostics (Trouble)' },
-		{ '<leader>xX', '<cmd>TroubleToggle workspace_diagnostics<cr>', desc = 'Workspace Diagnostics (Trouble)' },
-		{ '<leader>xl', '<cmd>TroubleToggle loclist<cr>', desc = 'Location List (Trouble)' },
-		{ '<leader>xq', '<cmd>TroubleToggle quickfix<cr>', desc = 'Quickfix List (Trouble)' },
-		{
-			'[q',
-			function()
-				if require('trouble').is_open() then
-					require('trouble').previous({ skip_groups = true, jump = true })
-				else
-					vim.cmd.cprev()
-				end
-			end,
-			desc = 'Previous trouble/quickfix item',
-		},
-		{
-			']q',
-			function()
-				if require('trouble').is_open() then
-					require('trouble').next({ skip_groups = true, jump = true })
-				else
-					vim.cmd.cnext()
-				end
-			end,
-			desc = 'Next trouble/quickfix item',
-		},
+		{ '<leader>t', '<cmd>Trouble diagnostics toggle filter.buf=0<cr>', desc = 'Buffer Diagnostics (Trouble)' },
 	},
-	opts = {
-		use_diagnostic_signs = true,
-	},
-	config = function(_, opts)
-		require('trouble').setup(opts)
-	end,
 })
 
 -- Generate permalinks to the current line on the git host (GitHub/GitLab)
@@ -694,7 +662,7 @@ table.insert(M, {
 
 		-- bigfile, quickfile, scroll and notifier are enabled by LazyVim's snacks specs.
 		-- Modules below are explicitly disabled, LazyVim enables some of them.
-		dashboard = { enabled = false },
+		-- `dashboard` depends on the flavor, see `plugins/ui.lua`.
 		explorer = { enabled = false },
 		indent = { enabled = false },
 		input = { enabled = false },

@@ -1,47 +1,34 @@
 local M = {}
 
-local usercmd = require('KoalaVim.utils.cmd')
-
-KOALA_AUTOSAVE_SESSION = true
-KOALA_SESSION_LOADED = false
+-- Session globals, implemented in the session adapter (the backend follows the flavor)
 
 -- Disables auto session saving if a session already exists
 function KoalaDisableAutoSession(silent)
-	local cwd_session = require('KoalaVim.utils.session').cwd_session()
-
-	if require('possession.session').exists(cwd_session) then
-		KOALA_AUTOSAVE_SESSION = false
-		if not silent then
-			vim.notify('AutoSession Saving Disabled! (:SaveSession to override)')
-		end
-	end
+	require('KoalaVim.utils.session').disable_if_exists(silent)
 end
 
 -- Disables auto session saving at all
 function KoalaDisableSession()
-	KOALA_AUTOSAVE_SESSION = false
+	require('KoalaVim.utils.session').disable()
 end
 
 -- Enables auto session saving
 function KoalaEnableSession()
-	if KOALA_AUTOSAVE_SESSION == false then
-		KOALA_AUTOSAVE_SESSION = true
-		vim.notify('AutoSession Saving Enabled!')
-	end
+	require('KoalaVim.utils.session').enable()
 end
 
 -- Delete current session and disable auto saving
 function KoalaDeleteCurrentSession()
-	local cwd_session = require('KoalaVim.utils.session').cwd_session()
-
-	require('possession.session').delete(cwd_session, {})
-	vim.notify('Session Deleted! AutoSession Saving Disabled!')
-	KOALA_AUTOSAVE_SESSION = false
+	require('KoalaVim.utils.session').delete_cwd()
 end
 
 -- Session manager — save/restore workspace per cwd with auto-save hooks
+-- (koala flavor, the lazyvim flavor uses persistence.nvim)
 table.insert(M, {
 	'jedrzejboczar/possession.nvim',
+	enabled = function()
+		return require('KoalaVim.flavor').is('koala')
+	end,
 	dependencies = {
 		'nvim-lua/plenary.nvim',
 	},
@@ -69,16 +56,10 @@ table.insert(M, {
 		},
 		hooks = {
 			before_save = function(_)
-				local data = {}
-				data.build = require('KoalaVim.utils.build').get_session_data()
-				data.debug = require('KoalaVim.utils.debug').get_session_data()
-
-				return data
+				return require('KoalaVim.utils.session').collect_data()
 			end,
 			after_load = function(_, user_data)
-				require('KoalaVim.utils.build').restore_session_data(user_data.build or {})
-				require('KoalaVim.utils.debug').restore_session_data(user_data.debug or {})
-				KOALA_SESSION_LOADED = true
+				require('KoalaVim.utils.session').restore_data(user_data)
 			end,
 		},
 		plugins = {
@@ -91,56 +72,28 @@ table.insert(M, {
 		},
 	},
 	config = function(_, opts)
-		local auto_load_session = false
-		if not vim.env.KOALA_NO_SESSION then
-			auto_load_session = vim.env.KOALA_RESTART
-
-			-- Disable session saving if files passed in argline
-			-- Load session only if dirs passed at the cmdline
-			local argv = vim.fn.argv()
-			for i, arg in ipairs(argv) do
-				if vim.fn.isdirectory(arg) ~= 1 then
-					KoalaDisableSession()
-					auto_load_session = false
-					break
-				else
-					auto_load_session = true
-					vim.api.nvim_set_current_dir(arg)
-				end
-			end
-		else
-			KoalaDisableSession()
-		end
-
 		require('possession').setup(opts)
+		require('KoalaVim.utils.session').startup()
+	end,
+})
 
-		usercmd.create('SessionList', 'Sessions: open sessions list', function()
-			require('KoalaVim.utils.session').list_sessions()
-		end, {})
+-- Session manager of LazyVim (lazyvim flavor), extends LazyVim's spec
+-- Loaded on startup (instead of `BufReadPre`) to apply the disable controls and auto load on restart
+table.insert(M, {
+	'folke/persistence.nvim',
+	enabled = function()
+		return require('KoalaVim.flavor').is('lazyvim')
+	end,
+	lazy = false,
+	config = function(_, opts)
+		require('persistence').setup(opts)
+		require('KoalaVim.utils.session_backend.persistence').setup()
 
-		usercmd.create('SaveSession', 'Sessions: save current session as the cwd session', function()
-			KoalaEnableSession()
-			local cwd_session = require('KoalaVim.utils.session').cwd_session()
-			require('possession.session').save(cwd_session, { no_confirm = true })
-		end, {})
-
-		usercmd.create('LoadSession', 'Sessions: Load the cwd session', function()
-			require('KoalaVim.utils.session').load_cwd_session()
-		end, {})
-
-		usercmd.create('DeleteSession', 'Sessions: Delete the current session', function()
-			KoalaDeleteCurrentSession()
-		end, {})
-
-		if auto_load_session then
-			vim.api.nvim_create_autocmd('VimEnter', {
-				callback = function()
-					vim.schedule(function()
-						require('KoalaVim.utils.session').load_cwd_session()
-					end)
-				end,
-			})
+		-- persistence starts the autosave in `setup`
+		if not KOALA_AUTOSAVE_SESSION then
+			require('persistence').stop()
 		end
+		require('KoalaVim.utils.session').startup()
 	end,
 })
 

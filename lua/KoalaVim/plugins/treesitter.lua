@@ -190,8 +190,7 @@ table.insert(M, {
 			lookbehind = true,
 			-- include_surrounding_whitespace = true,
 			keymaps = {
-				['af'] = '@function.outer',
-				['if'] = '@function.inner',
+				-- Function (`f`), class (`c`), block (`o`) and more are provided by mini.ai
 				['aC'] = '@class.outer',
 				['iC'] = '@class.inner',
 				['ab'] = '@block.outer',
@@ -203,12 +202,12 @@ table.insert(M, {
 				-- Handled by `mini.ai`
 				-- ['aa'] = '@parameter.outer', -- parameter -> argument
 				-- ['ia'] = '@parameter.inner',
-				['ac'] = '@call.outer',
-				['ic'] = '@call.inner',
+				['ak'] = '@call.outer', -- same as the `]k` motions
+				['ik'] = '@call.inner',
 				['ai'] = '@conditional.outer', -- i as if
 				['ii'] = '@conditional.inner',
 				-- Custom captures
-				['ie'] = '@binary_expression.inner',
+				['ix'] = '@binary_expression.inner', -- `ie` is mini.ai's case word
 				['aF'] = '@function.name',
 			},
 		},

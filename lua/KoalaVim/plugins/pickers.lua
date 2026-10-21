@@ -88,6 +88,15 @@ end
 
 local split_if_not_exist = require('KoalaVim.utils.splits').split_if_not_exist
 
+-- Route `LazyVim.pick` requests to fff (the snacks_picker extra is imported before KoalaVim's specs)
+if not require('KoalaVim.utils.pick').setup() then
+	vim.api.nvim_create_autocmd('User', {
+		pattern = 'VeryLazy',
+		once = true,
+		callback = require('KoalaVim.utils.pick').setup,
+	})
+end
+
 -- ── Plugin specs ─────────────────────────────────────────────────────
 
 local M = {}

@@ -13,7 +13,9 @@ for _, name in ipairs({
 	vim.cmd('set ' .. name .. '&')
 end
 vim.g.markdown_recommended_style = nil
-vim.g.trouble_lualine = false -- KoalaVim's statusline doesn't show trouble symbols
+if require('KoalaVim.flavor').is('koala') then
+	vim.g.trouble_lualine = false -- KoalaVim's statusline doesn't show trouble symbols
+end
 vim.g.lazyvim_cmp = 'nvim-cmp' -- LazyVim's default (blink.cmp) disables nvim-cmp
 do
 	-- LazyVim's typescript extra picks the server from this (reset by LazyVim's options)

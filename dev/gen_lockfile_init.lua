@@ -8,6 +8,9 @@ if vim.env['KOALA_LOCKFILE_DST'] == nil then
 	os.exit(1)
 end
 
+-- Plugins of every flavor (e.g. possession and persistence) go to the lockfile
+vim.g.koala_all_flavors = true
+
 -- Ignore the developer's LazyVim extras (`:LazyExtras` writes them to lazyvim.json)
 vim.g.lazyvim_json = vim.fn.tempname() .. '-lazyvim.json'
 

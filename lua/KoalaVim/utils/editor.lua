@@ -36,7 +36,14 @@ function M.goto_file_with_line()
 	end
 end
 
-local SKIP_FT = { sidekick_terminal = true, alpha = true, NvimTree = true, toggleterm = true }
+local SKIP_FT = {
+	sidekick_terminal = true,
+	alpha = true,
+	snacks_dashboard = true,
+	NvimTree = true,
+	toggleterm = true,
+	snacks_terminal = true,
+}
 
 local function find_editor_win(tabpage)
 	tabpage = tabpage or vim.api.nvim_get_current_tabpage()

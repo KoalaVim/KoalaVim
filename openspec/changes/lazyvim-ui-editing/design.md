@@ -40,6 +40,40 @@ KoalaVim's noice spec becomes an `opts` function that merges KoalaVim's `routes`
 - gitsigns: KoalaVim's opts function starts from LazyVim's (signs, signs_staged) and adds KoalaVim's settings. Both `on_attach` keymap sets are composed by `flavor-keymaps`; until then KoalaVim's `on_attach` wins.
 - todo-comments: same plugin on both sides, so the opts merge. KoalaVim's `]t`/`[t` match LazyVim's.
 
+## Implementation notes (as built)
+
+- **D1, disables:** `plugins/lazyvim.lua` holds `enabled = false` specs for flash, mini.pairs, ts-comments and grug-far. The default `editor.snacks_explorer` extra can't be disabled by import (`vim.g.lazyvim_explorer` only accepts snacks or neo-tree), so KoalaVim sets snacks `explorer.enabled = false` and drops the extra's `<leader>fe/fE/e/E` keys with `{ lhs, false }` fragments. lazy.nvim keeps lockfile entries for disabled plugins.
+- **D2, flavor gating:**
+  - lualine and bufferline use `config = flavor.is('koala') and fn or nil`, so LazyVim's config runs in the lazyvim flavor. `setup_lualine` (half_screen) has a flavor guard.
+  - `vim.g.trouble_lualine = false` applies only in the koala flavor; trouble v3's statusline works in the lazyvim flavor.
+  - The snacks dashboard has its `init` in `ui.lua`. lazy.nvim doesn't merge `init`, so anyone adding a snacks `init` must call this one.
+  - The dashboard is skipped under `KOALA_RESTART` and `KOALA_MODE`, as alpha is.
+  - Extra dashboard buttons use single letters: `a` (AI), `d` (git diff), `u` (update), `C` (changelog).
+- **D3, events and adapter:**
+  - `User KoalaDashboardClosed` is fired from alpha's `AlphaClosed` and from snacks' `SnacksDashboardClosed`.
+  - The session adapter is `utils/session.lua`, with backends in `utils/session_backend/{possession,persistence}.lua`.
+  - The persistence backend:
+    - must be `lazy = false` (its stock `BufReadPre` trigger would skip the startup disable controls and restart auto-load);
+    - is per git branch, falling back to the no-branch file;
+    - stores component state in a `<session>.vim.json` sidecar, written on `PersistenceSavePost` and found through `v:this_session`;
+    - has no equivalent of possession's `delete_hidden_buffers`.
+  - The `Koala*` session globals stay as thin wrappers.
+- **D4, picker routing:** done in `utils/pick.lua`, which wraps `LazyVim.pick.picker.open`. Pickers are verified to open fff for `files` and `live_grep` (with the project root as `cwd`) and snacks for everything else.
+- **D5, trouble v3:**
+  - The old fork's lazy.nvim directory was replaced by a fresh `folke/trouble.nvim` checkout. The fork's locked commit doesn't exist upstream.
+  - v3 has no `toggle_mode` or `open_code_href`, so the hydra's `m` head is dropped and `h` opens help.
+  - KoalaVim's `<leader>xx/xX/xl/xq` keys are replaced by LazyVim's, until `flavor-keymaps` reconciles them.
+- **D6, noice:** KoalaVim's routes are placed *before* LazyVim's, because noice stops at the first match. LazyVim's noice presets (`command_palette`, `bottom_search`, `long_message_to_split`) now also apply in the koala flavor.
+- **D7, textobjects:** the real collisions were with treesitter-textobjects (`af`, `ac`, `ie`, `ai`) and with nvim-various-textobjs' new defaults. Its API had changed (renamed opts, `shellPipe` deprecated).
+  - mini.ai now owns `af/if`, `ac/ic`, `ae/ie`, `ao/io`, `ad/id`, `at/it`, `ag/ig` and `au/iu`.
+  - Call moves to `ak/ik`.
+  - Binary expression moves to `ix`.
+  - Shell pipe `i|/a|` now uses a bash treesitter query (`queries/bash/textobjects.scm`).
+  - Several various-textobjs defaults are disabled; see that file.
+- **Pinned snacks.nvim was too old for the pinned LazyVim.** LazyVim's `<c-/>` and `<leader>bi` call `Snacks.terminal.focus` and `Snacks.bufdelete.invisible`, which the pinned snacks lacked. snacks is bumped to upstream `main` (`882c996`), 19 commits of fixes plus those two features. A static check of every `Snacks.*` call in LazyVim found no other gaps.
+- **Lockfile generator:** sets `vim.g.koala_all_flavors`, which makes `flavor.is()` true for both flavors during generation. The lockfile therefore covers both flavors' plugins (possession and persistence, alpha, toggleterm).
+- **cmp-fuzzy-dictionary:** its `reload` is defined in `after/plugin`, which lazy.nvim doesn't source when the plugin loads during startup. The config now sources `after/plugin` first when needed. This is a pre-existing startup error.
+
 ## Risks / Trade-offs
 
 - [Switching flavor hides sessions saved under the other backend] → Documented. `:checkhealth KoalaVim` reports the active flavor and session backend. No automatic migration.

@@ -8,11 +8,78 @@ table.insert(M, {
 	branch = 'main',
 	event = { 'BufReadPost', 'BufNewFile' },
 	cmd = 'Gitsigns',
-	opts = {
-		add_fg_factor = 0.65,
-		sign_priority = 9,
-		signcolumn = true,
-	},
+	-- On top of LazyVim's opts (signs), KoalaVim's `on_attach` replaces LazyVim's
+	opts = function(_, opts)
+		opts.add_fg_factor = 0.65
+		opts.sign_priority = 9
+		opts.signcolumn = true
+
+		local function nav(direction)
+			require('gitsigns.actions').nav_hunk(direction, { navigation_message = false, target = 'all', wrap = false })
+		end
+
+		opts.on_attach = function(bufnr)
+			-- Avoid overriding codediff binds (not tight because working with window option instead of buf opt)
+			if vim.w.code_diff_win then
+				return
+			end
+
+			local map_buffer = require('KoalaVim.utils.map').map_buffer
+
+			-- Navigation
+			-- TODO: center screen after jump
+			local function nav_hunk(direction, diff_key)
+				return function()
+					if vim.wo.diff then
+						return diff_key
+					end
+					nav(direction)
+					return '<Ignore>'
+				end
+			end
+
+			map_buffer(bufnr, 'n', ']c', nav_hunk('next', ']c'), 'Jump to next git hunk', { expr = true })
+			map_buffer(bufnr, 'n', '<M-j>', nav_hunk('next', ']c'), 'Jump to next git hunk', { expr = true })
+
+			map_buffer(bufnr, 'n', '[c', nav_hunk('prev', '[c'), 'Jump to previous git hunk', { expr = true })
+			map_buffer(bufnr, 'n', '<M-k>', nav_hunk('prev', '[c'), 'Jump to previous git hunk', { expr = true })
+
+			-- Mouse side buttons (mouse4 = next, mouse5 = prev)
+			for _, click in ipairs({ '', '2-', '3-', '4-' }) do -- map multi-clicks too so fast clicks don't select text
+				local next_key, prev_key = '<' .. click .. 'X1Mouse>', '<' .. click .. 'X2Mouse>'
+				map_buffer(bufnr, 'n', next_key, nav_hunk('next', ']c'), 'Jump to next git hunk', { expr = true })
+				map_buffer(
+					bufnr,
+					'n',
+					prev_key,
+					nav_hunk('prev', '[c'),
+					'Jump to previous git hunk',
+					{ expr = true }
+				)
+			end
+			-- Actions
+			map_buffer(bufnr, { 'n', 'v' }, '<leader>hs', ':Gitsigns stage_hunk<CR>', 'Stage Hunk')
+			map_buffer(bufnr, { 'n', 'v' }, '<leader>hr', ':Gitsigns reset_hunk<CR>', 'Reset Hunk')
+			map_buffer(bufnr, 'n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>', 'Stage Buffer')
+			map_buffer(bufnr, 'n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>', 'Undo Stage')
+			map_buffer(bufnr, 'n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>', 'Reset Buffer')
+			map_buffer(bufnr, 'n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>', 'Preview Hunk')
+			map_buffer(bufnr, 'n', '<leader>hb', function()
+				-- invalidate cache
+				require('gitsigns.cache').cache[api.nvim_get_current_buf()].blame = nil
+
+				require('gitsigns').blame_line({ full = true })
+			end, 'Blame Line')
+			map_buffer(bufnr, 'n', '<leader>hB', function()
+				-- invalidate cache
+				require('gitsigns.cache').cache[api.nvim_get_current_buf()].blame = nil
+
+				require('gitsigns').blame_line({ full = true, extra_opts = { '-C' } })
+			end, 'Blame Line with detect copied (moved) code. adds `-C` for git blame')
+			-- Text object
+			map_buffer(bufnr, { 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', 'Select Hunk')
+		end
+	end,
 	config = function(_, opts)
 		-- override fg_factor
 		for _, highlight in ipairs(require('gitsigns.highlight').hls) do
@@ -23,76 +90,6 @@ table.insert(M, {
 			end
 		end
 		opts.add_fg_factor = nil -- remove koala param
-
-		local gs = require('gitsigns.actions')
-
-		local function nav(direction)
-			gs.nav_hunk(direction, { navigation_message = false, target = 'all', wrap = false })
-		end
-
-		if opts.on_attach == nil then
-			opts.on_attach = function(bufnr)
-				-- Avoid overriding codediff binds (not tight because working with window option instead of buf opt)
-				if vim.w.code_diff_win then
-					return
-				end
-
-				local map_buffer = require('KoalaVim.utils.map').map_buffer
-
-				-- Navigation
-				-- TODO: center screen after jump
-				local function nav_hunk(direction, diff_key)
-					return function()
-						if vim.wo.diff then
-							return diff_key
-						end
-						nav(direction)
-						return '<Ignore>'
-					end
-				end
-
-				map_buffer(bufnr, 'n', ']c', nav_hunk('next', ']c'), 'Jump to next git hunk', { expr = true })
-				map_buffer(bufnr, 'n', '<M-j>', nav_hunk('next', ']c'), 'Jump to next git hunk', { expr = true })
-
-				map_buffer(bufnr, 'n', '[c', nav_hunk('prev', '[c'), 'Jump to previous git hunk', { expr = true })
-				map_buffer(bufnr, 'n', '<M-k>', nav_hunk('prev', '[c'), 'Jump to previous git hunk', { expr = true })
-
-				-- Mouse side buttons (mouse4 = next, mouse5 = prev)
-				for _, click in ipairs({ '', '2-', '3-', '4-' }) do -- map multi-clicks too so fast clicks don't select text
-					local next_key, prev_key = '<' .. click .. 'X1Mouse>', '<' .. click .. 'X2Mouse>'
-					map_buffer(bufnr, 'n', next_key, nav_hunk('next', ']c'), 'Jump to next git hunk', { expr = true })
-					map_buffer(
-						bufnr,
-						'n',
-						prev_key,
-						nav_hunk('prev', '[c'),
-						'Jump to previous git hunk',
-						{ expr = true }
-					)
-				end
-				-- Actions
-				map_buffer(bufnr, { 'n', 'v' }, '<leader>hs', ':Gitsigns stage_hunk<CR>', 'Stage Hunk')
-				map_buffer(bufnr, { 'n', 'v' }, '<leader>hr', ':Gitsigns reset_hunk<CR>', 'Reset Hunk')
-				map_buffer(bufnr, 'n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>', 'Stage Buffer')
-				map_buffer(bufnr, 'n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>', 'Undo Stage')
-				map_buffer(bufnr, 'n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>', 'Reset Buffer')
-				map_buffer(bufnr, 'n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>', 'Preview Hunk')
-				map_buffer(bufnr, 'n', '<leader>hb', function()
-					-- invalidate cache
-					require('gitsigns.cache').cache[api.nvim_get_current_buf()].blame = nil
-
-					require('gitsigns').blame_line({ full = true })
-				end, 'Blame Line')
-				map_buffer(bufnr, 'n', '<leader>hB', function()
-					-- invalidate cache
-					require('gitsigns.cache').cache[api.nvim_get_current_buf()].blame = nil
-
-					require('gitsigns').blame_line({ full = true, extra_opts = { '-C' } })
-				end, 'Blame Line with detect copied (moved) code. adds `-C` for git blame')
-				-- Text object
-				map_buffer(bufnr, { 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', 'Select Hunk')
-			end
-		end
 
 		require('gitsigns').setup(opts)
 	end,

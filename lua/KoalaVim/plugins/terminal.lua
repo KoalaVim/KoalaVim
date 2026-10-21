@@ -1,9 +1,12 @@
 local M = {}
 
--- Toggleable floating/split terminals with multi-instance support.
--- Bundles term-edit.nvim for vim-style editing at the shell prompt.
+-- Toggleable floating/split terminals with multi-instance support (koala flavor).
+-- The lazyvim flavor uses LazyVim's snacks terminal (`<c-/>`).
 table.insert(M, {
 	'akinsho/toggleterm.nvim',
+	enabled = function()
+		return require('KoalaVim.flavor').is('koala')
+	end,
 	keys = {
 		{
 			'<C-t>',
@@ -78,12 +81,37 @@ table.insert(M, {
 	end,
 	dependencies = {
 		'chomosuke/term-edit.nvim',
-		config = function()
-			require('term-edit').setup({
-				prompt_end = '%$ ',
-			})
-		end,
 	},
+})
+
+-- Vim-style editing at the shell prompt, for both flavors.
+-- Koala flavor loads it with toggleterm, lazyvim flavor loads it when a terminal opens.
+table.insert(M, {
+	'chomosuke/term-edit.nvim',
+	lazy = true,
+	event = require('KoalaVim.flavor').is('lazyvim') and 'TermOpen' or nil,
+	config = function()
+		require('term-edit').setup({
+			prompt_end = '%$ ',
+		})
+	end,
+})
+
+-- Split a sidekick terminal in terminal mode, toggleterm's key does it in the koala flavor
+table.insert(M, {
+	'folke/snacks.nvim',
+	keys = require('KoalaVim.flavor').is('lazyvim') and {
+		{
+			'<M-e>',
+			function()
+				if vim.bo.filetype == 'sidekick_terminal' then
+					require('KoalaVim.utils.splits').smart_split('vertical')
+				end
+			end,
+			mode = 't',
+			desc = 'Split terminal',
+		},
+	} or {},
 })
 
 return M

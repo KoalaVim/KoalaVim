@@ -119,7 +119,12 @@ local function get_codediff_path()
 	return path
 end
 
+-- KoalaVim's statusline, used only by the koala flavor (lazyvim flavor uses LazyVim's lualine opts)
 function M.setup_lualine(is_half, opts)
+	if not require('KoalaVim.flavor').is('koala') then
+		return
+	end
+
 	if opts then
 		M.lualine_opts = opts
 	end
@@ -299,7 +304,8 @@ function M.setup_lualine(is_half, opts)
 					'gitrebase',
 					'quickfix',
 					'alpha',
-					'Trouble',
+					'trouble',
+					'snacks_terminal',
 					'sidekick_terminal',
 					'sidekick_koala_prompt',
 					'codediff-explorer',

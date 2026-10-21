@@ -310,7 +310,7 @@ end
 DEFAULT_WIN_OPTS['winhighlight'] = ''
 
 local function get_ref_win_opts()
-	local skip_ft = { sidekick_terminal = true, alpha = true }
+	local skip_ft = { sidekick_terminal = true, alpha = true, snacks_dashboard = true }
 	local tab = vim.api.nvim_get_current_tabpage()
 	for _, w in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
 		local win_config = vim.api.nvim_win_get_config(w)

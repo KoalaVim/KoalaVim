@@ -80,7 +80,8 @@ table.insert(M, {
 
 -- General-purpose motion plugin — jump anywhere visible with two chars
 table.insert(M, {
-	'ggandor/leap.nvim',
+	-- Only `url` (like LazyVim's leap extra), LazyVim warns about the old `ggandor/leap.nvim` name
+	url = 'https://codeberg.org/andyg/leap.nvim.git',
 	opts = {
 		max_aot_targets = nil,
 		highlight_unlabeled = false,
@@ -94,7 +95,7 @@ table.insert(M, {
 table.insert(M, {
 	'ggandor/flit.nvim',
 	dependencies = {
-		'ggandor/leap.nvim',
+		'leap.nvim',
 	},
 	opts = {
 		labeled_modes = 'nv',
@@ -307,30 +308,38 @@ table.insert(M, {
 	},
 })
 
--- Extra text-objects (subwords, indent, shell pipe, URL, etc.)
+-- Extra text-objects (subwords, indent, URL, etc.)
+-- `a`/`i` keys are shared with mini.ai (LazyVim's objects: `o f c t d e g u U`) and the treesitter textobjects
+-- (`plugins/treesitter.lua`), no key is used twice.
 table.insert(M, {
 	'chrisgrieser/nvim-various-textobjs',
 	opts = {
-		useDefaultKeymaps = true,
-		disabledKeymaps = { '%' },
+		keymaps = {
+			useDefaults = true,
+			-- Defaults that collide with other objects:
+			-- stylua: ignore
+			disabledDefaults = {
+				'C', -- shadows visual `C`
+				'ii', 'ai', -- treesitter conditional (indent block is `iI`/`aI`)
+				'ik', 'ak', -- treesitter call
+				'iF', 'aF', -- treesitter function name
+				'in', 'an', -- mini.ai next (digits are `d`)
+				'ig', 'ag', -- mini.ai buffer
+				'io', 'ao', -- mini.ai code block
+				'iq', 'aq', -- mini.ai quotes
+			},
+		},
 	},
 	config = function(_, opts)
 		require('various-textobjs').setup(opts)
 		local map = require('KoalaVim.utils.map').map
 		-- stylua: ignore start
-		map({ 'o', 'x' }, 'is', function() require('various-textobjs').subword(true) end)
-		map({ 'o', 'x' }, 'as', function() require('various-textobjs').subword(false) end)
-		map({ 'o', 'x' }, 'i|', function() require('various-textobjs').shellPipe(true) end)
-		map({ 'o', 'x' }, 'a|', function() require('various-textobjs').shellPipe(false) end)
+		map({ 'o', 'x' }, 'is', function() require('various-textobjs').subword('inner') end)
+		map({ 'o', 'x' }, 'as', function() require('various-textobjs').subword('outer') end)
+		-- `shellPipe` was moved out of various-textobjs, the query is in `queries/bash/textobjects.scm`
+		map({ 'o', 'x' }, 'i|', function() require('nvim-treesitter-textobjects.select').select_textobject('@pipeline.inner', 'textobjects') end)
+		map({ 'o', 'x' }, 'a|', function() require('nvim-treesitter-textobjects.select').select_textobject('@pipeline.outer', 'textobjects') end)
 		-- stylua: ignore end
-	end,
-})
-
--- Enhanced a/i text-objects (arguments, balanced pairs, etc.) from mini.nvim
-table.insert(M, {
-	'echasnovski/mini.ai',
-	config = function(_, opts)
-		require('mini.ai').setup(opts)
 	end,
 })
 

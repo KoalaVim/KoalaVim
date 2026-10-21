@@ -252,7 +252,11 @@ table.insert(M, {
 	'KoalaVim/cmp-fuzzy-dictionary',
 	lazy = true,
 	dependencies = { 'KoalaVim/fuzzy.nvim' },
-	config = function()
+	config = function(plugin)
+		-- `reload` is defined in after/plugin, which lazy.nvim doesn't source when loading during startup
+		if not require('cmp_fuzzy_dictionary').reload then
+			require('lazy.core.loader').source_runtime(plugin.dir, 'after/plugin')
+		end
 		require('cmp_fuzzy_dictionary').reload({
 			paths = { '/usr/share/dict/words' },
 			fuzzy_backend = 'fzf',
