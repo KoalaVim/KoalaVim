@@ -69,13 +69,16 @@ local function warn_old_bootstrap()
 		return
 	end
 
-	require('KoalaVim.health').warn(table.concat({
-		'Old KoalaVim bootstrap detected, user config may load twice and your plugins load before LazyVim.',
-		'To migrate (see https://github.com/KoalaVim/KoalaConfig.template):',
-		'1. Update `lua/koala_init.lua` from the template.',
-		"2. In `init.lua` remove `require_dir.recursive_require('config')` (KoalaVim loads your `config/` itself).",
-		'3. In `init.lua` keep the `config_lazy` hook, then restart.',
-	}, '\n'), true)
+	require('KoalaVim.health').warn(
+		table.concat({
+			'Old KoalaVim bootstrap detected, user config may load twice and your plugins load before LazyVim.',
+			'To migrate (see https://github.com/KoalaVim/KoalaConfig.template):',
+			'1. Update `lua/koala_init.lua` from the template.',
+			"2. In `init.lua` remove `require_dir.recursive_require('config')` (KoalaVim loads your `config/` itself).",
+			'3. In `init.lua` keep the `config_lazy` hook, then restart.',
+		}, '\n'),
+		true
+	)
 end
 
 function M.init()

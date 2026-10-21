@@ -17,7 +17,10 @@ table.insert(M, {
 		opts.signcolumn = true
 
 		local function nav(direction)
-			require('gitsigns.actions').nav_hunk(direction, { navigation_message = false, target = 'all', wrap = false })
+			require('gitsigns.actions').nav_hunk(
+				direction,
+				{ navigation_message = false, target = 'all', wrap = false }
+			)
 		end
 
 		local lazyvim_on_attach = opts.on_attach
@@ -55,14 +58,7 @@ table.insert(M, {
 			for _, click in ipairs({ '', '2-', '3-', '4-' }) do -- map multi-clicks too so fast clicks don't select text
 				local next_key, prev_key = '<' .. click .. 'X1Mouse>', '<' .. click .. 'X2Mouse>'
 				map_buffer(bufnr, 'n', next_key, nav_hunk('next', ']c'), 'Jump to next git hunk', { expr = true })
-				map_buffer(
-					bufnr,
-					'n',
-					prev_key,
-					nav_hunk('prev', '[c'),
-					'Jump to previous git hunk',
-					{ expr = true }
-				)
+				map_buffer(bufnr, 'n', prev_key, nav_hunk('prev', '[c'), 'Jump to previous git hunk', { expr = true })
 			end
 			-- Actions
 			map_buffer(bufnr, { 'n', 'v' }, '<leader>hs', ':Gitsigns stage_hunk<CR>', 'Stage Hunk')
