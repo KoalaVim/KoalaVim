@@ -365,6 +365,7 @@ table.insert(M, {
 					':(exclude,attr:linguist-generated=true)', -- filter out generated files
 					'*_test*', -- filter out test files
 					'test_*', -- filter out test files
+					'*.test.*', -- filter out test files
 				},
 			},
 		},
