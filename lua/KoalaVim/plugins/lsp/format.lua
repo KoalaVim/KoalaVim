@@ -1,5 +1,7 @@
 local M = {}
 
+local kkeys = require('KoalaVim.utils.map').kkeys
+
 -- Formatting is LazyVim's (format on save, `<leader>uf`/`<leader>uF` toggles, conform + LSP fallback),
 -- see utils/lsp.lua for KoalaVim's blacklists (`lsp.format.*` / `lsp.autoformat.*` in kvim.conf).
 -- Formatters are declared with conform's `formatters_by_ft` next to each language.
@@ -16,7 +18,7 @@ table.insert(M, {
 table.insert(M, {
 	'stevearc/conform.nvim',
 	-- Don't set `config`, LazyVim errors otherwise (`config = M.setup` warns on format_on_save).
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>F',
 			function()
@@ -25,7 +27,7 @@ table.insert(M, {
 			mode = { 'n', 'x' },
 			desc = 'Format',
 		},
-	},
+	}),
 	opts = function(_, opts)
 		require('KoalaVim.utils.lsp').conform_blacklist(opts)
 	end,

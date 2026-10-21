@@ -39,7 +39,9 @@ table.insert(M, {
 		})
 
 		local map_buffer = require('KoalaVim.utils.map').map_buffer
+		local kmap_buffer = require('KoalaVim.utils.map').kmap_buffer
 		local add_new_line = 'i\\n<Esc>'
+		local go_printf_lhs = require('KoalaVim.flavor').pick({ koala = '<leader>vp', lazyvim = '<leader>cp' })
 
 		vim.api.nvim_create_autocmd('FileType', {
 			pattern = 'go',
@@ -47,9 +49,10 @@ table.insert(M, {
 				-- TODO: improve GoIfErr
 				-- map_buffer(events.buf, 'n', '<leader>e', '<cmd>GoIfErr<cr>', 'Golang: create if err')
 				-- stylua: ignore
-				map_buffer(events.buf, 'n', '<leader>e', 'oif err != nil {<CR>return<CR>}<Esc>', 'Golang: create if err')
+				kmap_buffer(events.buf, 'n', '<leader>e', 'oif err != nil {<CR>return<CR>}<Esc>', 'Golang: create if err')
+				-- `<leader>fl` is buffer lines, `<leader>vl`/`<leader>cl` is LSP info: the key sits in the flavor's code group
 				-- stylua: ignore
-				map_buffer(events.buf, 'n', '<leader>fln', '<cmd>s/Println/Printf/<cr>$F"' .. add_new_line, 'Golang: change println to printf')
+				map_buffer(events.buf, 'n', go_printf_lhs, '<cmd>s/Println/Printf/<cr>$F"' .. add_new_line, 'Golang: change println to printf')
 			end,
 		})
 	end,

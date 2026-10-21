@@ -1,4 +1,4 @@
-local map = require('KoalaVim.utils.map').map
+local map = require('KoalaVim.utils.map').kmap
 
 -- stylua: ignore start
 -- Splits

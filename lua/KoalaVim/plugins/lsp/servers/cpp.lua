@@ -37,8 +37,9 @@ local add_r_new_line = 'i\\r\\n<Esc>'
 vim.api.nvim_create_autocmd('FileType', {
 	pattern = { 'c', 'cpp' },
 	callback = function(events)
-		local map_buffer = require('KoalaVim.utils.map').map_buffer
-		map_buffer(events.buf, 'n', '<leader>n', add_r_new_line, 'Add newline')
+		-- `<leader>n` is the notification history, the CRLF key sits in the code group of the flavor
+		local lhs = require('KoalaVim.flavor').pick({ koala = '<leader>vn', lazyvim = '<leader>cn' })
+		require('KoalaVim.utils.map').map_buffer(events.buf, 'n', lhs, add_r_new_line, 'Add CRLF newline')
 	end,
 })
 

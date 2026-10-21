@@ -3,6 +3,7 @@ local M = {}
 local api = vim.api
 
 local usercmd = require('KoalaVim.utils.cmd')
+local kkeys = require('KoalaVim.utils.map').kkeys
 
 -- Auto-save files on leaving insert/changes (skips hex buffers, insert mode)
 table.insert(M, {
@@ -157,7 +158,7 @@ table.insert(M, {
 		})
 	end,
 	cmd = 'NeoZoomToggle',
-	keys = {
+	keys = kkeys({
 		{
 			'<M-z>',
 			function()
@@ -167,7 +168,7 @@ table.insert(M, {
 			desc = 'Zoom split',
 			nowait = true,
 		},
-	},
+	}),
 })
 
 -- Highlight and navigate TODO/FIXME/HACK/NOTE comments
@@ -192,7 +193,7 @@ table.insert(M, {
 	config = function(_, opts)
 		require('todo-comments').setup(opts)
 	end,
-	keys = {
+	keys = kkeys({
 		{
 			']t',
 			function()
@@ -207,7 +208,7 @@ table.insert(M, {
 			end,
 			desc = 'Previous todo comment',
 		},
-	},
+	}),
 })
 
 -- Highlight color codes (#RRGGBB, rgb(), named colors) inline
@@ -240,15 +241,15 @@ local femaco_margin = {
 table.insert(M, {
 	'gen4438/nvim-FeMaco.lua',
 	cmd = 'FeMaco',
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>e',
 			function()
 				require('femaco.edit').edit_code_block()
 			end,
-			'Edit markdown codeblocks',
+			desc = 'Edit markdown codeblocks',
 		},
-	},
+	}),
 	opts = {
 		post_open_float = function(winnr)
 			api.nvim_win_set_hl_ns(winnr, floating_code_ns)
@@ -282,7 +283,7 @@ table.insert(M, {
 table.insert(M, {
 	'ofirgall/open.nvim',
 	lazy = true,
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>gx',
 			function()
@@ -290,7 +291,7 @@ table.insert(M, {
 			end,
 			desc = 'Open current word',
 		},
-	},
+	}),
 	opts = {
 		openers_config = {
 			-- TODO: move to personal
@@ -409,12 +410,12 @@ table.insert(M, {
 		require('Navigator').setup(opts)
 	end,
 	cmd = { 'NavigatorLeft', 'NavigatorRight', 'NavigatorDown', 'NavigatorUp' },
-	keys = {
+	keys = kkeys({
 		{ '<C-h>', '<cmd>NavigatorLeft<cr>', mode = { 'n', 't' }, desc = 'Navigate left' },
 		{ '<C-j>', '<cmd>NavigatorDown<cr>', mode = { 'n', 't' }, desc = 'Navigate down' },
 		{ '<C-k>', '<cmd>NavigatorUp<cr>', mode = { 'n', 't' }, desc = 'Navigate up' },
 		{ '<C-l>', '<cmd>NavigatorRight<cr>', mode = { 'n', 't' }, desc = 'Navigate right' },
-	},
+	}),
 })
 
 -- Toggle current buffer between text and hexdump view
@@ -484,7 +485,7 @@ table.insert(M, {
 -- Flash-highlight regions affected by undo/redo operations
 table.insert(M, {
 	'tzachar/highlight-undo.nvim',
-	keys = { 'u', '<C-r>' },
+	keys = kkeys({ 'u', '<C-r>' }),
 	config = function(_, opts)
 		require('highlight-undo').setup(opts)
 	end,
@@ -509,13 +510,13 @@ table.insert(M, {
 table.insert(M, {
 	'mbbill/undotree',
 	cmd = 'UndotreeToggle',
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>uu',
 			'<cmd>UndotreeToggle<cr>',
 			mode = 'n',
 		},
-	},
+	}),
 	config = function()
 		vim.g.undotree_WindowLayout = 4
 		vim.g.undotree_SplitWidth = 50
@@ -528,9 +529,9 @@ table.insert(M, {
 -- Persistently highlight arbitrary words in multiple colors for tracking
 table.insert(M, {
 	'ofirgall/interestingwords.nvim', -- fork
-	keys = {
+	keys = kkeys({
 		{ '<leader>m', desc = 'Mark (highlight) an interesting word (toggle)', mode = { 'n', 'x' } },
-	},
+	}),
 	opts = {
 		colors = { '#aeee00', '#ff0000', '#0000ff', '#b88823', '#ffa724', '#ff2c4b' },
 		color_key = '<leader>m',
@@ -549,9 +550,9 @@ table.insert(M, {
 -- LazyVim's spec brings the rest of the keys (`<leader>x*`, `[q`, `]q`)
 table.insert(M, {
 	'folke/trouble.nvim',
-	keys = {
+	keys = kkeys({
 		{ '<leader>t', '<cmd>Trouble diagnostics toggle filter.buf=0<cr>', desc = 'Buffer Diagnostics (Trouble)' },
-	},
+	}),
 })
 
 -- Generate permalinks to the current line on the git host (GitHub/GitLab)
@@ -571,7 +572,7 @@ table.insert(M, {
 		'nvim-lua/plenary.nvim',
 	},
 	cmd = 'FindAndReplace',
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>fnr',
 			function()
@@ -594,7 +595,7 @@ table.insert(M, {
 			mode = 'x',
 			desc = 'Find and replace selected text',
 		},
-	},
+	}),
 	config = function(_, opts)
 		usercmd.create('FindAndReplace', 'Find and replace text', function()
 			require('spectre').toggle(opts)
@@ -642,7 +643,7 @@ table.insert(M, {
 -- Visual sign column for Vim marks + better mark bindings
 table.insert(M, {
 	'ofirgall/marks.nvim', -- fork
-	keys = { 'm' },
+	keys = kkeys({ 'm' }),
 	opts = {},
 	config = function(_, opts)
 		require('marks').setup(opts)
@@ -773,7 +774,7 @@ table.insert(M, {
 			},
 		},
 	},
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>n',
 			function()
@@ -799,7 +800,7 @@ table.insert(M, {
 			end,
 			desc = 'Toggle dim',
 		},
-	},
+	}),
 })
 
 -- Browse and insert Nerd Font icons from a picker
@@ -814,10 +815,10 @@ table.insert(M, {
 		copy_to_clipboard = false, -- Copy glyph to clipboard instead of inserting
 		copy_register = '+', -- Register to use for copying (if `copy_to_clipboard` is true)
 	},
-	keys = {
+	keys = kkeys({
 		{ '<leader>fi', '<cmd>Nerdy list<CR>', desc = 'Browse nerd icons' },
 		{ '<leader>fI', '<cmd>Nerdy recents<CR>', desc = 'Browse recent nerd icons' },
-	},
+	}),
 })
 
 return M

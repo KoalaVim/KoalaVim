@@ -1,5 +1,6 @@
 local api = vim.api
 local usercmd = require('KoalaVim.utils.cmd')
+local kkeys = require('KoalaVim.utils.map').kkeys
 
 -- ── Helpers ──────────────────────────────────────────────────────────
 
@@ -130,7 +131,7 @@ table.insert(M, {
 			prompt_position = 'bottom',
 		},
 	},
-	keys = {
+	keys = kkeys({
 		-- Find files
 		{ '<leader>ff', find_files, desc = 'Find file' },
 		{ mode = 'v', '<leader>ff', '<Esc><cmd>lua find_files("v")<cr>', desc = 'Find file, text from visual' },
@@ -183,7 +184,7 @@ table.insert(M, {
 		},
 		{ '<leader>fm', ':set opfunc=LiveGrepRawOperator<CR>g@', desc = 'Find with movement' },
 		-- Find in current dir
-		{ '<leader>fcd', live_grep_current_dir, desc = 'Find in current dir' },
+		{ '<leader>fcdd', live_grep_current_dir, desc = 'Find in current dir' },
 		{
 			'<leader>fcdw',
 			function()
@@ -367,7 +368,7 @@ table.insert(M, {
 			end,
 			desc = 'Go to workspace Problems',
 		},
-	},
+	}),
 })
 
 -- User Commands
@@ -385,7 +386,7 @@ end, {})
 -- Spell suggest via snacks
 table.insert(M, {
 	'folke/snacks.nvim',
-	keys = {
+	keys = kkeys({
 		{
 			'ss',
 			function()
@@ -411,7 +412,7 @@ table.insert(M, {
 			end,
 			desc = 'Spell suggest',
 		},
-	},
+	}),
 })
 
 -- GAP: telescope-dict synonyms picker (bound to `sy`) has no snacks equivalent.
@@ -421,7 +422,7 @@ table.insert(M, {
 
 table.insert(M, {
 	'folke/snacks.nvim',
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>gD',
 			function()
@@ -429,7 +430,7 @@ table.insert(M, {
 			end,
 			desc = 'Git dirtyfiles',
 		},
-	},
+	}),
 })
 
 return M

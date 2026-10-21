@@ -1,4 +1,4 @@
-local map = require('KoalaVim.utils.map').map
+local map = require('KoalaVim.utils.map').kmap
 
 -- Add text
 -- local add_new_line = 'i\\n<Esc>'

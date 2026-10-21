@@ -1,11 +1,16 @@
 local M = {}
 
 local usercmd = require('KoalaVim.utils.cmd')
+local km = require('KoalaVim.utils.map')
 
 local hydra_keys = {}
 local hydra_cmds = {}
 local hydra_fts = {}
 for name, conf in pairs(HYDRAS) do
+	-- The body of the flavor (`nil`: the hydra has no body in this flavor)
+	if conf.body then
+		conf.body = km.klhs(conf.body, conf.mode)
+	end
 	if conf.body then
 		table.insert(hydra_keys, { conf.body, desc = 'Trigger ' .. name .. ' hydra' })
 	end
@@ -16,16 +21,23 @@ for name, conf in pairs(HYDRAS) do
 		table.insert(hydra_fts, conf.ft)
 	end
 	if conf.custom_bodies then
+		local bodies = {}
 		for _, body in ipairs(conf.custom_bodies) do
-			table.insert(hydra_keys, body)
+			local lhs = km.klhs(body[1], body.mode)
+			if lhs then
+				body[1] = lhs
+				table.insert(bodies, body)
+				table.insert(hydra_keys, body)
+			end
 		end
+		conf.custom_bodies = bodies
 	end
 end
 
 -- Build modal "sub-modes" that stay active until explicitly exited
 table.insert(M, {
 	'qrsforever/hydra.nvim', -- Fork fixed nvim 0.11 issues
-	keys = hydra_keys,
+	keys = km.kkeys(hydra_keys),
 	cmd = hydra_cmds,
 	ft = hydra_fts,
 	config = function()

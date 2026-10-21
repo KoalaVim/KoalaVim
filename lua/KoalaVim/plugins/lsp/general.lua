@@ -1,6 +1,7 @@
 local M = {}
 
 local usercmd = require('KoalaVim.utils.cmd')
+local kkeys = require('KoalaVim.utils.map').kkeys
 
 local api = vim.api
 
@@ -34,7 +35,7 @@ table.insert(M, {
 			},
 		},
 	},
-	keys = {
+	keys = kkeys({
 		{
 			'gD',
 			vim.lsp.buf.declaration,
@@ -42,7 +43,7 @@ table.insert(M, {
 		},
 		{ 'K', vim.lsp.buf.hover, desc = 'Trigger hover' },
 		{ '<RightMouse>', '<LeftMouse><cmd>sleep 100m<cr><cmd>lua vim.lsp.buf.hover()<cr>', desc = 'Trigger hover' },
-	},
+	}),
 })
 
 -- Package manager for LSP servers, DAP adapters, linters and formatters
@@ -78,7 +79,7 @@ table.insert(M, {
 -- Render LSP inlay hints as virtual text (parameter names, types)
 table.insert(M, {
 	'KoalaVim/inlay-hints.nvim', -- fork
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>T',
 			function()
@@ -86,7 +87,7 @@ table.insert(M, {
 			end,
 			desc = 'Toggle inlay-hints',
 		},
-	},
+	}),
 	config = function()
 		local function trim_hint(hint)
 			return string.gsub(hint, ':', '')
@@ -138,7 +139,7 @@ table.insert(M, {
 			'NvimTree',
 		},
 	},
-	keys = {
+	keys = kkeys({
 		{
 			'<C-n>',
 			function()
@@ -155,7 +156,7 @@ table.insert(M, {
 			end,
 			desc = 'jump to Previous occurrence of var on cursor',
 		},
-	},
+	}),
 })
 
 -- Show LSP diagnostics as a floating widget next to the cursor/corner
@@ -225,7 +226,7 @@ table.insert(M, {
 			require('nvim-navbuddy').open()
 		end, {})
 	end,
-	keys = {
+	keys = kkeys({
 		{
 			'<M-n>',
 			function()
@@ -233,7 +234,7 @@ table.insert(M, {
 			end,
 			desc = 'Open Navbuddy',
 		},
-	},
+	}),
 })
 
 -- Count of LSP definitions and references for the symbol under cursor

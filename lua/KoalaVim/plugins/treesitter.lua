@@ -1,5 +1,21 @@
 local M = {}
 
+local kkeys = require('KoalaVim.utils.map').kkeys
+local koala_flavor = require('KoalaVim.flavor').get() == 'koala'
+
+-- LazyVim's class jumps `]c` `[c` `]C` `[C` (it also owns the `]f`/`]a` ones): the koala flavor disables the first four,
+-- they conflict with diff navigation and KoalaVim's git hunk/dirty-file keys. KoalaVim jumps classes with `]]`/`[[`.
+-- The lazyvim flavor keeps LazyVim's keys (`false` = remove the key from the merged LazyVim opts).
+local no_class_jump = nil
+if koala_flavor then
+	no_class_jump = false
+end
+local lazyvim_moves = {}
+for _, key in ipairs({ 'f', 'c', 'a', 'F', 'C', 'A' }) do
+	lazyvim_moves[']' .. key] = true
+	lazyvim_moves['[' .. key] = true
+end
+
 -- Treesitter parser manager — syntax, folds, indent powered by TS grammars
 -- The core spec (build, events, highlight/indent/folds features) comes from LazyVim, this adds
 -- KoalaVim's parsers, incremental selection and on demand parsers install.
@@ -25,7 +41,7 @@ table.insert(M, {
 			'zig',
 		},
 	},
-	keys = {
+	keys = kkeys({
 		-- Not `<CR>`: visual `<CR>` copies to the os clipboard
 		{
 			'<C-Space>',
@@ -53,7 +69,7 @@ table.insert(M, {
 			mode = 'x',
 			desc = 'Decrement selection',
 		},
-	},
+	}),
 	init = function()
 		local usercmd = require('KoalaVim.utils.cmd')
 		vim.treesitter.language.register('markdown', 'sidekick_koala_prompt')
@@ -152,8 +168,7 @@ table.insert(M, {
 			set_jumps = true, -- whether to set jumps in the jumplist
 			keys = {
 				goto_next_start = {
-					-- LazyVim's `]c`/`[c` (class) conflicts with diff navigation, KoalaVim uses `]]`/`[[`
-					[']c'] = false,
+					[']c'] = no_class_jump,
 					[']f'] = '@function.outer',
 					[']]'] = '@class.outer',
 					[']b'] = '@block.outer',
@@ -161,14 +176,14 @@ table.insert(M, {
 					[']k'] = '@call.outer',
 				},
 				goto_next_end = {
-					[']C'] = false,
+					[']C'] = no_class_jump,
 					[']F'] = '@function.outer',
 					[']B'] = '@block.outer',
 					[']A'] = '@parameter.inner',
 					[']K'] = '@call.outer',
 				},
 				goto_previous_start = {
-					['[c'] = false,
+					['[c'] = no_class_jump,
 					['[f'] = '@function.outer',
 					['[['] = '@class.outer',
 					['[b'] = '@block.outer',
@@ -176,7 +191,7 @@ table.insert(M, {
 					['[k'] = '@call.inner',
 				},
 				goto_previous_end = {
-					['[C'] = false,
+					['[C'] = no_class_jump,
 					['[F'] = '@function.outer',
 					['[B'] = '@block.outer',
 					['[A'] = '@parameter.inner',
@@ -217,16 +232,30 @@ table.insert(M, {
 		-- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
 		vim.g.no_plugin_maps = true
 
-		local map = require('KoalaVim.utils.map').map
+		local map = require('KoalaVim.utils.map').kmap
 		require('nvim-treesitter-textobjects').setup(opts)
 
 		-- Set move cmds
 		for goto_cmd, keys in pairs(opts.move.keys) do
 			for lhs, obj in pairs(keys) do
 				if obj then
-					map({ 'n', 'x', 'o' }, lhs, function()
+					local rhs = function()
+						-- Same as LazyVim's: `]c`/`[c` are diff jumps in diff windows
+						if vim.wo.diff and lhs:find('[cC]') then
+							return vim.cmd('normal! ' .. lhs)
+						end
 						require('nvim-treesitter-textobjects.move')[goto_cmd](obj, 'textobjects')
-					end, goto_cmd .. ' ' .. obj)
+					end
+					if not koala_flavor and lazyvim_moves[lhs] then
+						-- LazyVim's own jumps, the contested table treats them as LazyVim's keys (same desc as LazyVim's)
+						local desc = obj:gsub('@', ''):gsub('%..*', '')
+						desc = desc:sub(1, 1):upper() .. desc:sub(2)
+						desc = (lhs:sub(1, 1) == '[' and 'Prev ' or 'Next ') .. desc
+						desc = desc .. (lhs:sub(2, 2) == lhs:sub(2, 2):upper() and ' End' or ' Start')
+						require('KoalaVim.utils.map').map({ 'n', 'x', 'o' }, lhs, rhs, desc)
+					else
+						map({ 'n', 'x', 'o' }, lhs, rhs, goto_cmd .. ' ' .. obj)
+					end
 				end
 			end
 		end

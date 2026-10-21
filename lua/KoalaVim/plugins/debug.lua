@@ -1,6 +1,7 @@
 local M = {}
 
 local usercmd = require('KoalaVim.utils.cmd')
+local kkeys = require('KoalaVim.utils.map').kkeys
 
 -- Prepend `config` to the dap configurations of `ft`, replacing a configuration with the same name
 -- (LazyVim's lang extras and mason-nvim-dap register theirs, keep them)
@@ -108,7 +109,7 @@ table.insert(M, {
 		'theHamsta/nvim-dap-virtual-text',
 	},
 	opts = setup_dap,
-	keys = {
+	keys = kkeys({
 		{
 			'<F9>',
 			function()
@@ -182,7 +183,7 @@ table.insert(M, {
 			end,
 			desc = 'Debug: evaluate',
 		},
-	},
+	}),
 })
 
 -- UI panels for nvim-dap (scopes, watches, breakpoints, stacks, repl)
@@ -267,7 +268,7 @@ table.insert(M, {
 -- Cycle between DAP breakpoints with ]d/[d
 table.insert(M, {
 	'ofirgall/goto-breakpoints.nvim',
-	keys = {
+	keys = kkeys({
 		{
 			']d',
 			function()
@@ -289,7 +290,7 @@ table.insert(M, {
 			end,
 			desc = 'Goto DAP stopped location',
 		},
-	},
+	}),
 })
 
 -- Show variable values as virtual text inline while debugging

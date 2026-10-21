@@ -1,6 +1,7 @@
 local M = {}
 
 local ai = require('KoalaVim.utils.ai.general')
+local kkeys = require('KoalaVim.utils.map').kkeys
 
 local with_default_tool = ai.with_default_tool
 
@@ -89,7 +90,7 @@ table.insert(M, {
 			end,
 		},
 	},
-	keys = {
+	keys = kkeys({
 		{
 			'gf',
 			function()
@@ -152,7 +153,7 @@ table.insert(M, {
 				ai.nav_to_prompt('N')
 			end,
 			ft = 'sidekick_terminal',
-			desc = 'go to next prompt',
+			desc = 'go to previous prompt',
 			mode = { 'n', 't' },
 		},
 		{
@@ -170,7 +171,7 @@ table.insert(M, {
 				ai.nav_to_prompt('N')
 			end,
 			ft = 'sidekick_terminal',
-			desc = 'go to next prompt',
+			desc = 'go to previous prompt',
 			mode = 'n',
 		},
 		{
@@ -205,7 +206,8 @@ table.insert(M, {
 				with_default_tool(require('sidekick.cli').toggle)
 			end,
 			desc = 'Sidekick Toggle',
-			mode = { 'n', 't', 'i', 'x' },
+			-- `n` is bufferline's next tab (`config/keymaps/tabs.lua`)
+			mode = { 't', 'i', 'x' },
 		},
 		{
 			'<M-a>',
@@ -298,7 +300,7 @@ table.insert(M, {
 			mode = { 'n', 'x' },
 			desc = 'Sidekick Select Prompt',
 		},
-	},
+	}),
 })
 
 return M

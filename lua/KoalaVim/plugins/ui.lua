@@ -1,6 +1,7 @@
 local M = {}
 local api = vim.api
 local flavor = require('KoalaVim.flavor')
+local kkeys = require('KoalaVim.utils.map').kkeys
 
 local function node_relative_path()
 	local node = require('nvim-tree.api').tree.get_node_under_cursor()
@@ -136,7 +137,7 @@ table.insert(M, {
 			require('nvim-tree')
 		end
 	end,
-	keys = {
+	keys = kkeys({
 		{
 			'<M-m>',
 			function()
@@ -153,7 +154,7 @@ table.insert(M, {
 			desc = 'Locate file',
 			mode = { 'n', 't', 'v' },
 		},
-	},
+	}),
 	deactivate = function()
 		vim.cmd([[NvimTreeClose]])
 	end,
@@ -327,7 +328,7 @@ table.insert(M, {
 			lsp_doc_border = true, -- add a border to hover docs and signature help
 		})
 	end,
-	keys = {
+	keys = kkeys({
 		{
 			'<c-u>',
 			function()
@@ -367,7 +368,7 @@ table.insert(M, {
 			end,
 			desc = 'Open Noice',
 		},
-	},
+	}),
 })
 
 -- Floating progress indicator for LSP and background tasks

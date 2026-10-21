@@ -108,6 +108,26 @@ function M.init()
 		end,
 	})
 
+	-- Contested keys: resolve LazyVim's global keymaps per flavor right after LazyVim defines them and before KoalaVim's
+	-- keymaps load. The snapshot (taken before LazyVim's `VeryLazy` handler loads its keymaps) tells LazyVim's keymaps
+	-- apart from lazy.nvim's key stubs and plugins' keys. Both listeners are registered before the loop below, so they
+	-- run before the `config.keymaps` listener of `LazyVimKeymapsDefaults`. `globals()` also starts the watcher that
+	-- rewrites the keymaps LazyVim defines later (plugin configs, ftplugins, LSP attach).
+	vim.api.nvim_create_autocmd('User', {
+		pattern = 'VeryLazy',
+		once = true,
+		callback = function()
+			require('KoalaVim.keymaps.remap').snapshot()
+		end,
+	})
+	vim.api.nvim_create_autocmd('User', {
+		pattern = 'LazyVimKeymapsDefaults',
+		once = true,
+		callback = function()
+			require('KoalaVim.keymaps.remap').globals()
+		end,
+	})
+
 	-- KoalaVim's layer on top of LazyVim's options/keymaps/autocmds, user's config is loaded by LazyVim afterwards.
 	-- Registered before lazy.setup because LazyVim loads options while importing `lazyvim.plugins`.
 	for _, name in ipairs(LAZYVIM_USER_MODULES) do

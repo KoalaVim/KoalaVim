@@ -1,4 +1,4 @@
-local map = require('KoalaVim.utils.map').map
+local map = require('KoalaVim.utils.map').kmap
 
 -- Yanking and pasting
 map('', '<leader>y', '"+y', 'Start copy to os clipboard E.g: <leader>yy will copy current line to os')
@@ -13,8 +13,8 @@ map({ 'v', 'x' }, '<Enter>', '"+y', 'Copy text in visual to os clipboard')
 
 -- Deleting text without yanking
 map('n', '<leader>d', '"_d', 'delete without yanking')
-map('n', '<leader>D', '"_D', 'delete without yanking')
+map('n', '<leader>D', '"_D', 'delete rest of line without yanking')
 map('n', '<leader>c', '"_c', 'change without yanking')
-map('n', '<leader>C', '"_C', 'change without yanking')
+map('n', '<leader>C', '"_C', 'change rest of line without yanking')
 -- map('n', '<leader>x', '"_x', 'x without yanking')
 -- map('n', '<leader>X', '"_X', 'x without yanking')

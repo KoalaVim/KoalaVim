@@ -114,6 +114,8 @@ JSON only covers what's been exposed. For anything beyond — extra plugins, cus
 
 See the [KoalaConfig template](https://github.com/KoalaVim/KoalaConfig.template) for a working `init.lua` and examples of each.
 
+Keys differ per `flavor` (`koala` or `lazyvim`), see the [keymap cheat sheet](docs/keymaps.md) for what moved, was dropped or added.
+
 ## Plugins
 
 Plugins are organized by category. See [`docs/plugins/README.md`](docs/plugins/README.md) for the full index with upstream links and per-plugin descriptions.

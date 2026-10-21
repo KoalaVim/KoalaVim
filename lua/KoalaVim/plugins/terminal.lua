@@ -1,5 +1,7 @@
 local M = {}
 
+local kkeys = require('KoalaVim.utils.map').kkeys
+
 -- Toggleable floating/split terminals with multi-instance support (koala flavor).
 -- The lazyvim flavor uses LazyVim's snacks terminal (`<c-/>`).
 table.insert(M, {
@@ -7,7 +9,7 @@ table.insert(M, {
 	enabled = function()
 		return require('KoalaVim.flavor').is('koala')
 	end,
-	keys = {
+	keys = kkeys({
 		{
 			'<C-t>',
 			function()
@@ -28,7 +30,7 @@ table.insert(M, {
 			mode = 't',
 			desc = 'Split terminal',
 		},
-	},
+	}),
 	config = function()
 		local toggle_term = require('toggleterm')
 		toggle_term.setup({
@@ -100,7 +102,7 @@ table.insert(M, {
 -- Split a sidekick terminal in terminal mode, toggleterm's key does it in the koala flavor
 table.insert(M, {
 	'folke/snacks.nvim',
-	keys = require('KoalaVim.flavor').is('lazyvim') and {
+	keys = kkeys(require('KoalaVim.flavor').is('lazyvim') and {
 		{
 			'<M-e>',
 			function()
@@ -111,7 +113,7 @@ table.insert(M, {
 			mode = 't',
 			desc = 'Split terminal',
 		},
-	} or {},
+	} or {}),
 })
 
 return M

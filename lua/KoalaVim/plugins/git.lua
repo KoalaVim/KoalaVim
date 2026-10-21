@@ -1,6 +1,7 @@
 local M = {}
 
 local api = vim.api
+local kkeys = require('KoalaVim.utils.map').kkeys
 
 -- Git hunks in the sign column: stage, reset, preview, blame, navigate
 table.insert(M, {
@@ -8,7 +9,8 @@ table.insert(M, {
 	branch = 'main',
 	event = { 'BufReadPost', 'BufNewFile' },
 	cmd = 'Gitsigns',
-	-- On top of LazyVim's opts (signs), KoalaVim's `on_attach` replaces LazyVim's
+	-- On top of LazyVim's opts (signs). The `on_attach` composes LazyVim's hunk keys (lazyvim flavor only) with
+	-- KoalaVim's keys, see `KoalaVim.keymaps.contested`
 	opts = function(_, opts)
 		opts.add_fg_factor = 0.65
 		opts.sign_priority = 9
@@ -18,13 +20,18 @@ table.insert(M, {
 			require('gitsigns.actions').nav_hunk(direction, { navigation_message = false, target = 'all', wrap = false })
 		end
 
+		local lazyvim_on_attach = opts.on_attach
 		opts.on_attach = function(bufnr)
 			-- Avoid overriding codediff binds (not tight because working with window option instead of buf opt)
 			if vim.w.code_diff_win then
 				return
 			end
 
-			local map_buffer = require('KoalaVim.utils.map').map_buffer
+			if require('KoalaVim.flavor').is('lazyvim') and lazyvim_on_attach then
+				lazyvim_on_attach(bufnr)
+			end
+
+			local map_buffer = require('KoalaVim.utils.map').kmap_buffer
 
 			-- Navigation
 			-- TODO: center screen after jump
@@ -100,7 +107,7 @@ table.insert(M, {
 	'ofirgall/inlinediff-nvim', -- Fork for enable/disable
 	lazy = true, -- disable loading plugin until called with cmd or keys
 	cmd = 'InlineDiff',
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>hd',
 			function()
@@ -108,7 +115,7 @@ table.insert(M, {
 			end,
 			desc = 'Toggle inline diff',
 		},
-	},
+	}),
 	opts = {},
 })
 
@@ -123,7 +130,7 @@ table.insert(M, {
 		'nvim-lua/plenary.nvim', -- required
 	},
 	cmd = 'Neogit',
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>gs',
 			function()
@@ -155,14 +162,14 @@ table.insert(M, {
 		{
 			'<leader>gP',
 			'<cmd>Neogit push<cr>',
-			desc = 'Git push',
+			desc = 'Git push (alias)',
 		},
 		{
 			'<leader>gc',
 			'<cmd>Neogit commit<cr>',
 			desc = 'Git commit',
 		},
-	},
+	}),
 	opts = {
 		-- TODO: try kitty style
 		-- graph_style = 'unicode',
@@ -262,7 +269,7 @@ end
 local _fugitive_keys = {}
 
 if vim.env.KOALA_FUGITIVE == 'true' then
-	_fugitive_keys = {
+	_fugitive_keys = kkeys({
 		{ '<leader>gc', '<cmd>Git commit<CR>', desc = 'Git commit' },
 		{ '<leader>gac', '<cmd>Git commit --amend<CR>', desc = 'Git commit --amend' },
 		{ '<leader>gs', '<cmd>G<CR>', desc = 'Open fugitive.vim (git status)' },
@@ -284,7 +291,7 @@ if vim.env.KOALA_FUGITIVE == 'true' then
 		-- 	desc = 'Open Diff',
 		-- 	mode = { 'n', 't' },
 		-- },
-	}
+	})
 end
 
 -- Vim's classic git wrapper — commits, blame, logs, merges, index editing
@@ -391,7 +398,7 @@ table.insert(M, {
 			char_brightness = vim.o.background == 'light' and 0.92 or 1.5,
 		},
 	},
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>gd',
 			function()
@@ -408,7 +415,7 @@ table.insert(M, {
 			mode = 'v',
 			desc = 'Show Git History of the visual selection',
 		},
-	},
+	}),
 	config = function(_, opts)
 		local lifecycle = require('codediff.ui.lifecycle')
 		local nav = require('codediff.ui.view.navigation')
@@ -688,9 +695,9 @@ table.insert(M, {
 -- Show the git commit responsible for the line under cursor in a popup
 table.insert(M, {
 	'rhysd/git-messenger.vim',
-	keys = {
+	keys = kkeys({
 		{ '<leader>hh', '<cmd>GitMessenger<CR>', desc = 'Hunk history' },
-	},
+	}),
 	dependencies = {
 		'tpope/vim-fugitive',
 	},
@@ -738,11 +745,11 @@ table.insert(M, {
 		'tpope/vim-fugitive',
 	},
 	cmd = { 'Flog', 'Flogsplit', 'Floggit' },
-	keys = {
+	keys = kkeys({
 		{ '<leader>gt', '<cmd>vert Flogsplit<CR>', desc = 'Git Tree (vsplit)' },
 		{ '<leader>gT', '<cmd>Flog<CR>', desc = 'Git Tree (tabnew)' },
 		{ '<leader>got', '<cmd>Flogsplit<CR>', desc = 'Git Tree (split)' },
-	},
+	}),
 	config = function()
 		vim.g.flog_default_opts = {
 			max_count = 512,
@@ -821,9 +828,9 @@ table.insert(M, {
 		default_merge_method = 'squash',
 		picker = 'snacks',
 	},
-	keys = {
+	keys = kkeys({
 		{ '<leader>gil', '<cmd>Octo issue list<CR>', desc = 'List Issues (Octo)' },
-		{ '<leader>gic', '<cmd>Octo issue create<CR>', desc = 'List Issues (Octo)' },
+		{ '<leader>gic', '<cmd>Octo issue create<CR>', desc = 'Create Issue (Octo)' },
 		{ '<leader>gI', '<cmd>Octo issue search<CR>', desc = 'Search Issues (Octo)' },
 		{ '<leader>gr', '<cmd>Octo pr list<CR>', desc = 'List PRs (Octo)' },
 		{ '<leader>gR', '<cmd>Octo pr search<CR>', desc = 'Search PRs (Octo)' },
@@ -842,7 +849,7 @@ table.insert(M, {
 		{ '<localleader>g', '', desc = '+goto_issue (Octo)', ft = 'octo' },
 		{ '@', '@<C-x><C-o>', mode = 'i', ft = 'octo', silent = true },
 		{ '#', '#<C-x><C-o>', mode = 'i', ft = 'octo', silent = true },
-	},
+	}),
 	config = function(_, opts)
 		require('octo').setup(opts)
 	end,

@@ -1,5 +1,7 @@
 local M = {}
 
+local kkeys = require('KoalaVim.utils.map').kkeys
+
 -- Diagnostics base config, LazyVim passes `opts.diagnostics` to `vim.diagnostic.config()`.
 -- KoalaVim's diagnostics cycle (utils/lsp.lua) overrides only the virtual text/lines on top of it,
 -- the initial mode is applied by diagflow's `init` (lsp/general.lua).
@@ -22,7 +24,7 @@ table.insert(M, {
 			},
 		})
 	end,
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>l',
 			function()
@@ -31,10 +33,10 @@ table.insert(M, {
 			desc = 'Cycle between lsp diagnostics mode',
 		},
 		-- Native LSP UI (replaced lspsaga)
-		{ '<F2>', vim.lsp.buf.rename, desc = 'Rename symbos with F2' },
+		{ '<F2>', vim.lsp.buf.rename, desc = 'Rename symbols with F2' },
 		{ '<F4>', vim.lsp.buf.code_action, desc = 'Code action with F4' },
 		{ '<leader>L', vim.diagnostic.open_float, desc = 'show Problem' },
-	},
+	}),
 })
 
 return M

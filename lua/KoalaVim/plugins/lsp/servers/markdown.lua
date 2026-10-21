@@ -1,5 +1,7 @@
 local M = {}
 
+local kkeys = require('KoalaVim.utils.map').kkeys
+
 -- marksman, markdownlint and prettier formatting come from LazyVim's markdown extra
 
 -- The extra formats markdown with prettier but doesn't install it
@@ -57,14 +59,14 @@ table.insert(M, {
 -- Browser-based live markdown preview with GitHub-flavored rendering (plugin, build and config come from the extra)
 table.insert(M, {
 	'iamcco/markdown-preview.nvim',
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>up',
 			ft = 'markdown',
 			'<cmd>MarkdownPreviewToggle<cr>',
 			desc = 'Markdown Preview',
 		},
-	},
+	}),
 })
 
 -- Render markdown inside the buffer (headings, code blocks, tables, etc.)
@@ -106,7 +108,7 @@ table.insert(M, {
 		},
 	},
 	ft = { 'markdown', 'norg', 'rmd', 'org', 'codecompanion' },
-	keys = {
+	keys = kkeys({
 		{
 			'<M-p>',
 			ft = 'markdown',
@@ -115,7 +117,7 @@ table.insert(M, {
 			end,
 			desc = 'Markdown Render Preview',
 		},
-	},
+	}),
 	config = function(_, opts)
 		require('render-markdown').setup(opts)
 
@@ -172,30 +174,31 @@ table.insert(M, {
 table.insert(M, {
 	'KoalaVim/checkmate.nvim', -- fork
 	ft = 'markdown',
-	keys = {
+	-- `<leader>t` is Trouble's buffer diagnostics, the todo keys are on `<localleader>t`
+	keys = kkeys({
 		{
-			'<leader>tt',
+			'<localleader>tt',
 			'<cmd>Checkmate toggle<CR>',
 			ft = 'markdown',
 			mode = { 'n', 'v' },
 			desc = 'Toggle todo item',
 		},
 		{
-			'<leader>tc',
+			'<localleader>tc',
 			'<cmd>Checkmate check<CR>',
 			ft = 'markdown',
 			mode = { 'n', 'v' },
 			desc = 'Check todo item',
 		},
 		{
-			'<leader>tu',
+			'<localleader>tu',
 			'<cmd>Checkmate uncheck<CR>',
 			ft = 'markdown',
 			mode = { 'n', 'v' },
 			desc = 'Uncheck todo item',
 		},
 		{
-			'<leader>tl',
+			'<localleader>tl',
 			function()
 				_G._checkmate_cycle_next = function()
 					require('checkmate').cycle()
@@ -207,9 +210,9 @@ table.insert(M, {
 			mode = 'n',
 			desc = 'Cycle todo next',
 		},
-		{ '<leader>tl', '<cmd>Checkmate cycle_next<CR>', ft = 'markdown', mode = 'v', desc = 'Cycle todo next' },
+		{ '<localleader>tl', '<cmd>Checkmate cycle_next<CR>', ft = 'markdown', mode = 'v', desc = 'Cycle todo next' },
 		{
-			'<leader>th',
+			'<localleader>th',
 			function()
 				_G._checkmate_cycle_prev = function()
 					require('checkmate').cycle({ backward = true })
@@ -222,29 +225,35 @@ table.insert(M, {
 			desc = 'Cycle todo previous',
 		},
 		{
-			'<leader>th',
+			'<localleader>th',
 			'<cmd>Checkmate cycle_previous<CR>',
 			ft = 'markdown',
 			mode = 'v',
 			desc = 'Cycle todo previous',
 		},
-		{ '<leader>tn', '<cmd>Checkmate create<CR>', ft = 'markdown', mode = { 'n', 'v' }, desc = 'Create todo item' },
 		{
-			'<leader>tr',
+			'<localleader>tn',
+			'<cmd>Checkmate create<CR>',
+			ft = 'markdown',
+			mode = { 'n', 'v' },
+			desc = 'Create todo item',
+		},
+		{
+			'<localleader>tr',
 			'<cmd>Checkmate remove<CR>',
 			ft = 'markdown',
 			mode = { 'n', 'v' },
 			desc = 'Remove todo marker',
 		},
 		{
-			'<leader>tR',
+			'<localleader>tR',
 			'<cmd>Checkmate remove_all_metadata<CR>',
 			ft = 'markdown',
 			mode = { 'n', 'v' },
 			desc = 'Remove all metadata',
 		},
 		{
-			'<leader>ts',
+			'<localleader>ts',
 			function()
 				local states = vim.tbl_keys(require('checkmate.config').options.todo_states)
 				table.sort(states)
@@ -258,13 +267,24 @@ table.insert(M, {
 			mode = { 'n', 'v' },
 			desc = 'Select todo state',
 		},
-		{ '<leader>ta', '<cmd>Checkmate archive<CR>', ft = 'markdown', desc = 'Archive completed todos' },
-		{ '<leader>tF', '<cmd>Checkmate select_todo<CR>', ft = 'markdown', desc = 'Select todo (picker)' },
-		{ '<leader>tv', '<cmd>Checkmate metadata select_value<CR>', ft = 'markdown', desc = 'Select metadata value' },
-	},
+		{ '<localleader>ta', '<cmd>Checkmate archive<CR>', ft = 'markdown', desc = 'Archive completed todos' },
+		{ '<localleader>tF', '<cmd>Checkmate select_todo<CR>', ft = 'markdown', desc = 'Select todo (picker)' },
+		{
+			'<localleader>tv',
+			'<cmd>Checkmate metadata select_value<CR>',
+			ft = 'markdown',
+			desc = 'Select metadata value',
+		},
+	}),
 	opts = {
 		files = { '*.md' },
 		keys = false,
+		-- checkmate's default metadata keys sit on `<leader>T*`, the inlay-hints toggle is `<leader>T`
+		metadata = {
+			priority = { key = '<localleader>Tp' },
+			started = { key = '<localleader>Ts' },
+			done = { key = '<localleader>Td' },
+		},
 		todo_states = {
 			unchecked = { marker = '□' },
 			checked = { marker = '✔' },

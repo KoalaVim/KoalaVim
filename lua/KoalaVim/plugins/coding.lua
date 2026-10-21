@@ -1,6 +1,9 @@
 local M = {}
 -- Plugins you interact by actual coding
 
+local km = require('KoalaVim.utils.map')
+local kkeys = km.kkeys
+
 -- Smart commenting with gcc/gc mappings and treesitter-aware commentstring
 table.insert(M, {
 	'numToStr/Comment.nvim',
@@ -20,7 +23,7 @@ table.insert(M, {
 -- Operators to exchange and substitute text regions
 table.insert(M, {
 	'gbprod/substitute.nvim',
-	keys = {
+	keys = kkeys({
 		{
 			'cx',
 			function()
@@ -43,7 +46,7 @@ table.insert(M, {
 			desc = 'Operator: substitute/exchange',
 			mode = 'x',
 		},
-	},
+	}),
 	config = function(_, opts)
 		require('substitute').setup(opts)
 	end,
@@ -103,7 +106,7 @@ table.insert(M, {
 	config = function(_, opts)
 		require('flit').setup(opts)
 	end,
-	keys = { 'f', 'F', 't', 'T' },
+	keys = kkeys({ 'f', 'F', 't', 'T' }),
 })
 
 -- Toggle opposite words under the cursor (true↔false, prev↔next, etc.)
@@ -124,7 +127,7 @@ table.insert(M, {
 	config = function(_, opts)
 		require('nvim-toggler').setup(opts)
 	end,
-	keys = {
+	keys = kkeys({
 		{
 			'<leader>i',
 			function()
@@ -133,7 +136,7 @@ table.insert(M, {
 			mode = { 'n', 'v' },
 			desc = 'Invert words',
 		},
-	},
+	}),
 })
 
 -- Yank history ring — cycle through past yanks when pasting
@@ -151,7 +154,7 @@ table.insert(M, {
 	config = function(_, opts)
 		require('yanky').setup(opts)
 	end,
-	keys = {
+	keys = kkeys({
 		{ 'y', '<Plug>(YankyYank)', mode = { 'n', 'x' }, desc = 'Yank with yanky.nvim' },
 		{ 'p', '<Plug>(YankyPutAfter)', desc = 'Paste with yanky.nvim' },
 		{ 'P', '<Plug>(YankyPutBefore)', desc = 'Paste with yank.nvim' },
@@ -185,13 +188,13 @@ table.insert(M, {
 			end,
 			desc = 'Cycle yank history forward',
 		},
-	},
+	}),
 })
 
 -- Add/change/delete surrounding pairs (brackets, quotes, tags) via operators
 table.insert(M, {
 	'kylechui/nvim-surround',
-	keys = {
+	keys = kkeys({
 		{ 'sa', desc = 'Add surround' },
 		{ 's', mode = 'v', desc = 'Add surround' },
 		{ 'S', mode = 'v', desc = 'Add surround for a line' },
@@ -211,7 +214,7 @@ table.insert(M, {
 		{ "<leader>'", "srq'", desc = "Replace surround to '", remap = true },
 		{ '<leader>"', 'srq"', desc = 'Replace surround to "', remap = true },
 		{ '<leader>`', 'srq`', desc = 'Replace surround to `', remap = true },
-	},
+	}),
 	config = function()
 		-- switch the surround direction behavior
 		local surrounds = require('nvim-surround.config').default_opts.surrounds
@@ -262,10 +265,10 @@ table.insert(M, {
 	config = function(_, opts)
 		require('treesj').setup(opts)
 	end,
-	keys = {
+	keys = kkeys({
 		{ 'sj', '<cmd>TSJSplit<cr>', desc = 'Splitjoin Split line' },
 		{ 'sJ', '<cmd>TSJJoin<cr>', desc = 'Splitjoin Join line' },
-	},
+	}),
 })
 
 -- Swap treesitter siblings (function args, list items) left/right
@@ -280,32 +283,36 @@ table.insert(M, {
 	config = function(_, opts)
 		require('sibling-swap').setup(opts)
 	end,
-	keys = {
+	keys = kkeys({
 		{
 			'<C-Right>',
 			function()
 				require('sibling-swap').swap_with_right()
 			end,
+			desc = 'Swap with right sibling',
 		},
 		{
 			'<C-Left>',
 			function()
 				require('sibling-swap').swap_with_left()
 			end,
+			desc = 'Swap with left sibling',
 		},
 		{
 			'<space><Right>',
 			function()
 				require('sibling-swap').swap_with_right_with_opp()
 			end,
+			desc = 'Swap with right sibling (and flip the operator)',
 		},
 		{
 			'<space><Left>',
 			function()
 				require('sibling-swap').swap_with_left_with_opp()
 			end,
+			desc = 'Swap with left sibling (and flip the operator)',
 		},
-	},
+	}),
 })
 
 -- Extra text-objects (subwords, indent, URL, etc.)
@@ -331,6 +338,10 @@ table.insert(M, {
 		},
 	},
 	config = function(_, opts)
+		if require('KoalaVim.flavor').get() == 'lazyvim' then
+			-- `n` (next search result) in visual/operator mode is LazyVim's
+			table.insert(opts.keymaps.disabledDefaults, 'n')
+		end
 		require('various-textobjs').setup(opts)
 		local map = require('KoalaVim.utils.map').map
 		-- stylua: ignore start
@@ -346,24 +357,24 @@ table.insert(M, {
 -- Multi-cursor / multi-selection editing (VSCode/Sublime-style Ctrl-D)
 table.insert(M, {
 	'mg979/vim-visual-multi',
-	keys = {
+	keys = kkeys({
 		{
 			'<M-d>',
 			desc = 'Multi cursor: add selection for current word (equivalent to Ctrl-D in VSCode/Sublime)',
 			mode = { 'n', 'x' },
 		},
-		{ '<C-Down>', desc = 'Multi cusror: add below' },
-		{ '<C-Up>', desc = 'Multi cusror: add above' },
-	},
+		{ '<C-Down>', desc = 'Multi cursor: add below' },
+		{ '<C-Up>', desc = 'Multi cursor: add above' },
+	}),
 	init = function()
 		-- TODO: create an hydra for it
-		vim.cmd([[
-let g:VM_maps = {}
-let g:VM_maps['Find Under']         = '<M-d>'
-let g:VM_maps['Find Subword Under'] = '<M-d>'
-let g:VM_maps['Add Cursor Down'] = '<C-Down>'
-let g:VM_maps['Add Cursor Up'] = '<C-Up>'
-]])
+		vim.g.VM_maps = {
+			['Find Under'] = '<M-d>',
+			['Find Subword Under'] = '<M-d>',
+			-- The lazyvim flavor moves them to `<M-Down>`/`<M-Up>` (LazyVim resizes windows with `<C-Down>`/`<C-Up>`)
+			['Add Cursor Down'] = km.klhs('<C-Down>'),
+			['Add Cursor Up'] = km.klhs('<C-Up>'),
+		}
 
 		vim.g.VM_highlight_matches = 'hi! link Search LspReferenceWrite' -- Non selected matches
 		vim.g.VM_Mono_hl = 'TabLine' -- Cursor while in normal
@@ -401,12 +412,12 @@ let g:VM_maps['Add Cursor Up'] = '<C-Up>'
 -- Move lines and blocks up/down/left/right with arrow keys in visual mode
 table.insert(M, {
 	'fedepujol/move.nvim',
-	keys = {
+	keys = kkeys({
 		{ '<C-k>', ':MoveBlock(-1)<CR>', mode = 'v', silent = true },
 		{ '<C-j>', ':MoveBlock(1)<CR>', mode = 'v', silent = true },
 		{ '<C-l>', ':MoveHBlock(1)<CR>', mode = 'v', silent = true },
 		{ '<C-h>', ':MoveHBlock(-1)<CR>', mode = 'v', silent = true },
-	},
+	}),
 })
 
 return M
