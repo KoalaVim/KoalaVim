@@ -106,6 +106,8 @@ These corrections came out of implementation and take precedence over the decisi
   - The remote delve adapter is renamed `go_remote`, so it doesn't clobber dap-go's `go`.
   - The python extra does **not** install debugpy (nvim-dap-python needs `debugpy-adapter`), so KoalaVim keeps it in mason `ensure_installed` (task 6.3 premise was wrong).
   - The dap-ui close handler is called on both `terminated` and `exited`. It now tracks the debug tab handle and closes that tab once. The old `tabclose $` raised "E784: Cannot close last tab page", or closed one of your own tabs, when it ran the second time.
+  - The handler also runs when the session closes (`dap.listeners.on_session` with no new session). A `disconnect` can close the session before the adapter's `terminated`/`exited` events arrive; those events are then dropped, and the debug tab stayed open in about 1 of 4 runs.
+  - On macOS, compile C/C++/Rust through realpaths. lldb matches breakpoint files by the literal path in the debug info, and Neovim resolves symlinks (`/tmp` → `/private/tmp`), so a binary built via `/tmp` never stops. This is not a KoalaVim issue.
 - **lazy.nvim `init` is not merged** across spec fragments, so only the last fragment's `init` runs. KoalaVim now owns `init` on `LazyVim/LazyVim` (format policy), `KoalaVim/diagflow.nvim` (initial diagnostics mode), `nvim-dap` and `nvim-lspconfig` (navic). A later phase that adds `init` to any of these must call the existing hook.
 - **Lockfile generator:** it now loads only the distribution `default_kvim.conf` into `require('KoalaVim').conf`, because KoalaVim's options read `conf.lsp`, and the developer's own conf must not affect the lockfile.
 

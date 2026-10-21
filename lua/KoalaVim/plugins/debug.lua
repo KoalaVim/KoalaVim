@@ -219,7 +219,7 @@ table.insert(M, {
 
 		local debug_tab = nil
 
-		-- Called on both `terminated` and `exited`, close the debug page only once
+		-- Called on `terminated`, `exited` and when the session closes, close the debug page only once
 		local dap_closed = function()
 			dapui.close({})
 			if debug_tab and vim.api.nvim_tabpage_is_valid(debug_tab) and #vim.api.nvim_list_tabpages() > 1 then
@@ -249,6 +249,13 @@ table.insert(M, {
 		end
 		dap.listeners.before.event_exited['dapui_config'] = function()
 			dap_closed()
+		end
+		-- The session can close (disconnect response) before the adapter's `terminated`/`exited` events arrive,
+		-- those events are dropped then and the debug tab would stay open
+		dap.listeners.on_session['dapui_config'] = function(_, new_session)
+			if not new_session and debug_tab then
+				vim.schedule(dap_closed)
+			end
 		end
 	end,
 })

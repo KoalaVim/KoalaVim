@@ -57,4 +57,4 @@
 - [x] 8.1 For each language (c/cpp, go, python, rust, ts, json, lua, markdown, bash, zig): the server attaches, format on `:w` works, and AutoSave writes don't format
 - [x] 8.2 Blacklist knobs: set each of the four in a repo `.kvim.conf` and confirm the behavior from the spec scenarios
 - [x] 8.3 mypy missing-import diagnostics show as INFO; semantic tokens absent (`:Inspect`); inlay hints render at EOL
-- [ ] 8.4 Debug a python test, a rust binary and a C program; the dap-ui tab opens and closes (python verified headless; the C session through codelldb didn't stop at its breakpoint headless and rust wasn't run, so check both interactively)
+- [x] 8.4 Debug a python test, a rust binary and a C program; the dap-ui tab opens and closes (all three stop at the breakpoint; fixed the tab staying open when the session closes before `terminated`/`exited`)
