@@ -59,7 +59,7 @@
   "marks.nvim": { "branch": "master", "commit": "357887e6f5ba5cb7c7de80bae89dd3504bd021f7" },
   "mason-lspconfig.nvim": { "branch": "main", "commit": "80c0130c5f16b551865a69e832f1feadeedb5fbe" },
   "mason.nvim": { "branch": "main", "commit": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65" },
-  "mermaid-viewer.nvim": { "branch": "master", "commit": "4b81849445f20ac47bc1353b88efedce9128bc12" },
+  "mermaid-viewer.nvim": { "branch": "master", "commit": "e6a44693c8aac9baf25ced42c35ab6a34ff09edd" },
   "mini.ai": { "branch": "main", "commit": "bfb26d9072670c3aaefab0f53024b2f3729c8083" },
   "move.nvim": { "branch": "main", "commit": "599b14047b82e92874b9a408e4df228b965c3a1d" },
   "muren.nvim": { "branch": "main", "commit": "fa18f2df80a52afd201da062d1af0e80c8d1988e" },
