@@ -107,8 +107,8 @@ table.insert(M, {
 		},
 
 		keys = {
-			zoom_in = '+',
-			zoom_out = '-',
+			zoom_in = 'i',
+			zoom_out = 'o',
 			zoom_reset = '0',
 			close = { 'q', '<Esc>' },
 		},
