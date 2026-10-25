@@ -63,22 +63,22 @@ table.insert(M, {
 	end,
 })
 
--- Mermaid diagrams inline above their blocks and in a zoomable float, via kitty graphics placeholders (WIP)
+-- Mermaid diagrams inline (markdown, .mmd, sidekick agent terminals) and in a zoomable float, via kitty graphics placeholders (WIP)
 table.insert(M, {
 	'KoalaVim/mermaid-viewer.nvim',
 	cmd = { 'MermaidView', 'MermaidClose', 'MermaidToggle', 'MermaidInline', 'MermaidCollapse' },
-	ft = { 'markdown', 'mermaid' },
+	ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
 	keys = {
 		{
 			'<leader>um',
 			'<cmd>MermaidToggle<cr>',
-			ft = { 'markdown', 'mermaid' },
+			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
 			desc = 'Mermaid Viewer',
 		},
 		{
 			'<leader>ui',
 			'<cmd>MermaidInline<cr>',
-			ft = 'markdown',
+			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
 			desc = 'Toggle inline mermaid diagrams',
 		},
 		{
