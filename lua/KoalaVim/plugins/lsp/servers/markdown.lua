@@ -88,7 +88,31 @@ table.insert(M, {
 			desc = 'Collapse mermaid block',
 		},
 	},
-	opts = {},
+	opts = {
+		theme = 'dark',
+
+		inline = {
+			height = 20,
+		},
+
+		float = {
+			width = 0.8, -- max fraction of editor width
+			height = 0.8, -- max fraction of editor height
+			border = 'rounded',
+			-- Merged over the computed nvim_open_win config (title, footer, zindex, row/col, width/height in cells, ...)
+			win_config = {},
+		},
+
+		keys = {
+			zoom_in = '+',
+			zoom_out = '-',
+			zoom_reset = '0',
+			close = { 'q', '<Esc>' },
+		},
+
+		zoom_step = 1.5, -- zoom multiplier per step
+		max_zoom = 5.0,
+	},
 })
 
 -- Render markdown inside the buffer (headings, code blocks, tables, etc.)
