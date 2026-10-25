@@ -92,7 +92,9 @@ table.insert(M, {
 		theme = 'dark',
 
 		inline = {
-			height = 20,
+			scale = 1.5, -- diagram size relative to the editor font (1.0 = text about buffer-text size)
+			max_width = 1.0, -- <= 1: fraction of the window text width, > 1: cells
+			max_height = 0.85, -- <= 1: fraction of the window height, > 1: rows
 		},
 
 		float = {
