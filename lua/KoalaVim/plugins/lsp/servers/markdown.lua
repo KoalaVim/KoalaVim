@@ -99,8 +99,8 @@ table.insert(M, {
 		},
 
 		float = {
-			width = 0.8, -- max fraction of editor width
-			height = 0.8, -- max fraction of editor height
+			width = 0.95, -- max fraction of editor width
+			height = 0.95, -- max fraction of editor height
 			border = 'rounded',
 			-- Merged over the computed nvim_open_win config (title, footer, zindex, row/col, width/height in cells, ...)
 			win_config = {},
@@ -113,7 +113,8 @@ table.insert(M, {
 			close = { 'q', '<Esc>' },
 		},
 
-		zoom_step = 1.5, -- zoom multiplier per step
+		zoom_step = 1.1, -- zoom multiplier per step
+		pan_step = 2,
 		max_zoom = 5.0,
 	},
 })
