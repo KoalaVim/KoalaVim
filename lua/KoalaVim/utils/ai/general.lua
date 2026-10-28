@@ -2,6 +2,15 @@ local M = {}
 
 local SUPPORTED_AGENTS = { cursor = true, claude = true, codex = true, pi = true }
 
+-- Sidekick tools that wrap another agent's CLI (tool name -> agent)
+local TOOL_AGENT = { cswap = 'claude' }
+
+---@param tool_name string
+---@return string
+local function tool_agent(tool_name)
+	return TOOL_AGENT[tool_name] or tool_name
+end
+
 local GET_PROMPT = {
 	claude = function()
 		return require('KoalaVim.utils.ai.claude').get_prompt
@@ -354,7 +363,7 @@ function M.send_to_sidekick(content, agent, clear_count, clear_override)
 	require('KoalaVim.utils.ai.history').append(content, agent)
 	require('sidekick.cli.state').with(function(state)
 		local termbufid = state.terminal.buf
-		local clear = clear_override or CLEAR_KEYS[state.tool.name] or { key = '\x03' }
+		local clear = clear_override or CLEAR_KEYS[tool_agent(state.tool.name)] or { key = '\x03' }
 		local chan = vim.bo[termbufid].channel
 
 		-- Clear whatever is currently in the prompt.
@@ -933,21 +942,21 @@ function M.get_attached_agent()
 	-- Check if the current buffer is a sidekick terminal
 	local tool = vim.b.sidekick_cli
 	if tool then
-		return tool.name
+		return tool_agent(tool.name)
 	end
 
 	-- Check if any window in the current tabpage is a sidekick terminal
 	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
 		tool = vim.w[win].sidekick_cli
 		if tool then
-			return tool.name
+			return tool_agent(tool.name)
 		end
 	end
 
 	-- Fallback: first attached session
 	local states = require('sidekick.cli.state').get({ attached = true })
 	if #states > 0 then
-		return states[1].tool.name
+		return tool_agent(states[1].tool.name)
 	end
 end
 

@@ -46,4 +46,25 @@ function M.get_prompt()
 	return prompt_lines
 end
 
+--- Sidekick tool config for `cswap`: claude run through cswap (claude account switcher)
+--- as `cswap run [account] -- <claude params>`. Reuses sidekick's claude tool config.
+---@return sidekick.cli.Config
+function M.cswap_tool()
+	local base = vim.api.nvim_get_runtime_file('sk/cli/claude.lua', false)[1]
+	local config = base and dofile(base) or {}
+
+	local conf = require('KoalaVim').conf
+	local account = conf and conf.ai and conf.ai.cswap and conf.ai.cswap.account
+
+	config.cmd = { 'cswap', 'run' }
+	-- No account: cswap picks the current dir's mapped account
+	if account and account ~= vim.NIL then
+		table.insert(config.cmd, tostring(account))
+	end
+	table.insert(config.cmd, '--')
+	config.is_proc = '\\<cswap\\>.*\\<run\\>'
+	config.url = 'https://github.com/realiti4/claude-swap'
+	return config
+end
+
 return M

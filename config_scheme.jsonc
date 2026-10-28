@@ -63,6 +63,16 @@
                         }
                     }
                 },
+                "cswap": {
+                    "description": "Settings for the `cswap` sidekick tool: claude run through cswap (claude account switcher) as `cswap run <account> -- <claude params>`",
+                    "type": "object",
+                    "properties": {
+                        "account": {
+                            "description": "Account to run as (slot number, email or alias). null uses the current dir's mapped account",
+                            "type": ["string", "null"]
+                        }
+                    }
+                },
                 "pi_prompt_anchor": {
                     "description": "Prompt anchor character for the pi harness (used to position the inline-float edit prompt)",
                     "type": ["string", "null"]

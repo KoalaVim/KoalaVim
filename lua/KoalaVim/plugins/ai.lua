@@ -9,6 +9,8 @@ local with_default_tool = ai.with_default_tool
 table.insert(M, {
 	'KoalaVim/sidekick.nvim', --fork
 	config = function(_, opts)
+		opts.cli.tools = opts.cli.tools or {}
+		opts.cli.tools.cswap = require('KoalaVim.utils.ai.claude').cswap_tool()
 		require('sidekick').setup(opts)
 		ai.setup_fast_typing_detection()
 		ai.setup_auto_resize()

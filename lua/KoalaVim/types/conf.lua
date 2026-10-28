@@ -12,6 +12,7 @@
 
 ---@class KoalaVim.Conf.ai
 ---@field auto_edit_prompt KoalaVim.Conf.ai.auto_edit_prompt
+---@field cswap KoalaVim.Conf.ai.cswap
 ---@field default_tool string?
 ---@field edit_prompt_layout string
 ---@field inline_float KoalaVim.Conf.ai.inline_float
@@ -22,6 +23,9 @@
 ---@field enabled boolean
 ---@field render_delay_ms number
 ---@field window_ms number
+
+---@class KoalaVim.Conf.ai.cswap
+---@field account string?
 
 ---@class KoalaVim.Conf.ai.inline_float
 ---@field min_height number
