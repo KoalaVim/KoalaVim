@@ -89,6 +89,7 @@ table.insert(M, {
 		},
 	},
 	opts = {
+		renderer = 'headless-chrome',
 		theme = 'dark',
 
 		inline = {
