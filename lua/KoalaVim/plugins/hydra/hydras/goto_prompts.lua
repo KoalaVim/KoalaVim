@@ -1,4 +1,10 @@
+-- Search register before the hydra started, restored on exit
+local orig_search = nil
+
 local function nav(search_char)
+	if orig_search == nil then
+		orig_search = vim.fn.getreg('/')
+	end
 	require('KoalaVim.utils.ai.general').nav_to_prompt(search_char)
 end
 
@@ -9,6 +15,12 @@ HYDRAS['Goto prompts'] = {
   _<Esc>_
 	]],
 	config = {
+		on_exit = function()
+			if orig_search ~= nil then
+				vim.fn.setreg('/', orig_search)
+				orig_search = nil
+			end
+		end,
 		hint = {
 			border = 'rounded',
 		},
