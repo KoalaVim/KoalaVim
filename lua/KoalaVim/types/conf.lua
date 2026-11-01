@@ -15,6 +15,7 @@
 ---@field cswap KoalaVim.Conf.ai.cswap
 ---@field default_tool string?
 ---@field edit_prompt_layout string
+---@field edit_prompt_vsplit_threshold number
 ---@field inline_float KoalaVim.Conf.ai.inline_float
 ---@field pi_prompt_anchor string?
 

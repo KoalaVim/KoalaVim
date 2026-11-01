@@ -47,6 +47,12 @@
                     "type": "string",
                     "enum": ["inline-float", "bottom-30%", "bottom-50%", "top-30%", "top-50%", "right-30%", "right-50%", "left-30%", "left-50%"]
                 },
+                "edit_prompt_vsplit_threshold": {
+                    "description": "<C-M-e> edit prompt: if the sidekick terminal is at least this % of the screen width, vsplit it in half; otherwise split it horizontally in half",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100
+                },
                 "inline_float": {
                     "description": "Settings for the inline-float edit prompt window",
                     "type": "object",

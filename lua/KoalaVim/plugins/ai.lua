@@ -121,6 +121,15 @@ table.insert(M, {
 			mode = { 'n', 't' },
 		},
 		{
+			'<C-M-e>',
+			function()
+				ai.trigger_edit_prompt({ layout = 'auto-split' })
+			end,
+			ft = 'sidekick_terminal',
+			desc = 'edit prompt in a split of half the sidekick terminal',
+			mode = { 'n', 't' },
+		},
+		{
 			'<C-g>',
 			function()
 				ai.trigger_edit_prompt()

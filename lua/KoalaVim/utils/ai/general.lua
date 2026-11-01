@@ -624,53 +624,67 @@ local function open_prompt_inline_float(bufid)
 	return win
 end
 
+local function find_sidekick_terminal_win()
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		if vim.api.nvim_win_is_valid(win) then
+			local buf = vim.api.nvim_win_get_buf(win)
+			if vim.bo[buf].filetype == 'sidekick_terminal' then
+				return win
+			end
+		end
+	end
+end
+
+-- layout direction -> nvim_open_win split side + the dimension it sizes
 local SPLIT_DIRECTIONS = {
-	bottom = {
-		split = 'below',
-		dim = 'height',
-		total = function()
-			return vim.o.lines
-		end,
-	},
-	top = {
-		split = 'above',
-		dim = 'height',
-		total = function()
-			return vim.o.lines
-		end,
-	},
-	right = {
-		split = 'right',
-		dim = 'width',
-		total = function()
-			return vim.o.columns
-		end,
-	},
-	left = {
-		split = 'left',
-		dim = 'width',
-		total = function()
-			return vim.o.columns
-		end,
-	},
+	bottom = { split = 'below', dim = 'height' },
+	top = { split = 'above', dim = 'height' },
+	right = { split = 'right', dim = 'width' },
+	left = { split = 'left', dim = 'width' },
 }
 
-local function open_prompt_split(bufid, layout)
+--- Open a `<dir>-<pct>%` split. With `win`, split that window and size
+--- relative to it; otherwise split the current window relative to the screen.
+---@param win? integer
+local function open_prompt_split(bufid, layout, win)
 	local dir, pct = layout:match('^(%a+)-(%d+)%%$')
 	local spec = dir and SPLIT_DIRECTIONS[dir]
 	if not spec then
 		return open_prompt_inline_float(bufid)
 	end
+	local total = win and vim.api['nvim_win_get_' .. spec.dim](win)
+		or (spec.dim == 'width' and vim.o.columns or vim.o.lines)
 	local conf = require('KoalaVim').conf
 	local float_conf = conf and conf.ai and conf.ai.inline_float or {}
 	local min = spec.dim == 'width' and (float_conf.min_width or 1) or (float_conf.min_height or 1)
 	return vim.api.nvim_open_win(bufid, true, {
 		split = spec.split,
-		[spec.dim] = math.max(min, math.ceil(spec.total() * tonumber(pct) / 100)),
+		win = win,
+		[spec.dim] = math.max(min, math.ceil(total * tonumber(pct) / 100)),
 	})
 end
 
+--- One-shot layout override consumed by the next `open_prompt_win` call.
+--- Set by `trigger_edit_prompt` so it survives the async `$EDITOR` round-trip.
+---@type string?
+local _layout_override = nil
+
+--- Halve the sidekick terminal: vsplit if it spans at least
+--- `ai.edit_prompt_vsplit_threshold`% of the screen width, else hsplit.
+local function open_prompt_auto_split(bufid)
+	local term_win = find_sidekick_terminal_win() or vim.api.nvim_get_current_win()
+	local threshold = require('KoalaVim').conf.ai.edit_prompt_vsplit_threshold
+	local wide = vim.api.nvim_win_get_width(term_win) * 100 >= vim.o.columns * threshold
+	return open_prompt_split(bufid, wide and 'right-50%' or 'bottom-50%', term_win)
+end
+
 local function open_prompt_win(bufid)
+	local override = _layout_override
+	_layout_override = nil
+	if override == 'auto-split' then
+		return open_prompt_auto_split(bufid)
+	end
+
 	local conf = require('KoalaVim').conf
 	local layout = conf and conf.ai and conf.ai.edit_prompt_layout
 	if not layout or layout == vim.NIL then
@@ -764,10 +778,12 @@ local function is_cursor_revise_plan_prompt()
 		)
 end
 
-function M.trigger_edit_prompt()
+---@param opts? { layout?: 'auto-split' } override `ai.edit_prompt_layout` for this prompt
+function M.trigger_edit_prompt(opts)
 	if M.focus_prompt_win() then
 		return
 	end
+	_layout_override = opts and opts.layout or nil
 	-- Cursor doesn't support $EDITOR in question mode
 	-- Claude's $EDITOR proxy doesn't work on win32 for unknown reason
 	if
@@ -837,17 +853,6 @@ local function signal_editor_pipe(pipe)
 		end
 	else
 		pcall(vim.system, { 'sh', '-c', 'echo done > ' .. vim.fn.shellescape(pipe) })
-	end
-end
-
-local function find_sidekick_terminal_win()
-	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-		if vim.api.nvim_win_is_valid(win) then
-			local buf = vim.api.nvim_win_get_buf(win)
-			if vim.bo[buf].filetype == 'sidekick_terminal' then
-				return win
-			end
-		end
 	end
 end
 
