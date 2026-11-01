@@ -66,6 +66,10 @@
                             "description": "Minimum height of the inline float window",
                             "type": "integer",
                             "minimum": 1
+                        },
+                        "line_numbers": {
+                            "description": "Show line numbers in the inline float. The float shifts left by the number column so the text stays aligned with the agent's prompt",
+                            "type": "boolean"
                         }
                     }
                 },

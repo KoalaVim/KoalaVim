@@ -606,7 +606,8 @@ local function open_prompt_inline_float(bufid)
 		vim.print('[inline-float] win_opts=' .. vim.inspect(win_opts))
 	end
 
-	local win = vim.api.nvim_open_win(bufid, true, win_opts)
+	-- Open unfocused so a cursor-relative float can still be moved relative to the TUI cursor
+	local win = vim.api.nvim_open_win(bufid, false, win_opts)
 
 	if debug then
 		vim.print(
@@ -627,6 +628,24 @@ local function open_prompt_inline_float(bufid)
 		'Normal:SidekickChat,NormalNC:SidekickChat,EndOfBuffer:EndOfBuffer,SignColumn:SidekickChat,FloatBorder:KoalaPromptBorder,LineNr:SidekickLineNr'
 	vim.wo[win].signcolumn = 'no'
 	vim.wo[win].winbar = ''
+	-- Hybrid numbers (absolute on the cursor line, relative elsewhere)
+	vim.wo[win].number = float_conf.line_numbers
+	vim.wo[win].relativenumber = float_conf.line_numbers
+	if not float_conf.line_numbers then
+		vim.wo[win].statuscolumn = ''
+	end
+
+	-- Shift left by the number column so the text stays where the TUI prompt text is.
+	-- Redraw first: a 'statuscolumn' (e.g. statuscol.nvim) only gets its width on redraw
+	vim.cmd.redraw()
+	local textoff = vim.fn.getwininfo(win)[1].textoff
+	if textoff > 0 then
+		win_opts.style = nil
+		win_opts.col = win_opts.col - textoff
+		win_opts.width = win_opts.width + textoff
+		vim.api.nvim_win_set_config(win, win_opts)
+	end
+	vim.api.nvim_set_current_win(win)
 	return win
 end
 

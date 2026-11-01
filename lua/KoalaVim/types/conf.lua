@@ -29,6 +29,7 @@
 ---@field account string?
 
 ---@class KoalaVim.Conf.ai.inline_float
+---@field line_numbers boolean
 ---@field min_height number
 ---@field min_width number
 
