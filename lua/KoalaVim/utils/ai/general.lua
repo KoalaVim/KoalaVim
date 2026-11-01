@@ -10,6 +10,7 @@ local TOOL_AGENT = { cswap = 'claude' }
 local function tool_agent(tool_name)
 	return TOOL_AGENT[tool_name] or tool_name
 end
+M.tool_agent = tool_agent
 
 local GET_PROMPT = {
 	claude = function()

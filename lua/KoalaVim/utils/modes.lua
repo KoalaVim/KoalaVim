@@ -53,6 +53,17 @@ local function ai_mode(args)
 			config.cli.tools.cswap = require('KoalaVim.utils.ai.claude').cswap_tool(table.remove(parts, 1))
 		end
 
+		-- On restart, resume the previous claude conversation unless args already pick a session
+		if vim.env.KOALA_RESTART and require('KoalaVim.utils.ai.general').tool_agent(tool) == 'claude' then
+			local resumes = { ['--continue'] = true, ['-c'] = true, ['--resume'] = true, ['-r'] = true }
+			local has_resume = vim.iter(parts):any(function(p)
+				return resumes[p] or vim.startswith(p, '--resume=')
+			end)
+			if not has_resume then
+				table.insert(parts, '--continue')
+			end
+		end
+
 		if not vim.tbl_isempty(parts) then
 			local config = require('sidekick.config')
 			local tool_config = config.cli.tools[tool]
