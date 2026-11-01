@@ -41,10 +41,11 @@ local function ai_mode(args)
 		end,
 	})
 
+	local general = require('KoalaVim.utils.ai.general')
 	local parts = vim.split(vim.trim(args or ''), '%s+', { trimempty = true })
 	local tool = table.remove(parts, 1)
 	if tool and tool ~= '' then
-		require('KoalaVim.utils.ai.general').set_default_tool(tool)
+		general.set_default_tool(tool)
 
 		-- cswap: first arg is the account (goes before `--`), the rest are claude params.
 		-- A leading flag means no account was given.
@@ -52,33 +53,36 @@ local function ai_mode(args)
 			local config = require('sidekick.config')
 			config.cli.tools.cswap = require('KoalaVim.utils.ai.claude').cswap_tool(table.remove(parts, 1))
 		end
+	else
+		-- No tool given: fall back to `ai.default_tool`
+		tool = general.get_default_tool()
+	end
 
-		-- On restart, resume the previous claude conversation unless args already pick a session
-		if vim.env.KOALA_RESTART and require('KoalaVim.utils.ai.general').tool_agent(tool) == 'claude' then
-			local resumes = { ['--continue'] = true, ['-c'] = true, ['--resume'] = true, ['-r'] = true }
-			local has_resume = vim.iter(parts):any(function(p)
-				return resumes[p] or vim.startswith(p, '--resume=')
-			end)
-			if not has_resume then
-				table.insert(parts, '--continue')
-			end
-		end
-
-		if not vim.tbl_isempty(parts) then
-			local config = require('sidekick.config')
-			local tool_config = config.cli.tools[tool]
-			if not tool_config then
-				health.error(('Unknown Sidekick tool `%s`'):format(tool))
-				return
-			end
-
-			local cmd = vim.deepcopy(config.get_tool(tool).cmd)
-			vim.list_extend(cmd, parts)
-			tool_config.cmd = cmd
+	-- On restart, resume the previous claude conversation unless args already pick a session
+	if vim.env.KOALA_RESTART and tool and general.tool_agent(tool) == 'claude' then
+		local resumes = { ['--continue'] = true, ['-c'] = true, ['--resume'] = true, ['-r'] = true }
+		local has_resume = vim.iter(parts):any(function(p)
+			return resumes[p] or vim.startswith(p, '--resume=')
+		end)
+		if not has_resume then
+			table.insert(parts, '--continue')
 		end
 	end
 
-	require('KoalaVim.utils.ai.general').with_default_tool(require('sidekick.cli').show)
+	if tool and not vim.tbl_isempty(parts) then
+		local config = require('sidekick.config')
+		local tool_config = config.cli.tools[tool]
+		if not tool_config then
+			health.error(('Unknown Sidekick tool `%s`'):format(tool))
+			return
+		end
+
+		local cmd = vim.deepcopy(config.get_tool(tool).cmd)
+		vim.list_extend(cmd, parts)
+		tool_config.cmd = cmd
+	end
+
+	general.with_default_tool(require('sidekick.cli').show)
 end
 
 M._modes = {
