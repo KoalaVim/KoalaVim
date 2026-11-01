@@ -318,14 +318,14 @@ for _, opt in ipairs(COPY_WIN_OPTS) do
 end
 DEFAULT_WIN_OPTS['winhighlight'] = ''
 
+--- Options of the first regular file window in the tab. Terminals, a frozen
+--- terminal's scratch snapshot, dashboards etc. (buftype ~= '') are skipped.
 local function get_ref_win_opts()
-	local skip_ft = { sidekick_terminal = true, alpha = true }
 	local tab = vim.api.nvim_get_current_tabpage()
 	for _, w in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
 		local win_config = vim.api.nvim_win_get_config(w)
 		if win_config.relative == '' then
-			local ft = vim.bo[vim.api.nvim_win_get_buf(w)].filetype
-			if not skip_ft[ft] then
+			if vim.bo[vim.api.nvim_win_get_buf(w)].buftype == '' then
 				local opts = {}
 				for _, opt in ipairs(COPY_WIN_OPTS) do
 					opts[opt] = vim.wo[w][opt]
