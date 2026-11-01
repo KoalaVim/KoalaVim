@@ -46,6 +46,13 @@ local function ai_mode(args)
 	if tool and tool ~= '' then
 		require('KoalaVim.utils.ai.general').set_default_tool(tool)
 
+		-- cswap: first arg is the account (goes before `--`), the rest are claude params.
+		-- A leading flag means no account was given.
+		if tool == 'cswap' and parts[1] and not vim.startswith(parts[1], '-') then
+			local config = require('sidekick.config')
+			config.cli.tools.cswap = require('KoalaVim.utils.ai.claude').cswap_tool(table.remove(parts, 1))
+		end
+
 		if not vim.tbl_isempty(parts) then
 			local config = require('sidekick.config')
 			local tool_config = config.cli.tools[tool]
