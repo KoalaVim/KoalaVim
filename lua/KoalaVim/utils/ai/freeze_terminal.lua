@@ -3,9 +3,12 @@ local M = {}
 ---@type { win: integer, term_buf: integer, scratch_buf: integer }?
 local frozen = nil
 
---- Capture the visible screen region of a window into a read-only scratch
---- buffer with extmarks that reproduce the terminal colors. Uses the internal
---- nvim__inspect_cell API for accurate RGB extraction.
+--- Snapshot the terminal into a read-only scratch buffer. The full scrollback
+--- text is copied from the terminal buffer (cheap: a single nvim_buf_get_lines),
+--- while the visible screen region is captured cell-by-cell with extmarks that
+--- reproduce the terminal colors (uses the internal nvim__inspect_cell API for
+--- accurate RGB extraction). Terminal colors aren't exposed for off-screen lines,
+--- so scrollback above/below the visible region is plain text.
 ---@param win integer
 ---@param term_buf integer
 function M.freeze(win, term_buf)
@@ -15,7 +18,12 @@ function M.freeze(win, term_buf)
 
 	local pos = vim.api.nvim_win_get_position(win)
 	local width = vim.api.nvim_win_get_width(win)
-	local height = vim.api.nvim_win_get_height(win)
+	local topline, botline = unpack(vim.api.nvim_win_call(win, function()
+		return { vim.fn.line('w0'), vim.fn.line('w$') }
+	end))
+	-- Only screen rows backed by buffer lines (skip end-of-buffer filler rows)
+	local height = math.min(vim.api.nvim_win_get_height(win), botline - topline + 1)
+	local row_offset = topline - 1 -- buffer row (0-based) of screen row 0
 	local sr = pos[1] + 1 -- screenstring/screenattr are 1-based
 	local sc = pos[2] + 1
 
@@ -43,7 +51,7 @@ function M.freeze(win, term_buf)
 			local attr = vim.fn.screenattr(sr + r, sc + c)
 			if attr ~= cur_attr then
 				if cur_attr and cur_attr ~= 0 and hl_cache[cur_attr] then
-					hl_runs[#hl_runs + 1] = { r, run_start_byte, byte_pos[c], hl_cache[cur_attr] }
+					hl_runs[#hl_runs + 1] = { row_offset + r, run_start_byte, byte_pos[c], hl_cache[cur_attr] }
 				end
 				if attr ~= 0 and not hl_cache[attr] then
 					local ok, cell = pcall(vim.api.nvim__inspect_cell, 1, pos[1] + r, pos[2] + c)
@@ -85,14 +93,21 @@ function M.freeze(win, term_buf)
 		end
 		byte_pos[width] = offset
 		if cur_attr and cur_attr ~= 0 and hl_cache[cur_attr] then
-			hl_runs[#hl_runs + 1] = { r, run_start_byte, byte_pos[width], hl_cache[cur_attr] }
+			hl_runs[#hl_runs + 1] = { row_offset + r, run_start_byte, byte_pos[width], hl_cache[cur_attr] }
 		end
 
 		lines[#lines + 1] = table.concat(parts)
 	end
 
+	-- Splice the colored screen capture between the plain-text scrollback
+	-- above and any lines below the window (if the user had scrolled up).
+	local above = vim.api.nvim_buf_get_lines(term_buf, 0, row_offset, false)
+	local below = vim.api.nvim_buf_get_lines(term_buf, row_offset + height, -1, false)
+
+	local all = vim.list_extend(vim.list_extend(above, lines), below)
+
 	local scratch = vim.api.nvim_create_buf(false, true)
-	vim.api.nvim_buf_set_lines(scratch, 0, -1, false, lines)
+	vim.api.nvim_buf_set_lines(scratch, 0, -1, false, all)
 
 	for _, run in ipairs(hl_runs) do
 		pcall(vim.api.nvim_buf_set_extmark, scratch, ns, run[1], run[2], {
@@ -103,10 +118,11 @@ function M.freeze(win, term_buf)
 
 	vim.bo[scratch].modifiable = false
 	vim.api.nvim_win_set_buf(win, scratch)
-	local last_content = 1
+	-- Land on the last non-blank line of the previously visible region
+	local last_content = row_offset + 1
 	for i, line in ipairs(lines) do
 		if line:match('%S') then
-			last_content = i
+			last_content = row_offset + i
 		end
 	end
 	vim.api.nvim_win_set_cursor(win, { last_content, 0 })
