@@ -90,6 +90,7 @@ table.insert(M, {
 	},
 	opts = {
 		renderer = 'headless-chrome',
+		log = false, -- true: sizing log at stdpath('log')/mermaid-viewer.log (:MermaidLog)
 		theme = 'dark',
 
 		inline = {
@@ -103,6 +104,7 @@ table.insert(M, {
 			width = 0.99, -- max fraction of editor width
 			height = 0.99, -- max fraction of editor height
 			border = 'rounded',
+			fit = 'width',
 			-- Merged over the computed nvim_open_win config (title, footer, zindex, row/col, width/height in cells, ...)
 			win_config = {},
 		},
