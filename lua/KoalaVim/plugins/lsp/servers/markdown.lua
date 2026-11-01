@@ -94,22 +94,22 @@ table.insert(M, {
 
 		inline = {
 			collapse = true, -- collapse each block once its diagram has rendered
-			scale = 1.5, -- diagram size relative to the editor font (1.0 = text about buffer-text size)
+			scale = 1.0, -- diagram size relative to the editor font (1.0 = text about buffer-text size)
 			max_width = 1.0, -- <= 1: fraction of the window text width, > 1: cells
-			max_height = 0.85, -- <= 1: fraction of the window height, > 1: rows
+			max_height = 0, -- 0: no limit (fill the width, scroll past tall diagrams), <= 1: fraction of the window height, > 1: rows
 		},
 
 		float = {
-			width = 0.95, -- max fraction of editor width
-			height = 0.95, -- max fraction of editor height
+			width = 0.99, -- max fraction of editor width
+			height = 0.99, -- max fraction of editor height
 			border = 'rounded',
 			-- Merged over the computed nvim_open_win config (title, footer, zindex, row/col, width/height in cells, ...)
 			win_config = {},
 		},
 
 		keys = {
-			zoom_in = 'i',
-			zoom_out = 'o',
+			zoom_in = 'o',
+			zoom_out = 'i',
 			zoom_reset = '0',
 			close = { 'q', '<Esc>' },
 		},
