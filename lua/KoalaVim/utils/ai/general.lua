@@ -507,6 +507,14 @@ local function capture_prompt_anchor(agent)
 	end
 end
 
+--- Inline float fills its anchor window from (row, col) to the bottom-right.
+local function inline_float_size(anchor_win, row, col)
+	local float_conf = require('KoalaVim').conf.ai.inline_float
+	local raw_width = vim.api.nvim_win_get_width(anchor_win) - col - 2
+	local raw_height = vim.api.nvim_win_get_height(anchor_win) - row - 2
+	return math.max(float_conf.min_width, raw_width), math.max(float_conf.min_height, raw_height), raw_width, raw_height
+end
+
 local function open_prompt_inline_float(bufid)
 	local anchor = _prompt_anchor
 	_prompt_anchor = nil
@@ -525,12 +533,10 @@ local function open_prompt_inline_float(bufid)
 	if anchor and vim.api.nvim_win_is_valid(anchor.win) then
 		local win_width = vim.api.nvim_win_get_width(anchor.win)
 		local win_height = vim.api.nvim_win_get_height(anchor.win)
-		local raw_width = win_width - anchor.col - 2
-		local raw_height = win_height - anchor.row - 2
+		local raw_width, raw_height
+		win_opts.width, win_opts.height, raw_width, raw_height = inline_float_size(anchor.win, anchor.row, anchor.col)
 		win_opts.relative = 'win'
 		win_opts.win = anchor.win
-		win_opts.width = math.max(min_width, raw_width)
-		win_opts.height = math.max(min_height, raw_height)
 		win_opts.row = anchor.row
 		win_opts.col = anchor.col
 		if debug then
@@ -624,13 +630,12 @@ local function open_prompt_inline_float(bufid)
 	return win
 end
 
+--- Match by sidekick's window var, not buffer filetype: a frozen terminal
+--- (claude `$EDITOR` flow) shows a scratch snapshot buffer in the same window.
 local function find_sidekick_terminal_win()
 	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-		if vim.api.nvim_win_is_valid(win) then
-			local buf = vim.api.nvim_win_get_buf(win)
-			if vim.bo[buf].filetype == 'sidekick_terminal' then
-				return win
-			end
+		if vim.w[win].sidekick_cli and vim.api.nvim_win_get_config(win).relative == '' then
+			return win
 		end
 	end
 end
@@ -643,25 +648,50 @@ local SPLIT_DIRECTIONS = {
 	left = { split = 'left', dim = 'width' },
 }
 
+--- Parse a `<dir>-<pct>%` layout into its SPLIT_DIRECTIONS spec and percent.
+local function parse_split_layout(layout)
+	local dir, pct = layout:match('^(%a+)-(%d+)%%$')
+	return dir and SPLIT_DIRECTIONS[dir], tonumber(pct)
+end
+
+--- Size of a split: exactly `pct` of `win`'s dimension, or of the screen
+--- (clamped to the inline_float minimum) without `win`.
+local function split_size(spec, pct, win)
+	if win then
+		return math.ceil(vim.api['nvim_win_get_' .. spec.dim](win) * pct / 100)
+	end
+	local float_conf = require('KoalaVim').conf.ai.inline_float
+	local screen = spec.dim == 'width' and vim.o.columns or vim.o.lines
+	local min = spec.dim == 'width' and float_conf.min_width or float_conf.min_height
+	return math.max(min, math.ceil(screen * pct / 100))
+end
+
 --- Open a `<dir>-<pct>%` split. With `win`, split that window and size
 --- relative to it; otherwise split the current window relative to the screen.
 ---@param win? integer
 local function open_prompt_split(bufid, layout, win)
-	local dir, pct = layout:match('^(%a+)-(%d+)%%$')
-	local spec = dir and SPLIT_DIRECTIONS[dir]
+	local spec, pct = parse_split_layout(layout)
 	if not spec then
 		return open_prompt_inline_float(bufid)
 	end
-	local total = win and vim.api['nvim_win_get_' .. spec.dim](win)
-		or (spec.dim == 'width' and vim.o.columns or vim.o.lines)
-	local conf = require('KoalaVim').conf
-	local float_conf = conf and conf.ai and conf.ai.inline_float or {}
-	local min = spec.dim == 'width' and (float_conf.min_width or 1) or (float_conf.min_height or 1)
-	return vim.api.nvim_open_win(bufid, true, {
+	-- Sidekick pins its panel (winfixwidth/height); unpin while splitting so the
+	-- prompt is carved out of the terminal instead of squashing other windows
+	local fix_opt = 'winfix' .. spec.dim
+	local fixed = win and vim.wo[win][fix_opt]
+	if fixed then
+		vim.wo[win][fix_opt] = false
+	end
+	local prompt_win = vim.api.nvim_open_win(bufid, true, {
 		split = spec.split,
 		win = win,
-		[spec.dim] = math.max(min, math.ceil(total * tonumber(pct) / 100)),
+		[spec.dim] = split_size(spec, pct, win),
 	})
+	if fixed then
+		vim.wo[win][fix_opt] = true
+	end
+	-- Remembered so `resize_prompt_win` can re-apply it on VimResized
+	vim.w[prompt_win].koala_prompt_split = { layout = layout, term_win = win }
+	return prompt_win
 end
 
 --- One-shot layout override consumed by the next `open_prompt_win` call.
@@ -1149,6 +1179,47 @@ function M.setup_fast_typing_detection()
 	end)
 end
 
+--- Re-apply the prompt window's layout after the sidekick terminal / screen resized.
+--- Splits keep their direction; cursor-anchored floats are left alone.
+local function resize_prompt_win()
+	local win = find_prompt_win()
+	if not win then
+		return
+	end
+	local cfg = vim.api.nvim_win_get_config(win)
+	if cfg.relative == 'win' then
+		local width, height = inline_float_size(cfg.win, cfg.row, cfg.col)
+		pcall(vim.api.nvim_win_set_config, win, {
+			relative = 'win',
+			win = cfg.win,
+			row = cfg.row,
+			col = cfg.col,
+			width = width,
+			height = height,
+		})
+		return
+	end
+	local saved = vim.w[win].koala_prompt_split
+	if cfg.relative ~= '' or not saved then
+		return
+	end
+	-- The exact window it was split from: it may be frozen or lack w:sidekick_cli
+	local term_win = saved.term_win
+	if term_win and not vim.api.nvim_win_is_valid(term_win) then
+		return
+	end
+	local spec, pct = parse_split_layout(saved.layout)
+	local get_dim, set_dim = vim.api['nvim_win_get_' .. spec.dim], vim.api['nvim_win_set_' .. spec.dim]
+	if not term_win then
+		pcall(set_dim, win, split_size(spec, pct, nil))
+		return
+	end
+	-- Re-split the terminal + prompt panel by the rule it opened with. Sizing the
+	-- terminal only trades space with the prompt (right/below it), never other windows.
+	local panel = get_dim(term_win) + get_dim(win) + 1
+	pcall(set_dim, term_win, panel - math.ceil(panel * pct / 100) - 1)
+end
+
 --- Keep sidekick split panels at the same screen proportion when nvim is resized.
 --- Sidekick sets winfixwidth/winfixheight, so without this the panel keeps its absolute size.
 function M.setup_auto_resize()
@@ -1174,6 +1245,7 @@ function M.setup_auto_resize()
 						end
 					end
 				end
+				resize_prompt_win()
 			end)
 		end,
 	})
