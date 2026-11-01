@@ -17,7 +17,12 @@ for name, conf in pairs(HYDRAS) do
 	end
 	if conf.custom_bodies then
 		for _, body in ipairs(conf.custom_bodies) do
-			table.insert(hydra_keys, body)
+			if body.ft then
+				-- Buffer-local bodies are mapped on FileType, so lazy load by ft
+				table.insert(hydra_fts, body.ft)
+			else
+				table.insert(hydra_keys, body)
+			end
 		end
 	end
 end
@@ -68,9 +73,20 @@ table.insert(M, {
 			-- Setup custom bodies if needed
 			if conf.custom_bodies then
 				for _, body in ipairs(conf.custom_bodies) do
-					require('KoalaVim.utils.map').map(body.mode, body[1], function()
+					local cb = function()
 						body.callback(curr_hydra)
-					end, body.desc)
+					end
+					if body.ft then
+						vim.api.nvim_create_autocmd('FileType', {
+							group = hydra_autocmds,
+							pattern = body.ft,
+							callback = function(events)
+								require('KoalaVim.utils.map').map_buffer(events.buf, body.mode, body[1], cb, body.desc)
+							end,
+						})
+					else
+						require('KoalaVim.utils.map').map(body.mode, body[1], cb, body.desc)
+					end
 				end
 			end
 		end

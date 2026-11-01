@@ -168,24 +168,6 @@ table.insert(M, {
 			mode = { 'n', 't' },
 		},
 		{
-			'gj',
-			function()
-				ai.nav_to_prompt('n')
-			end,
-			ft = 'sidekick_terminal',
-			desc = 'go to next prompt',
-			mode = 'n',
-		},
-		{
-			'gk',
-			function()
-				ai.nav_to_prompt('N')
-			end,
-			ft = 'sidekick_terminal',
-			desc = 'go to next prompt',
-			mode = 'n',
-		},
-		{
 			'<M-r>',
 			function()
 				ai.toggle_max()
