@@ -71,9 +71,9 @@ table.insert(M, {
 	keys = {
 		{
 			'<leader>um',
-			'<cmd>MermaidToggle<cr>',
+			'<cmd>MermaidInline<cr>',
 			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
-			desc = 'Mermaid Viewer',
+			desc = 'Toggle inline mermaid diagrams',
 		},
 		{
 			'K',
@@ -87,18 +87,6 @@ table.insert(M, {
 			end,
 			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
 			desc = 'Mermaid diagram in float, else hover',
-		},
-		{
-			'<leader>ui',
-			'<cmd>MermaidInline<cr>',
-			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
-			desc = 'Toggle inline mermaid diagrams',
-		},
-		{
-			'<leader>uc',
-			'<cmd>MermaidCollapse<cr>',
-			ft = 'markdown',
-			desc = 'Collapse mermaid block',
 		},
 	},
 	opts = {
