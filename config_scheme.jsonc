@@ -75,6 +75,11 @@
                         "line_numbers": {
                             "description": "Show line numbers in the inline float. The float shifts left by the number column so the text stays aligned with the agent's prompt",
                             "type": "boolean"
+                        },
+                        "leave_layout": {
+                            "description": "When focus leaves the inline float for a non-floating window, dock it as this split of the sidekick terminal.\n\tnone: keep it floating",
+                            "type": "string",
+                            "enum": ["none", "bottom-30%", "bottom-50%", "top-30%", "top-50%", "right-30%", "right-50%", "left-30%", "left-50%"]
                         }
                     }
                 },

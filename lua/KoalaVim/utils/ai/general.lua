@@ -714,6 +714,56 @@ local function open_prompt_split(bufid, layout, win)
 	return prompt_win
 end
 
+--- Dock the inline float as an `ai.inline_float.leave_layout` split of the sidekick terminal
+--- once focus moves to a non-floating window (pickers opened from the prompt are floats).
+local function dock_float_on_leave(win, bufid)
+	local layout = require('KoalaVim').conf.ai.inline_float.leave_layout
+	local spec, pct = parse_split_layout(layout or 'none')
+	if not spec then
+		return
+	end
+	local au
+	au = vim.api.nvim_create_autocmd('WinLeave', {
+		buffer = bufid,
+		callback = function()
+			-- Closing the float also fires WinLeave; by the scheduled check it's gone
+			vim.schedule(function()
+				if not vim.api.nvim_win_is_valid(win) or vim.api.nvim_win_get_config(win).relative == '' then
+					pcall(vim.api.nvim_del_autocmd, au)
+					return
+				end
+				local cur = vim.api.nvim_get_current_win()
+				if cur == win or vim.api.nvim_win_get_config(cur).relative ~= '' then
+					return
+				end
+
+				local cfg = vim.api.nvim_win_get_config(win)
+				local term_win = cfg.relative == 'win' and cfg.win or find_sidekick_terminal_win()
+				if term_win and not vim.api.nvim_win_is_valid(term_win) then
+					term_win = nil
+				end
+				local fix_opt = 'winfix' .. spec.dim
+				local fixed = term_win and vim.wo[term_win][fix_opt]
+				if fixed then
+					vim.wo[term_win][fix_opt] = false
+				end
+				local ok = pcall(vim.api.nvim_win_set_config, win, {
+					split = spec.split,
+					win = term_win or -1,
+					[spec.dim] = split_size(spec, pct, term_win),
+				})
+				if fixed then
+					vim.wo[term_win][fix_opt] = true
+				end
+				if ok then
+					vim.w[win].koala_prompt_split = { layout = layout, term_win = term_win }
+					pcall(vim.api.nvim_del_autocmd, au)
+				end
+			end)
+		end,
+	})
+end
+
 --- One-shot layout override consumed by the next `open_prompt_win` call.
 --- Set by `trigger_edit_prompt` so it survives the async `$EDITOR` round-trip.
 ---@type string?
@@ -747,7 +797,9 @@ local function open_prompt_win(bufid)
 		layout = 'inline-float'
 	end
 	if layout == 'inline-float' then
-		return open_prompt_inline_float(bufid)
+		local win = open_prompt_inline_float(bufid)
+		dock_float_on_leave(win, bufid)
+		return win
 	end
 	return open_prompt_split(bufid, layout)
 end
