@@ -968,13 +968,43 @@ local function signal_editor_pipe(pipe)
 	end
 end
 
+--- Focus a herdr pane by id via herdr's control socket. No-op outside herdr.
+---@param pane_id? string
+local function herdr_focus_pane(pane_id)
+	local socket = vim.env.HERDR_SOCKET_PATH
+	if not pane_id or pane_id == '' or not socket or socket == '' then
+		return
+	end
+	local pipe = vim.uv.new_pipe(false)
+	if not pipe then
+		return
+	end
+	pipe:connect(socket, function(err)
+		if err then
+			return pipe:close()
+		end
+		local req = { id = 'koala.editor', method = 'pane.focus', params = { pane_id = pane_id } }
+		pipe:write(vim.json.encode(req) .. '\n', function()
+			pipe:close()
+		end)
+	end)
+end
+
 --- Open a CLI `$EDITOR` temp file in a split and signal `pipe` (FIFO) when
 --- the user closes the buffer. Called via `v:lua` from the editor proxy.
 --- Returns immediately so the proxy can attach its FIFO reader before any write.
 ---@param file string
 ---@param pipe string
+---@param caller_pane? string herdr pane the `$EDITOR` call came from
 ---@return string
-function M.open_editor_file(file, pipe)
+function M.open_editor_file(file, pipe, caller_pane)
+	-- An agent in another herdr pane keeps focus there; move it to Neovim's pane and back on close
+	local agent_pane = caller_pane and caller_pane ~= '' and caller_pane ~= vim.env.HERDR_PANE_ID and caller_pane
+		or nil
+	if agent_pane then
+		herdr_focus_pane(vim.env.HERDR_PANE_ID)
+	end
+
 	local origin_win = vim.api.nvim_get_current_win()
 	local origin_mode = vim.fn.mode()
 	editor_file_sessions[pipe] = { origin_win = origin_win, origin_mode = origin_mode }
@@ -1013,6 +1043,11 @@ function M.open_editor_file(file, pipe)
 
 				signal_editor_pipe(pipe)
 				freeze_mod.unfreeze()
+
+				if agent_pane then
+					herdr_focus_pane(agent_pane)
+					return
+				end
 
 				local term_win = find_sidekick_terminal_win()
 				if not term_win or not vim.api.nvim_win_is_valid(term_win) then

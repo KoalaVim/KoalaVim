@@ -26,7 +26,8 @@ vim_quote() {
 	printf "'%s'" "$s"
 }
 
-expr="v:lua.require('KoalaVim.utils.ai.general').open_editor_file($(vim_quote "$FILE"), $(vim_quote "$PIPE"))"
+# HERDR_PANE_ID is the caller's pane, so Neovim can focus itself and hand focus back on close.
+expr="v:lua.require('KoalaVim.utils.ai.general').open_editor_file($(vim_quote "$FILE"), $(vim_quote "$PIPE"), $(vim_quote "${HERDR_PANE_ID:-}"))"
 
 if ! remote_out=$(nvim --server "$NVIM" --remote-expr "$expr" 2>&1); then
 	printf 'sidekick-editor-proxy: nvim --remote-expr failed (NVIM=%s): %s\n' "$NVIM" "$remote_out" >&2
