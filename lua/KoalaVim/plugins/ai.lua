@@ -133,15 +133,6 @@ table.insert(M, {
 			mode = { 'n', 't' },
 		},
 		{
-			'<C-g>',
-			function()
-				ai.trigger_edit_prompt()
-			end,
-			ft = 'sidekick_terminal',
-			desc = 'native CLI editor',
-			mode = 't',
-		},
-		{
 			'<C-j>',
 			function()
 				if not ai.focus_prompt_win() then
