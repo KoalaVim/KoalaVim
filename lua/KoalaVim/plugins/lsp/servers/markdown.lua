@@ -88,6 +88,20 @@ table.insert(M, {
 			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
 			desc = 'Mermaid diagram in float, else hover',
 		},
+		{
+			']d',
+			'<Plug>(mermaid-viewer-next)',
+			mode = { 'n', 'x', 'o' },
+			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
+			desc = 'Next mermaid diagram',
+		},
+		{
+			'[d',
+			'<Plug>(mermaid-viewer-prev)',
+			mode = { 'n', 'x', 'o' },
+			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
+			desc = 'Previous mermaid diagram',
+		},
 	},
 	opts = {
 		renderer = 'headless-chrome',

@@ -110,7 +110,6 @@ table.insert(M, {
 				goto_next_start = {
 					[']f'] = '@function.outer',
 					[']]'] = '@class.outer',
-					[']b'] = '@block.outer',
 					[']a'] = '@parameter.inner',
 					[']k'] = '@call.outer',
 				},
@@ -123,7 +122,6 @@ table.insert(M, {
 				goto_previous_start = {
 					['[f'] = '@function.outer',
 					['[['] = '@class.outer',
-					['[b'] = '@block.outer',
 					['[a'] = '@parameter.inner',
 					['[k'] = '@call.inner',
 				},
