@@ -18,6 +18,7 @@
 ---@field edit_prompt_split string
 ---@field edit_prompt_vsplit_threshold number
 ---@field inline_float KoalaVim.Conf.ai.inline_float
+---@field mux_split boolean
 ---@field pi_prompt_anchor string?
 
 ---@class KoalaVim.Conf.ai.auto_edit_prompt

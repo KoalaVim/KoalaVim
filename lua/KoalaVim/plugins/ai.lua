@@ -11,6 +11,9 @@ table.insert(M, {
 	config = function(_, opts)
 		opts.cli.tools = opts.cli.tools or {}
 		opts.cli.tools.cswap = require('KoalaVim.utils.ai.claude').cswap_tool()
+		if require('KoalaVim').conf.ai.mux_split then
+			opts.cli.mux = vim.tbl_extend('force', opts.cli.mux or {}, { enabled = true, create = 'split' })
+		end
 		require('sidekick').setup(opts)
 		ai.setup_fast_typing_detection()
 		ai.setup_auto_resize()

@@ -42,6 +42,10 @@
                         "null"
                     ]
                 },
+                "mux_split": {
+                    "description": "Open sidekick agents in a terminal multiplexer split (herdr/tmux) instead of a Neovim split. Sets sidekick's cli.mux.enabled = true and cli.mux.create = 'split'",
+                    "type": "boolean"
+                },
                 "edit_prompt_layout": {
                     "description": "Window layout for the edit-prompt buffer.\n\tinline-float: float in the agent TUI (default)",
                     "type": "string",
