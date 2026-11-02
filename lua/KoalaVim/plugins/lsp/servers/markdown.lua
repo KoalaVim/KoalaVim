@@ -63,6 +63,79 @@ table.insert(M, {
 	end,
 })
 
+-- Mermaid diagrams inline (markdown, .mmd, sidekick agent terminals) and in a zoomable float, via kitty graphics placeholders
+table.insert(M, {
+	'KoalaVim/mermaid-viewer.nvim',
+	cmd = { 'MermaidView', 'MermaidClose', 'MermaidToggle', 'MermaidInline', 'MermaidCollapse' },
+	ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
+	keys = {
+		{
+			'<leader>um',
+			'<cmd>MermaidInline<cr>',
+			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
+			desc = 'Toggle inline mermaid diagrams',
+		},
+		{
+			'K',
+			function()
+				local mv = require('mermaid-viewer')
+				if mv.has_diagram() then
+					mv.view()
+				else
+					vim.lsp.buf.hover() -- the global K
+				end
+			end,
+			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
+			desc = 'Mermaid diagram in float, else hover',
+		},
+		{
+			']d',
+			'<Plug>(mermaid-viewer-next)',
+			mode = { 'n', 'x', 'o' },
+			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
+			desc = 'Next mermaid diagram',
+		},
+		{
+			'[d',
+			'<Plug>(mermaid-viewer-prev)',
+			mode = { 'n', 'x', 'o' },
+			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
+			desc = 'Previous mermaid diagram',
+		},
+	},
+	opts = {
+		renderer = 'headless-chrome',
+		log = false, -- true: sizing log at stdpath('log')/mermaid-viewer.log (:MermaidLog)
+		theme = 'dark',
+
+		inline = {
+			collapse = true, -- collapse each block once its diagram has rendered
+			scale = 1.0, -- diagram size relative to the editor font (1.0 = text about buffer-text size)
+			max_width = 1.0, -- <= 1: fraction of the window text width, > 1: cells
+			max_height = 0, -- 0: no limit (fill the width, scroll past tall diagrams), <= 1: fraction of the window height, > 1: rows
+		},
+
+		float = {
+			width = 0.95, -- max fraction of editor width
+			height = 0.95, -- max fraction of editor height
+			border = 'rounded',
+			fit = 'width',
+			win_config = {},
+		},
+
+		keys = {
+			zoom_in = 'o',
+			zoom_out = 'i',
+			zoom_reset = '0',
+			close = { 'q', '<Esc>' },
+		},
+
+		zoom_step = 1.1, -- zoom multiplier per step
+		pan_step = 2,
+		max_zoom = 5.0,
+	},
+})
+
 -- Render markdown inside the buffer (headings, code blocks, tables, etc.)
 table.insert(M, {
 	'MeanderingProgrammer/render-markdown.nvim',

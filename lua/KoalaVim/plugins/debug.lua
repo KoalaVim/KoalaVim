@@ -299,14 +299,14 @@ table.insert(M, {
 	'ofirgall/goto-breakpoints.nvim',
 	keys = {
 		{
-			']d',
+			']b',
 			function()
 				require('goto-breakpoints').next()
 			end,
 			desc = 'Goto next breakpoint',
 		},
 		{
-			'[d',
+			'[b',
 			function()
 				require('goto-breakpoints').prev()
 			end,

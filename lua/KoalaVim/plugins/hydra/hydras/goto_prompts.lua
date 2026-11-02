@@ -27,8 +27,18 @@ HYDRAS['Goto prompts'] = {
 	},
 	mode = 'n',
 	heads = {
-		{ 'j', function() nav('n') end },
-		{ 'k', function() nav('N') end },
+		{
+			'j',
+			function()
+				nav('n')
+			end,
+		},
+		{
+			'k',
+			function()
+				nav('N')
+			end,
+		},
 		--
 		{ '<Esc>', nil, { exit = true } },
 	},
