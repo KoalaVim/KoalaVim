@@ -14,6 +14,18 @@ table.insert(M, {
 		if require('KoalaVim').conf.ai.mux_split then
 			opts.cli.mux = vim.tbl_extend('force', opts.cli.mux or {}, { enabled = true, create = 'split' })
 		end
+		-- Claude clears its screen for terminal editors but keeps it on screen for GUI ones,
+		-- detected by a `gedit` substring in the editor's basename.
+		-- Not on win32: claude edits prompts without $EDITOR there, and the proxy is a bash symlink.
+		local proxy = vim.fn.has('win32') == 0
+			and vim.api.nvim_get_runtime_file('bin/sidekick-editor-proxy-gedit', false)[1]
+		if proxy then
+			for _, name in ipairs({ 'claude', 'cswap' }) do
+				local tool = opts.cli.tools[name] or {}
+				tool.env = vim.tbl_extend('force', tool.env or {}, { EDITOR = proxy, VISUAL = proxy })
+				opts.cli.tools[name] = tool
+			end
+		end
 		require('sidekick').setup(opts)
 		ai.setup_fast_typing_detection()
 		ai.setup_auto_resize()
@@ -138,7 +150,7 @@ table.insert(M, {
 				ai.trigger_edit_prompt()
 			end,
 			ft = 'sidekick_terminal',
-			desc = 'native CLI editor (freeze for claude)',
+			desc = 'native CLI editor',
 			mode = 't',
 		},
 		{

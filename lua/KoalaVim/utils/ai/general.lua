@@ -319,8 +319,8 @@ for _, opt in ipairs(COPY_WIN_OPTS) do
 end
 DEFAULT_WIN_OPTS['winhighlight'] = ''
 
---- Options of the first regular file window in the tab. Terminals, a frozen
---- terminal's scratch snapshot, dashboards etc. (buftype ~= '') are skipped.
+--- Options of the first regular file window in the tab. Terminals, dashboards
+--- etc. (buftype ~= '') are skipped.
 local function get_ref_win_opts()
 	local tab = vim.api.nvim_get_current_tabpage()
 	for _, w in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
@@ -650,8 +650,8 @@ local function open_prompt_inline_float(bufid)
 	return win
 end
 
---- Match by sidekick's window var, not buffer filetype: a frozen terminal
---- (claude `$EDITOR` flow) shows a scratch snapshot buffer in the same window.
+--- Match by sidekick's window var, not buffer filetype, so any buffer shown in the
+--- sidekick window still counts.
 local function find_sidekick_terminal_win()
 	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
 		if vim.w[win].sidekick_cli and vim.api.nvim_win_get_config(win).relative == '' then
@@ -922,29 +922,10 @@ function M.open_prompt_with(content)
 	open_prompt_buffer(agent, lines, term_win)
 end
 
-local freeze_mod = require('KoalaVim.utils.ai.freeze_terminal')
-
-function M.freeze_terminal(win, term_buf)
-	freeze_mod.freeze(win, term_buf)
-end
-
-function M.is_terminal_frozen()
-	return freeze_mod.is_frozen()
-end
-
---- Freeze the terminal (claude only) and send Ctrl+G to trigger $EDITOR.
+--- Send Ctrl+G to trigger $EDITOR.
 function M.send_editor_key()
-	if freeze_mod.is_frozen() then
-		return
-	end
-	local agent = M.get_attached_agent()
-	capture_prompt_anchor(agent)
-	local buf = vim.api.nvim_get_current_buf()
-	local win = vim.api.nvim_get_current_win()
-	local chan = vim.bo[buf].channel
-	if agent == 'claude' then
-		freeze_mod.freeze(win, buf)
-	end
+	capture_prompt_anchor(M.get_attached_agent())
+	local chan = vim.bo[vim.api.nvim_get_current_buf()].channel
 	vim.api.nvim_chan_send(chan, '\x07')
 end
 
@@ -1042,7 +1023,6 @@ function M.open_editor_file(file, pipe, caller_pane)
 				end
 
 				signal_editor_pipe(pipe)
-				freeze_mod.unfreeze()
 
 				if agent_pane then
 					herdr_focus_pane(agent_pane)
@@ -1320,7 +1300,7 @@ local function resize_prompt_win()
 	if cfg.relative ~= '' or not saved then
 		return
 	end
-	-- The exact window it was split from: it may be frozen or lack w:sidekick_cli
+	-- The exact window it was split from: it may lack w:sidekick_cli
 	local term_win = saved.term_win
 	if term_win and not vim.api.nvim_win_is_valid(term_win) then
 		return
