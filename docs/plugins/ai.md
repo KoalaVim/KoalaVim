@@ -8,6 +8,6 @@ AI coding assistant integrations.
 
 ## EDITOR proxy
 
-Sidecar-spawned CLIs receive `EDITOR` and `VISUAL` pointing at `bin/sidekick-editor-proxy`. This means the CLI's native edit-in-editor keybind (Ctrl+X for cursor/codex, Ctrl+X Ctrl+E for claude) opens the prompt in the running Neovim instance rather than spawning a nested editor. The file opens in a below-split; saving and closing the split returns the edited text to the CLI.
+Sidecar-spawned CLIs receive `EDITOR` and `VISUAL` pointing at `bin/sidekick-editor-proxy-gedit`. The `-gedit` suffix makes Claude Code treat it as a GUI editor, so it keeps its screen visible instead of clearing it while the prompt is edited. This means the CLI's native edit-in-editor keybind (Ctrl+X for cursor/codex, Ctrl+X Ctrl+E for claude) opens the prompt in the running Neovim instance rather than spawning a nested editor. The file opens in a below-split; saving and closing the split returns the edited text to the CLI.
 
 `<C-e>` remains the KoalaVim parse-and-inject prompt overlay and is unchanged by this feature.
