@@ -48,10 +48,15 @@
                     "enum": ["inline-float", "bottom-30%", "bottom-50%", "top-30%", "top-50%", "right-30%", "right-50%", "left-30%", "left-50%"]
                 },
                 "edit_prompt_vsplit_threshold": {
-                    "description": "<C-M-e> edit prompt: if the sidekick terminal is at least this % of the screen width, vsplit it in half; otherwise split it horizontally in half",
+                    "description": "<C-M-e> edit prompt: threshold % for edit_prompt_split.\n\tauto-vertical: vsplit if the sidekick terminal is at least this % of the screen width\n\tauto-horizontal: hsplit if the sidekick terminal is at least this % of the screen height",
                     "type": "integer",
                     "minimum": 0,
                     "maximum": 100
+                },
+                "edit_prompt_split": {
+                    "description": "<C-M-e> edit prompt preferred split direction (halves the sidekick terminal).\n\tauto-vertical: vsplit if the terminal is wide enough (edit_prompt_vsplit_threshold), else hsplit\n\tauto-horizontal: hsplit if the terminal is tall enough (edit_prompt_vsplit_threshold), else vsplit (default)",
+                    "type": "string",
+                    "enum": ["auto-vertical", "auto-horizontal"]
                 },
                 "inline_float": {
                     "description": "Settings for the inline-float edit prompt window",

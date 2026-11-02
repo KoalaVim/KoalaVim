@@ -719,13 +719,19 @@ end
 ---@type string?
 local _layout_override = nil
 
---- Halve the sidekick terminal: vsplit if it spans at least
---- `ai.edit_prompt_vsplit_threshold`% of the screen width, else hsplit.
+--- Halve the sidekick terminal in the preferred `ai.edit_prompt_split` direction if it spans
+--- at least `ai.edit_prompt_vsplit_threshold`% of the screen in that dimension, else the other way.
 local function open_prompt_auto_split(bufid)
 	local term_win = find_sidekick_terminal_win() or vim.api.nvim_get_current_win()
-	local threshold = require('KoalaVim').conf.ai.edit_prompt_vsplit_threshold
-	local wide = vim.api.nvim_win_get_width(term_win) * 100 >= vim.o.columns * threshold
-	return open_prompt_split(bufid, wide and 'right-50%' or 'bottom-50%', term_win)
+	local ai_conf = require('KoalaVim').conf.ai
+	local threshold = ai_conf.edit_prompt_vsplit_threshold
+	local vertical
+	if ai_conf.edit_prompt_split == 'auto-horizontal' then
+		vertical = vim.api.nvim_win_get_height(term_win) * 100 < vim.o.lines * threshold
+	else
+		vertical = vim.api.nvim_win_get_width(term_win) * 100 >= vim.o.columns * threshold
+	end
+	return open_prompt_split(bufid, vertical and 'right-50%' or 'bottom-50%', term_win)
 end
 
 local function open_prompt_win(bufid)
