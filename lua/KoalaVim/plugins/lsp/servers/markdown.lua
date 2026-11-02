@@ -63,7 +63,7 @@ table.insert(M, {
 	end,
 })
 
--- Mermaid diagrams inline (markdown, .mmd, sidekick agent terminals) and in a zoomable float, via kitty graphics placeholders (WIP)
+-- Mermaid diagrams inline (markdown, .mmd, sidekick agent terminals) and in a zoomable float, via kitty graphics placeholders
 table.insert(M, {
 	'KoalaVim/mermaid-viewer.nvim',
 	cmd = { 'MermaidView', 'MermaidClose', 'MermaidToggle', 'MermaidInline', 'MermaidCollapse' },
@@ -101,11 +101,10 @@ table.insert(M, {
 		},
 
 		float = {
-			width = 0.99, -- max fraction of editor width
-			height = 0.99, -- max fraction of editor height
+			width = 0.95, -- max fraction of editor width
+			height = 0.95, -- max fraction of editor height
 			border = 'rounded',
 			fit = 'width',
-			-- Merged over the computed nvim_open_win config (title, footer, zindex, row/col, width/height in cells, ...)
 			win_config = {},
 		},
 
