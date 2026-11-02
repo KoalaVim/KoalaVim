@@ -115,7 +115,6 @@ table.insert(M, {
 				},
 				goto_next_end = {
 					[']F'] = '@function.outer',
-					[']B'] = '@block.outer',
 					[']A'] = '@parameter.inner',
 					[']K'] = '@call.outer',
 				},
@@ -127,7 +126,6 @@ table.insert(M, {
 				},
 				goto_previous_end = {
 					['[F'] = '@function.outer',
-					['[B'] = '@block.outer',
 					['[A'] = '@parameter.inner',
 					['[K'] = '@call.inner',
 				},
