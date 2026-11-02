@@ -76,6 +76,19 @@ table.insert(M, {
 			desc = 'Mermaid Viewer',
 		},
 		{
+			'K',
+			function()
+				local mv = require('mermaid-viewer')
+				if mv.has_diagram() then
+					mv.view()
+				else
+					vim.lsp.buf.hover() -- the global K
+				end
+			end,
+			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
+			desc = 'Mermaid diagram in float, else hover',
+		},
+		{
 			'<leader>ui',
 			'<cmd>MermaidInline<cr>',
 			ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
