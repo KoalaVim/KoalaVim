@@ -796,6 +796,10 @@ local function open_prompt_win(bufid)
 	if not layout or layout == vim.NIL then
 		layout = 'inline-float'
 	end
+	-- The inline float anchors to the agent TUI, which lives in a multiplexer pane with mux_split
+	if layout == 'inline-float' and conf.ai.mux_split then
+		layout = 'bottom-30%'
+	end
 	if layout == 'inline-float' then
 		local win = open_prompt_inline_float(bufid)
 		dock_float_on_leave(win, bufid)
