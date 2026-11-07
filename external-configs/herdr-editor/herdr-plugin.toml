@@ -1,0 +1,12 @@
+id = "koalavim-editor"
+name = "KoalaVim Proxy Editor"
+version = "0.1.0"
+min_herdr_version = "0.8.2"
+description = "Open Sidekick's proxy editor in a Herdr split or floating terminal"
+platforms = ["macos", "linux"]
+
+[[panes]]
+id = "editor"
+title = "Sidekick prompt"
+placement = "split"
+command = ["bash", "-c", 'exec bash "$KOALA_EDITOR_SCRIPT"']

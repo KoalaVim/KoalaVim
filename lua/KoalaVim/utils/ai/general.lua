@@ -796,8 +796,8 @@ local function open_prompt_win(bufid)
 	if not layout or layout == vim.NIL then
 		layout = 'inline-float'
 	end
-	-- The inline float anchors to the agent TUI, which lives in a multiplexer pane with mux_split
-	if layout == 'inline-float' and conf.ai.mux_split then
+	-- The inline float anchors to the agent TUI, which lives in a multiplexer pane with ai.mux.split
+	if layout == 'inline-float' and conf.ai.mux.split then
 		layout = 'bottom-30%'
 	end
 	if layout == 'inline-float' then
@@ -1028,6 +1028,13 @@ end
 ---@param caller_pane? string herdr pane the `$EDITOR` call came from
 ---@return string
 function M.open_editor_file(file, pipe, caller_pane)
+	local conf = require('KoalaVim').conf
+	local mux_editor = conf and conf.ai and conf.ai.mux and conf.ai.mux.editor
+	if mux_editor and caller_pane and caller_pane ~= '' and caller_pane ~= vim.env.HERDR_PANE_ID then
+		if require('KoalaVim.utils.ai.mux_editor').open(file, pipe, caller_pane, mux_editor) then
+			return ''
+		end
+	end
 	-- An agent in another herdr pane keeps focus there; move it to Neovim's pane and back on close
 	local agent_pane = caller_pane and caller_pane ~= '' and caller_pane ~= vim.env.HERDR_PANE_ID and caller_pane or nil
 	local restore_zoom = false

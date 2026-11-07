@@ -42,12 +42,25 @@
                         "null"
                     ]
                 },
-                "mux_split": {
-                    "description": "Open sidekick agents in a terminal multiplexer split (herdr/tmux) instead of a Neovim split. Sets sidekick's cli.mux.enabled = true and cli.mux.create = 'split'. The inline-float edit prompt falls back to bottom-30%",
-                    "type": "boolean"
+                "mux": {
+                    "description": "Terminal multiplexer settings for AI agents and their proxy editor",
+                    "type": "object",
+                    "properties": {
+                        "split": {
+                            "description": "Open Sidekick agents in a terminal multiplexer split instead of a Neovim split",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "editor": {
+                            "description": "Open the proxy editor in a separate Neovim process inside Herdr. Disabled by default; pane-right/pane-down split the agent pane, floating opens a Herdr popup. Closing the editor applies the prompt and returns to the agent",
+                            "type": ["boolean", "string"],
+                            "enum": [false, "pane-right", "pane-down", "floating"],
+                            "default": false
+                        }
+                    }
                 },
                 "edit_prompt_layout": {
-                    "description": "Window layout for the edit-prompt buffer.\n\tinline-float: float in the agent TUI (default; bottom-30% when mux_split is enabled)",
+                    "description": "Window layout for the edit-prompt buffer.\n\tinline-float: float in the agent TUI (default; bottom-30% when ai.mux.split is enabled)",
                     "type": "string",
                     "enum": ["inline-float", "bottom-30%", "bottom-50%", "top-30%", "top-50%", "right-30%", "right-50%", "left-30%", "left-50%"]
                 },

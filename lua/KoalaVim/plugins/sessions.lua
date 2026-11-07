@@ -2,7 +2,7 @@ local M = {}
 
 local usercmd = require('KoalaVim.utils.cmd')
 
-KOALA_AUTOSAVE_SESSION = true
+KOALA_AUTOSAVE_SESSION = not vim.g.koala_mux_editor
 KOALA_SESSION_LOADED = false
 
 -- Disables auto session saving if a session already exists

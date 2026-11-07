@@ -103,6 +103,17 @@ function M.load()
 	local user = json_file.load(M.get_user_conf(), true)
 	local env = json_file.load(M.get_env_conf(), false) -- optional, never auto-created
 	local repo = json_file.load(M.get_repo_conf(), false)
+	-- Normalize each layer before merging so legacy settings preserve layer
+	-- precedence, and an explicit mux.split wins within the same layer.
+	for _, layer in ipairs({ default, user, env, repo }) do
+		if layer.ai and layer.ai.mux_split ~= nil then
+			layer.ai.mux = layer.ai.mux or {}
+			if layer.ai.mux.split == nil then
+				layer.ai.mux.split = layer.ai.mux_split
+			end
+			layer.ai.mux_split = nil
+		end
+	end
 	-- Precedence (lowest -> highest): defaults < user < env < repo
 	-- 'keep' means the leftmost argument wins, so the order below is reversed.
 	local conf = vim.tbl_deep_extend('keep', repo, env, user, default)

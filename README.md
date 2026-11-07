@@ -148,6 +148,31 @@ KoalaVim deep-merges `.kvim.conf` layers; later layers override earlier ones:
 
 The env conf is optional and never created automatically. Without `kv` (`KOALA_ENV_KVIM_CONF` unset) it is skipped. Use the dashboard button `kec` ("Koala Env Config") or `kv env config` to edit it.
 
+### AI mux editor
+
+`ai.mux.split` opens agents in multiplexer splits. `ai.mux.editor` optionally opens the
+proxy editor in a separate Neovim process inside Herdr:
+
+```json
+{
+  "ai": {
+    "mux": {
+      "split": true,
+      "editor": "floating"
+    }
+  }
+}
+```
+
+Both options default to `false`. Editor layouts are `"pane-right"`, `"pane-down"`
+(relative to the agent), and `"floating"` (a Herdr popup). The editor uses your
+Neovim executable and config; closing it applies the prompt and returns to the agent.
+KoalaVim automatically links its bundled Herdr editor plugin when this option is used.
+If Herdr cannot open the editor, the prompt opens in the host Neovim instead.
+
+`ai.mux_split` has been renamed to `ai.mux.split`; existing configs are migrated
+when loaded. An explicit `ai.mux.split` takes precedence over the old key in the same config.
+
 ### Advanced configuration
 
 JSON only covers what's been exposed. For anything beyond — extra plugins, custom keymaps, lazy.nvim option overrides — your config root is a regular Lua project that extends KoalaVim:

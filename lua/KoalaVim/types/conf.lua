@@ -18,7 +18,7 @@
 ---@field edit_prompt_split string
 ---@field edit_prompt_vsplit_threshold number
 ---@field inline_float KoalaVim.Conf.ai.inline_float
----@field mux_split boolean
+---@field mux KoalaVim.Conf.ai.mux
 ---@field pi_prompt_anchor string?
 
 ---@class KoalaVim.Conf.ai.auto_edit_prompt
@@ -35,6 +35,10 @@
 ---@field line_numbers boolean
 ---@field min_height number
 ---@field min_width number
+
+---@class KoalaVim.Conf.ai.mux
+---@field editor boolean
+---@field split boolean
 
 ---@class KoalaVim.Conf.autocmds
 ---@field absolute_lines boolean
