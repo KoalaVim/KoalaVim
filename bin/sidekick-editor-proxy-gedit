@@ -9,6 +9,21 @@ set -euo pipefail
 # Looking like gedit keeps Claude's conversation on screen while the prompt is edited
 # in Neovim. Unlike `code`/`subl`, gedit gets no extra `-g file:line` arguments.
 
+# A native pane keeps the environment of its first host. Sidekick updates this
+# per-pane endpoint whenever a new Neovim attaches to the running agent.
+if [[ -n "${HERDR_PANE_ID:-}" ]]; then
+	socket_key=${HERDR_SOCKET_PATH:-default}
+	socket_key=${socket_key//[^a-zA-Z0-9_.-]/_}
+	pane_key=${HERDR_PANE_ID//[^a-zA-Z0-9_.-]/_}
+	host_file="${XDG_CACHE_HOME:-$HOME/.cache}/sidekick/editor-hosts/$socket_key/$pane_key"
+	if [[ -r "$host_file" ]]; then
+		{
+			IFS= read -r NVIM
+			IFS= read -r SIDEKICK_NVIM
+		} < "$host_file"
+	fi
+fi
+
 if [[ -z "${NVIM:-}" ]]; then
 	printf 'sidekick-editor-proxy: NVIM is empty; cannot reach the host Neovim\n' >&2
 	exit 1
