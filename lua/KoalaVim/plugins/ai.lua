@@ -188,6 +188,17 @@ table.insert(M, {
 		},
 		{ '<leader>a', '', desc = '+ai', mode = { 'n', 'v' } },
 		{
+			'<leader>az',
+			function()
+				with_default_tool(function(opts)
+					require('sidekick.cli.state').with(function(state)
+						ai.zoom_sidekick(state)
+					end, { attach = true, show = true, focus = true, filter = { name = opts.name } })
+				end)
+			end,
+			desc = 'Toggle Sidekick zoom',
+		},
+		{
 			'<c-.>',
 			function()
 				with_default_tool(require('sidekick.cli').toggle)

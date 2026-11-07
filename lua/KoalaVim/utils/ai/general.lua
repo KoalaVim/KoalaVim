@@ -1118,8 +1118,20 @@ end
 --- original tabpage. A WinNew autocmd detects new windows that inherited sidekick's winhighlight
 --- (containing 'SidekickChat') and resets their options to the captured reference values.
 --- This works across tabpages (codediff) and lets plugins (neogit) override afterwards.
-function M.zoom_sidekick()
+---@param state? sidekick.cli.State
+---@param enabled? boolean
+function M.zoom_sidekick(state, enabled)
+	if not state then
+		state = require('sidekick.cli.state').get({ attached = true })[1]
+	end
+	if state and state.session.backend == 'herdr' and not state.session.herdr_embedded then
+		state.session:zoom(enabled)
+		return
+	end
 	if zoom_tabpage and vim.api.nvim_tabpage_is_valid(zoom_tabpage) then
+		if enabled == true then
+			return
+		end
 		-- Unzoom: close the tabpage
 		pcall(vim.api.nvim_del_augroup_by_name, 'ZoomSidekickWinNew')
 		vim.api.nvim_set_current_tabpage(zoom_tabpage)
@@ -1180,6 +1192,11 @@ local HALF_RATIO = 0.5
 local MAX_RATIO = 0.95
 
 function M.toggle_max()
+	local state = require('sidekick.cli.state').get({ attached = true })[1]
+	if state and state.session.backend == 'herdr' and not state.session.herdr_embedded then
+		state.session:zoom()
+		return
+	end
 	if vim.bo.filetype ~= 'sidekick_terminal' then
 		return
 	end

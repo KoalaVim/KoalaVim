@@ -31,16 +31,6 @@ local function git_diff_mode(args)
 end
 
 local function ai_mode(args)
-	vim.api.nvim_create_autocmd('FileType', {
-		pattern = 'sidekick_terminal',
-		once = true,
-		callback = function()
-			vim.defer_fn(function()
-				require('KoalaVim.utils.ai.general').zoom_sidekick()
-			end, 200)
-		end,
-	})
-
 	local general = require('KoalaVim.utils.ai.general')
 	local parts = vim.split(vim.trim(args or ''), '%s+', { trimempty = true })
 	local tool = table.remove(parts, 1)
@@ -82,7 +72,22 @@ local function ai_mode(args)
 		tool_config.cmd = cmd
 	end
 
-	general.with_default_tool(require('sidekick.cli').show)
+	general.with_default_tool(function(opts)
+		require('sidekick.cli.state').with(function(state)
+			if state.terminal then
+				vim.defer_fn(function()
+					local win = state.terminal.win
+					if win and vim.api.nvim_win_is_valid(win) then
+						vim.api.nvim_win_call(win, function()
+							general.zoom_sidekick(state, true)
+						end)
+					end
+				end, 200)
+			else
+				general.zoom_sidekick(state, true)
+			end
+		end, { attach = true, show = true, focus = true, filter = { name = opts.name } })
+	end)
 end
 
 M._modes = {
