@@ -992,10 +992,15 @@ function M.minimize_herdr_pane(pane_id)
 			and session.herdr_token
 			and session.herdr_pane_id == pane_id
 		then
-			if not require('sidekick.util').exec({ 'herdr', 'pane', 'zoom', pane_id, '--off' }, { notify = false }) then
+			-- Zooming Neovim hides the agent without stopping or detaching it.
+			if
+				not require('sidekick.util').exec(
+					{ 'herdr', 'pane', 'zoom', vim.env.HERDR_PANE_ID, '--on' },
+					{ notify = false }
+				)
+			then
 				return 0
 			end
-			herdr_focus_pane(vim.env.HERDR_PANE_ID)
 			return 1
 		end
 	end

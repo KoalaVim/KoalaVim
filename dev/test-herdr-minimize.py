@@ -31,15 +31,7 @@ package.loaded['sidekick.util'] = {exec = function(cmd)
   record(table.concat(cmd, ' '))
   return true
 end}
-local general = require('KoalaVim.utils.ai.general')
-for i = 1, 100 do
-  local name = debug.getupvalue(general.minimize_herdr_pane, i)
-  if not name then break end
-  if name == 'herdr_focus_pane' then
-    debug.setupvalue(general.minimize_herdr_pane, i, function(pane) record('focus ' .. pane) end)
-    break
-  end
-end
+require('KoalaVim.utils.ai.general')
 ''')
     env = dict(os.environ, HERDR_SOCKET_PATH=herdr_socket, HERDR_PANE_ID='editor',
                XDG_CACHE_HOME=str(root / 'cache'), TEST_EVENTS=str(events),
@@ -60,11 +52,11 @@ end
             key_env = dict(env, HERDR_ACTIVE_PANE_ID=pane)
             subprocess.run([str(repo / 'bin/sidekick-herdr-minimize')], env=key_env, check=True, timeout=10)
             if pane == 'agent':
-                assert events.read_text().splitlines() == ['herdr pane zoom agent --off', 'focus editor']
+                assert events.read_text().splitlines() == ['herdr pane zoom editor --on']
                 assert not forwarded.exists()
             else:
                 assert forwarded.read_text().splitlines() == ['pane', 'send-keys', pane, 'alt+a']
-        print('Alt+a minimizes only the attached owned pane; other and stale panes receive Alt+a unchanged')
+        print('Alt+a hides the attached owned pane by zooming Neovim; other and stale panes receive Alt+a unchanged')
     finally:
         server.terminate()
         server.communicate(timeout=5)

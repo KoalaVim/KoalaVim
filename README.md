@@ -32,7 +32,7 @@ The [example Herdr config](external-configs/herdr-config.toml) provides these bi
 | `Alt+e/o` | Split vertically/horizontally. |
 | `Alt+w/q` | Close the split/pane. |
 | `Alt+z` | Toggle zoom. |
-| `Alt+a` (`<M-a>`) | Unzoom the attached Sidekick-created agent pane and return focus to Neovim. Other panes receive Alt+A normally. |
+| `Alt+a` (`<M-a>`) | Hide the attached Sidekick-created agent pane by zooming Neovim. The agent keeps running. Other panes receive Alt+A normally. |
 
 For `Alt+a`, install the helper from your KoalaVim checkout:
 

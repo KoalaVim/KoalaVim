@@ -88,7 +88,7 @@ key = "alt+z"
 type = "plugin_action"
 command = "herdr-nvim-aware.zoom"
 
-# Unzoom the attached Sidekick agent and focus Neovim. Other panes receive Alt+a.
+# Hide the attached Sidekick agent by zooming Neovim. Other panes receive Alt+a.
 [[keys.command]]
 key = "alt+a"
 type = "shell"
