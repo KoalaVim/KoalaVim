@@ -1,6 +1,7 @@
 -- Run from the repository root with: nvim --headless -u NONE -l dev/test-ai-zoom.lua
 vim.opt.rtp:prepend(vim.fn.getcwd())
 local state, requested, zooms
+local eligible = true
 zooms = {}
 package.loaded['KoalaVim.health'] = { error = error }
 package.loaded['sidekick.cli.state'] = {
@@ -19,13 +20,18 @@ end
 general.get_default_tool = function()
 	return 'claude'
 end
-state =
-	{ session = {
+state = {
+	session = {
 		backend = 'herdr',
 		zoom = function(_, enabled)
+			if not eligible then
+				return false
+			end
 			zooms[#zooms + 1] = { enabled = enabled }
+			return true
 		end,
-	} }
+	},
+}
 local modes = require('KoalaVim.utils.modes')
 modes.load('ai', '')
 assert(requested.attach and requested.show and requested.focus)
@@ -39,6 +45,14 @@ general.toggle_max()
 assert(#zooms == 4 and zooms[4].enabled == nil)
 assert(#vim.api.nvim_list_tabpages() == 1)
 print('AI mode maximizes attached native panes; zoom and max toggles route to Herdr')
+
+eligible = false
+assert(general.zoom_herdr() == false)
+modes.load('ai', '')
+general.zoom_sidekick()
+assert(#zooms == 4)
+assert(#vim.api.nvim_list_tabpages() == 1)
+print('Ineligible native layouts skip AI zoom and allow normal Alt-z fallback')
 
 state = { session = { backend = 'terminal' }, terminal = { win = vim.api.nvim_get_current_win() } }
 assert(general.zoom_herdr(state) == false)

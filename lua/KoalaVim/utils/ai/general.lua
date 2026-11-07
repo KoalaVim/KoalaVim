@@ -1125,8 +1125,7 @@ function M.zoom_herdr(state, enabled)
 		state = require('sidekick.cli.state').get({ attached = true })[1]
 	end
 	if state and state.session.backend == 'herdr' and not state.session.herdr_embedded then
-		state.session:zoom(enabled)
-		return true
+		return state.session:zoom(enabled)
 	end
 	return false
 end
@@ -1134,7 +1133,9 @@ end
 ---@param state? sidekick.cli.State
 ---@param enabled? boolean
 function M.zoom_sidekick(state, enabled)
-	if M.zoom_herdr(state, enabled) then
+	state = state or require('sidekick.cli.state').get({ attached = true })[1]
+	if state and state.session.backend == 'herdr' and not state.session.herdr_embedded then
+		M.zoom_herdr(state, enabled)
 		return
 	end
 	if zoom_tabpage and vim.api.nvim_tabpage_is_valid(zoom_tabpage) then
