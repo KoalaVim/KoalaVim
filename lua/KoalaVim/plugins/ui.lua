@@ -591,7 +591,7 @@ table.insert(M, {
 			dashboard.button('kc', ' ' .. ' Koala Config', function()
 				CLOSE_KOALA_DASHBOARD()
 				KoalaDisableAutoSession(true)
-				vim.cmd(':e ' .. kvim_conf.get_user_conf())
+				vim.cmd.edit(vim.fn.fnameescape(kvim_conf.get_user_conf()))
 			end),
 
 			dashboard.button('krc', ' ' .. ' Koala Repo Config', function()
@@ -606,7 +606,22 @@ table.insert(M, {
 				KoalaDisableAutoSession(true)
 				local json_file = require('KoalaVim.utils.json_file')
 				json_file.create_default(repo_conf, {})
-				vim.cmd(':e ' .. repo_conf)
+				vim.cmd.edit(vim.fn.fnameescape(repo_conf))
+			end),
+
+			dashboard.button('kec', ' ' .. ' Koala Env Config', function()
+				CLOSE_KOALA_DASHBOARD()
+
+				local env_conf = kvim_conf.get_env_conf()
+				if env_conf == nil then
+					vim.notify('No kv env active')
+					return
+				end
+
+				KoalaDisableAutoSession(true)
+				local json_file = require('KoalaVim.utils.json_file')
+				json_file.create_default(env_conf, {})
+				vim.cmd.edit(vim.fn.fnameescape(env_conf))
 			end),
 
 			dashboard.button('ku', ' ' .. ' Koala Update', function()
