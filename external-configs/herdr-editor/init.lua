@@ -7,7 +7,7 @@ vim.bo[prompt].filetype = 'sidekick_koala_prompt'
 local function save()
 	if vim.api.nvim_buf_is_valid(prompt) and vim.bo[prompt].modified then
 		vim.api.nvim_buf_call(prompt, function()
-			vim.cmd.update()
+			vim.cmd('silent update')
 		end)
 	end
 end

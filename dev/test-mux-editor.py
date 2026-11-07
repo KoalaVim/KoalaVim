@@ -11,6 +11,8 @@ repo = pathlib.Path.cwd()
 nvim = os.environ.get('SIDEKICK_NVIM') or shutil.which('nvim')
 herdr = os.environ.get('HERDR_BIN_PATH') or shutil.which('herdr')
 assert nvim and herdr, 'Provide nvim (SIDEKICK_NVIM) and herdr (HERDR_BIN_PATH)'
+original_split = os.environ.get('KOALA_TEST_SPLIT', 'right')
+assert original_split in ('right', 'down')
 
 
 def wait_for(check, timeout=10):
@@ -48,7 +50,7 @@ with tempfile.TemporaryDirectory(prefix='kv-mux-', dir='/tmp') as directory:
         wait_for(lambda: (root / 'herdr.sock').exists())
         workspace = cli('workspace', 'create', '--cwd', str(root), '--focus')
         host_pane = workspace['root_pane']['pane_id']
-        agent = cli('pane', 'split', '--pane', host_pane, '--direction', 'right', '--focus')['pane']['pane_id']
+        agent = cli('pane', 'split', '--pane', host_pane, '--direction', original_split, '--focus')['pane']['pane_id']
         cli('pane', 'report-agent', agent, '--source', 'koala-test', '--agent', 'claude', '--state', 'idle')
         marker = root / 'child-finished'
         child_config = root / 'config/koala-mux-test/init.lua'
@@ -95,18 +97,37 @@ end
             subprocess.run([nvim, '--server', socket, '--remote-expr', expression], check=True,
                            capture_output=True, timeout=10)
             cli('pane', 'zoom', agent, '--on' if was_zoomed else '--off')
+            cli('pane', 'resize', '--pane', host_pane, '--direction', original_split, '--amount', '0.07')
+            before = cli('pane', 'layout', '--pane', agent)['layout']
             prompt = root / (layout + " ' prompt.txt")
             prompt.write_text('original')
             proxy_env = dict(env, NVIM=socket, SIDEKICK_NVIM=nvim, HERDR_PANE_ID=agent)
-            subprocess.run([str(repo / 'bin/sidekick-editor-proxy-gedit'), str(prompt)],
-                           env=proxy_env, check=True, timeout=15)
+            proxy = subprocess.Popen([str(repo / 'bin/sidekick-editor-proxy-gedit'), str(prompt)], env=proxy_env)
+            try:
+                def host_is_small():
+                    current = cli('pane', 'layout', '--pane', host_pane)['layout']
+                    pane = next(p for p in current['panes'] if p['pane_id'] == host_pane)
+                    dimension = 'width' if original_split == 'right' else 'height'
+                    return pane['rect'][dimension] <= current['area'][dimension] * .12
+                wait_for(host_is_small)
+                assert proxy.wait(timeout=15) == 0
+            finally:
+                if proxy.poll() is None:
+                    proxy.kill()
+                    proxy.wait()
+
             assert prompt.read_text() == 'edited in Herdr\n', layout
             assert int(marker.read_text()) != host.pid
             wait_for(lambda: len(cli('pane', 'layout', '--pane', agent)['layout']['panes']) == 2)
             wait_for(lambda: cli('pane', 'layout', '--pane', agent)['layout']['zoomed'] == was_zoomed)
-            assert cli('pane', 'layout', '--pane', agent)['layout']['focused_pane_id'] == agent
+            after = cli('pane', 'layout', '--pane', agent)['layout']
+            assert after['focused_pane_id'] == agent
+            assert len(after['splits']) == len(before['splits'])
+            for old, restored in zip(before['splits'], after['splits']):
+                assert old['id'] == restored['id'] and abs(old['ratio'] - restored['ratio']) < .00001
+            cli('pane', 'swap', '--source-pane', host_pane, '--target-pane', agent)
             assert host.poll() is None
-            print(layout + ': separate Neovim applied the edit, released the proxy, and restored the agent')
+            print(layout + ': separate Neovim applied the edit, released the proxy, and restored the agent and original pane sizes')
         # Disabling the option keeps the in-host editor. If Herdr rejects an
         # enabled editor (the linked plugin was removed), fall back there too.
         cli('plugin', 'unlink', 'koalavim-editor')
@@ -116,9 +137,13 @@ end
                            capture_output=True, timeout=10)
             prompt = root / ('host-' + setting.replace("'", '') + '.txt')
             prompt.write_text('original')
+            before = cli('pane', 'layout', '--pane', agent)['layout']
             subprocess.run([str(repo / 'bin/sidekick-editor-proxy-gedit'), str(prompt)],
                            env=proxy_env, check=True, timeout=15)
             assert prompt.read_text() == 'edited in host\n'
+            after = cli('pane', 'layout', '--pane', agent)['layout']
+            for old, restored in zip(before['splits'], after['splits']):
+                assert old['id'] == restored['id'] and abs(old['ratio'] - restored['ratio']) < .00001
             assert host.poll() is None
             print(setting + ': host editor completed successfully')
     except Exception:
@@ -128,7 +153,7 @@ end
             panes = cli('pane', 'list')
             print(panes)
             for pane in panes.get('panes', []):
-                print(cli('pane', 'read', pane['pane_id'], '--source', 'recent', '--lines', '30'))
+                print(subprocess.check_output([herdr, 'pane', 'read', pane['pane_id'], '--source', 'recent', '--lines', '30'], env=env, text=True))
         except Exception as error:
             print(error)
         raise

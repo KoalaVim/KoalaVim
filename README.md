@@ -167,6 +167,8 @@ proxy editor in a separate Neovim process inside Herdr:
 Both options default to `false`. Editor layouts are `"pane-right"`, `"pane-down"`
 (relative to the agent), and `"floating"` (a Herdr popup). The editor uses your
 Neovim executable and config; closing it applies the prompt and returns to the agent.
+While editing, the original Neovim pane shrinks to Herdr's minimum split size (10%).
+Its saved split ratio is restored when the proxy editor closes.
 KoalaVim automatically links its bundled Herdr editor plugin when this option is used.
 If Herdr cannot open the editor, the prompt opens in the host Neovim instead.
 

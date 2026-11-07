@@ -1,5 +1,6 @@
 local M = {}
 local PLUGIN = 'koalavim-editor'
+local layouts = {}
 
 -- Popup placement is available over the socket even in Herdr versions whose
 -- CLI does not expose it. Keep the request bounded if the server is unavailable.
@@ -54,6 +55,106 @@ local function request(method, params)
 	return response, failure
 end
 
+local function contains(outer, inner)
+	return inner.x >= outer.x
+		and inner.y >= outer.y
+		and inner.x + inner.width <= outer.x + outer.width
+		and inner.y + inner.height <= outer.y + outer.height
+end
+
+local function split_key(split)
+	-- The traversal index changes while an editor split exists; the tree path
+	-- of the original Neovim pane's parent stays stable.
+	return split.id:match('^split_%d+_(.+)$')
+end
+
+local function host_split(layout)
+	if not layout then
+		return
+	end
+	local host
+	for _, pane in ipairs(layout.panes) do
+		if pane.pane_id == vim.env.HERDR_PANE_ID then
+			host = pane
+		end
+	end
+	if not host then
+		return
+	end
+	local parent
+	for _, split in ipairs(layout.splits) do
+		if
+			contains(split.rect, host.rect)
+			and (not parent or split.rect.width * split.rect.height < parent.rect.width * parent.rect.height)
+		then
+			parent = split
+		end
+	end
+	if not parent then
+		return
+	end
+	local axis, size = parent.direction == 'right' and 'x' or 'y', parent.direction == 'right' and 'width' or 'height'
+	local first = host.rect[axis] + host.rect[size] / 2 < parent.rect[axis] + parent.rect[size] * parent.ratio
+	return {
+		pane = host.pane_id,
+		key = split_key(parent),
+		direction = parent.direction,
+		ratio = parent.ratio,
+		small = first and 0.1 or 0.9,
+	}
+end
+
+local function resize_to(saved, ratio)
+	for _ = 1, 3 do
+		local result = request('pane.layout', { pane_id = saved.pane })
+		local layout = result and result.layout
+		if not layout then
+			return false
+		end
+		local split
+		for _, candidate in ipairs(layout.splits) do
+			if split_key(candidate) == saved.key and candidate.direction == saved.direction then
+				split = candidate
+			end
+		end
+		if not split then
+			return false
+		end
+		local delta = ratio - split.ratio
+		if math.abs(delta) < 0.00001 then
+			return true
+		end
+		local axis, size = split.direction == 'right' and 'x' or 'y', split.direction == 'right' and 'width' or 'height'
+		local boundary = split.rect[axis] + split.rect[size] * split.ratio
+		local target, distance
+		for _, pane in ipairs(layout.panes) do
+			local rect = pane.rect
+			local first = rect[axis] + rect[size] / 2 < boundary
+			if contains(split.rect, rect) and first == (delta > 0) then
+				local edge = delta > 0 and rect[axis] + rect[size] or rect[axis]
+				local gap = math.abs(edge - boundary)
+				if not distance or gap < distance then
+					target, distance = pane.pane_id, gap
+				end
+			end
+		end
+		if not target then
+			return false
+		end
+		local direction = split.direction == 'right' and (delta > 0 and 'right' or 'left')
+			or (delta > 0 and 'down' or 'up')
+		if
+			not request(
+				'pane.resize',
+				{ pane_id = target, direction = direction, amount = math.min(math.abs(delta), 0.5) }
+			)
+		then
+			return false
+		end
+	end
+	return false
+end
+
 ---@param file string
 ---@param pipe string
 ---@param caller_pane string
@@ -84,6 +185,7 @@ function M.open(file, pipe, caller_pane, layout)
 	local result = ok and type(data) == 'table' and data.result
 	local previous = type(result) == 'table' and result.layout
 	local restore_zoom = type(previous) == 'table' and previous.zoomed == true
+	local saved_layout = host_split(type(previous) == 'table' and previous or nil)
 
 	-- The child uses the same Neovim and config as its host, with an independent
 	-- server and no AI launch mode or session saving.
@@ -140,8 +242,16 @@ function M.open(file, pipe, caller_pane, layout)
 			return false
 		end
 	end
+	if saved_layout then
+		layouts[pipe] = saved_layout
+		resize_to(saved_layout, saved_layout.small)
+	end
 	local opened, err = request('plugin.pane.open', params)
 	if not opened then
+		if saved_layout then
+			resize_to(saved_layout, saved_layout.ratio)
+		end
+		layouts[pipe] = nil
 		vim.notify(
 			'Could not open the Herdr editor: ' .. tostring(err) .. '. Opening it in Neovim instead.',
 			vim.log.levels.WARN
@@ -171,6 +281,11 @@ function M.finish(pipe, agent, editor_pane, restore_zoom, floating)
 				settle(attempt + 1)
 			end, 50)
 			return
+		end
+		local saved_layout = layouts[pipe]
+		layouts[pipe] = nil
+		if saved_layout then
+			resize_to(saved_layout, saved_layout.ratio)
 		end
 		if restore_zoom == '1' then
 			util.exec({ 'herdr', 'pane', 'zoom', agent, '--on' }, { notify = false })
