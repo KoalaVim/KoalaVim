@@ -64,3 +64,27 @@ for _, initial_zoom in ipairs({ true, false }) do
 	vim.fn.delete(file)
 end
 print('Editor round-trip unzooms before focusing Neovim, restores agent zoom, and preserves unzoomed layouts')
+
+-- A proxy opened from Alpha replaces it and can be closed as the last window.
+calls, zoomed = {}, false
+_G.CLOSE_KOALA_DASHBOARD = function() end
+vim.bo.filetype = 'alpha'
+vim.bo.bufhidden = 'wipe'
+local dashboard_buf = vim.api.nvim_get_current_buf()
+local file = vim.fn.tempname()
+vim.fn.writefile({ 'original' }, file)
+general.open_editor_file(file, 'last-window-pipe', 'agent')
+assert(vim.wait(1000, function()
+	return vim.api.nvim_get_current_buf() == vim.fn.bufnr(file)
+end, 10))
+assert(not vim.api.nvim_buf_is_valid(dashboard_buf))
+assert(#vim.api.nvim_list_wins() == 1)
+assert(vim.b.koala_editor_proxy)
+vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'edited' })
+require('KoalaVim.utils.splits').close()
+assert(#vim.api.nvim_list_wins() == 1)
+assert(not vim.b.koala_editor_proxy)
+assert(vim.deep_equal(vim.fn.readfile(file), { 'edited' }))
+assert(vim.deep_equal(calls, { { 'focus', 'editor' }, { 'signal' }, { 'focus', 'agent' } }))
+vim.fn.delete(file)
+print('Proxy replaces Alpha; closing its last window saves the edit, releases the agent, and keeps Neovim open')

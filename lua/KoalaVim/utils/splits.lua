@@ -44,7 +44,16 @@ end
 
 function M.close()
 	local bufnr = api.nvim_get_current_buf()
-	if count_normal_wins() <= 1 then
+	if count_normal_wins() <= 1 and api.nvim_win_get_config(0).relative == '' then
+		if vim.b[bufnr].koala_editor_proxy then
+			-- Leaving the buffer saves the prompt and releases the waiting proxy.
+			-- Keep an editor window alive instead of quitting with the last split.
+			api.nvim_win_set_buf(0, api.nvim_create_buf(true, false))
+			if api.nvim_buf_is_valid(bufnr) then
+				api.nvim_buf_delete(bufnr, { force = true })
+			end
+			return
+		end
 		api.nvim_feedkeys(':q\n', 'n', false)
 		return
 	end

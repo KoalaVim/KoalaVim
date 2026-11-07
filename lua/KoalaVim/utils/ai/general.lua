@@ -1020,7 +1020,19 @@ function M.open_editor_file(file, pipe, caller_pane)
 
 		local bufid = vim.fn.bufadd(file)
 		vim.fn.bufload(bufid)
-		local win_id = open_prompt_win(bufid)
+		local win_id
+		if vim.bo.filetype == 'alpha' then
+			local dashboard_buf = vim.api.nvim_get_current_buf()
+			CLOSE_KOALA_DASHBOARD(true)
+			win_id = vim.api.nvim_get_current_win()
+			vim.api.nvim_win_set_buf(win_id, bufid)
+			if vim.api.nvim_buf_is_valid(dashboard_buf) then
+				vim.api.nvim_buf_delete(dashboard_buf, { force = true })
+			end
+		else
+			win_id = open_prompt_win(bufid)
+		end
+		vim.b[bufid].koala_editor_proxy = true
 		setup_prompt_split(bufid, win_id)
 
 		vim.api.nvim_create_autocmd('BufWinLeave', {
