@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Herdr shell keybinding dispatcher. Only the active pane may be handled;
+# the server's inherited HERDR_PANE_ID can refer to an unrelated pane.
+pane=${HERDR_ACTIVE_PANE_ID:-}
+[[ -n "$pane" ]] || exit 0
+herdr_bin=${HERDR_BIN_PATH:-herdr}
+socket_key=${HERDR_SOCKET_PATH:-default}
+socket_key=${socket_key//[^a-zA-Z0-9_.-]/_}
+pane_key=${pane//[^a-zA-Z0-9_.-]/_}
+host_file="${XDG_CACHE_HOME:-$HOME/.cache}/sidekick/editor-hosts/$socket_key/$pane_key"
+
+if [[ -r "$host_file" ]]; then
+	{
+		IFS= read -r host
+		IFS= read -r nvim_bin
+	} < "$host_file"
+	quoted_pane=${pane//\'/\'\'}
+	expr="v:lua.require('KoalaVim.utils.ai.general').minimize_herdr_pane('$quoted_pane')"
+	if handled=$("$nvim_bin" --server "$host" --remote-expr "$expr" 2>/dev/null) && [[ "$handled" == 1 ]]; then
+		exit 0
+	fi
+fi
+
+# pane send-keys writes to the application directly and does not re-run Herdr
+# keybindings. Preserve Alt+a for Neovim and panes not owned by Sidekick.
+exec "$herdr_bin" pane send-keys "$pane" alt+a

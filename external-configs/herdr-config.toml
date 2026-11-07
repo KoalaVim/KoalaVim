@@ -6,6 +6,8 @@
 #
 # Install the plugin:
 #   herdr plugin install KoalaVim/herdr-nvim-aware
+# To enable the Sidekick-only Alt+a action, symlink this checkout's
+# bin/sidekick-herdr-minimize to ~/.local/bin/sidekick-herdr-minimize.
 #
 # Place this file at: ~/.config/herdr/config.toml
 
@@ -85,3 +87,9 @@ command = "herdr-nvim-aware.quit"
 key = "alt+z"
 type = "plugin_action"
 command = "herdr-nvim-aware.zoom"
+
+# Unzoom the attached Sidekick agent and focus Neovim. Other panes receive Alt+a.
+[[keys.command]]
+key = "alt+a"
+type = "shell"
+command = '"$HOME/.local/bin/sidekick-herdr-minimize"'

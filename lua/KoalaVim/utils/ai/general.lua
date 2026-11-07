@@ -979,6 +979,29 @@ local function herdr_focus_pane(pane_id)
 	end)
 end
 
+--- Called by Herdr's Alt+a handler; only an attached Sidekick-owned pane may
+--- hand focus back to this Neovim. Other panes keep their normal Alt+a input.
+---@param pane_id string
+---@return integer handled
+function M.minimize_herdr_pane(pane_id)
+	for _, state in ipairs(require('sidekick.cli.state').get({ attached = true })) do
+		local session = state.session
+		if
+			session.backend == 'herdr'
+			and not session.herdr_embedded
+			and session.herdr_token
+			and session.herdr_pane_id == pane_id
+		then
+			if not require('sidekick.util').exec({ 'herdr', 'pane', 'zoom', pane_id, '--off' }, { notify = false }) then
+				return 0
+			end
+			herdr_focus_pane(vim.env.HERDR_PANE_ID)
+			return 1
+		end
+	end
+	return 0
+end
+
 --- Open a CLI `$EDITOR` temp file in a split and signal `pipe` (FIFO) when
 --- the user closes the buffer. Called via `v:lua` from the editor proxy.
 --- Returns immediately so the proxy can attach its FIFO reader before any write.
