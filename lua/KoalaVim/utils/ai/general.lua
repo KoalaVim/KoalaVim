@@ -924,9 +924,17 @@ end
 
 --- Send Ctrl+G to trigger $EDITOR.
 function M.send_editor_key()
-	capture_prompt_anchor(M.get_attached_agent())
-	local chan = vim.bo[vim.api.nvim_get_current_buf()].channel
-	vim.api.nvim_chan_send(chan, '\x07')
+	require('sidekick.cli.state').with(function(state)
+		if state.session.backend == 'herdr' and not state.session.herdr_embedded then
+			require('sidekick.util').exec({ 'herdr', 'pane', 'send-keys', state.session.herdr_pane_id, 'ctrl+g' })
+			return
+		end
+		if state.terminal then
+			capture_prompt_anchor(tool_agent(state.tool.name))
+			local chan = vim.bo[state.terminal.buf].channel
+			vim.api.nvim_chan_send(chan, '\x07')
+		end
+	end, { attach = true })
 end
 
 --- Sessions keyed by FIFO path so concurrent `$EDITOR` invocations stay independent.
