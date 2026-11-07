@@ -554,8 +554,16 @@ table.insert(M, {
 				require('KoalaVim.utils.modes').load('ai')
 			end),
 			dashboard.button('m', '  File Tree', function()
+				local dashboard_win = vim.api.nvim_get_current_win()
+				local dashboard_buf = vim.api.nvim_get_current_buf()
 				CLOSE_KOALA_DASHBOARD(true)
-				require('nvim-tree.api').tree.open()
+				require('nvim-tree.api').tree.open({ current_window = true })
+				if dashboard_win ~= vim.api.nvim_get_current_win() and vim.api.nvim_win_is_valid(dashboard_win) then
+					vim.api.nvim_win_close(dashboard_win, true)
+				end
+				if vim.api.nvim_buf_is_valid(dashboard_buf) and vim.bo[dashboard_buf].filetype == 'alpha' then
+					vim.api.nvim_buf_delete(dashboard_buf, { force = true })
+				end
 			end),
 			dashboard.button('ff', '  Find File', function()
 				CLOSE_KOALA_DASHBOARD()
