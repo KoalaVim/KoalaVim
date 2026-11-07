@@ -33,21 +33,27 @@ The [example Herdr config](external-configs/herdr-config.toml) provides these bi
 | `Alt+w/q` | Close the split/pane. |
 | `Alt+z` | Toggle zoom. |
 | `Alt+a` (`<M-a>`) | Hide the attached Sidekick-created agent pane by zooming Neovim. The agent keeps running. Other panes receive Alt+A normally. |
+| `Ctrl+e` (`<C-e>`) | Open the proxy editor from the attached Sidekick-created agent pane by sending Ctrl+G. Other panes receive Ctrl+E normally. |
 
-For `Alt+a`, install the helper from your KoalaVim checkout:
+For `Alt+a` and `Ctrl+e`, install the helper from your KoalaVim checkout:
 
 ```bash
 mkdir -p "$HOME/.local/bin"
 ln -s "$PWD/bin/sidekick-herdr-minimize" "$HOME/.local/bin/sidekick-herdr-minimize"
 ```
 
-Add this binding to your Herdr config, then reload it:
+Add these bindings to your Herdr config, then reload it:
 
 ```toml
 [[keys.command]]
 key = "alt+a"
 type = "shell"
 command = '"$HOME/.local/bin/sidekick-herdr-minimize"'
+
+[[keys.command]]
+key = "ctrl+e"
+type = "shell"
+command = '"$HOME/.local/bin/sidekick-herdr-minimize" edit'
 ```
 
 ## Requirements

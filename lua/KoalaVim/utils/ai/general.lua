@@ -979,11 +979,7 @@ local function herdr_focus_pane(pane_id)
 	end)
 end
 
---- Called by Herdr's Alt+a handler; only an attached Sidekick-owned pane may
---- hand focus back to this Neovim. Other panes keep their normal Alt+a input.
----@param pane_id string
----@return integer handled
-function M.minimize_herdr_pane(pane_id)
+local function owned_herdr_session(pane_id)
 	for _, state in ipairs(require('sidekick.cli.state').get({ attached = true })) do
 		local session = state.session
 		if
@@ -992,17 +988,34 @@ function M.minimize_herdr_pane(pane_id)
 			and session.herdr_token
 			and session.herdr_pane_id == pane_id
 		then
-			-- Zooming Neovim hides the agent without stopping or detaching it.
-			if
-				not require('sidekick.util').exec(
-					{ 'herdr', 'pane', 'zoom', vim.env.HERDR_PANE_ID, '--on' },
-					{ notify = false }
-				)
-			then
-				return 0
-			end
-			return 1
+			return session
 		end
+	end
+	return nil
+end
+
+--- Hide an attached Sidekick-owned pane. Other panes keep their Alt+a input.
+---@param pane_id string
+---@return integer handled
+function M.minimize_herdr_pane(pane_id)
+	if owned_herdr_session(pane_id) then
+		-- Zooming Neovim hides the agent without stopping or detaching it.
+		return require('sidekick.util').exec(
+			{ 'herdr', 'pane', 'zoom', vim.env.HERDR_PANE_ID, '--on' },
+			{ notify = false }
+		) and 1 or 0
+	end
+	return 0
+end
+
+--- Open the native editor only for the attached Sidekick-owned agent pane.
+---@param pane_id string
+---@return integer handled
+function M.edit_herdr_pane(pane_id)
+	if owned_herdr_session(pane_id) then
+		return require('sidekick.util').exec({ 'herdr', 'pane', 'send-keys', pane_id, 'ctrl+g' }, { notify = false })
+				and 1
+			or 0
 	end
 	return 0
 end

@@ -93,3 +93,9 @@ command = "herdr-nvim-aware.zoom"
 key = "alt+a"
 type = "shell"
 command = '"$HOME/.local/bin/sidekick-herdr-minimize"'
+
+# Open the proxy editor from a Sidekick agent. Other panes receive Ctrl+e.
+[[keys.command]]
+key = "ctrl+e"
+type = "shell"
+command = '"$HOME/.local/bin/sidekick-herdr-minimize" edit'

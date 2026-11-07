@@ -48,15 +48,22 @@ require('KoalaVim.utils.ai.general')
             if pathlib.Path(socket).exists():
                 break
             time.sleep(.02)
-        for pane in ('agent', 'unowned', 'stale', 'shell'):
-            key_env = dict(env, HERDR_ACTIVE_PANE_ID=pane)
-            subprocess.run([str(repo / 'bin/sidekick-herdr-minimize')], env=key_env, check=True, timeout=10)
-            if pane == 'agent':
-                assert events.read_text().splitlines() == ['herdr pane zoom editor --on']
-                assert not forwarded.exists()
-            else:
-                assert forwarded.read_text().splitlines() == ['pane', 'send-keys', pane, 'alt+a']
-        print('Alt+a hides the attached owned pane by zooming Neovim; other and stale panes receive Alt+a unchanged')
+        for action, key, expected in (
+                ('minimize', 'alt+a', 'herdr pane zoom editor --on'),
+                ('edit', 'ctrl+e', 'herdr pane send-keys agent ctrl+g')):
+            for pane in ('agent', 'unowned', 'stale', 'shell'):
+                for output in (events, forwarded):
+                    if output.exists():
+                        output.unlink()
+                key_env = dict(env, HERDR_ACTIVE_PANE_ID=pane)
+                subprocess.run([str(repo / 'bin/sidekick-herdr-minimize'), action],
+                               env=key_env, check=True, timeout=10)
+                if pane == 'agent':
+                    assert events.read_text().splitlines() == [expected]
+                    assert not forwarded.exists()
+                else:
+                    assert forwarded.read_text().splitlines() == ['pane', 'send-keys', pane, key]
+        print('Alt+a hides owned agents; Ctrl+e sends Ctrl+g; unowned and stale panes keep the original key')
     finally:
         server.terminate()
         server.communicate(timeout=5)
