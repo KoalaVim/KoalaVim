@@ -78,6 +78,9 @@ local function ai_mode(args)
 				return
 			end
 			if state.terminal then
+				if state.terminal:is_running() then
+					state.terminal:focus()
+				end
 				vim.defer_fn(function()
 					local win = state.terminal.win
 					if win and vim.api.nvim_win_is_valid(win) then
@@ -87,9 +90,10 @@ local function ai_mode(args)
 					end
 				end, 200)
 			else
+				state.session:focus()
 				general.zoom_sidekick(state, true)
 			end
-		end, { attach = true, show = true, focus = true, filter = { name = opts.name } })
+		end, { attach = true, show = true, focus = false, filter = { name = opts.name } })
 	end)
 end
 
