@@ -1120,12 +1120,21 @@ end
 --- This works across tabpages (codediff) and lets plugins (neogit) override afterwards.
 ---@param state? sidekick.cli.State
 ---@param enabled? boolean
-function M.zoom_sidekick(state, enabled)
+function M.zoom_herdr(state, enabled)
 	if not state then
 		state = require('sidekick.cli.state').get({ attached = true })[1]
 	end
 	if state and state.session.backend == 'herdr' and not state.session.herdr_embedded then
 		state.session:zoom(enabled)
+		return true
+	end
+	return false
+end
+
+---@param state? sidekick.cli.State
+---@param enabled? boolean
+function M.zoom_sidekick(state, enabled)
+	if M.zoom_herdr(state, enabled) then
 		return
 	end
 	if zoom_tabpage and vim.api.nvim_tabpage_is_valid(zoom_tabpage) then

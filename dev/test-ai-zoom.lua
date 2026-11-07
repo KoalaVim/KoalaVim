@@ -41,6 +41,7 @@ assert(#vim.api.nvim_list_tabpages() == 1)
 print('AI mode maximizes attached native panes; zoom and max toggles route to Herdr')
 
 state = { session = { backend = 'terminal' }, terminal = { win = vim.api.nvim_get_current_win() } }
+assert(general.zoom_herdr(state) == false)
 modes.load('ai', '')
 assert(vim.wait(1000, function()
 	return #vim.api.nvim_list_tabpages() == 2

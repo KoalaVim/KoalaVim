@@ -141,6 +141,9 @@ table.insert(M, {
 		{
 			'<M-z>',
 			function()
+				if vim.env.HERDR_PANE_ID and require('KoalaVim.utils.ai.general').zoom_herdr() then
+					return
+				end
 				vim.cmd('NeoZoomToggle')
 			end,
 			mode = { 'n', 'v', 't' },
