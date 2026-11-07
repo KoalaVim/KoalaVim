@@ -65,6 +65,9 @@ for _, initial_zoom in ipairs({ true, false }) do
 end
 print('Editor round-trip unzooms before focusing Neovim, restores agent zoom, and preserves unzoomed layouts')
 
+vim.opt.rtp:prepend(vim.fn.fnamemodify('../alpha-nvim', ':p'))
+require('alpha').setup({ layout = { { type = 'text', val = 'Dashboard' } }, opts = { autostart = false } })
+
 -- A proxy opened from Alpha replaces it and can be closed as the last window.
 calls, zoomed = {}, false
 _G.CLOSE_KOALA_DASHBOARD = function() end
@@ -84,7 +87,27 @@ vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'edited' })
 require('KoalaVim.utils.splits').close()
 assert(#vim.api.nvim_list_wins() == 1)
 assert(not vim.b.koala_editor_proxy)
+assert(vim.bo.filetype == 'alpha')
 assert(vim.deep_equal(vim.fn.readfile(file), { 'edited' }))
 assert(vim.deep_equal(calls, { { 'focus', 'editor' }, { 'signal' }, { 'focus', 'agent' } }))
 vim.fn.delete(file)
 print('Proxy replaces Alpha; closing its last window saves the edit, releases the agent, and keeps Neovim open')
+
+for _, command in ipairs({ 'quit', 'wq' }) do
+	calls, zoomed = {}, false
+	local prompt_file = vim.fn.tempname()
+	vim.fn.writefile({ 'original' }, prompt_file)
+	general.open_editor_file(prompt_file, 'quit-pipe', 'agent')
+	assert(vim.wait(1000, function()
+		return vim.api.nvim_get_current_buf() == vim.fn.bufnr(prompt_file)
+	end, 10))
+	assert(#vim.api.nvim_list_wins() == 1)
+	vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'applied via ' .. command })
+	vim.cmd[command]()
+	assert(#vim.api.nvim_list_wins() == 1)
+	assert(vim.bo.filetype == 'alpha')
+	assert(vim.deep_equal(vim.fn.readfile(prompt_file), { 'applied via ' .. command }))
+	assert(vim.deep_equal(calls, { { 'focus', 'editor' }, { 'signal' }, { 'focus', 'agent' } }))
+	vim.fn.delete(prompt_file)
+end
+print('Closing the last proxy with split-close, :q, or :wq applies the edit and returns to Alpha')

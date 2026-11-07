@@ -1034,12 +1034,33 @@ function M.open_editor_file(file, pipe, caller_pane)
 		end
 		vim.b[bufid].koala_editor_proxy = true
 		setup_prompt_split(bufid, win_id)
+		local quit_guard = vim.api.nvim_create_autocmd('QuitPre', {
+			buffer = bufid,
+			callback = function()
+				local wins = require('KoalaVim.utils.windows').get_all_non_floating_wins()
+				if #wins ~= 1 or vim.api.nvim_win_get_config(0).relative ~= '' then
+					return
+				end
+				if vim.bo[bufid].modified then
+					vim.api.nvim_buf_call(bufid, function()
+						vim.cmd.update()
+					end)
+				end
+				-- Let :q/:wq close the prompt, leaving a dashboard window alive.
+				local dashboard_win =
+					vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), false, { split = 'above' })
+				vim.api.nvim_win_call(dashboard_win, function()
+					require('alpha').start(false)
+				end)
+			end,
+		})
 
 		vim.api.nvim_create_autocmd('BufWinLeave', {
 			buffer = bufid,
 			once = true,
 			callback = function()
 				editor_file_sessions[pipe] = nil
+				vim.api.nvim_del_autocmd(quit_guard)
 
 				if vim.bo[bufid].modified then
 					local ok, err = pcall(function()
