@@ -62,11 +62,12 @@ vim.bo.filetype = 'alpha'
 modes.load('ai', '')
 assert(dashboards == 1)
 vim.bo.filetype = ''
-vim.env.KOALA_MODE = nil
 created = true
 modes.load('ai', '')
+assert(dashboards == 2)
 assert(#zooms == 2 and zooms[2].enabled == true)
 assert(focused == 2)
+vim.env.KOALA_MODE = nil
 general.zoom_sidekick()
 assert(#zooms == 3 and zooms[3].enabled == nil)
 general.toggle_max()

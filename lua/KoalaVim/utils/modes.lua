@@ -74,11 +74,13 @@ local function ai_mode(args)
 
 	general.with_default_tool(function(opts)
 		require('sidekick.cli.state').with(function(state, _, created)
-			if state.session.backend == 'herdr' and not state.terminal and not created then
+			if state.session.backend == 'herdr' and not state.terminal then
 				if vim.env.KOALA_MODE == 'ai' and vim.bo.filetype ~= 'alpha' then
 					require('alpha').start(false)
 				end
-				return
+				if not created then
+					return
+				end
 			end
 			if state.terminal then
 				if state.terminal:is_running() then
