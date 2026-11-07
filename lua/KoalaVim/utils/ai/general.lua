@@ -989,7 +989,18 @@ end
 function M.open_editor_file(file, pipe, caller_pane)
 	-- An agent in another herdr pane keeps focus there; move it to Neovim's pane and back on close
 	local agent_pane = caller_pane and caller_pane ~= '' and caller_pane ~= vim.env.HERDR_PANE_ID and caller_pane or nil
+	local restore_zoom = false
 	if agent_pane then
+		local util = require('sidekick.util')
+		local _, raw = util.exec({ 'herdr', 'pane', 'layout', '--pane', agent_pane }, { notify = false })
+		local ok, data = pcall(vim.json.decode, raw or '')
+		local result = ok and type(data) == 'table' and data.result
+		local layout = type(result) == 'table' and result.layout
+		if type(layout) == 'table' and layout.zoomed then
+			-- Herdr keeps a tab zoomed when focus moves between panes. Restore the
+			-- split layout before focusing Neovim so it doesn't inherit agent zoom.
+			restore_zoom = util.exec({ 'herdr', 'pane', 'zoom', agent_pane, '--off' }, { notify = false }) ~= nil
+		end
 		herdr_focus_pane(vim.env.HERDR_PANE_ID)
 	end
 
@@ -1032,7 +1043,15 @@ function M.open_editor_file(file, pipe, caller_pane)
 				signal_editor_pipe(pipe)
 
 				if agent_pane then
-					herdr_focus_pane(agent_pane)
+					if restore_zoom then
+						-- Zooming the explicit pane also focuses it.
+						require('sidekick.util').exec(
+							{ 'herdr', 'pane', 'zoom', agent_pane, '--on' },
+							{ notify = false }
+						)
+					else
+						herdr_focus_pane(agent_pane)
+					end
 					return
 				end
 
