@@ -4,6 +4,13 @@ local state, requested, zooms
 local eligible = true
 local created = true
 local focused = 0
+local dashboards = 0
+vim.env.KOALA_MODE = nil
+package.loaded['alpha'] = {
+	start = function()
+		dashboards = dashboards + 1
+	end,
+}
 zooms = {}
 package.loaded['KoalaVim.health'] = { error = error }
 package.loaded['sidekick.cli.state'] = {
@@ -47,6 +54,15 @@ created = false
 modes.load('ai', '')
 assert(#zooms == 1)
 assert(focused == 1)
+assert(dashboards == 0)
+vim.env.KOALA_MODE = 'ai'
+modes.load('ai', '')
+assert(dashboards == 1 and focused == 1 and #zooms == 1)
+vim.bo.filetype = 'alpha'
+modes.load('ai', '')
+assert(dashboards == 1)
+vim.bo.filetype = ''
+vim.env.KOALA_MODE = nil
 created = true
 modes.load('ai', '')
 assert(#zooms == 2 and zooms[2].enabled == true)

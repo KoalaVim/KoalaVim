@@ -649,15 +649,11 @@ table.insert(M, {
 		return dashboard
 	end,
 	config = function(_, dashboard)
-		-- Don't load dashboard on restart
-		if vim.env.KOALA_RESTART then
-			return
-		end
-
-		-- Skip dashboard when loading into koala mode
-		if vim.env.KOALA_MODE then
-			return
-		end
+		-- Modes open their own UI. Keep Alpha configured so AI mode can show it
+		-- explicitly after reattaching to an existing mux agent.
+		dashboard.opts.opts = vim.tbl_extend('force', dashboard.opts.opts or {}, {
+			autostart = not (vim.env.KOALA_RESTART or vim.env.KOALA_MODE),
+		})
 
 		vim.api.nvim_create_autocmd('User', {
 			pattern = 'AlphaReady',
