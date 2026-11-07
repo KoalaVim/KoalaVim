@@ -57,6 +57,8 @@ with tempfile.TemporaryDirectory(prefix='kv-mux-', dir='/tmp') as directory:
         child_config.parent.mkdir(parents=True)
         child_config.write_text('''assert(vim.g.koala_mux_editor)
 assert(vim.env.NVIM == nil and vim.env.KOALA_MODE == nil and vim.env.KOALA_RESTART == nil)
+-- Simulate slow plugin shutdown: applying the prompt must bypass this wait.
+vim.api.nvim_create_autocmd('VimLeavePre', {callback = function() vim.wait(2500) end})
 vim.defer_fn(function()
   assert(vim.bo.filetype == 'sidekick_koala_prompt')
   vim.api.nvim_buf_set_lines(0, 0, -1, false, {'edited in Herdr'})
@@ -111,6 +113,8 @@ end
                     return pane['rect'][dimension] <= current['area'][dimension] * .12
                 wait_for(host_is_small)
                 assert proxy.wait(timeout=15) == 0
+                release_delay = time.time() - marker.stat().st_mtime
+                assert release_delay < 1.5, ('Agent waited for editor shutdown', release_delay)
             finally:
                 if proxy.poll() is None:
                     proxy.kill()
@@ -118,16 +122,19 @@ end
 
             assert prompt.read_text() == 'edited in Herdr\n', layout
             assert int(marker.read_text()) != host.pid
-            wait_for(lambda: len(cli('pane', 'layout', '--pane', agent)['layout']['panes']) == 2)
-            wait_for(lambda: cli('pane', 'layout', '--pane', agent)['layout']['zoomed'] == was_zoomed)
-            after = cli('pane', 'layout', '--pane', agent)['layout']
-            assert after['focused_pane_id'] == agent
-            assert len(after['splits']) == len(before['splits'])
-            for old, restored in zip(before['splits'], after['splits']):
-                assert old['id'] == restored['id'] and abs(old['ratio'] - restored['ratio']) < .00001
+            def layout_restored():
+                after = cli('pane', 'layout', '--pane', agent)['layout']
+                return (len(after['panes']) == 2 and after['zoomed'] == was_zoomed
+                        and after['focused_pane_id'] == agent
+                        and len(after['splits']) == len(before['splits'])
+                        and all(old['id'] == restored['id'] and abs(old['ratio'] - restored['ratio']) < .00001
+                                for old, restored in zip(before['splits'], after['splits'])))
+            wait_for(layout_restored)
+            close_delay = time.time() - marker.stat().st_mtime
+            assert close_delay < 1.5, ('Pane close waited for editor shutdown', close_delay)
             cli('pane', 'swap', '--source-pane', host_pane, '--target-pane', agent)
             assert host.poll() is None
-            print(layout + ': separate Neovim applied the edit, released the proxy, and restored the agent and original pane sizes')
+            print(f'{layout}: agent released in {release_delay:.3f}s; pane closed and layout restored in {close_delay:.3f}s')
         # Disabling the option keeps the in-host editor. If Herdr rejects an
         # enabled editor (the linked plugin was removed), fall back there too.
         cli('plugin', 'unlink', 'koalavim-editor')

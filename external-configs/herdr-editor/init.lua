@@ -11,7 +11,42 @@ local function save()
 		end)
 	end
 end
-vim.api.nvim_create_autocmd('QuitPre', { callback = save })
+local notified = false
+local function finish()
+	if notified then
+		return
+	end
+	local channel = vim.fn.sockconnect('pipe', vim.env.KOALA_EDITOR_HOST, { rpc = true })
+	if channel <= 0 then
+		return
+	end
+	local ok =
+		pcall(vim.rpcrequest, channel, 'nvim_exec_lua', "return require('KoalaVim.utils.ai.mux_editor').finish(...)", {
+			vim.env.KOALA_EDITOR_PIPE,
+			vim.env.KOALA_EDITOR_AGENT,
+			vim.env.HERDR_PANE_ID or '',
+			vim.env.KOALA_EDITOR_RESTORE_ZOOM,
+			vim.env.KOALA_EDITOR_FLOATING,
+		})
+	pcall(vim.fn.chanclose, channel)
+	notified = ok
+end
+vim.api.nvim_create_autocmd('QuitPre', {
+	callback = function()
+		save()
+		-- The usual single-window editor can apply before slow VimLeave hooks.
+		-- Preserve quit's modified-buffer checks if other edits exist.
+		if #vim.api.nvim_list_wins() == 1 then
+			for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+				if vim.bo[buf].buflisted and vim.bo[buf].modified then
+					return
+				end
+			end
+			finish()
+		end
+	end,
+})
+vim.api.nvim_create_autocmd('VimLeavePre', { once = true, callback = finish })
 local function apply()
 	save()
 	vim.cmd.qa()

@@ -1,6 +1,7 @@
 local M = {}
 local PLUGIN = 'koalavim-editor'
 local layouts = {}
+local pending = {}
 
 -- Popup placement is available over the socket even in Herdr versions whose
 -- CLI does not expose it. Keep the request bounded if the server is unavailable.
@@ -246,12 +247,14 @@ function M.open(file, pipe, caller_pane, layout)
 		layouts[pipe] = saved_layout
 		resize_to(saved_layout, saved_layout.small)
 	end
+	pending[pipe] = true
 	local opened, err = request('plugin.pane.open', params)
 	if not opened then
 		if saved_layout then
 			resize_to(saved_layout, saved_layout.ratio)
 		end
 		layouts[pipe] = nil
+		pending[pipe] = nil
 		vim.notify(
 			'Could not open the Herdr editor: ' .. tostring(err) .. '. Opening it in Neovim instead.',
 			vim.log.levels.WARN
@@ -261,42 +264,32 @@ function M.open(file, pipe, caller_pane, layout)
 	return true
 end
 
---- Restore the agent only after Herdr removes the temporary editor pane;
---- restoring zoom before pane teardown would immediately lose it again.
+--- Release the agent immediately, then remove the temporary editor pane and
+--- restore its layout. Completion can arrive from both Neovim and its wrapper.
 function M.finish(pipe, agent, editor_pane, restore_zoom, floating)
-	local util = require('sidekick.util')
-	local function settle(attempt)
-		-- Popups are outside pane.list/get, and process exit alone may not reap
-		-- them until Herdr's next UI tick. Close ours before releasing the proxy.
+	if not pending[pipe] then
+		return 1
+	end
+	pending[pipe] = nil
+	local saved_layout = layouts[pipe]
+	layouts[pipe] = nil
+	local quoted_pipe = vim.fn.shellescape(pipe)
+	vim.system({ 'sh', '-c', 'if [ -p ' .. quoted_pipe .. ' ]; then printf "done\\n" > ' .. quoted_pipe .. '; fi' })
+	vim.schedule(function()
 		if floating == '1' then
 			request('popup.close', {})
+		elseif editor_pane ~= '' and editor_pane ~= agent and editor_pane ~= vim.env.HERDR_PANE_ID then
+			request('pane.close', { pane_id = editor_pane })
 		end
-		if
-			floating ~= '1'
-			and editor_pane ~= ''
-			and util.exec({ 'herdr', 'pane', 'get', editor_pane }, { notify = false })
-			and attempt < 100
-		then
-			vim.defer_fn(function()
-				settle(attempt + 1)
-			end, 50)
-			return
-		end
-		local saved_layout = layouts[pipe]
-		layouts[pipe] = nil
 		if saved_layout then
 			resize_to(saved_layout, saved_layout.ratio)
 		end
 		if restore_zoom == '1' then
-			util.exec({ 'herdr', 'pane', 'zoom', agent, '--on' }, { notify = false })
+			request('pane.zoom', { pane_id = agent, mode = 'on' })
 		else
 			request('pane.focus', { pane_id = agent })
 		end
-		vim.system({ 'sh', '-c', 'printf "done\\n" > ' .. vim.fn.shellescape(pipe) })
-	end
-	vim.defer_fn(function()
-		settle(1)
-	end, 50)
+	end)
 	return 1
 end
 
