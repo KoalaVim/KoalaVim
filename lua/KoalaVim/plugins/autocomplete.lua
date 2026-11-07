@@ -26,6 +26,14 @@ local function all_visible_buffers_source(priority, max_item_count)
 	}
 end
 
+local function herdr_source(priority, max_item_count)
+	return {
+		name = 'fuzzy_herdr',
+		priority = priority and priority - 50 or nil,
+		max_item_count = max_item_count,
+	}
+end
+
 -- Auto complete engine
 table.insert(M, {
 	'hrsh7th/nvim-cmp',
@@ -166,6 +174,7 @@ table.insert(M, {
 				{ name = 'agents_skills', priority = 300, option = { fuzzy_backend = 'fzf' } },
 				{ name = 'snippy', priority = 200 },
 				all_visible_buffers_source(150, 10),
+				herdr_source(150, 10),
 				{
 					name = 'fuzzy_dictionary',
 					priority = 50,
@@ -182,6 +191,7 @@ table.insert(M, {
 				comparators = {
 					lspkind_priority.compare, -- compare.kind,
 					require('cmp_fuzzy_buffer.compare'),
+					require('cmp_fuzzy_herdr.compare'),
 					compare.offset,
 					compare.exact,
 					-- compare.scopes,
@@ -201,6 +211,7 @@ table.insert(M, {
 		cmp.setup.cmdline('/', {
 			sources = {
 				all_visible_buffers_source(nil, 15),
+				herdr_source(nil, 15),
 			},
 		})
 
@@ -244,7 +255,13 @@ table.insert(M, {
 })
 
 -- Fuzzy matching cmp source for buffer words
-table.insert(M, { 'KoalaVim/cmp-fuzzy-buffer', dependencies = { 'KoalaVim/fuzzy.nvim' }, lazy = true })
+table.insert(M, {
+	'KoalaVim/cmp-fuzzy-buffer',
+	dependencies = { 'KoalaVim/fuzzy.nvim', 'KoalaVim/cmp-fuzzy-herdr' },
+	lazy = true,
+})
+
+table.insert(M, { 'KoalaVim/cmp-fuzzy-herdr', dependencies = { 'KoalaVim/fuzzy.nvim' }, lazy = true })
 
 -- Fuzzy matching cmp source for filesystem paths
 table.insert(M, { 'KoalaVim/cmp-fuzzy-path', dependencies = { 'KoalaVim/fuzzy.nvim' }, lazy = true })
@@ -299,6 +316,7 @@ table.insert(M, {
 		require('cmp').setup.filetype('dapui_watches', {
 			sources = {
 				all_visible_buffers_source(150, 15),
+				herdr_source(150, 15),
 				{ name = 'dap' },
 			},
 		})
@@ -350,6 +368,7 @@ table.insert(M, {
 			sources = {
 				{ name = 'crates', priority = 500 },
 				all_visible_buffers_source(nil, 15),
+				herdr_source(nil, 15),
 			},
 		})
 	end,
