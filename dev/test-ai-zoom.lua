@@ -2,6 +2,7 @@
 vim.opt.rtp:prepend(vim.fn.getcwd())
 local state, requested, zooms
 local eligible = true
+local created = true
 zooms = {}
 package.loaded['KoalaVim.health'] = { error = error }
 package.loaded['sidekick.cli.state'] = {
@@ -10,7 +11,7 @@ package.loaded['sidekick.cli.state'] = {
 	end,
 	with = function(cb, opts)
 		requested = opts
-		cb(state)
+		cb(state, true, created)
 	end,
 }
 local general = require('KoalaVim.utils.ai.general')
@@ -37,6 +38,10 @@ modes.load('ai', '')
 assert(requested.attach and requested.show and requested.focus)
 assert(requested.filter.name == 'claude')
 assert(#zooms == 1 and zooms[1].enabled == true)
+created = false
+modes.load('ai', '')
+assert(#zooms == 1)
+created = true
 modes.load('ai', '')
 assert(#zooms == 2 and zooms[2].enabled == true)
 general.zoom_sidekick()
@@ -44,7 +49,7 @@ assert(#zooms == 3 and zooms[3].enabled == nil)
 general.toggle_max()
 assert(#zooms == 4 and zooms[4].enabled == nil)
 assert(#vim.api.nvim_list_tabpages() == 1)
-print('AI mode maximizes attached native panes; zoom and max toggles route to Herdr')
+print('AI mode zooms only newly created native panes; reattachment preserves zoom and manual toggles work')
 
 eligible = false
 assert(general.zoom_herdr() == false)

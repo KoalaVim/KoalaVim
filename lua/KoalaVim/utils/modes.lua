@@ -73,7 +73,10 @@ local function ai_mode(args)
 	end
 
 	general.with_default_tool(function(opts)
-		require('sidekick.cli.state').with(function(state)
+		require('sidekick.cli.state').with(function(state, _, created)
+			if state.session.backend == 'herdr' and not state.terminal and not created then
+				return
+			end
 			if state.terminal then
 				vim.defer_fn(function()
 					local win = state.terminal.win
