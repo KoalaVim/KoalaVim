@@ -557,7 +557,9 @@ table.insert(M, {
 				local dashboard_win = vim.api.nvim_get_current_win()
 				local dashboard_buf = vim.api.nvim_get_current_buf()
 				CLOSE_KOALA_DASHBOARD(true)
+				vim.w[dashboard_win].koala_tree_standalone = true
 				require('nvim-tree.api').tree.open({ current_window = true })
+				vim.w.koala_tree_standalone = true
 				if dashboard_win ~= vim.api.nvim_get_current_win() and vim.api.nvim_win_is_valid(dashboard_win) then
 					vim.api.nvim_win_close(dashboard_win, true)
 				end
