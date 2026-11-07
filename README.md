@@ -22,6 +22,34 @@ Batteries-included, extensible Neovim distribution — curated plugins, robust d
 ## Integrations
 - [herdr aware plugin](https://github.com/KoalaVim/herdr-nvim-aware) — [example herdr config](external-configs/herdr-config.toml)
 
+### Recommended mux bindings (Herdr)
+
+The [example Herdr config](external-configs/herdr-config.toml) provides these bindings:
+
+| Key | Action |
+| --- | --- |
+| `Ctrl+h/j/k/l` | Navigate Neovim splits or Herdr panes. |
+| `Alt+e/o` | Split vertically/horizontally. |
+| `Alt+w/q` | Close the split/pane. |
+| `Alt+z` | Toggle zoom. |
+| `Alt+a` (`<M-a>`) | Unzoom the attached Sidekick-created agent pane and return focus to Neovim. Other panes receive Alt+A normally. |
+
+For `Alt+a`, install the helper from your KoalaVim checkout:
+
+```bash
+mkdir -p "$HOME/.local/bin"
+ln -s "$PWD/bin/sidekick-herdr-minimize" "$HOME/.local/bin/sidekick-herdr-minimize"
+```
+
+Add this binding to your Herdr config, then reload it:
+
+```toml
+[[keys.command]]
+key = "alt+a"
+type = "shell"
+command = '"$HOME/.local/bin/sidekick-herdr-minimize"'
+```
+
 ## Requirements
 
 - Neovim ≥ v0.12.0
