@@ -97,6 +97,22 @@ table.insert(M, {
 	},
 	keys = {
 		{
+			'<C-e>',
+			function()
+				local states = require('sidekick.cli.state').get({ attached = true })
+				local state = states[1]
+				if state and state.session.backend == 'herdr' and not state.session.herdr_embedded then
+					if not ai.focus_prompt_win() then
+						ai.send_editor_key()
+					end
+					return
+				end
+				vim.cmd.normal({ vim.api.nvim_replace_termcodes('<C-e>', true, false, true), bang = true })
+			end,
+			desc = 'Edit attached agent prompt or scroll down',
+			mode = 'n',
+		},
+		{
 			'gf',
 			function()
 				require('KoalaVim.utils.editor').sidekick_goto_file(true)
