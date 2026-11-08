@@ -55,4 +55,4 @@ for _, key in ipairs({ '<M-q>', '<M-w>' }) do
 	vim.keymap.set({ 'n', 'i' }, key, apply, { buffer = prompt, desc = 'Apply prompt and close editor pane' })
 end
 vim.cmd('normal! G$')
-vim.cmd.startinsert()
+vim.cmd.startinsert({ bang = true })
