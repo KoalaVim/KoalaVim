@@ -980,8 +980,7 @@ end
 ---@return string
 function M.open_editor_file(file, pipe, caller_pane)
 	-- An agent in another herdr pane keeps focus there; move it to Neovim's pane and back on close
-	local agent_pane = caller_pane and caller_pane ~= '' and caller_pane ~= vim.env.HERDR_PANE_ID and caller_pane
-		or nil
+	local agent_pane = caller_pane and caller_pane ~= '' and caller_pane ~= vim.env.HERDR_PANE_ID and caller_pane or nil
 	if agent_pane then
 		herdr_focus_pane(vim.env.HERDR_PANE_ID)
 	end

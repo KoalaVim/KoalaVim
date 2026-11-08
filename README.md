@@ -103,6 +103,17 @@ Example `kvim.conf`:
 }
 ```
 
+### Config layers
+
+KoalaVim deep-merges `.kvim.conf` layers; later layers override earlier ones:
+
+1. KoalaVim defaults (`default_kvim.conf`)
+2. user conf (`~/.kvim.conf`, or the path in `KOALA_KVIM_CONF`)
+3. env conf (the path in `KOALA_ENV_KVIM_CONF`, set by `kv` to `<env config dir>/.kvim.conf`)
+4. repo conf (`<git toplevel>/.kvim.conf`)
+
+The env conf is optional and never created automatically. Without `kv` (`KOALA_ENV_KVIM_CONF` unset) it is skipped. Use the dashboard button `kec` ("Koala Env Config") or `kv env config` to edit it.
+
 ### Advanced configuration
 
 JSON only covers what's been exposed. For anything beyond — extra plugins, custom keymaps, lazy.nvim option overrides — your config root is a regular Lua project that extends KoalaVim:

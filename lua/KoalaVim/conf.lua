@@ -34,6 +34,15 @@ function M.get_user_conf()
 	return vim.fn.expand('$HOME') .. '/.kvim.conf'
 end
 
+-- Set by `kv` (always, even if the file doesn't exist). nil without `kv`.
+function M.get_env_conf()
+	local env_conf = vim.env.KOALA_ENV_KVIM_CONF
+	if env_conf == nil or env_conf == '' then
+		return nil
+	end
+	return env_conf
+end
+
 local function _get_kvim_dir()
 	local info = debug.getinfo(1, 'S')
 	local curr_path = string.match(info.source, '^@(.*)')
@@ -92,8 +101,11 @@ end
 function M.load()
 	local default = json_file.load(M.get_kvim_conf(), false)
 	local user = json_file.load(M.get_user_conf(), true)
-	local git = json_file.load(M.get_repo_conf(), false)
-	local conf = vim.tbl_deep_extend('keep', git, user, default)
+	local env = json_file.load(M.get_env_conf(), false) -- optional, never auto-created
+	local repo = json_file.load(M.get_repo_conf(), false)
+	-- Precedence (lowest -> highest): defaults < user < env < repo
+	-- 'keep' means the leftmost argument wins, so the order below is reversed.
+	local conf = vim.tbl_deep_extend('keep', repo, env, user, default)
 
 	-- TODO: show config verification warnings in the dashboard
 	-- _verify(conf, '')
