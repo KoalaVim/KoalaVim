@@ -1,6 +1,11 @@
 ---@diagnostic disable: assign-type-mismatch
 local opt = vim.opt
 
+if vim.g.koala_mux_editor then
+	opt.laststatus = 0
+	opt.winbar = ''
+end
+
 opt.number = true
 opt.relativenumber = true
 opt.autoindent = true

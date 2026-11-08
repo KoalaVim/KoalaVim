@@ -120,6 +120,12 @@ local function get_codediff_path()
 end
 
 function M.setup_lualine(is_half, opts)
+	if vim.g.koala_mux_editor then
+		vim.opt.laststatus = 0
+		vim.opt.winbar = ''
+		return
+	end
+
 	if opts then
 		M.lualine_opts = opts
 	end
