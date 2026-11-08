@@ -4,6 +4,7 @@ local opt = vim.opt
 if vim.g.koala_mux_editor then
 	opt.laststatus = 0
 	opt.winbar = ''
+	opt.showtabline = 0
 end
 
 opt.number = true

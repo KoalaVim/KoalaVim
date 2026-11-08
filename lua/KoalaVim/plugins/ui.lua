@@ -266,6 +266,7 @@ table.insert(M, {
 -- bufferline
 table.insert(M, {
 	'akinsho/bufferline.nvim',
+	enabled = not vim.g.koala_mux_editor,
 	event = 'VeryLazy',
 	opts = {
 		options = {
