@@ -66,7 +66,7 @@ table.insert(M, {
 -- Mermaid diagrams inline (markdown, .mmd, sidekick agent terminals) and in a zoomable float, via kitty graphics placeholders
 table.insert(M, {
 	'KoalaVim/mermaid-viewer.nvim',
-	cmd = { 'MermaidView', 'MermaidClose', 'MermaidToggle', 'MermaidInline', 'MermaidCollapse' },
+	cmd = { 'MermaidView', 'MermaidClose', 'MermaidToggle', 'MermaidInline', 'MermaidCollapse', 'MermaidFullscreen' },
 	ft = { 'markdown', 'mermaid', 'sidekick_terminal' },
 	keys = {
 		{
@@ -107,6 +107,7 @@ table.insert(M, {
 		renderer = 'headless-chrome',
 		log = false, -- true: sizing log at stdpath('log')/mermaid-viewer.log (:MermaidLog)
 		theme = 'dark',
+		terminal = { fullscreen = true }, -- repaint-aware overlays for fullscreen Claude/Pi TUIs
 
 		inline = {
 			collapse = true, -- collapse each block once its diagram has rendered
