@@ -1,30 +1,13 @@
 -- Require all other `.lua` files in the same directory
 -- Credit: https://github.com/hallettj/dot-vim
 
--- TODO: remove binary dependency
 local M = {}
 
 local function scandir(directory, recursive)
-	local i, t, popen = 0, {}, io.popen
-	local pfile = nil
-
-	if recursive then
-		pfile = popen('fd . --base-directory="' .. directory .. '"')
-	else
-		pfile = popen('ls -a "' .. directory .. '"')
+	local t = {}
+	for filename in vim.fs.dir(directory, { depth = recursive and math.huge or 1 }) do
+		table.insert(t, filename)
 	end
-	-- print(directory)
-
-	if pfile == nil then
-		return {}
-	end
-
-	for filename in pfile:lines() do
-		i = i + 1
-		t[i] = filename
-		-- print(filename)
-	end
-	pfile:close()
 	return t
 end
 
